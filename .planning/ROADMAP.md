@@ -13,7 +13,7 @@ Vier Phasen bauen das System von innen nach außen: Phase 1 liefert eine vollst�
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Offline-Kern & Kasse** - Vollständig offline-fähige PWA zum Kassieren auf dem iPad (completed 2026-03-23)
-- [ ] **Phase 2: Backend & Sync** - Fastify-Backend mit SQLite, Outbox-Sync und Docker-Deployment
+- [x] **Phase 2: Backend & Sync** - Fastify-Backend mit SQLite, Outbox-Sync und Docker-Deployment (completed 2026-03-23)
 - [ ] **Phase 3: Warenwirtschaft & Berichte** - Produktverwaltung, Mindestbestände, Tagesübersicht, Spendenberichte
 - [ ] **Phase 4: Rechnungsimport** - PDF-Upload und koordinatenbasiertes Parsen von Süd-Nord-Kontor-Rechnungen
 
@@ -48,7 +48,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Drizzle-Schema, DB-Singleton, POST /api/sync Endpoint, Dockerfile-Migration (Wave 1)
-- [ ] 02-02-PLAN.md — Client Sync-Engine (engine.ts + triggers.ts), Integration in main.tsx (Wave 2)
+- [x] 02-02-PLAN.md — Client Sync-Engine (engine.ts + triggers.ts), Integration in main.tsx (Wave 2)
 
 ### Phase 3: Warenwirtschaft & Berichte
 **Goal**: Verwalterin kann Produkte pflegen, Bestände im Blick behalten und Spendenberichte per Mail empfangen
@@ -86,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
-| 2. Backend & Sync | 1/2 | In Progress|  |
+| 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
 | 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |
