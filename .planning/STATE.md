@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Tech Debt & Deployment
 status: unknown
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-23T18:25:16.505Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-23T18:40:01.511Z"
 progress:
   total_phases: 2
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 05 (tech-debt-fixes) — EXECUTING
-Plan: 1 of 1
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Plan: 1 of 1
 | Phase 04 P01 | 2 | 2 tasks | 4 files |
 | Phase 04-rechnungsimport P02 | 8 | 2 tasks | 4 files |
 | Phase 04-rechnungsimport P02 | 8 | 3 tasks | 4 files |
+| Phase 05 P01 | 2 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
 - [Phase 04-rechnungsimport]: defaultValue + onBlur fuer Euro-Felder in ReviewTable — vermeidet Cursor-Springen bei Dezimal-Eingabe
 - [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
+- [Phase 05]: Stock im LWW-Block unveraendert belassen — Delta-Update danach separat
+- [Phase 05]: Fire-and-forget PATCH statt Outbox fuer Produkt-Toggle
 
 ### Pending Todos
 
@@ -108,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T18:10:21.519Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-23T18:40:01.509Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None

@@ -33,7 +33,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — LWW-Sync-Fix, PRODUCT_TOGGLE Server-Sync, extra_donation_cents Reportkarte
+- [x] 05-01-PLAN.md — LWW-Sync-Fix, PRODUCT_TOGGLE Server-Sync, extra_donation_cents Reportkarte
 - [ ] 05-02-PLAN.md — Download-Sync Server→Client mit manuellem "Daten laden" Button
 
 ### Phase 6: GitHub & Deployment
