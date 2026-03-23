@@ -45,7 +45,12 @@ Plans:
   2. Docker Images werden automatisch gebaut und zu GHCR gepusht
   3. fairstand.godsapp.de ist erreichbar mit gültigem SSL-Zertifikat
   4. Push auf main löst automatisches Deployment via Portainer Webhook aus
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — GitHub Repo erstellen, Code pushen, docker-compose.portainer.yml erstellen
+- [ ] 06-02-PLAN.md — KeyHelp Domain + Apache Custom Config fuer Traefik-Proxy
+- [ ] 06-03-PLAN.md — Portainer Stack deployen + Webhook + Auto-Deploy
 
 ## Progress
 
@@ -58,5 +63,5 @@ Phases execute in numeric order: 5 → 6
 | 2. Backend & Sync | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 3. Warenwirtschaft & Berichte | v1.0 | 3/3 | Complete | 2026-03-23 |
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
-| 5. Tech Debt Fixes | v1.1 | 0/2 | Not started | - |
-| 6. GitHub & Deployment | v1.1 | 0/1 | Not started | - |
+| 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
+| 6. GitHub & Deployment | v1.1 | 0/3 | Not started | - |
