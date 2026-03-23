@@ -10,8 +10,14 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/fairstand
     steps:
       - uses: actions/checkout@v4
+
+      - name: Lowercase image prefix
+        run: echo "IMAGE_PREFIX=$(echo $IMAGE_PREFIX | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -25,14 +31,14 @@ jobs:
         with:
           context: ./client
           push: true
-          tags: ghcr.io/${{ github.repository }}/client:latest
+          tags: ${{ env.IMAGE_PREFIX }}/client:latest
 
       - name: Build and push server
         uses: docker/build-push-action@v6
         with:
           context: ./server
           push: true
-          tags: ghcr.io/${{ github.repository }}/server:latest
+          tags: ${{ env.IMAGE_PREFIX }}/server:latest
 
       - name: Trigger Portainer Webhook
         run: curl -f -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}"
