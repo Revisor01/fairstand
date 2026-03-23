@@ -30,6 +30,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fairstand-api.rule=Host(`fairstand.godsapp.de`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.fairstand-api.priority=100"
       - "traefik.http.services.fairstand-api.loadbalancer.server.port=3000"
     networks:
       - traefik
