@@ -10,6 +10,7 @@ export const products = sqliteTable('products', {
   salePrice: integer('sale_price').notNull(),
   vatRate: integer('vat_rate').notNull(),
   stock: integer('stock').notNull().default(0),
+  minStock: integer('min_stock').notNull().default(0),
   active: integer('active', { mode: 'boolean' }).notNull().default(true),
   updatedAt: integer('updated_at').notNull(),
 });
@@ -24,6 +25,12 @@ export const sales = sqliteTable('sales', {
   donationCents: integer('donation_cents').notNull(),
   createdAt: integer('created_at').notNull(),
   syncedAt: integer('synced_at'),
+});
+
+export const settings = sqliteTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  shopId: text('shop_id').notNull(),
 });
 
 export const outboxEvents = sqliteTable('outbox_events', {

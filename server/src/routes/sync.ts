@@ -35,6 +35,13 @@ const SyncBatchSchema = z.object({
   entries: z.array(OutboxEntrySchema),
 });
 
+const StockAdjustSchema = z.object({
+  productId: z.string(),
+  delta: z.number().int(),
+  reason: z.string().optional(),
+  shopId: z.string(),
+});
+
 export async function syncRoutes(fastify: FastifyInstance) {
   fastify.post('/sync', async (request, reply) => {
     const result = SyncBatchSchema.safeParse(request.body);
@@ -105,7 +112,28 @@ export async function syncRoutes(fastify: FastifyInstance) {
 
           processed++;
         }
-        // STOCK_ADJUST: Phase 3 — noch nicht implementiert
+        if (entry.operation === 'STOCK_ADJUST') {
+          const adjustResult = StockAdjustSchema.safeParse(entry.payload);
+          if (!adjustResult.success) {
+            errors.push({ index: i, message: 'Ungueltiger STOCK_ADJUST-Payload: ' + JSON.stringify(adjustResult.error.flatten()) });
+            continue;
+          }
+          const adj = adjustResult.data;
+          db.transaction((tx) => {
+            tx.update(products)
+              .set({ stock: sql`${products.stock} + ${adj.delta}`, updatedAt: sql`${Date.now()}` })
+              .where(eq(products.id, adj.productId))
+              .run();
+            tx.insert(outboxEvents).values({
+              shopId: entry.shopId,
+              operation: entry.operation,
+              payload: entry.payload,
+              processedAt: Date.now(),
+              createdAt: entry.createdAt,
+            }).run();
+          });
+          processed++;
+        }
       } catch (err) {
         errors.push({ index: i, message: String(err) });
       }
