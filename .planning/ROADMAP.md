@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Offline-Kern & Kasse** - Vollständig offline-fähige PWA zum Kassieren auf dem iPad (completed 2026-03-23)
 - [x] **Phase 2: Backend & Sync** - Fastify-Backend mit SQLite, Outbox-Sync und Docker-Deployment (completed 2026-03-23)
-- [ ] **Phase 3: Warenwirtschaft & Berichte** - Produktverwaltung, Mindestbestände, Tagesübersicht, Spendenberichte
+- [x] **Phase 3: Warenwirtschaft & Berichte** - Produktverwaltung, Mindestbestände, Tagesübersicht, Spendenberichte (completed 2026-03-23)
 - [ ] **Phase 4: Rechnungsimport** - PDF-Upload und koordinatenbasiertes Parsen von Süd-Nord-Kontor-Rechnungen
 
 ## Phase Details
@@ -64,7 +64,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Schema-Migration (Dexie v2 + Drizzle), Backend-Routes, Admin-Shell, STOCK_ADJUST-Handler (Wave 1)
 - [x] 03-02-PLAN.md — Produktverwaltungs-UI, Bestandskorrektur, Mindestbestand-Banner, Tagesübersicht (Wave 2)
-- [ ] 03-03-PLAN.md — Monats-/Jahresberichte mit Charts, Mail-Service, Cron-Scheduler, Settings-UI (Wave 3)
+- [x] 03-03-PLAN.md — Monats-/Jahresberichte mit Charts, Mail-Service, Cron-Scheduler, Settings-UI (Wave 3)
 
 ### Phase 4: Rechnungsimport
 **Goal**: Mitarbeiterin kann eine Rechnung vom Süd-Nord-Kontor als PDF hochladen, geprüfte Positionen freigeben und der Warenbestand wird automatisch gebucht
@@ -88,5 +88,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
-| 3. Warenwirtschaft & Berichte | 2/3 | In Progress|  |
+| 3. Warenwirtschaft & Berichte | 3/3 | Complete   | 2026-03-23 |
 | 4. Rechnungsimport | 0/1 | Not started | - |

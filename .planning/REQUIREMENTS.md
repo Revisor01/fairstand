@@ -14,7 +14,7 @@
 - [x] **POS-05**: Automatische Berechnung der Differenz (bezahlt minus Gesamtpreis)
 - [x] **POS-06**: Mitarbeiterin kann Wechselgeld-Betrag eingeben, Rest wird automatisch als Spende verbucht
 - [x] **POS-07**: Verkaufsabschluss bucht Warenbestand ab, erfasst Umsatz und Spende atomar
-- [ ] **POS-08**: Tagesübersicht nach dem Gottesdienst: Anzahl Verkäufe, Gesamtumsatz, Gesamtspenden
+- [x] **POS-08**: Tagesübersicht nach dem Gottesdienst: Anzahl Verkäufe, Gesamtumsatz, Gesamtspenden
 
 ### Warenwirtschaft
 
@@ -23,7 +23,7 @@
 - [x] **WAR-03**: Produkte deaktivieren (nicht im Kassen-Grid, aber Daten erhalten)
 - [x] **WAR-04**: Warenbestand wird bei Verkauf automatisch reduziert
 - [x] **WAR-05**: Warenbestand kann manuell angepasst werden (Zugang/Korrektur)
-- [ ] **WAR-06**: Konfigurierbarer Mindestbestand pro Produkt mit visueller Warnung
+- [x] **WAR-06**: Konfigurierbarer Mindestbestand pro Produkt mit visueller Warnung
 
 ### Rechnungsimport
 
@@ -35,10 +35,10 @@
 
 ### Spenden & Berichte
 
-- [ ] **REP-01**: Spendenübersicht kumuliert pro Tag, Monat und Jahr
-- [ ] **REP-02**: Umsatzbericht pro Monat und Jahr (Gesamtumsatz, Marge, Spenden)
-- [ ] **REP-03**: Konfigurierbare E-Mail-Adresse für Berichtsversand
-- [ ] **REP-04**: Optionaler automatischer Mail-Versand (monatlich und/oder jährlich)
+- [x] **REP-01**: Spendenübersicht kumuliert pro Tag, Monat und Jahr
+- [x] **REP-02**: Umsatzbericht pro Monat und Jahr (Gesamtumsatz, Marge, Spenden)
+- [x] **REP-03**: Konfigurierbare E-Mail-Adresse für Berichtsversand
+- [x] **REP-04**: Optionaler automatischer Mail-Versand (monatlich und/oder jährlich)
 
 ### Offline & Sync
 
@@ -102,22 +102,22 @@
 | POS-05 | Phase 1 | Complete |
 | POS-06 | Phase 1 | Complete |
 | POS-07 | Phase 1 | Complete |
-| POS-08 | Phase 3 | Pending |
+| POS-08 | Phase 3 | Complete |
 | WAR-01 | Phase 3 | Complete |
 | WAR-02 | Phase 3 | Complete |
 | WAR-03 | Phase 3 | Complete |
 | WAR-04 | Phase 2 | Complete |
 | WAR-05 | Phase 3 | Complete |
-| WAR-06 | Phase 3 | Pending |
+| WAR-06 | Phase 3 | Complete |
 | IMP-01 | Phase 4 | Pending |
 | IMP-02 | Phase 4 | Pending |
 | IMP-03 | Phase 4 | Pending |
 | IMP-04 | Phase 4 | Pending |
 | IMP-05 | Phase 4 | Pending |
-| REP-01 | Phase 3 | Pending |
-| REP-02 | Phase 3 | Pending |
-| REP-03 | Phase 3 | Pending |
-| REP-04 | Phase 3 | Pending |
+| REP-01 | Phase 3 | Complete |
+| REP-02 | Phase 3 | Complete |
+| REP-03 | Phase 3 | Complete |
+| REP-04 | Phase 3 | Complete |
 | OFF-01 | Phase 1 | Complete |
 | OFF-02 | Phase 1 | Complete |
 | OFF-03 | Phase 2 | Complete |
