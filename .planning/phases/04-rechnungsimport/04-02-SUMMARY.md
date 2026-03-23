@@ -106,6 +106,15 @@ Keine externe Konfiguration erforderlich.
 - Phase 04 abgeschlossen
 - Offen: PDF-Parsing-Validierung mit echter Sued-Nord-Kontor Rechnung (dokumentierter Blocker in STATE.md)
 
+## Self-Check: PASSED
+
+- ImportScreen.tsx: FOUND
+- UploadZone.tsx: FOUND
+- ReviewTable.tsx: FOUND
+- 04-02-SUMMARY.md: FOUND
+- Commit f770cf7: FOUND
+- Commit 38b3562: FOUND
+
 ---
 *Phase: 04-rechnungsimport*
 *Completed: 2026-03-23*
