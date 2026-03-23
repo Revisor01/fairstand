@@ -28,7 +28,8 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Keine aktiven Requirements — nächster Milestone definiert neue)
+- TD-01 bis TD-04: Tech Debt behoben — Validated in Phase 5
+- DEP-04 bis DEP-09: Deployment & CI/CD — Phase 6 (pending)
 
 ### Out of Scope
 
@@ -51,12 +52,11 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v1.0 shipped)
+### Current State (v1.1 Phase 5 complete)
 
-- 4,844 LOC TypeScript/TSX
 - Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 4 Phasen, 10 Pläne, 20 Feature-Commits
-- Known Tech Debt: LWW-Konfliktauflösung (onConflictDoNothing), kein Download-Sync Server→Client, Produkt-Deaktivierung ohne Server-Sync
+- 6 Phasen (4 v1.0 + 2 v1.1), Phase 5 Tech Debt behoben
+- Tech Debt aus v1.0 resolved: LWW-Sync, Produkt-Deaktivierung PATCH, Download-Sync, extra_donation Report
 
 ## Constraints
 
@@ -76,11 +76,11 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | PDF-Parsing serverseitig mit pdfjs-dist | Konsistentes TCPDF-Format, iPad-Entlastung | ✓ Good — koordinatenbasiert, alle Spalten erkannt |
 | Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | — Pending — bisher nur ein Laden |
 | Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
-| Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ⚠️ Revisit — Deaktivierung fehlt Server-Sync |
+| Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ✓ Fixed — PATCH deactivate + Download-Sync in Phase 5 |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-23 after v1.0 milestone*
+*Last updated: 2026-03-23 after v1.1 Phase 5 (Tech Debt Fixes)*
