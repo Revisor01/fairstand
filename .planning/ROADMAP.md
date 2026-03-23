@@ -44,11 +44,11 @@ Plans:
   1. Nach einem Verkauf (offline) erscheint der Datensatz auf dem Server, sobald das iPad wieder online ist
   2. Bestandsänderungen werden als Delta-Events synchronisiert, kein Absolutwert-Konflikt bei mehreren Geräten
   3. Konflikte (Last-Write-Wins via Timestamp) werden ohne manuellen Eingriff aufgelöst
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: Fastify-Backend mit SQLite, Drizzle ORM, Sync-API, shop_id-Mandantentrennung
-- [ ] 02-02: Outbox-Flush-Engine (online/visibilitychange-Trigger, iOS-kompatibel), Konfliktauflösung
+- [ ] 02-01-PLAN.md — Drizzle-Schema, DB-Singleton, POST /api/sync Endpoint, Dockerfile-Migration (Wave 1)
+- [ ] 02-02-PLAN.md — Client Sync-Engine (engine.ts + triggers.ts), Integration in main.tsx (Wave 2)
 
 ### Phase 3: Warenwirtschaft & Berichte
 **Goal**: Verwalterin kann Produkte pflegen, Bestände im Blick behalten und Spendenberichte per Mail empfangen
