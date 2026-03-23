@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, SHOP_ID } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
+import { downloadProducts } from '../../../sync/engine.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 
@@ -12,6 +13,8 @@ export function ProductList() {
   const [view, setView] = useState<ProductListView>('list');
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
 
   // Alle Produkte des aktuellen Shops (auch inaktive), alphabetisch nach Name
   const products = useLiveQuery(
@@ -48,6 +51,23 @@ export function ProductList() {
     if (navigator.onLine) {
       const action = newActive ? 'activate' : 'deactivate';
       fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH' }).catch(() => {});
+    }
+  }
+
+  async function handleDownloadSync() {
+    if (!navigator.onLine) {
+      setSyncResult('Keine Internetverbindung');
+      return;
+    }
+    setSyncing(true);
+    setSyncResult(null);
+    try {
+      const count = await downloadProducts();
+      setSyncResult(`${count} Produkt${count !== 1 ? 'e' : ''} aktualisiert`);
+    } catch {
+      setSyncResult('Sync fehlgeschlagen');
+    } finally {
+      setSyncing(false);
     }
   }
 
@@ -89,15 +109,24 @@ export function ProductList() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Header mit "Neues Produkt"-Button */}
+      {/* Header mit Buttons */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-sky-800">Produkte</h2>
-        <button
-          onPointerDown={openNewForm}
-          className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-semibold px-4 py-2 rounded-lg h-11 text-sm transition-colors"
-        >
-          + Neues Produkt
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onPointerDown={handleDownloadSync}
+            disabled={syncing}
+            className="bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded-lg h-11 text-sm transition-colors disabled:opacity-50"
+          >
+            {syncing ? 'Laden...' : 'Daten laden'}
+          </button>
+          <button
+            onPointerDown={openNewForm}
+            className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-semibold px-4 py-2 rounded-lg h-11 text-sm transition-colors"
+          >
+            + Neues Produkt
+          </button>
+        </div>
       </div>
 
       {/* Kategorie-Filter */}
@@ -118,6 +147,13 @@ export function ProductList() {
           </button>
         ))}
       </div>
+
+      {/* Sync-Ergebnis */}
+      {syncResult && (
+        <div className="bg-sky-50 text-sky-700 text-sm px-4 py-2 rounded-lg">
+          {syncResult}
+        </div>
+      )}
 
       {/* Produktliste */}
       {filteredProducts.length === 0 ? (
