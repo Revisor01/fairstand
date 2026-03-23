@@ -9,17 +9,21 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "fastify": "^5.7",
     "@fastify/cors": "^10",
+    "@fastify/schedule": "^6.0.0",
     "better-sqlite3": "^11",
     "drizzle-orm": "^0.40",
+    "fastify": "^5.7",
+    "nodemailer": "^8.0.3",
+    "toad-scheduler": "^3.1.0",
     "zod": "^3"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
     "@types/better-sqlite3": "^7",
+    "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
     "drizzle-kit": "^0.30",
-    "tsx": "^4"
+    "tsx": "^4",
+    "typescript": "^5"
   }
 }
