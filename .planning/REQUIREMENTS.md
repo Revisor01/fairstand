@@ -21,7 +21,7 @@
 - [ ] **WAR-01**: Produkte anlegen mit Artikelnummer, Bezeichnung, EK-Preis, VK-Preis, MwSt-Satz
 - [ ] **WAR-02**: Produkte bearbeiten (Preise, Name, Bestand)
 - [ ] **WAR-03**: Produkte deaktivieren (nicht im Kassen-Grid, aber Daten erhalten)
-- [ ] **WAR-04**: Warenbestand wird bei Verkauf automatisch reduziert
+- [x] **WAR-04**: Warenbestand wird bei Verkauf automatisch reduziert
 - [ ] **WAR-05**: Warenbestand kann manuell angepasst werden (Zugang/Korrektur)
 - [ ] **WAR-06**: Konfigurierbarer Mindestbestand pro Produkt mit visueller Warnung
 
@@ -44,8 +44,8 @@
 
 - [x] **OFF-01**: Kassen-App funktioniert vollständig ohne Internetverbindung
 - [x] **OFF-02**: Alle Daten werden lokal im Browser gespeichert (IndexedDB)
-- [ ] **OFF-03**: Automatische Synchronisation mit Server wenn online
-- [ ] **OFF-04**: Sync verwendet Delta-Events (nicht Absolutwerte) für Bestandsänderungen
+- [x] **OFF-03**: Automatische Synchronisation mit Server wenn online
+- [x] **OFF-04**: Sync verwendet Delta-Events (nicht Absolutwerte) für Bestandsänderungen
 - [x] **OFF-05**: PWA installierbar als Home-Screen-App auf iPad/iPhone
 
 ### Authentifizierung & Multi-Laden
@@ -106,7 +106,7 @@
 | WAR-01 | Phase 3 | Pending |
 | WAR-02 | Phase 3 | Pending |
 | WAR-03 | Phase 3 | Pending |
-| WAR-04 | Phase 2 | Pending |
+| WAR-04 | Phase 2 | Complete |
 | WAR-05 | Phase 3 | Pending |
 | WAR-06 | Phase 3 | Pending |
 | IMP-01 | Phase 4 | Pending |
@@ -120,8 +120,8 @@
 | REP-04 | Phase 3 | Pending |
 | OFF-01 | Phase 1 | Complete |
 | OFF-02 | Phase 1 | Complete |
-| OFF-03 | Phase 2 | Pending |
-| OFF-04 | Phase 2 | Pending |
+| OFF-03 | Phase 2 | Complete |
+| OFF-04 | Phase 2 | Complete |
 | OFF-05 | Phase 1 | Complete |
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |

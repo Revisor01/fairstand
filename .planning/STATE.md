@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-03-23T09:55:25.284Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-23T10:13:14.252Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 5
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 01 — offline-kern-kasse
+**Current focus:** Phase 02 — backend-sync
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (backend-sync) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: Not started
 | Phase 01 P01 | 6 | 2 tasks | 22 files |
 | Phase 01 P02 | 3 | 2 tasks | 7 files |
 | Phase 01 P03 | 6 | 2 tasks | 10 files |
+| Phase 02-backend-sync P01 | 2 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,9 @@ Recent decisions affecting current work:
 - [Phase 01]: AuthState mit 4 Zuständen ('checking'|'setup'|'locked'|'unlocked') — checking verhindert Flicker beim App-Start
 - [Phase 01]: dexie-react-hooks separat installiert: useLiveQuery ist in Dexie 4.x nicht im Hauptpaket enthalten
 - [Phase 01]: Preis-Snapshot im CartItem: salePrice beim Hinzufügen gespeichert, nie nachträglich aus DB aktualisiert
+- [Phase 02-backend-sync]: db.transaction((tx) => {...}) korrekte Drizzle-Transaktions-API — gibt void zurück, kein IIFE-Aufruf
+- [Phase 02-backend-sync]: onConflictDoNothing() für idempotente Sale-Insertion — doppelter POST mit gleichem id wird lautlos ignoriert
+- [Phase 02-backend-sync]: Stock-Delta via sql-Template-Expression — verhindert Absolutwert-Überschreibung bei Concurrent-Sync
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T09:50:26.348Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-03-23T10:13:14.250Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None

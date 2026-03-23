@@ -47,7 +47,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Drizzle-Schema, DB-Singleton, POST /api/sync Endpoint, Dockerfile-Migration (Wave 1)
+- [x] 02-01-PLAN.md — Drizzle-Schema, DB-Singleton, POST /api/sync Endpoint, Dockerfile-Migration (Wave 1)
 - [ ] 02-02-PLAN.md — Client Sync-Engine (engine.ts + triggers.ts), Integration in main.tsx (Wave 2)
 
 ### Phase 3: Warenwirtschaft & Berichte
@@ -86,6 +86,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
-| 2. Backend & Sync | 0/2 | Not started | - |
+| 2. Backend & Sync | 1/2 | In Progress|  |
 | 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |
