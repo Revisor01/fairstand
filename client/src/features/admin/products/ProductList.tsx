@@ -37,10 +37,18 @@ export function ProductList() {
   }, [products, activeCategory]);
 
   async function handleToggleActive(product: Product) {
+    const newActive = !product.active;
+    const now = Date.now();
+    // Lokal in Dexie sofort aktualisieren (offline-faehig)
     await db.products.update(product.id, {
-      active: !product.active,
-      updatedAt: Date.now(),
+      active: newActive,
+      updatedAt: now,
     });
+    // Fire-and-forget PATCH an Server wenn online
+    if (navigator.onLine) {
+      const action = newActive ? 'activate' : 'deactivate';
+      fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH' }).catch(() => {});
+    }
   }
 
   function openNewForm() {
