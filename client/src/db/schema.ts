@@ -10,6 +10,7 @@ export interface Product {
   salePrice: number;     // Cent-Integer (VK-Preis = EVP)
   vatRate: number;       // 7 oder 19
   stock: number;
+  minStock: number;      // 0 = kein Mindestbestand (Opt-in)
   active: boolean;
   updatedAt: number;     // Unix-Timestamp ms für LWW-Sync
 }
@@ -56,6 +57,17 @@ export class FairstandDB extends Dexie {
       products: 'id, shopId, category, active, [shopId+active]',
       sales: 'id, shopId, createdAt, syncedAt',
       outbox: '++id, shopId, createdAt, operation',
+    });
+    this.version(2).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt',
+      outbox: '++id, shopId, createdAt, operation',
+    }).upgrade(tx => {
+      return tx.table('products').toCollection().modify(product => {
+        if (product.minStock === undefined) {
+          product.minStock = 0;
+        }
+      });
     });
   }
 }

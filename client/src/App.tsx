@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from './features/auth/useAuth.js';
 import { PinScreen } from './features/auth/PinScreen.jsx';
 import { POSScreen } from './features/pos/POSScreen.js';
+import { AdminScreen } from './features/admin/AdminScreen.js';
 import { seedIfEmpty } from './db/seed.js';
 
 export default function App() {
   const { state, unlock, setup, lock } = useAuth();
+  const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
 
   useEffect(() => {
     // OFF-02 / Pitfall 3: Storage-Persistenz sichern — verhindert Datenverlust bei Speicherdruck
@@ -39,7 +41,11 @@ export default function App() {
   // state === 'unlocked' — vollständige Kassen-UI
   return (
     <div className="min-h-screen bg-sky-50">
-      <POSScreen onLock={lock} />
+      {activeView === 'pos' ? (
+        <POSScreen onLock={lock} onSwitchToAdmin={() => setActiveView('admin')} />
+      ) : (
+        <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />
+      )}
     </div>
   );
 }
