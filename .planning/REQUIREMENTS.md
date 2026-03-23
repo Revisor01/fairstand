@@ -7,7 +7,7 @@
 
 ### Point of Sale (Kasse)
 
-- [ ] **POS-01**: Artikel-Grid zeigt alle aktiven Produkte mit Name und VK-Preis zum Antippen
+- [x] **POS-01**: Artikel-Grid zeigt alle aktiven Produkte mit Name und VK-Preis zum Antippen
 - [ ] **POS-02**: Warenkorb zeigt ausgewählte Artikel mit Einzelpreis, Menge und Gesamtsumme
 - [ ] **POS-03**: Artikel können im Warenkorb in der Menge verändert oder entfernt werden
 - [ ] **POS-04**: Numerisches Eingabefeld für den bezahlten Betrag (touch-optimiert)
@@ -42,17 +42,17 @@
 
 ### Offline & Sync
 
-- [ ] **OFF-01**: Kassen-App funktioniert vollständig ohne Internetverbindung
-- [ ] **OFF-02**: Alle Daten werden lokal im Browser gespeichert (IndexedDB)
+- [x] **OFF-01**: Kassen-App funktioniert vollständig ohne Internetverbindung
+- [x] **OFF-02**: Alle Daten werden lokal im Browser gespeichert (IndexedDB)
 - [ ] **OFF-03**: Automatische Synchronisation mit Server wenn online
 - [ ] **OFF-04**: Sync verwendet Delta-Events (nicht Absolutwerte) für Bestandsänderungen
-- [ ] **OFF-05**: PWA installierbar als Home-Screen-App auf iPad/iPhone
+- [x] **OFF-05**: PWA installierbar als Home-Screen-App auf iPad/iPhone
 
 ### Authentifizierung & Multi-Laden
 
-- [ ] **AUTH-01**: Passwortschutz für den Laden (einfaches Passwort, kein User-Management)
+- [x] **AUTH-01**: Passwortschutz für den Laden (einfaches Passwort, kein User-Management)
 - [x] **AUTH-02**: Datenmodell enthält shop_id für Multi-Laden-Vorbereitung
-- [ ] **AUTH-03**: Erstmal nur ein Laden (St. Secundus Hennstedt)
+- [x] **AUTH-03**: Erstmal nur ein Laden (St. Secundus Hennstedt)
 
 ### Design & UX
 
@@ -95,7 +95,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| POS-01 | Phase 1 | Pending |
+| POS-01 | Phase 1 | Complete |
 | POS-02 | Phase 1 | Pending |
 | POS-03 | Phase 1 | Pending |
 | POS-04 | Phase 1 | Pending |
@@ -118,14 +118,14 @@
 | REP-02 | Phase 3 | Pending |
 | REP-03 | Phase 3 | Pending |
 | REP-04 | Phase 3 | Pending |
-| OFF-01 | Phase 1 | Pending |
-| OFF-02 | Phase 1 | Pending |
+| OFF-01 | Phase 1 | Complete |
+| OFF-02 | Phase 1 | Complete |
 | OFF-03 | Phase 2 | Pending |
 | OFF-04 | Phase 2 | Pending |
-| OFF-05 | Phase 1 | Pending |
-| AUTH-01 | Phase 1 | Pending |
+| OFF-05 | Phase 1 | Complete |
+| AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
-| AUTH-03 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Complete |
 | UX-01 | Phase 1 | Pending |
 | UX-02 | Phase 1 | Pending |
 | UX-03 | Phase 1 | Pending |

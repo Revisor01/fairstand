@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-23T09:35:43.632Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-23T09:41:55.470Z"
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 01 (offline-kern-kasse) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 2 of 3
 
 *Updated after each plan completion*
 | Phase 01 P01 | 6 | 2 tasks | 22 files |
+| Phase 01 P02 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - Sync: Outbox-Pattern mit Delta-Events (nie Absolutwerte), Trigger via online/visibilitychange (kein Background Sync API auf iOS)
 - [Phase 01]: registerType: prompt statt autoUpdate — verhindert mid-Session-Reload der Kasse
 - [Phase 01]: Traefik external:true — fairstand.godsapp.de über bestehenden Stack auf server.godsapp.de
+- [Phase 01]: Cent-Integer für alle Geldbeträge — float-freie Arithmetik verhindert Rundungsfehler an Kasse
+- [Phase 01]: idb-keyval für PIN-Hash und lastActivity — kein eigenes Dexie-Schema nötig für Config-Werte
+- [Phase 01]: AuthState mit 4 Zuständen ('checking'|'setup'|'locked'|'unlocked') — checking verhindert Flicker beim App-Start
 
 ### Pending Todos
 
@@ -72,6 +76,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T09:35:43.630Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-23T09:41:55.468Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

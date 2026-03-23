@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Monorepo-Gerüst, Docker-Stack, GitHub Actions CI/CD (Wave 1)
-- [ ] 01-02-PLAN.md — Dexie-Schema, PIN-Auth, Service Worker, Seed-Daten (Wave 2)
+- [x] 01-02-PLAN.md — Dexie-Schema, PIN-Auth, Service Worker, Seed-Daten (Wave 2)
 - [ ] 01-03-PLAN.md — Kassen-UI: Artikel-Grid, Warenkorb, Numpad, Bezahl-Flow, Zusammenfassung (Wave 3)
 
 ### Phase 2: Backend & Sync
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Offline-Kern & Kasse | 1/3 | In Progress|  |
+| 1. Offline-Kern & Kasse | 2/3 | In Progress|  |
 | 2. Backend & Sync | 0/2 | Not started | - |
 | 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |
