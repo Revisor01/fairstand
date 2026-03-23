@@ -16,6 +16,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 19,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '065-12824',
@@ -26,6 +27,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 19,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '090067',
@@ -36,6 +38,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 19,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '22968',
@@ -70,6 +73,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8951809',
@@ -80,6 +84,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8951810',
@@ -90,6 +95,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8951811',
@@ -100,6 +106,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8951812',
@@ -122,6 +129,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8911915',
@@ -132,6 +140,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 7,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8911917',
@@ -142,6 +151,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 7,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8911918',
@@ -152,6 +162,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8911925',
@@ -174,6 +185,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961840',
@@ -184,6 +196,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961841',
@@ -194,6 +207,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961842',
@@ -204,6 +218,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961844',
@@ -214,6 +229,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961845',
@@ -224,6 +240,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961846',
@@ -234,6 +251,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961847',
@@ -244,6 +262,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961849',
@@ -254,6 +273,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: '8961880',
@@ -276,6 +296,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 0,
     active: false, // kein Verkaufsartikel
+    minStock: 0,
   },
 
   // --- WeltPartner-Produkte (7 % MwSt) ---
@@ -288,6 +309,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 8,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'MO2-14-003',
@@ -298,6 +320,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 1,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'PA0-14-002',
@@ -308,6 +331,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 5,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'PY3-10-223',
@@ -318,6 +342,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'sa5-10-900',
@@ -328,6 +353,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 8,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'sl9-14-002',
@@ -338,6 +364,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 24,
     active: true,
+    minStock: 0,
   },
   {
     articleNumber: 'SL9-14-003',
