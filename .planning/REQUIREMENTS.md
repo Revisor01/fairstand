@@ -27,11 +27,11 @@
 
 ### Rechnungsimport
 
-- [ ] **IMP-01**: PDF-Upload von Süd-Nord-Kontor Rechnungen
-- [ ] **IMP-02**: Automatisches Parsen: Menge, Artikelnummer, Bezeichnung, EK-Preis (nach Rabatt), EVP (VK-Preis), MwSt-Satz
-- [ ] **IMP-03**: Prüf-Ansicht nach dem Parsen: alle erkannten Positionen editierbar
-- [ ] **IMP-04**: Neue Artikel aus der Rechnung werden als Produkt-Vorschläge angelegt
-- [ ] **IMP-05**: Bestandsbuchung (Zugang) erst nach manueller Freigabe
+- [x] **IMP-01**: PDF-Upload von Süd-Nord-Kontor Rechnungen
+- [x] **IMP-02**: Automatisches Parsen: Menge, Artikelnummer, Bezeichnung, EK-Preis (nach Rabatt), EVP (VK-Preis), MwSt-Satz
+- [x] **IMP-03**: Prüf-Ansicht nach dem Parsen: alle erkannten Positionen editierbar
+- [x] **IMP-04**: Neue Artikel aus der Rechnung werden als Produkt-Vorschläge angelegt
+- [x] **IMP-05**: Bestandsbuchung (Zugang) erst nach manueller Freigabe
 
 ### Spenden & Berichte
 
@@ -109,11 +109,11 @@
 | WAR-04 | Phase 2 | Complete |
 | WAR-05 | Phase 3 | Complete |
 | WAR-06 | Phase 3 | Complete |
-| IMP-01 | Phase 4 | Pending |
-| IMP-02 | Phase 4 | Pending |
-| IMP-03 | Phase 4 | Pending |
-| IMP-04 | Phase 4 | Pending |
-| IMP-05 | Phase 4 | Pending |
+| IMP-01 | Phase 4 | Complete |
+| IMP-02 | Phase 4 | Complete |
+| IMP-03 | Phase 4 | Complete |
+| IMP-04 | Phase 4 | Complete |
+| IMP-05 | Phase 4 | Complete |
 | REP-01 | Phase 3 | Complete |
 | REP-02 | Phase 3 | Complete |
 | REP-03 | Phase 3 | Complete |

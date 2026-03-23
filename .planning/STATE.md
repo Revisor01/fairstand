@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-23T18:04:51.284Z"
+stopped_at: "Completed 04-02-PLAN.md (checkpoint:human-verify ausstehend)"
+last_updated: "2026-03-23T18:08:42.098Z"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -55,6 +55,7 @@ Plan: 2 of 2
 | Phase 03 P02 | 18 | 2 tasks | 9 files |
 | Phase 03 P03 | 4 | 2 tasks | 10 files |
 | Phase 04 P01 | 2 | 2 tasks | 4 files |
+| Phase 04-rechnungsimport P02 | 8 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,8 @@ Recent decisions affecting current work:
 - [Phase 04]: pdfjs-dist/legacy/build/pdf.mjs Import-Pfad fuer Node.js — GlobalWorkerOptions.workerSrc='' deaktiviert Worker
 - [Phase 04]: importRoutes registriert @fastify/multipart intern, nicht global — kein Plugin-Konflikt
 - [Phase 04]: Buffer-Strategie (toBuffer()) statt Disk-Write beim PDF-Upload — kein temporaeres Volume noetig
+- [Phase 04-rechnungsimport]: defaultValue + onBlur fuer Euro-Felder in ReviewTable — vermeidet Cursor-Springen bei Dezimal-Eingabe
+- [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T18:04:51.282Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-23T18:08:42.096Z
+Stopped at: Completed 04-02-PLAN.md (checkpoint:human-verify ausstehend)
 Resume file: None

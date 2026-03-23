@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Offline-Kern & Kasse** - Vollständig offline-fähige PWA zum Kassieren auf dem iPad (completed 2026-03-23)
 - [x] **Phase 2: Backend & Sync** - Fastify-Backend mit SQLite, Outbox-Sync und Docker-Deployment (completed 2026-03-23)
 - [x] **Phase 3: Warenwirtschaft & Berichte** - Produktverwaltung, Mindestbestände, Tagesübersicht, Spendenberichte (completed 2026-03-23)
-- [ ] **Phase 4: Rechnungsimport** - PDF-Upload und koordinatenbasiertes Parsen von Süd-Nord-Kontor-Rechnungen
+- [x] **Phase 4: Rechnungsimport** - PDF-Upload und koordinatenbasiertes Parsen von Süd-Nord-Kontor-Rechnungen (completed 2026-03-23)
 
 ## Phase Details
 
@@ -78,7 +78,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — Backend: pdfjs-dist PDF-Parsing, @fastify/multipart Upload, POST /api/import/parse Endpoint (Wave 1)
-- [ ] 04-02-PLAN.md — Frontend: Import-Tab, Upload-Zone, editierbare Review-Tabelle, Matching, Freigabe-Buchung (Wave 2)
+- [x] 04-02-PLAN.md — Frontend: Import-Tab, Upload-Zone, editierbare Review-Tabelle, Matching, Freigabe-Buchung (Wave 2)
 
 ## Progress
 
@@ -90,4 +90,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
 | 3. Warenwirtschaft & Berichte | 3/3 | Complete   | 2026-03-23 |
-| 4. Rechnungsimport | 1/2 | In Progress|  |
+| 4. Rechnungsimport | 2/2 | Complete   | 2026-03-23 |
