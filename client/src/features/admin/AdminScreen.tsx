@@ -3,9 +3,10 @@ import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
 import { MonthlyReport } from './reports/MonthlyReport.js';
 import { SettingsForm } from './settings/SettingsForm.js';
+import { ImportScreen } from './import/ImportScreen.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 
-type AdminTab = 'products' | 'reports' | 'settings';
+type AdminTab = 'products' | 'reports' | 'settings' | 'import';
 
 interface AdminScreenProps {
   onSwitchToPOS: () => void;
@@ -56,6 +57,16 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
           Berichte
         </button>
         <button
+          onPointerDown={() => setTab('import')}
+          className={`flex-1 py-4 text-sm font-semibold transition-colors ${
+            tab === 'import'
+              ? 'bg-sky-500 text-white'
+              : 'text-sky-700 hover:bg-sky-50'
+          }`}
+        >
+          Import
+        </button>
+        <button
           onPointerDown={() => setTab('settings')}
           className={`flex-1 py-4 text-sm font-semibold transition-colors ${
             tab === 'settings'
@@ -77,6 +88,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
             <MonthlyReport />
           </>
         )}
+        {tab === 'import' && <ImportScreen />}
         {tab === 'settings' && <SettingsForm />}
       </main>
     </div>
