@@ -95,50 +95,50 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| POS-01 | — | Pending |
-| POS-02 | — | Pending |
-| POS-03 | — | Pending |
-| POS-04 | — | Pending |
-| POS-05 | — | Pending |
-| POS-06 | — | Pending |
-| POS-07 | — | Pending |
-| POS-08 | — | Pending |
-| WAR-01 | — | Pending |
-| WAR-02 | — | Pending |
-| WAR-03 | — | Pending |
-| WAR-04 | — | Pending |
-| WAR-05 | — | Pending |
-| WAR-06 | — | Pending |
-| IMP-01 | — | Pending |
-| IMP-02 | — | Pending |
-| IMP-03 | — | Pending |
-| IMP-04 | — | Pending |
-| IMP-05 | — | Pending |
-| REP-01 | — | Pending |
-| REP-02 | — | Pending |
-| REP-03 | — | Pending |
-| REP-04 | — | Pending |
-| OFF-01 | — | Pending |
-| OFF-02 | — | Pending |
-| OFF-03 | — | Pending |
-| OFF-04 | — | Pending |
-| OFF-05 | — | Pending |
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| UX-03 | — | Pending |
-| UX-04 | — | Pending |
-| DEP-01 | — | Pending |
-| DEP-02 | — | Pending |
-| DEP-03 | — | Pending |
+| POS-01 | Phase 1 | Pending |
+| POS-02 | Phase 1 | Pending |
+| POS-03 | Phase 1 | Pending |
+| POS-04 | Phase 1 | Pending |
+| POS-05 | Phase 1 | Pending |
+| POS-06 | Phase 1 | Pending |
+| POS-07 | Phase 1 | Pending |
+| POS-08 | Phase 3 | Pending |
+| WAR-01 | Phase 3 | Pending |
+| WAR-02 | Phase 3 | Pending |
+| WAR-03 | Phase 3 | Pending |
+| WAR-04 | Phase 2 | Pending |
+| WAR-05 | Phase 3 | Pending |
+| WAR-06 | Phase 3 | Pending |
+| IMP-01 | Phase 4 | Pending |
+| IMP-02 | Phase 4 | Pending |
+| IMP-03 | Phase 4 | Pending |
+| IMP-04 | Phase 4 | Pending |
+| IMP-05 | Phase 4 | Pending |
+| REP-01 | Phase 3 | Pending |
+| REP-02 | Phase 3 | Pending |
+| REP-03 | Phase 3 | Pending |
+| REP-04 | Phase 3 | Pending |
+| OFF-01 | Phase 1 | Pending |
+| OFF-02 | Phase 1 | Pending |
+| OFF-03 | Phase 2 | Pending |
+| OFF-04 | Phase 2 | Pending |
+| OFF-05 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| UX-01 | Phase 1 | Pending |
+| UX-02 | Phase 1 | Pending |
+| UX-03 | Phase 1 | Pending |
+| UX-04 | Phase 1 | Pending |
+| DEP-01 | Phase 1 | Pending |
+| DEP-02 | Phase 1 | Pending |
+| DEP-03 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 38 total
-- Mapped to phases: 0
-- Unmapped: 38 ⚠️
+- Mapped to phases: 38
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-23*
-*Last updated: 2026-03-23 after initial definition*
+*Last updated: 2026-03-23 after roadmap creation*
