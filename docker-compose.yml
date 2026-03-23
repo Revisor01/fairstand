@@ -1,0 +1,36 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fairstand.rule=Host(`fairstand.godsapp.de`)"
+      - "traefik.http.services.fairstand.loadbalancer.server.port=80"
+    networks:
+      - traefik
+    restart: unless-stopped
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - sqlite-data:/app/data
+    environment:
+      - PORT=3000
+      - CORS_ORIGIN=https://fairstand.godsapp.de
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fairstand-api.rule=Host(`fairstand.godsapp.de`) && PathPrefix(`/api`)"
+      - "traefik.http.services.fairstand-api.loadbalancer.server.port=3000"
+    networks:
+      - traefik
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:
+
+networks:
+  traefik:
+    external: true
