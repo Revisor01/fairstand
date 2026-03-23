@@ -9,7 +9,7 @@
 
 - [x] **TD-01**: LWW-Konfliktauflösung — sync.ts Produkt-Upsert von onConflictDoNothing() auf Timestamp-Vergleich umstellen
 - [x] **TD-02**: Produkt-Deaktivierung Server-Sync — handleToggleActive in ProductList.tsx muss PATCH /api/products/:id/deactivate aufrufen
-- [ ] **TD-03**: Download-Sync Server→Client — Mechanismus zum Laden von Server-Produktdaten auf neuen/frischen Client
+- [x] **TD-03**: Download-Sync Server→Client — Mechanismus zum Laden von Server-Produktdaten auf neuen/frischen Client
 - [x] **TD-04**: extra_donation_cents im MonthlyReport rendern — Überzahlungs-Spenden sichtbar machen
 
 ### Deployment & CI/CD
@@ -27,7 +27,7 @@
 |-------------|-------|--------|
 | TD-01 | Phase 5 | Complete |
 | TD-02 | Phase 5 | Complete |
-| TD-03 | Phase 5 | Pending |
+| TD-03 | Phase 5 | Complete |
 | TD-04 | Phase 5 | Complete |
 | DEP-04 | Phase 6 | Pending |
 | DEP-05 | Phase 6 | Pending |

@@ -34,7 +34,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 Plans:
 - [x] 05-01-PLAN.md — LWW-Sync-Fix, PRODUCT_TOGGLE Server-Sync, extra_donation_cents Reportkarte
-- [ ] 05-02-PLAN.md — Download-Sync Server→Client mit manuellem "Daten laden" Button
+- [x] 05-02-PLAN.md — Download-Sync Server→Client mit manuellem "Daten laden" Button
 
 ### Phase 6: GitHub & Deployment
 **Goal**: App auf server.godsapp.de live deployen — GitHub Repo, CI/CD Pipeline, Domain, Portainer Stack

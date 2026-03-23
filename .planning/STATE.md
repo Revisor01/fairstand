@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Tech Debt & Deployment
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-23T18:40:01.511Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-23T18:43:32.627Z"
 progress:
   total_phases: 2
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -58,6 +58,7 @@ Plan: 2 of 2
 | Phase 04-rechnungsimport P02 | 8 | 2 tasks | 4 files |
 | Phase 04-rechnungsimport P02 | 8 | 3 tasks | 4 files |
 | Phase 05 P01 | 2 | 3 tasks | 3 files |
+| Phase 05 P02 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
 - [Phase 05]: Stock im LWW-Block unveraendert belassen — Delta-Update danach separat
 - [Phase 05]: Fire-and-forget PATCH statt Outbox fuer Produkt-Toggle
+- [Phase 05]: ServerProduct interface for snake_case to camelCase mapping in download sync
+- [Phase 05]: LWW per-product comparison in download sync preserves newer local edits
 
 ### Pending Todos
 
@@ -111,6 +114,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T18:40:01.509Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-23T18:43:32.624Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
