@@ -4,10 +4,28 @@ import { PinScreen } from './features/auth/PinScreen.jsx';
 import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
 import { seedIfEmpty } from './db/seed.js';
+import { useLowStockCount } from './hooks/useLowStockCount.js';
+
+// Separate Komponente damit useLowStockCount immer korrekt aufgerufen wird
+function UnlockedApp({ onLock }: { onLock: () => void }) {
+  const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
+  const lowStockCount = useLowStockCount();
+
+  if (activeView === 'admin') {
+    return <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />;
+  }
+
+  return (
+    <POSScreen
+      onLock={onLock}
+      onSwitchToAdmin={() => setActiveView('admin')}
+      lowStockCount={lowStockCount}
+    />
+  );
+}
 
 export default function App() {
   const { state, unlock, setup, lock } = useAuth();
-  const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
 
   useEffect(() => {
     // OFF-02 / Pitfall 3: Storage-Persistenz sichern — verhindert Datenverlust bei Speicherdruck
@@ -41,11 +59,7 @@ export default function App() {
   // state === 'unlocked' — vollständige Kassen-UI
   return (
     <div className="min-h-screen bg-sky-50">
-      {activeView === 'pos' ? (
-        <POSScreen onLock={lock} onSwitchToAdmin={() => setActiveView('admin')} />
-      ) : (
-        <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />
-      )}
+      <UnlockedApp onLock={lock} />
     </div>
   );
 }

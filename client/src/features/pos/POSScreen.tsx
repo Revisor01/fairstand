@@ -4,6 +4,7 @@ import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
 import { PaymentFlow } from './PaymentFlow.js';
 import { SaleSummary } from './SaleSummary.js';
+import { LowStockBanner } from './LowStockBanner.js';
 import { useCart } from './useCart.js';
 import { completeSale } from './useSaleComplete.js';
 
@@ -12,9 +13,10 @@ type POSView = 'pos' | 'payment' | 'summary';
 interface POSScreenProps {
   onLock: () => void;
   onSwitchToAdmin?: () => void;
+  lowStockCount?: number;
 }
 
-export function POSScreen({ onLock, onSwitchToAdmin }: POSScreenProps) {
+export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScreenProps) {
   const cart = useCart();
   const [view, setView] = useState<POSView>('pos');
   const [lastSale, setLastSale] = useState<Sale | null>(null);
@@ -115,6 +117,9 @@ export function POSScreen({ onLock, onSwitchToAdmin }: POSScreenProps) {
 
   return (
     <div className="min-h-screen bg-sky-50 flex flex-col">
+      {/* Mindestbestand-Warnung */}
+      <LowStockBanner />
+
       {/* Header */}
       <header className="bg-sky-400 text-white flex items-center justify-between px-4 py-3 shrink-0 shadow-sm">
         <h1 className="text-xl font-bold">Fairstand Kasse</h1>
@@ -154,16 +159,21 @@ export function POSScreen({ onLock, onSwitchToAdmin }: POSScreenProps) {
             )}
           </button>
 
-          {/* Verwaltung-Button */}
+          {/* Verwaltung-Button mit Mindestbestand-Badge */}
           {onSwitchToAdmin && (
             <button
               onPointerDown={onSwitchToAdmin}
               className="
-                text-sm bg-sky-500 px-3 py-2 rounded-lg min-h-[44px]
+                relative text-sm bg-sky-500 px-3 py-2 rounded-lg min-h-[44px]
                 hover:bg-sky-600 active:bg-sky-700 transition-colors
               "
             >
               Verwaltung
+              {lowStockCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {lowStockCount}
+                </span>
+              )}
             </button>
           )}
 
