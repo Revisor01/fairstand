@@ -59,11 +59,12 @@ Plans:
   2. Bei Unterschreitung des Mindestbestands erscheint eine sichtbare Warnung in der App
   3. Tagesübersicht nach dem Gottesdienst zeigt Anzahl Verkäufe, Gesamtumsatz und Gesamtspenden
   4. Spendenberichte (monatlich und jährlich) werden automatisch per E-Mail versendet
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Produktverwaltungs-UI (Anlegen, Bearbeiten, Deaktivieren, Mindestbestand-Warnung)
-- [ ] 03-02: Berichte, Tagesübersicht, Nodemailer-Integration, automatischer Mail-Versand
+- [ ] 03-01-PLAN.md — Schema-Migration (Dexie v2 + Drizzle), Backend-Routes, Admin-Shell, STOCK_ADJUST-Handler (Wave 1)
+- [ ] 03-02-PLAN.md — Produktverwaltungs-UI, Bestandskorrektur, Mindestbestand-Banner, Tagesübersicht (Wave 2)
+- [ ] 03-03-PLAN.md — Monats-/Jahresberichte mit Charts, Mail-Service, Cron-Scheduler, Settings-UI (Wave 3)
 
 ### Phase 4: Rechnungsimport
 **Goal**: Mitarbeiterin kann eine Rechnung vom Süd-Nord-Kontor als PDF hochladen, geprüfte Positionen freigeben und der Warenbestand wird automatisch gebucht
@@ -87,5 +88,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
-| 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
+| 3. Warenwirtschaft & Berichte | 0/3 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |
