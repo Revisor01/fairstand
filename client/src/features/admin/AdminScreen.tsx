@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
+import { MonthlyReport } from './reports/MonthlyReport.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 
 type AdminTab = 'products' | 'reports' | 'settings';
@@ -68,7 +69,13 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       {/* Tab-Inhalt */}
       <main className="flex-1 p-4">
         {tab === 'products' && <ProductList />}
-        {tab === 'reports' && <DailyReport />}
+        {tab === 'reports' && (
+          <>
+            <DailyReport />
+            <hr className="my-6 border-slate-200" />
+            <MonthlyReport />
+          </>
+        )}
         {tab === 'settings' && (
           <div className="text-sky-700 text-center mt-8">
             <p className="text-lg font-medium">Einstellungen</p>
