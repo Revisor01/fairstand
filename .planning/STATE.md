@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
+milestone: v1.1
+milestone_name: Tech Debt & Deployment
 status: unknown
 stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-23T18:18:52.430Z"
+last_updated: "2026-03-23T18:25:16.505Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 04 — rechnungsimport
+**Current focus:** Phase 05 — tech-debt-fixes
 
 ## Current Position
 
-Phase: 04
-Plan: Not started
+Phase: 05 (tech-debt-fixes) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
