@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-03-23T13:46:25.703Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-23T18:04:51.284Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 03 — warenwirtschaft-berichte
+**Current focus:** Phase 04 — rechnungsimport
 
 ## Current Position
 
-Phase: 03 (warenwirtschaft-berichte) — EXECUTING
-Plan: 3 of 3
+Phase: 04 (rechnungsimport) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Plan: 3 of 3
 | Phase 03 P01 | 20 | 2 tasks | 13 files |
 | Phase 03 P02 | 18 | 2 tasks | 9 files |
 | Phase 03 P03 | 4 | 2 tasks | 10 files |
+| Phase 04 P01 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,9 @@ Recent decisions affecting current work:
 - [Phase 03]: @fastify/schedule vor reportScheduler registrieren — fastify.scheduler muss dekoriert sein bevor reportScheduler darauf zugreift
 - [Phase 03]: isMailConfigured()-Guard am Anfang jedes Cron-Tasks — verhindert Fehler wenn SMTP nicht konfiguriert
 - [Phase 03]: navigator.onLine-Check in MonthlyReport — Berichte nur online verfuegbar, klarer Hinweis statt failed fetch
+- [Phase 04]: pdfjs-dist/legacy/build/pdf.mjs Import-Pfad fuer Node.js — GlobalWorkerOptions.workerSrc='' deaktiviert Worker
+- [Phase 04]: importRoutes registriert @fastify/multipart intern, nicht global — kein Plugin-Konflikt
+- [Phase 04]: Buffer-Strategie (toBuffer()) statt Disk-Write beim PDF-Upload — kein temporaeres Volume noetig
 
 ### Pending Todos
 
@@ -98,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T13:46:25.691Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-03-23T18:04:51.282Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None

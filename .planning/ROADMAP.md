@@ -77,7 +77,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Backend: pdfjs-dist PDF-Parsing, @fastify/multipart Upload, POST /api/import/parse Endpoint (Wave 1)
+- [x] 04-01-PLAN.md — Backend: pdfjs-dist PDF-Parsing, @fastify/multipart Upload, POST /api/import/parse Endpoint (Wave 1)
 - [ ] 04-02-PLAN.md — Frontend: Import-Tab, Upload-Zone, editierbare Review-Tabelle, Matching, Freigabe-Buchung (Wave 2)
 
 ## Progress
@@ -90,4 +90,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
 | 3. Warenwirtschaft & Berichte | 3/3 | Complete   | 2026-03-23 |
-| 4. Rechnungsimport | 0/2 | Not started | - |
+| 4. Rechnungsimport | 1/2 | In Progress|  |
