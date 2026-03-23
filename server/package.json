@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@fastify/cors": "^10",
+    "@fastify/multipart": "^9.4.0",
     "@fastify/schedule": "^6.0.0",
     "better-sqlite3": "^11",
     "drizzle-orm": "^0.40",
     "fastify": "^5.7",
     "nodemailer": "^8.0.3",
+    "pdfjs-dist": "^5.5.207",
     "toad-scheduler": "^3.1.0",
     "zod": "^3"
   },
