@@ -62,7 +62,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Schema-Migration (Dexie v2 + Drizzle), Backend-Routes, Admin-Shell, STOCK_ADJUST-Handler (Wave 1)
+- [x] 03-01-PLAN.md — Schema-Migration (Dexie v2 + Drizzle), Backend-Routes, Admin-Shell, STOCK_ADJUST-Handler (Wave 1)
 - [ ] 03-02-PLAN.md — Produktverwaltungs-UI, Bestandskorrektur, Mindestbestand-Banner, Tagesübersicht (Wave 2)
 - [ ] 03-03-PLAN.md — Monats-/Jahresberichte mit Charts, Mail-Service, Cron-Scheduler, Settings-UI (Wave 3)
 
@@ -88,5 +88,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 2/2 | Complete   | 2026-03-23 |
-| 3. Warenwirtschaft & Berichte | 0/3 | Not started | - |
+| 3. Warenwirtschaft & Berichte | 1/3 | In Progress|  |
 | 4. Rechnungsimport | 0/1 | Not started | - |

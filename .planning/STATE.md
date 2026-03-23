@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-23T10:19:36.480Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-23T13:33:21.345Z"
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 8
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 02 — backend-sync
+**Current focus:** Phase 03 — warenwirtschaft-berichte
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
+Phase: 03 (warenwirtschaft-berichte) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Plan: Not started
 | Phase 01 P03 | 6 | 2 tasks | 10 files |
 | Phase 02-backend-sync P01 | 2 | 2 tasks | 7 files |
 | Phase 02-backend-sync P02 | 1 | 2 tasks | 3 files |
+| Phase 03 P01 | 20 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - [Phase 02-backend-sync]: Stock-Delta via sql-Template-Expression — verhindert Absolutwert-Überschreibung bei Concurrent-Sync
 - [Phase 02-backend-sync]: flushing-Guard als Modul-Variable verhindert parallele Sync-Ausfuehrung bei Doppel-Trigger
 - [Phase 02-backend-sync]: Sofortiger Flush beim App-Start via navigator.onLine — deckt Reload-nach-Reconnect ab
+- [Phase 03]: drizzle-kit migrate schlaegt lokal fehl wegen fehlender better-sqlite3 Native Binary (arm64 macOS) — Migration laeuft im Docker-Container beim Deployment
+- [Phase 03]: onSwitchToAdmin als optionale Prop in POSScreen — rueckwaertskompatibel, kein Breaking Change
+- [Phase 03]: StockAdjustSchema auf Modul-Ebene in sync.ts — konsistent mit SaleSchema, nicht innerhalb des Loop
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T10:16:12.135Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-23T13:33:21.343Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None

@@ -18,11 +18,11 @@
 
 ### Warenwirtschaft
 
-- [ ] **WAR-01**: Produkte anlegen mit Artikelnummer, Bezeichnung, EK-Preis, VK-Preis, MwSt-Satz
-- [ ] **WAR-02**: Produkte bearbeiten (Preise, Name, Bestand)
-- [ ] **WAR-03**: Produkte deaktivieren (nicht im Kassen-Grid, aber Daten erhalten)
+- [x] **WAR-01**: Produkte anlegen mit Artikelnummer, Bezeichnung, EK-Preis, VK-Preis, MwSt-Satz
+- [x] **WAR-02**: Produkte bearbeiten (Preise, Name, Bestand)
+- [x] **WAR-03**: Produkte deaktivieren (nicht im Kassen-Grid, aber Daten erhalten)
 - [x] **WAR-04**: Warenbestand wird bei Verkauf automatisch reduziert
-- [ ] **WAR-05**: Warenbestand kann manuell angepasst werden (Zugang/Korrektur)
+- [x] **WAR-05**: Warenbestand kann manuell angepasst werden (Zugang/Korrektur)
 - [ ] **WAR-06**: Konfigurierbarer Mindestbestand pro Produkt mit visueller Warnung
 
 ### Rechnungsimport
@@ -103,11 +103,11 @@
 | POS-06 | Phase 1 | Complete |
 | POS-07 | Phase 1 | Complete |
 | POS-08 | Phase 3 | Pending |
-| WAR-01 | Phase 3 | Pending |
-| WAR-02 | Phase 3 | Pending |
-| WAR-03 | Phase 3 | Pending |
+| WAR-01 | Phase 3 | Complete |
+| WAR-02 | Phase 3 | Complete |
+| WAR-03 | Phase 3 | Complete |
 | WAR-04 | Phase 2 | Complete |
-| WAR-05 | Phase 3 | Pending |
+| WAR-05 | Phase 3 | Complete |
 | WAR-06 | Phase 3 | Pending |
 | IMP-01 | Phase 4 | Pending |
 | IMP-02 | Phase 4 | Pending |
