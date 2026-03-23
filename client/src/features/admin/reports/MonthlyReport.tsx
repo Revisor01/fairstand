@@ -135,7 +135,7 @@ export function MonthlyReport() {
         <p className="text-slate-500 text-sm">Laden...</p>
       ) : summary ? (
         <>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
               <span className="text-3xl font-bold text-slate-800">{summary.sale_count}</span>
               <span className="text-xs text-slate-500 text-center">Verkaeufe</span>
@@ -155,6 +155,10 @@ export function MonthlyReport() {
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
               <span className="text-xl font-bold text-green-500">{formatEur(summary.donation_cents)}</span>
               <span className="text-xs text-slate-500 text-center">Spenden</span>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+              <span className="text-xl font-bold text-amber-500">{formatEur(summary.extra_donation_cents)}</span>
+              <span className="text-xs text-slate-500 text-center">Ueberzahlung</span>
             </div>
           </div>
 
