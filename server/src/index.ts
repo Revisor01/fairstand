@@ -6,6 +6,7 @@ import { syncRoutes } from './routes/sync.js';
 import { productRoutes } from './routes/products.js';
 import { reportRoutes } from './routes/reports.js';
 import { settingsRoutes } from './routes/settings.js';
+import { importRoutes } from './routes/import.js';
 import { reportScheduler } from './scheduler/reportScheduler.js';
 
 const fastify = Fastify({ logger: true });
@@ -19,6 +20,7 @@ await fastify.register(syncRoutes, { prefix: '/api' });
 await fastify.register(productRoutes, { prefix: '/api' });
 await fastify.register(reportRoutes, { prefix: '/api' });
 await fastify.register(settingsRoutes, { prefix: '/api' });
+await fastify.register(importRoutes, { prefix: '/api' });
 await fastify.register(fastifySchedule);
 await fastify.register(reportScheduler);
 
