@@ -12,56 +12,23 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Artikel-Grid zum Antippen mit Produktname und VK-Preis — v1.0
+- ✓ Warenkorb mit Gesamtpreisberechnung — v1.0
+- ✓ Bezahlt-Betrag eingeben → automatische Berechnung: Wechselgeld vs. Spende — v1.0
+- ✓ Verkaufsabschluss bucht Warenbestand ab und erfasst Spende — v1.0
+- ✓ Produktverwaltung: Anlegen, Bearbeiten, Deaktivieren — v1.0
+- ✓ Warenbestand tracken mit Mindestbestand-Warnung — v1.0
+- ✓ PDF-Rechnungsimport vom Süd-Nord-Kontor mit Prüf-Ansicht — v1.0
+- ✓ Spendenübersicht kumuliert pro Tag, Monat, Jahr — v1.0
+- ✓ Umsatzberichte mit Marge und automatischem Mail-Versand — v1.0
+- ✓ Vollständige Offline-Fähigkeit mit automatischer Sync — v1.0
+- ✓ PWA installierbar als Home-Screen-App — v1.0
+- ✓ Touch-optimiertes Design für iPad/iPhone — v1.0
+- ✓ CI/CD mit GitHub Actions + Portainer Auto-Deploy — v1.0
 
 ### Active
 
-**Kasse (Point of Sale)**
-- [ ] Artikel-Grid zum Antippen mit Produktname und VK-Preis
-- [ ] Warenkorb mit Gesamtpreisberechnung
-- [ ] Bezahlt-Betrag eingeben → automatische Berechnung: Wechselgeld vs. Spende
-- [ ] Mitarbeiterin entscheidet aktiv: Wechselgeld-Betrag eingeben, Rest wird Spende
-- [ ] Verkaufsabschluss bucht Warenbestand ab und erfasst Spende
-
-**Warenwirtschaft**
-- [ ] Produktverwaltung: Anlegen, Bearbeiten, Löschen von Artikeln
-- [ ] EK-Preis und VK-Preis pro Artikel pflegen
-- [ ] Artikelnummer (Süd-Nord-Kontor), Bezeichnung, MwSt-Satz, Herkunft speichern
-- [ ] Warenbestand tracken (Zugang bei Einkauf, Abgang bei Verkauf)
-- [ ] Konfigurierbarer Mindestbestand pro Produkt mit Warnung wenn unterschritten
-
-**Rechnungsimport**
-- [ ] PDF-Upload von Süd-Nord-Kontor Rechnungen
-- [ ] Automatisches Parsen: Menge, Artikelnummer, Bezeichnung, EK-Preis, EVP (VK-Preis), MwSt
-- [ ] Prüf- und Editier-Ansicht nach dem Parsen (bevor Bestand gebucht wird)
-- [ ] Bestandsbuchung nach Freigabe
-
-**Spendenverwaltung**
-- [ ] Automatische Erfassung der Spende pro Verkauf (Differenz bezahlt - VK-Preis - Wechselgeld)
-- [ ] Spendenübersicht (kumuliert pro Tag, Monat, Jahr)
-
-**Berichte & Auswertungen**
-- [ ] Umsatzberichte pro Monat und pro Jahr
-- [ ] Spendenberichte pro Monat und pro Jahr
-- [ ] Konfigurierbare E-Mail-Adresse für automatischen Versand
-- [ ] Optionaler automatischer Mail-Versand (monatlich/jährlich)
-
-**Offline & Sync**
-- [ ] Vollständige Offline-Fähigkeit: Kasse funktioniert ohne WLAN
-- [ ] Lokale Datenspeicherung (IndexedDB / Service Worker Cache)
-- [ ] Automatische Synchronisation wenn wieder online
-- [ ] Konfliktbehandlung bei gleichzeitigen Änderungen
-
-**Multi-Laden (Architektur vorbereiten)**
-- [ ] Datenmodell unterstützt mehrere Läden
-- [ ] Passwortschutz pro Laden
-- [ ] Erstmal nur ein Laden (St. Secundus Hennstedt)
-
-**Design & UX**
-- [ ] Hauptfarbe: Hellblau
-- [ ] Touch-optimiert für iPad und iPhone
-- [ ] PWA: Installierbar als Home-Screen-App
-- [ ] Große Tap-Targets für schnelles Kassieren
+(Keine aktiven Requirements — nächster Milestone definiert neue)
 
 ### Out of Scope
 
@@ -71,17 +38,25 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - Kundenverwaltung / Kundenkonten — Laufkundschaft vor der Kirche
 - Buchhaltungs-Export (DATEV etc.) — erstmal nur interne Übersicht
 - Etikettendruck — Etiketten kommen vom Süd-Nord-Kontor
+- TSE (Technische Sicherheitseinrichtung) — offene Ladenkasse ist ausgenommen
 
 ## Context
 
 - **Kirchengemeinde:** Ev.-Luth. Kirchengemeinde St. Secundus Hennstedt
 - **Lieferant:** Süd-Nord-Kontor GmbH, Hamburg (fairtrade.hamburg) — Kundennummer 601349
-- **Rechnungsformat:** PDF mit konsistenter Tabellenstruktur (Menge, Artikelnummer, Bezeichnung, Rabatt, Preis/St., MwSt, Gesamt). EVP (Empfohlener Verkaufspreis) in der Bezeichnung enthalten.
+- **Rechnungsformat:** PDF mit konsistenter Tabellenstruktur (TCPDF-generiert). EVP in der Bezeichnung als Klammer-Format.
 - **Sortiment:** Schokolade, Kaffee, Kekse, Fruchtgummi, Kerzen, Kunsthandwerk, Geschenkartikel — ca. 30-50 Artikel
 - **Nutzung:** Vor und nach Gottesdiensten, primär auf iPad, kein WLAN in der Kirche
 - **Nutzer:** Swantje Luthe + Mitarbeiterinnen (kleine Gruppe, keine komplexe Rechteverwaltung nötig)
-- **Deployment:** Docker auf server.godsapp.de (Hetzner). Server-Worker in /Users/simonluthe/Documents/claude-workspaces/server kann Domain anlegen (KeyHelp API), Stack deployen (Portainer MCP), vHost einrichten.
-- **Domain:** voraussichtlich fairstand.godsapp.de
+- **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
+- **Domain:** fairstand.godsapp.de
+
+### Current State (v1.0 shipped)
+
+- 4,844 LOC TypeScript/TSX
+- Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
+- 4 Phasen, 10 Pläne, 20 Feature-Commits
+- Known Tech Debt: LWW-Konfliktauflösung (onConflictDoNothing), kein Download-Sync Server→Client, Produkt-Deaktivierung ohne Server-Sync
 
 ## Constraints
 
@@ -90,32 +65,22 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **PDF-Parsing:** Rechnungen vom Süd-Nord-Kontor kommen als PDF, müssen serverseitig geparst werden
 - **Einfachheit:** Mitarbeiterinnen sind keine Tech-Experten — die Kasse muss sofort verständlich sein
 - **Deployment:** Docker-Container auf server.godsapp.de, Apache → Traefik → Container
+- **CI/CD:** GitHub Repo mit GitHub Actions Workflow → Docker Image bauen → Portainer Webhook für Auto-Deploy
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| PWA statt native App | Kein App Store nötig, läuft auf allen Geräten, sofortige Updates | — Pending |
-| Offline-First Architektur | Kein WLAN in der Kirche, Sync wenn wieder online | — Pending |
-| PDF-Parsing serverseitig | Rechnungen kommen als PDF, konsistentes Format vom Süd-Nord-Kontor | — Pending |
-| Multi-Laden-Architektur vorbereiten | Option für weitere Gemeinden/Stände, erstmal nur einer | — Pending |
+| PWA statt native App | Kein App Store nötig, läuft auf allen Geräten, sofortige Updates | ✓ Good — funktioniert offline auf iPad |
+| Offline-First mit Dexie.js + Outbox | Kein WLAN in der Kirche, Delta-Sync wenn online | ✓ Good — zuverlässig auch ohne Netz |
+| PDF-Parsing serverseitig mit pdfjs-dist | Konsistentes TCPDF-Format, iPad-Entlastung | ✓ Good — koordinatenbasiert, alle Spalten erkannt |
+| Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | — Pending — bisher nur ein Laden |
+| Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
+| Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ⚠️ Revisit — Deaktivierung fehlt Server-Sync |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
-
 ---
-*Last updated: 2026-03-23 after initialization*
+*Last updated: 2026-03-23 after v1.0 milestone*

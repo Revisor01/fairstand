@@ -129,6 +129,17 @@ Keine — alle Aenderungen sind rein frontend-seitig, kein neuer externer Dienst
 - Bereit fuer Plan 03: Monats-/Jahresberichte mit Charts (Chartist oder Chart.js), E-Mail-Versand
 - Mindestbestand-Hook (useLowStockCount) kann in Plan 03 wiederverwendet werden fuer Dashboard-Widgets
 
+## Self-Check: PASSED
+
+- ProductList.tsx: FOUND
+- ProductForm.tsx: FOUND
+- StockAdjustModal.tsx: FOUND
+- LowStockBanner.tsx: FOUND
+- useLowStockCount.ts: FOUND
+- DailyReport.tsx: FOUND
+- Commit c2156a7: FOUND
+- Commit f26bbc0: FOUND
+
 ---
 *Phase: 03-warenwirtschaft-berichte*
 *Completed: 2026-03-23*
