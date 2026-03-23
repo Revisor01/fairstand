@@ -41,4 +41,5 @@ jobs:
           tags: ${{ env.IMAGE_PREFIX }}/server:latest
 
       - name: Trigger Portainer Webhook
+        if: ${{ secrets.PORTAINER_WEBHOOK_URL != '' }}
         run: curl -f -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}"
