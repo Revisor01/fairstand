@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { ProductList } from './products/ProductList.js';
+import { DailyReport } from './reports/DailyReport.js';
+import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 
 type AdminTab = 'products' | 'reports' | 'settings';
 
@@ -8,6 +11,7 @@ interface AdminScreenProps {
 
 export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
   const [tab, setTab] = useState<AdminTab>('products');
+  const lowStockCount = useLowStockCount();
 
   return (
     <div className="min-h-screen bg-sky-50 flex flex-col">
@@ -26,13 +30,18 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       <nav className="bg-white border-b border-sky-200 flex">
         <button
           onPointerDown={() => setTab('products')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${
+          className={`relative flex-1 py-4 text-sm font-semibold transition-colors ${
             tab === 'products'
               ? 'bg-sky-500 text-white'
               : 'text-sky-700 hover:bg-sky-50'
           }`}
         >
           Produkte
+          {lowStockCount > 0 && (
+            <span className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 ml-1">
+              {lowStockCount}
+            </span>
+          )}
         </button>
         <button
           onPointerDown={() => setTab('reports')}
@@ -58,18 +67,8 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
 
       {/* Tab-Inhalt */}
       <main className="flex-1 p-4">
-        {tab === 'products' && (
-          <div className="text-sky-700 text-center mt-8">
-            <p className="text-lg font-medium">Produktverwaltung</p>
-            <p className="text-sm text-sky-500 mt-2">Wird in Plan 02 implementiert</p>
-          </div>
-        )}
-        {tab === 'reports' && (
-          <div className="text-sky-700 text-center mt-8">
-            <p className="text-lg font-medium">Berichte & Auswertungen</p>
-            <p className="text-sm text-sky-500 mt-2">Wird in Plan 03 implementiert</p>
-          </div>
-        )}
+        {tab === 'products' && <ProductList />}
+        {tab === 'reports' && <DailyReport />}
         {tab === 'settings' && (
           <div className="text-sky-700 text-center mt-8">
             <p className="text-lg font-medium">Einstellungen</p>
