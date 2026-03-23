@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAuth } from './features/auth/useAuth.js';
 import { PinScreen } from './features/auth/PinScreen.jsx';
+import { POSScreen } from './features/pos/POSScreen.js';
 import { seedIfEmpty } from './db/seed.js';
 
 export default function App() {
@@ -35,19 +36,10 @@ export default function App() {
     return <PinScreen mode="unlock" onSetup={setup} onUnlock={unlock} />;
   }
 
-  // state === 'unlocked' — Kassen-UI (kommt in Plan 01-03)
+  // state === 'unlocked' — vollständige Kassen-UI
   return (
     <div className="min-h-screen bg-sky-50">
-      <div className="p-4 bg-sky-400 text-white flex justify-between items-center">
-        <h1 className="text-xl font-bold">Fairstand Kasse</h1>
-        <button
-          className="text-sm bg-sky-600 px-3 py-2 rounded min-h-[44px]"
-          onPointerDown={() => lock()}
-        >
-          Sperren
-        </button>
-      </div>
-      <p className="p-8 text-slate-600">Kassen-UI wird in Plan 01-03 implementiert.</p>
+      <POSScreen onLock={lock} />
     </div>
   );
 }
