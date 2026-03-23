@@ -49,6 +49,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 19,
     stock: 1,
     active: true,
+    minStock: 0,
   },
 
   // --- Kaffee (7 % MwSt) ---
@@ -61,6 +62,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 12,
     active: true,
+    minStock: 0,
   },
 
   // --- Schokolade (7 % MwSt) ---
@@ -117,6 +119,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 10,
     active: true,
+    minStock: 0,
   },
 
   // --- Süsswaren & Gebäck (7 % MwSt) ---
@@ -173,6 +176,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 14,
     active: true,
+    minStock: 0,
   },
 
   // --- Fairness-Riegel & Snacks (7 % MwSt) ---
@@ -284,6 +288,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 18,
     active: true,
+    minStock: 0,
   },
 
   // --- Sonstiges (7 % MwSt) ---
@@ -375,6 +380,7 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
     vatRate: 7,
     stock: 24,
     active: true,
+    minStock: 0,
   },
 ];
 
