@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-23T09:35:43.632Z"
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 1
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +19,17 @@
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 1 — Offline-Kern & Kasse
+**Current focus:** Phase 01 — offline-kern-kasse
 
 ## Current Position
 
-Phase: 1 of 4 (Offline-Kern & Kasse)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-23 — Roadmap erstellt, bereit für Phase-1-Planung
-
-Progress: [░░░░░░░░░░] 0%
+Phase: 01 (offline-kern-kasse) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: —
 - Total execution time: 0 hours
@@ -30,10 +41,12 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01 P01 | 6 | 2 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -45,6 +58,8 @@ Recent decisions affecting current work:
 - Stack: React 19 + TypeScript + Vite + Dexie.js (Frontend), Fastify 5 + SQLite + Drizzle ORM (Backend)
 - Offline: Dexie.js zwingend wegen Safari IndexedDB-Transaktionsfehler auf iPad
 - Sync: Outbox-Pattern mit Delta-Events (nie Absolutwerte), Trigger via online/visibilitychange (kein Background Sync API auf iOS)
+- [Phase 01]: registerType: prompt statt autoUpdate — verhindert mid-Session-Reload der Kasse
+- [Phase 01]: Traefik external:true — fairstand.godsapp.de über bestehenden Stack auf server.godsapp.de
 
 ### Pending Todos
 
@@ -57,6 +72,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23
-Stopped at: Roadmap erstellt, STATE.md initialisiert
+Last session: 2026-03-23T09:35:43.630Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None

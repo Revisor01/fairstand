@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Verkaufsabschluss bucht Warenbestand ab und erfasst Umsatz und Spende atomar (auch ohne Netzverbindung)
   4. App ist als Home-Screen-Icon auf dem iPad installiert und startet vollständig offline ohne Fehlermeldung
   5. Der Laden ist passwortgeschützt und nach Neustart der PWA muss erneut eingeloggt werden
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Projektgerüst, Docker-Stack, CI/CD-Pipeline (React + Fastify + Dexie.js)
-- [ ] 01-02: Dexie-Schema, Offline-Architektur, Service Worker, PWA-Manifest
-- [ ] 01-03: Kassen-UI (Artikel-Grid, Warenkorb, Bezahlt-Eingabe, Wechselgeld/Spende-Flow)
+- [x] 01-01-PLAN.md — Monorepo-Gerüst, Docker-Stack, GitHub Actions CI/CD (Wave 1)
+- [ ] 01-02-PLAN.md — Dexie-Schema, PIN-Auth, Service Worker, Seed-Daten (Wave 2)
+- [ ] 01-03-PLAN.md — Kassen-UI: Artikel-Grid, Warenkorb, Numpad, Bezahl-Flow, Zusammenfassung (Wave 3)
 
 ### Phase 2: Backend & Sync
 **Goal**: Verkaufsdaten werden nicht nur lokal gespeichert, sondern mit dem Server synchronisiert — Datenverlust bei iPad-Reset ist ausgeschlossen
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Offline-Kern & Kasse | 0/3 | Not started | - |
+| 1. Offline-Kern & Kasse | 1/3 | In Progress|  |
 | 2. Backend & Sync | 0/2 | Not started | - |
 | 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |

@@ -51,7 +51,7 @@
 ### Authentifizierung & Multi-Laden
 
 - [ ] **AUTH-01**: Passwortschutz für den Laden (einfaches Passwort, kein User-Management)
-- [ ] **AUTH-02**: Datenmodell enthält shop_id für Multi-Laden-Vorbereitung
+- [x] **AUTH-02**: Datenmodell enthält shop_id für Multi-Laden-Vorbereitung
 - [ ] **AUTH-03**: Erstmal nur ein Laden (St. Secundus Hennstedt)
 
 ### Design & UX
@@ -63,9 +63,9 @@
 
 ### CI/CD & Deployment
 
-- [ ] **DEP-01**: GitHub Repository mit automatischem Docker-Build via GitHub Actions
-- [ ] **DEP-02**: Portainer Webhook für Auto-Deploy auf server.godsapp.de
-- [ ] **DEP-03**: Docker-Compose Stack mit Frontend + Backend
+- [x] **DEP-01**: GitHub Repository mit automatischem Docker-Build via GitHub Actions
+- [x] **DEP-02**: Portainer Webhook für Auto-Deploy auf server.godsapp.de
+- [x] **DEP-03**: Docker-Compose Stack mit Frontend + Backend
 
 ## v2 Requirements
 
@@ -124,15 +124,15 @@
 | OFF-04 | Phase 2 | Pending |
 | OFF-05 | Phase 1 | Pending |
 | AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Pending |
 | UX-01 | Phase 1 | Pending |
 | UX-02 | Phase 1 | Pending |
 | UX-03 | Phase 1 | Pending |
 | UX-04 | Phase 1 | Pending |
-| DEP-01 | Phase 1 | Pending |
-| DEP-02 | Phase 1 | Pending |
-| DEP-03 | Phase 1 | Pending |
+| DEP-01 | Phase 1 | Complete |
+| DEP-02 | Phase 1 | Complete |
+| DEP-03 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 38 total
