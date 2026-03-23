@@ -30,7 +30,11 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   2. Produkt-Deaktivierung wird per PATCH an den Server synchronisiert
   3. Frischer Client kann Produktdaten vom Server laden (Download-Sync)
   4. extra_donation_cents wird im Monatsbericht angezeigt
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — LWW-Sync-Fix, PRODUCT_TOGGLE Server-Sync, extra_donation_cents Reportkarte
+- [ ] 05-02-PLAN.md — Download-Sync Server→Client mit manuellem "Daten laden" Button
 
 ### Phase 6: GitHub & Deployment
 **Goal**: App auf server.godsapp.de live deployen — GitHub Repo, CI/CD Pipeline, Domain, Portainer Stack
@@ -43,10 +47,6 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   4. Push auf main löst automatisches Deployment via Portainer Webhook aus
 **Plans**: TBD
 
-Plans:
-- [ ] 05-01: LWW-Sync + Produkt-Deaktivierung-Sync + Download-Sync + extra_donation_cents
-- [ ] 06-01: GitHub Repo + Actions Workflow + KeyHelp Domain + Portainer Stack
-
 ## Progress
 
 **Execution Order:**
@@ -58,5 +58,5 @@ Phases execute in numeric order: 5 → 6
 | 2. Backend & Sync | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 3. Warenwirtschaft & Berichte | v1.0 | 3/3 | Complete | 2026-03-23 |
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
-| 5. Tech Debt Fixes | v1.1 | 0/1 | Not started | - |
+| 5. Tech Debt Fixes | v1.1 | 0/2 | Not started | - |
 | 6. GitHub & Deployment | v1.1 | 0/1 | Not started | - |
