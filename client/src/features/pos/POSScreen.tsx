@@ -63,6 +63,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
           vatRate: 0,
           stock: 0,
           active: true,
+          minStock: 0,
           updatedAt: 0,
         };
         for (let i = 0; i < saleItem.quantity; i++) {

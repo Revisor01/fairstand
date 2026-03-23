@@ -17,7 +17,7 @@ export function ReportChart({ data }: ReportChartProps) {
       <BarChart data={data}>
         <XAxis dataKey="month" />
         <YAxis tickFormatter={(v: number) => `${(v / 100).toFixed(0)}€`} />
-        <Tooltip formatter={(v: number) => formatEur(v)} />
+        <Tooltip formatter={(v) => formatEur(v as number)} />
         <Legend />
         <Bar dataKey="umsatz" fill="#38bdf8" name="Umsatz" />
         <Bar dataKey="spenden" fill="#86efac" name="Spenden" />
