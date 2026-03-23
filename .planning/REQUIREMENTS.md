@@ -8,12 +8,12 @@
 ### Point of Sale (Kasse)
 
 - [x] **POS-01**: Artikel-Grid zeigt alle aktiven Produkte mit Name und VK-Preis zum Antippen
-- [ ] **POS-02**: Warenkorb zeigt ausgewählte Artikel mit Einzelpreis, Menge und Gesamtsumme
-- [ ] **POS-03**: Artikel können im Warenkorb in der Menge verändert oder entfernt werden
-- [ ] **POS-04**: Numerisches Eingabefeld für den bezahlten Betrag (touch-optimiert)
-- [ ] **POS-05**: Automatische Berechnung der Differenz (bezahlt minus Gesamtpreis)
-- [ ] **POS-06**: Mitarbeiterin kann Wechselgeld-Betrag eingeben, Rest wird automatisch als Spende verbucht
-- [ ] **POS-07**: Verkaufsabschluss bucht Warenbestand ab, erfasst Umsatz und Spende atomar
+- [x] **POS-02**: Warenkorb zeigt ausgewählte Artikel mit Einzelpreis, Menge und Gesamtsumme
+- [x] **POS-03**: Artikel können im Warenkorb in der Menge verändert oder entfernt werden
+- [x] **POS-04**: Numerisches Eingabefeld für den bezahlten Betrag (touch-optimiert)
+- [x] **POS-05**: Automatische Berechnung der Differenz (bezahlt minus Gesamtpreis)
+- [x] **POS-06**: Mitarbeiterin kann Wechselgeld-Betrag eingeben, Rest wird automatisch als Spende verbucht
+- [x] **POS-07**: Verkaufsabschluss bucht Warenbestand ab, erfasst Umsatz und Spende atomar
 - [ ] **POS-08**: Tagesübersicht nach dem Gottesdienst: Anzahl Verkäufe, Gesamtumsatz, Gesamtspenden
 
 ### Warenwirtschaft
@@ -56,10 +56,10 @@
 
 ### Design & UX
 
-- [ ] **UX-01**: Hauptfarbe Hellblau, modernes und sauberes Design
-- [ ] **UX-02**: Touch-optimiert: Minimum 44x44px Tap-Targets
-- [ ] **UX-03**: Responsive Layout optimiert für iPad (primär) und iPhone
-- [ ] **UX-04**: Kassen-Ansicht als Hauptbildschirm, Admin-Bereiche sekundär
+- [x] **UX-01**: Hauptfarbe Hellblau, modernes und sauberes Design
+- [x] **UX-02**: Touch-optimiert: Minimum 44x44px Tap-Targets
+- [x] **UX-03**: Responsive Layout optimiert für iPad (primär) und iPhone
+- [x] **UX-04**: Kassen-Ansicht als Hauptbildschirm, Admin-Bereiche sekundär
 
 ### CI/CD & Deployment
 
@@ -96,12 +96,12 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | POS-01 | Phase 1 | Complete |
-| POS-02 | Phase 1 | Pending |
-| POS-03 | Phase 1 | Pending |
-| POS-04 | Phase 1 | Pending |
-| POS-05 | Phase 1 | Pending |
-| POS-06 | Phase 1 | Pending |
-| POS-07 | Phase 1 | Pending |
+| POS-02 | Phase 1 | Complete |
+| POS-03 | Phase 1 | Complete |
+| POS-04 | Phase 1 | Complete |
+| POS-05 | Phase 1 | Complete |
+| POS-06 | Phase 1 | Complete |
+| POS-07 | Phase 1 | Complete |
 | POS-08 | Phase 3 | Pending |
 | WAR-01 | Phase 3 | Pending |
 | WAR-02 | Phase 3 | Pending |
@@ -126,10 +126,10 @@
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
-| UX-01 | Phase 1 | Pending |
-| UX-02 | Phase 1 | Pending |
-| UX-03 | Phase 1 | Pending |
-| UX-04 | Phase 1 | Pending |
+| UX-01 | Phase 1 | Complete |
+| UX-02 | Phase 1 | Complete |
+| UX-03 | Phase 1 | Complete |
+| UX-04 | Phase 1 | Complete |
 | DEP-01 | Phase 1 | Complete |
 | DEP-02 | Phase 1 | Complete |
 | DEP-03 | Phase 1 | Complete |

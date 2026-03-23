@@ -12,7 +12,7 @@ Vier Phasen bauen das System von innen nach außen: Phase 1 liefert eine vollst�
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Offline-Kern & Kasse** - Vollständig offline-fähige PWA zum Kassieren auf dem iPad
+- [x] **Phase 1: Offline-Kern & Kasse** - Vollständig offline-fähige PWA zum Kassieren auf dem iPad (completed 2026-03-23)
 - [ ] **Phase 2: Backend & Sync** - Fastify-Backend mit SQLite, Outbox-Sync und Docker-Deployment
 - [ ] **Phase 3: Warenwirtschaft & Berichte** - Produktverwaltung, Mindestbestände, Tagesübersicht, Spendenberichte
 - [ ] **Phase 4: Rechnungsimport** - PDF-Upload und koordinatenbasiertes Parsen von Süd-Nord-Kontor-Rechnungen
@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Monorepo-Gerüst, Docker-Stack, GitHub Actions CI/CD (Wave 1)
 - [x] 01-02-PLAN.md — Dexie-Schema, PIN-Auth, Service Worker, Seed-Daten (Wave 2)
-- [ ] 01-03-PLAN.md — Kassen-UI: Artikel-Grid, Warenkorb, Numpad, Bezahl-Flow, Zusammenfassung (Wave 3)
+- [x] 01-03-PLAN.md — Kassen-UI: Artikel-Grid, Warenkorb, Numpad, Bezahl-Flow, Zusammenfassung (Wave 3)
 
 ### Phase 2: Backend & Sync
 **Goal**: Verkaufsdaten werden nicht nur lokal gespeichert, sondern mit dem Server synchronisiert — Datenverlust bei iPad-Reset ist ausgeschlossen
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Offline-Kern & Kasse | 2/3 | In Progress|  |
+| 1. Offline-Kern & Kasse | 3/3 | Complete   | 2026-03-23 |
 | 2. Backend & Sync | 0/2 | Not started | - |
 | 3. Warenwirtschaft & Berichte | 0/2 | Not started | - |
 | 4. Rechnungsimport | 0/1 | Not started | - |
