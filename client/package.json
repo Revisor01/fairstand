@@ -17,6 +17,7 @@
     "react": "^19",
     "react-dom": "^19",
     "react-router-dom": "^7",
+    "recharts": "^3.8.0",
     "workbox-window": "^7",
     "zod": "^3"
   },
