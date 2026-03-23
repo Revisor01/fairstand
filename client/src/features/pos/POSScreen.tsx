@@ -11,9 +11,10 @@ type POSView = 'pos' | 'payment' | 'summary';
 
 interface POSScreenProps {
   onLock: () => void;
+  onSwitchToAdmin?: () => void;
 }
 
-export function POSScreen({ onLock }: POSScreenProps) {
+export function POSScreen({ onLock, onSwitchToAdmin }: POSScreenProps) {
   const cart = useCart();
   const [view, setView] = useState<POSView>('pos');
   const [lastSale, setLastSale] = useState<Sale | null>(null);
@@ -152,6 +153,19 @@ export function POSScreen({ onLock }: POSScreenProps) {
               </span>
             )}
           </button>
+
+          {/* Verwaltung-Button */}
+          {onSwitchToAdmin && (
+            <button
+              onPointerDown={onSwitchToAdmin}
+              className="
+                text-sm bg-sky-500 px-3 py-2 rounded-lg min-h-[44px]
+                hover:bg-sky-600 active:bg-sky-700 transition-colors
+              "
+            >
+              Verwaltung
+            </button>
+          )}
 
           {/* Sperren-Button */}
           <button
