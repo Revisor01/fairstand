@@ -32,19 +32,28 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Verkaufshistorie — anklickbare Tagesübersicht + Artikel-Statistik — v2.0
 - ✓ Storno & Rückgabe — Verkauf stornieren, Einzelartikel zurückgeben — v2.0
 
+- ✓ UI-Redesign: Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile — v3.0
+- ✓ Produktbilder in Artikelkacheln mit manuellem Upload — v3.0
+- ✓ Bestandsampel (grün/gelb/rot) in Grid und Produktliste — v3.0
+- ✓ Verbessertes PDF-Parsing (Menge, Artikelnummer, Preis getrennt) — v3.0
+- ✓ Umlaute konsequent in gesamter UI — v3.0
+
 ### Active
 
-## Current Milestone: v3.0 Polish, Bilder & Redesign
+## Current Milestone: v4.0 Datenqualität & Stabilität
 
-**Goal:** UI-Redesign (luftiger, kompakter, stylischer), Produktbilder, besseres PDF-Parsing, Bestandsampel, Umlaute, README + Lizenz.
+**Goal:** Bugfixes und Verbesserungen bei Marge/EK-Preis, Storno-Statistiken, Cart-Persistenz, Scroll/Tap-Bug, Kategorie-Management und Bestandswarnungen.
 
 **Target features:**
-- Redesign: Kassendialog kompakt, Bezahlseite mit Artikeln, Live-Berechnung, Shop-Name in Titelzeile
-- Produktbilder aus Kontor-Website + Etiketten-PDFs
-- Bestandsampel (grün/gelb/rot)
-- PDF-Parsing verbessern
-- Umlaute überall (öäüß)
-- README + Lizenz auf GitHub
+- Marge/EK-Preis-Berechnung korrigieren
+- Storno korrekt aus Statistiken/Top-Artikeln rausrechnen
+- Warenkorb überlebt Page-Reload (Dexie-Persistenz)
+- Scroll vs. Tap UI-Bug fixen
+- Zentrales Kategorie-Management
+- Bestandswarnungen verbessern
+- Cart-Validierung
+- Sync-Verbesserungen
+- Produktbild-Upload verbessern
 
 ### Out of Scope
 
@@ -67,12 +76,13 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v2.0 shipped)
+### Current State (v3.0 shipped)
 
 - Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 9 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0), alle shipped
+- 12 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD
 - Server ist Single Source of Truth, Multi-Laden mit PIN, Bestandsprüfung, Storno/Rückgabe
+- UI-Redesign mit kompaktem Payment-Flow, Produktbildern, Bestandsampel
 
 ## Constraints
 
@@ -99,4 +109,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v3.0 milestone start*
+*Last updated: 2026-03-24 after v4.0 milestone start*

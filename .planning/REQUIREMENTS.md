@@ -1,46 +1,43 @@
-# Requirements: Fairstand Kassensystem v3.0
+# Requirements: Fairstand Kassensystem v4.0
 
 **Defined:** 2026-03-24
-**Core Value:** Polish und visuelle Verbesserungen — die App soll auf einen Blick erfassbar, luftig und stylisch sein.
+**Core Value:** Datenqualität und Stabilität — die Kasse rechnet korrekt, verliert keine Daten und reagiert zuverlässig auf Touch.
 
-## v3.0 Requirements
+## v4.0 Requirements
 
-### Redesign
+### Datenintegrität
 
-- [x] **UI-01**: Kassendialog und Bezahlseite sind kompakt (wie der Abschlussdialog) — nicht fullscreen, alles auf einen Blick erfassbar
-- [x] **UI-02**: Bezahlseite zeigt Artikelliste + Gesamtsumme groß + Live-Berechnung von Wechselgeld/Spende beim Eingeben
-- [x] **UI-03**: Shop-Name wird in der Titelzeile oben angezeigt
-- [x] **UI-04**: Gesamtes Layout luftiger, kompakter und stylischer — mehr Whitespace, weniger gedrängt
-- [x] **UI-05**: Admin/Einstellungen übersichtlicher und kompakter gestaltet
+- [ ] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
+- [ ] **DAT-02**: Stornierte Verkäufe werden korrekt aus Umsatz-Statistiken und Top-Artikel-Rankings herausgerechnet
+- [ ] **DAT-03**: Warenkorb überlebt einen Page-Reload — Artikel bleiben nach Browser-Refresh erhalten (Dexie-Persistenz)
 
-### Produktbilder
+### UI-Bugfixes
 
-- [x] **IMG-01**: Artikelkacheln zeigen Produktbilder (falls vorhanden)
-- [x] **IMG-02**: Bilder können aus Etiketten-PDFs (Ordner Süd-Nord-Kontor/) extrahiert oder von der Kontor-Website geholt werden
-- [x] **IMG-03**: Bilder können manuell in der Produktverwaltung zugewiesen werden
+- [ ] **UIX-01**: Scroll vs. Tap wird korrekt unterschieden — kein versehentliches Antippen beim Scrollen im Artikel-Grid
 
-### PDF-Parsing
+### Bestandsmanagement
 
-- [x] **PDF-01**: Verbessertes Parsing der Süd-Nord-Kontor Rechnungen — Menge, Artikelnummer, Preis korrekt in separate Spalten statt alles in Beschreibung (Testdatei: Rechnung 2552709.pdf)
+- [ ] **BST-01**: Bestandswarnungen verbessern — klarere/frühere Hinweise bei niedrigem Vorrat
 
-### Bestandsampel
+### Datenverwaltung
 
-- [x] **AMP-01**: Farbindikator (grün/gelb/rot) für Vorratsstand in der Produktliste und im Kassen-Grid
+- [ ] **VRW-01**: Zentrales Kategorie-Management — Kategorien als eigene Entität verwalten, nicht nur als Freitext pro Produkt
+- [ ] **VRW-02**: Produktbild-Upload verbessern — einfacherer Workflow für Bildzuweisung
 
-### Umlaute
+### Validierung
 
-- [x] **TXT-01**: Konsequent öäüß in der gesamten UI verwenden statt ae/oe/ue/ss
+- [ ] **VAL-01**: Cart-Validierung — ungültige/veraltete Artikel im Warenkorb erkennen und behandeln
 
-### GitHub
+### Sync
 
-- [ ] **GH-01**: README.md mit Projektbeschreibung und Setup-Anleitung (keine Screenshots)
-- [ ] **GH-02**: Open-Source-Lizenz — frei für alle Weltläden (ev + kath), Kontakthinweis für Account-Anfragen
+- [ ] **SYN-01**: Sync-Robustheit verbessern — Fehlerbehandlung und Retry-Logik optimieren
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Multi-Laden Admin-UI (Läden anlegen per Web) | Funktioniert bereits über Server-Seed/DB |
+| README + Lizenz auf GitHub | Aus v3.0 offen, separater Quick-Task |
+| Multi-Laden Admin-UI (Läden anlegen per Web) | Funktioniert über Server-Seed/DB |
 | Real-time Push zwischen Geräten | Polling/manuell reicht für Kirchenverkauf |
 | Native App | PWA reicht |
 
@@ -48,24 +45,20 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UI-01 | Phase 10 | Complete |
-| UI-02 | Phase 10 | Complete |
-| UI-03 | Phase 10 | Complete |
-| UI-04 | Phase 10 | Complete |
-| UI-05 | Phase 10 | Complete |
-| IMG-01 | Phase 11 | Complete |
-| IMG-02 | Phase 11 | Complete |
-| IMG-03 | Phase 11 | Complete |
-| PDF-01 | Phase 11 | Complete |
-| AMP-01 | Phase 12 | Complete |
-| TXT-01 | Phase 12 | Complete |
-| GH-01 | Phase 13 | Pending |
-| GH-02 | Phase 13 | Pending |
+| DAT-01 | TBD | Pending |
+| DAT-02 | TBD | Pending |
+| DAT-03 | TBD | Pending |
+| UIX-01 | TBD | Pending |
+| BST-01 | TBD | Pending |
+| VRW-01 | TBD | Pending |
+| VRW-02 | TBD | Pending |
+| VAL-01 | TBD | Pending |
+| SYN-01 | TBD | Pending |
 
 **Coverage:**
-- v3.0 requirements: 13 total
-- Mapped to phases: 13
-- Unmapped: 0
+- v4.0 requirements: 9 total
+- Mapped to phases: 0
+- Unmapped: 9
 
 ---
 *Requirements defined: 2026-03-24*

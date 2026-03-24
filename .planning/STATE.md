@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.0
-milestone_name: Polish, Bilder & Redesign
-status: unknown
-stopped_at: Completed 12-bestandsampel-umlaute 12-01-PLAN.md
-last_updated: "2026-03-24T12:06:33.878Z"
+milestone: v4.0
+milestone_name: Datenqualität & Stabilität
+status: defining_requirements
+stopped_at: Milestone v4.0 started
+last_updated: "2026-03-24T13:50:00.000Z"
 progress:
-  total_phases: 7
-  completed_phases: 6
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -19,12 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 13 — github-dokumentation
+**Current focus:** v4.0 — Datenqualität & Stabilität
 
 ## Current Position
 
-Phase: 13
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-24 — Milestone v4.0 started
 
 ## Performance Metrics
 
