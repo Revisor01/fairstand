@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { get, set } from 'idb-keyval';
-import { db, SHOP_ID } from '../../../db/index.js';
+import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { flushOutbox } from '../../../sync/engine.js';
 import { UploadZone } from './UploadZone.js';
@@ -79,7 +79,7 @@ export function ImportScreen() {
       setCurrentFilename(data.filename);
 
       // Matching gegen Dexie-Produktdatenbank
-      const products = await db.products.where('shopId').equals(SHOP_ID).toArray();
+      const products = await db.products.where('shopId').equals(getShopId()).toArray();
       const productIndex = new Map(
         products.map(p => [p.articleNumber.toLowerCase().trim(), p])
       );
@@ -128,7 +128,7 @@ export function ImportScreen() {
         if (row.status === 'new') {
           const newProduct: Product = {
             id: crypto.randomUUID(),
-            shopId: SHOP_ID,
+            shopId: getShopId(),
             articleNumber: row.articleNumber.trim(),
             name: row.name.trim(),
             category: '',
@@ -162,9 +162,9 @@ export function ImportScreen() {
             productId,
             delta: row.quantity,
             reason: 'Import Rechnung',
-            shopId: SHOP_ID,
+            shopId: getShopId(),
           },
-          shopId: SHOP_ID,
+          shopId: getShopId(),
           createdAt: Date.now(),
           attempts: 0,
         });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { db, SHOP_ID } from '../../../db/index.js';
+import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 
 interface ProductFormProps {
@@ -98,7 +98,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
         const stock = Math.max(0, parseInt(values.stock, 10) || 0);
         const productData = {
           id: crypto.randomUUID(),
-          shopId: SHOP_ID,
+          shopId: getShopId(),
           articleNumber: values.articleNumber.trim(),
           name: values.name.trim(),
           category: values.category.trim(),

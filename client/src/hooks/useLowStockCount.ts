@@ -1,12 +1,12 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, SHOP_ID } from '../db/index.js';
+import { db, getShopId } from '../db/index.js';
 
 export function useLowStockProducts() {
   return useLiveQuery(
     () =>
       db.products
         .where('[shopId+active]')
-        .equals([SHOP_ID, 1])
+        .equals([getShopId(), 1])
         .filter(p => p.minStock > 0 && p.stock <= p.minStock)
         .toArray(),
     [],

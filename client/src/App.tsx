@@ -3,13 +3,20 @@ import { useAuth } from './features/auth/useAuth.js';
 import { PinScreen } from './features/auth/PinScreen.jsx';
 import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
-import { seedIfEmpty } from './db/seed.js';
 import { useLowStockCount } from './hooks/useLowStockCount.js';
+import { downloadProducts } from './sync/engine.js';
 
 // Separate Komponente damit useLowStockCount immer korrekt aufgerufen wird
 function UnlockedApp({ onLock }: { onLock: () => void }) {
   const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
   const lowStockCount = useLowStockCount();
+
+  // Beim ersten Rendern nach Login: Produkte vom Server laden wenn online
+  useEffect(() => {
+    if (navigator.onLine) {
+      downloadProducts().catch(() => {});
+    }
+  }, []); // Nur beim Mount — nicht bei jedem Re-Render
 
   if (activeView === 'admin') {
     return <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />;
@@ -36,8 +43,7 @@ export default function App() {
         }
       });
     }
-    // Seed-Daten beim ersten Start laden (prüft selbst ob bereits vorhanden)
-    seedIfEmpty().catch(console.error);
+    // seedIfEmpty() entfernt — Produkte kommen per Server-Download nach Login
   }, []);
 
   if (state === 'checking') {

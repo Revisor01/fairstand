@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { db, SHOP_ID } from '../../../db/index.js';
+import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 
 interface StockAdjustModalProps {
@@ -44,9 +44,9 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
             productId: product.id,
             delta: parsedDelta,
             reason: reason.trim() || undefined,
-            shopId: SHOP_ID,
+            shopId: getShopId(),
           },
-          shopId: SHOP_ID,
+          shopId: getShopId(),
           createdAt: Date.now(),
           attempts: 0,
         });

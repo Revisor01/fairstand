@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, SHOP_ID } from '../../db/index.js';
+import { db, getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -17,7 +17,10 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
     () =>
       db.products
         .where('shopId')
-        .equals(SHOP_ID)
+        // Sicherheitshinweis: getShopId() wirft wenn kein Shop gesetzt ist.
+        // ArticleGrid wird nur gerendert wenn state === 'unlocked' (App.tsx),
+        // also ist shopId hier garantiert gesetzt. Kein try-catch nötig.
+        .equals(getShopId())
         .and(p => p.active === true)
         .toArray() as Promise<Product[]>,
     []
