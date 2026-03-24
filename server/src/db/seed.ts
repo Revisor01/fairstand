@@ -402,31 +402,31 @@ const SEED_PRODUCTS: Array<{
 
 export async function ensureShopSeeded(): Promise<void> {
   // Idempotent: Nichts tun wenn Shop bereits existiert
-  const existing = db.select().from(shops).where(eq(shops.shopId, SHOP_ID)).get();
+  const [existing] = await db.select().from(shops).where(eq(shops.shopId, SHOP_ID));
   if (existing) return;
 
   const pinHash = await hashPin(SHOP_PIN);
   const now = Date.now();
 
   // Shop anlegen
-  db.insert(shops).values({
+  await db.insert(shops).values({
     id: crypto.randomUUID(),
     shopId: SHOP_ID,
     name: SHOP_NAME,
     pin: pinHash,
     createdAt: now,
-  }).run();
+  });
 
   // Produkte anlegen (nur wenn noch keine existieren für diesen Shop)
-  const productCount = db.select().from(products).where(eq(products.shopId, SHOP_ID)).all().length;
+  const productCount = (await db.select().from(products).where(eq(products.shopId, SHOP_ID))).length;
   if (productCount === 0) {
     for (const p of SEED_PRODUCTS) {
-      db.insert(products).values({
+      await db.insert(products).values({
         id: crypto.randomUUID(),
         shopId: SHOP_ID,
         ...p,
         updatedAt: now,
-      }).run();
+      });
     }
   }
 }
