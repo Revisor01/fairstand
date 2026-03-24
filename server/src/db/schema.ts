@@ -41,3 +41,11 @@ export const outboxEvents = sqliteTable('outbox_events', {
   processedAt: integer('processed_at'),
   createdAt: integer('created_at').notNull(),
 });
+
+export const shops = sqliteTable('shops', {
+  id: text('id').primaryKey(),           // UUID
+  shopId: text('shop_id').notNull().unique(), // slug: 'st-secundus-hennstedt'
+  name: text('name').notNull(),          // 'St. Secundus Hennstedt'
+  pin: text('pin').notNull(),            // SHA-256 Hash des PINs (6 Stellen)
+  createdAt: integer('created_at').notNull(),
+});
