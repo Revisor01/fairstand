@@ -1,29 +1,20 @@
 import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { PenLine, Trash2, Plus } from 'lucide-react';
-import { db, getShopId } from '../../../db/index.js';
-import { downloadCategories, downloadProducts } from '../../../sync/engine.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { useCategories, useCreateCategory, useRenameCategory, useDeleteCategory } from '../../../hooks/api/useCategories.js';
 
 export function CategoryManager() {
   const [newCatName, setNewCatName] = useState('');
 
-  const categories = useLiveQuery(
-    () => db.categories.where('shopId').equals(getShopId()).sortBy('name'),
-    []
-  );
+  const { data: categories, isLoading } = useCategories();
+  const createCategory = useCreateCategory();
+  const renameCategory = useRenameCategory();
+  const deleteCategory = useDeleteCategory();
 
   async function handleAdd() {
     const name = newCatName.trim();
     if (!name) return;
     try {
-      const res = await fetch('/api/categories', {
-        method: 'POST',
-        headers: await getAuthHeaders(),
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) throw new Error('Fehler beim Anlegen');
-      await downloadCategories();
+      await createCategory.mutateAsync(name);
       setNewCatName('');
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Fehler beim Anlegen');
@@ -34,14 +25,7 @@ export function CategoryManager() {
     const newName = window.prompt('Neuer Name:', oldName);
     if (!newName || !newName.trim() || newName.trim() === oldName) return;
     try {
-      const res = await fetch(`/api/categories/${id}`, {
-        method: 'PATCH',
-        headers: await getAuthHeaders(),
-        body: JSON.stringify({ name: newName.trim() }),
-      });
-      if (!res.ok) throw new Error('Fehler beim Umbenennen');
-      await downloadCategories();
-      await downloadProducts();
+      await renameCategory.mutateAsync({ id, name: newName.trim() });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Fehler beim Umbenennen');
     }
@@ -49,17 +33,7 @@ export function CategoryManager() {
 
   async function handleDelete(id: string) {
     try {
-      const res = await fetch(`/api/categories/${id}`, {
-        method: 'DELETE',
-        headers: await getAuthHeaders(),
-      });
-      if (res.status === 409) {
-        const data = await res.json() as { error: string };
-        alert(data.error);
-        return;
-      }
-      if (!res.ok) throw new Error('Fehler beim Löschen');
-      await downloadCategories();
+      await deleteCategory.mutateAsync(id);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Fehler beim Löschen');
     }
@@ -71,8 +45,10 @@ export function CategoryManager() {
 
       {/* Kategorienliste */}
       <div className="flex flex-col gap-2">
-        {!categories || categories.length === 0 ? (
-          <p className="text-slate-500 text-sm text-center py-4">Noch keine Kategorien angelegt.</p>
+        {isLoading || !categories || categories.length === 0 ? (
+          <p className="text-slate-500 text-sm text-center py-4">
+            {isLoading ? 'Laden...' : 'Noch keine Kategorien angelegt.'}
+          </p>
         ) : (
           categories.map(cat => (
             <div key={cat.id} className="flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3">
