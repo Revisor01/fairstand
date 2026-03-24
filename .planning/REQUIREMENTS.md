@@ -10,7 +10,7 @@
 - [x] **LIVE-01**: Wenn online, laufen alle Produkt-/Kategorie-Reads über TanStack Query direkt gegen die Server-API — kein Dexie-Umweg, kein manueller Sync-Button
 - [x] **LIVE-02**: Produkt-/Kategorie-Writes (CRUD) gehen direkt an den Server, UI aktualisiert sich über Query-Invalidation sofort
 - [x] **LIVE-03**: Verkäufe und Entnahmen werden online direkt an den Server gepostet (kein Outbox-Umweg)
-- [ ] **LIVE-04**: WebSocket-Verbindung pusht Produkt-/Kategorie-/Bestandsänderungen live an alle verbundenen Clients — kein Polling, kein manuelles Nachladen
+- [x] **LIVE-04**: WebSocket-Verbindung pusht Produkt-/Kategorie-/Bestandsänderungen live an alle verbundenen Clients — kein Polling, kein manuelles Nachladen
 - [x] **LIVE-05**: Dexie dient nur noch als Offline-Cache für POS — wird beim Online-Start automatisch befüllt, nicht als primäre Datenquelle
 - [x] **LIVE-06**: TanStack Query mit networkMode 'online' (Admin) und 'offlineFirst' (POS) steuert die Datenquelle automatisch
 - [ ] **LIVE-07**: Der manuelle Sync-Button und downloadProducts()/downloadCategories() werden entfernt — WebSocket + Query-Invalidation ersetzt alles
@@ -61,7 +61,7 @@ Deferred — nicht in v5.0 Scope.
 | LIVE-01 | Phase 19 | Complete |
 | LIVE-02 | Phase 19 | Complete |
 | LIVE-03 | Phase 20 | Complete |
-| LIVE-04 | Phase 20 | Pending |
+| LIVE-04 | Phase 20 | Complete |
 | LIVE-05 | Phase 20 | Complete |
 | LIVE-06 | Phase 19 | Complete |
 | LIVE-07 | Phase 20 | Pending |
