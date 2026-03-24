@@ -34,10 +34,11 @@ export function DailyReport() {
 
   const stats = useMemo(() => {
     if (!sales) return { count: 0, totalCents: 0, donationCents: 0 };
+    const active = sales.filter(s => !s.cancelledAt);
     return {
-      count: sales.length,
-      totalCents: sales.reduce((sum, s) => sum + s.totalCents, 0),
-      donationCents: sales.reduce((sum, s) => sum + s.donationCents, 0),
+      count: active.length,
+      totalCents: active.reduce((sum, s) => sum + s.totalCents, 0),
+      donationCents: active.reduce((sum, s) => sum + s.donationCents, 0),
     };
   }, [sales]);
 
@@ -122,16 +123,21 @@ export function DailyReport() {
                 .map(sale => (
                   <tr
                     key={sale.id}
-                    className="border-b border-slate-50 last:border-0 cursor-pointer hover:bg-sky-50 active:bg-sky-100 transition-colors"
+                    className={`border-b border-slate-50 last:border-0 cursor-pointer transition-colors ${
+                      sale.cancelledAt
+                        ? 'bg-red-50 hover:bg-red-100 active:bg-red-100 opacity-60'
+                        : 'hover:bg-sky-50 active:bg-sky-100'
+                    }`}
                     onPointerDown={() => setSelectedSale(sale)}
                   >
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className={`px-4 py-3 ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-600'}`}>
                       {format(new Date(sale.createdAt), 'HH:mm')}
+                      {sale.cancelledAt && <span className="ml-1 text-xs font-medium text-red-500">Storno</span>}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-800">
+                    <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-800'}`}>
                       {formatEur(sale.totalCents)}
                     </td>
-                    <td className="px-4 py-3 text-right text-green-600 font-medium">
+                    <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'text-red-300' : 'text-green-600'}`}>
                       {sale.donationCents > 0 ? formatEur(sale.donationCents) : '—'}
                     </td>
                     <td className="px-4 py-3 text-slate-300 text-lg">›</td>
@@ -147,7 +153,11 @@ export function DailyReport() {
       )}
 
       {selectedSale && (
-        <SaleDetailModal sale={selectedSale} onClose={() => setSelectedSale(null)} />
+        <SaleDetailModal
+          sale={selectedSale}
+          onClose={() => setSelectedSale(null)}
+          onSaleChanged={() => setSelectedSale(null)}
+        />
       )}
     </div>
   );
