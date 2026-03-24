@@ -16,7 +16,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
     const monthEnd = new Date(y, m, 1).getTime();
 
     // Umsatz + Spenden aus sales
-    const summary = db.all(sql`
+    const summaryResult = await db.execute(sql`
       SELECT
         COUNT(*) as sale_count,
         COALESCE(SUM(total_cents), 0) as total_cents,
@@ -30,16 +30,16 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND (type IS NULL OR type = 'sale')
     `);
 
-    // EK-Kosten (cost_cents) berechnet aus items JSON + products.purchase_price
-    // JOIN auf products-Tabelle um purchasePrice * quantity zu summieren
-    const costResult = db.all(sql`
+    // EK-Kosten via jsonb + products.purchase_price
+    const costResult = await db.execute(sql`
       SELECT
         COALESCE(SUM(
-          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+          (item->>'quantity')::integer *
           COALESCE(p.purchase_price, 0)
         ), 0) as cost_cents
-      FROM sales, json_each(sales.items) as item
-      LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      LEFT JOIN products p ON p.id = item->>'productId'
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
@@ -47,25 +47,25 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND (sales.type IS NULL OR sales.type = 'sale')
     `);
 
-    const topArticles = db.all(sql`
+    const topArticles = await db.execute(sql`
       SELECT
-        json_extract(item.value, '$.name') as name,
-        SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)) as total_qty,
-        SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
-            CAST(json_extract(item.value, '$.salePrice') AS INTEGER)) as revenue_cents
-      FROM sales, json_each(sales.items) as item
+        item->>'name' as name,
+        SUM((item->>'quantity')::integer) as total_qty,
+        SUM((item->>'quantity')::integer * (item->>'salePrice')::integer) as revenue_cents
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
         AND sales.cancelled_at IS NULL
         AND (sales.type IS NULL OR sales.type = 'sale')
-      GROUP BY json_extract(item.value, '$.productId')
+      GROUP BY item->>'productId', item->>'name'
       ORDER BY total_qty DESC
       LIMIT 5
     `);
 
-    const summaryRow = summary[0] as Record<string, unknown> ?? {};
-    const costRow = costResult[0] as Record<string, unknown> ?? {};
+    const summaryRow = (summaryResult.rows[0] as Record<string, unknown>) ?? {};
+    const costRow = (costResult.rows[0] as Record<string, unknown>) ?? {};
     const totalCents = Number(summaryRow.total_cents ?? 0);
     const costCents = Number(costRow.cost_cents ?? 0);
 
@@ -78,7 +78,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         donation_cents: Number(summaryRow.donation_cents ?? 0),
         extra_donation_cents: Number(summaryRow.extra_donation_cents ?? 0),
       },
-      topArticles,
+      topArticles: topArticles.rows,
     });
   });
 
@@ -93,10 +93,10 @@ export async function reportRoutes(fastify: FastifyInstance) {
     const yearStart = new Date(y, 0, 1).getTime();
     const yearEnd = new Date(y + 1, 0, 1).getTime();
 
-    // Umsatz pro Monat
-    const months = db.all(sql`
+    // Umsatz pro Monat — Timestamp in ms → PostgreSQL epoch-Umrechnung
+    const monthsResult = await db.execute(sql`
       SELECT
-        CAST(strftime('%m', datetime(created_at / 1000, 'unixepoch')) AS INTEGER) as month,
+        EXTRACT(MONTH FROM to_timestamp(created_at / 1000))::integer as month,
         COUNT(*) as sale_count,
         COALESCE(SUM(total_cents), 0) as total_cents,
         COALESCE(SUM(donation_cents), 0) as donation_cents
@@ -106,32 +106,33 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND created_at < ${yearEnd}
         AND cancelled_at IS NULL
         AND (type IS NULL OR type = 'sale')
-      GROUP BY strftime('%m', datetime(created_at / 1000, 'unixepoch'))
+      GROUP BY EXTRACT(MONTH FROM to_timestamp(created_at / 1000))
       ORDER BY month
     `);
 
-    // EK-Kosten pro Monat (separate Query fuer JOIN auf products)
-    const monthlyCosts = db.all(sql`
+    // EK-Kosten pro Monat
+    const monthlyCostsResult = await db.execute(sql`
       SELECT
-        CAST(strftime('%m', datetime(sales.created_at / 1000, 'unixepoch')) AS INTEGER) as month,
+        EXTRACT(MONTH FROM to_timestamp(sales.created_at / 1000))::integer as month,
         COALESCE(SUM(
-          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+          (item->>'quantity')::integer *
           COALESCE(p.purchase_price, 0)
         ), 0) as cost_cents
-      FROM sales, json_each(sales.items) as item
-      LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      LEFT JOIN products p ON p.id = item->>'productId'
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${yearStart}
         AND sales.created_at < ${yearEnd}
         AND sales.cancelled_at IS NULL
         AND (sales.type IS NULL OR sales.type = 'sale')
-      GROUP BY strftime('%m', datetime(sales.created_at / 1000, 'unixepoch'))
+      GROUP BY EXTRACT(MONTH FROM to_timestamp(sales.created_at / 1000))
       ORDER BY month
     `);
 
     // Merge: Umsatz + Kosten pro Monat
-    const costMap = new Map((monthlyCosts as Record<string, unknown>[]).map(c => [Number(c.month), Number(c.cost_cents)]));
-    const mergedMonths = (months as Record<string, unknown>[]).map(row => {
+    const costMap = new Map((monthlyCostsResult.rows as Record<string, unknown>[]).map(c => [Number(c.month), Number(c.cost_cents)]));
+    const mergedMonths = (monthsResult.rows as Record<string, unknown>[]).map(row => {
       const totalCents = Number(row.total_cents);
       const costCents = costMap.get(Number(row.month)) ?? 0;
       return {
@@ -160,43 +161,45 @@ export async function reportRoutes(fastify: FastifyInstance) {
     const sinceTs = since.getTime();
 
     // Verkäufe (type IS NULL oder 'sale')
-    const salesResult = db.all(sql`
+    const salesResult = await db.execute(sql`
       SELECT
         COUNT(DISTINCT sales.id) as sale_count,
-        COALESCE(SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)), 0) as total_qty,
+        COALESCE(SUM((item->>'quantity')::integer), 0) as total_qty,
         COALESCE(SUM(
-          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
-          CAST(json_extract(item.value, '$.salePrice') AS INTEGER)
+          (item->>'quantity')::integer *
+          (item->>'salePrice')::integer
         ), 0) as revenue_cents,
         MIN(sales.created_at) as first_sale_at,
         MAX(sales.created_at) as last_sale_at
-      FROM sales, json_each(sales.items) as item
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
       WHERE sales.shop_id = ${shopId}
-        AND json_extract(item.value, '$.productId') = ${id}
+        AND item->>'productId' = ${id}
         AND sales.created_at >= ${sinceTs}
         AND sales.cancelled_at IS NULL
         AND (sales.type IS NULL OR sales.type = 'sale')
     `);
 
     // Entnahmen (type = 'withdrawal')
-    const withdrawalResult = db.all(sql`
+    const withdrawalResult = await db.execute(sql`
       SELECT
         COUNT(DISTINCT sales.id) as withdrawal_count,
-        COALESCE(SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)), 0) as withdrawal_qty,
+        COALESCE(SUM((item->>'quantity')::integer), 0) as withdrawal_qty,
         COALESCE(SUM(
-          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
-          COALESCE(CAST(json_extract(item.value, '$.purchasePrice') AS INTEGER), 0)
+          (item->>'quantity')::integer *
+          COALESCE((item->>'purchasePrice')::integer, 0)
         ), 0) as withdrawal_ek_cents
-      FROM sales, json_each(sales.items) as item
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
       WHERE sales.shop_id = ${shopId}
-        AND json_extract(item.value, '$.productId') = ${id}
+        AND item->>'productId' = ${id}
         AND sales.created_at >= ${sinceTs}
         AND sales.cancelled_at IS NULL
         AND sales.type = 'withdrawal'
     `);
 
-    const saleRow = (salesResult[0] as Record<string, unknown>) ?? {};
-    const wdRow = (withdrawalResult[0] as Record<string, unknown>) ?? {};
+    const saleRow = (salesResult.rows[0] as Record<string, unknown>) ?? {};
+    const wdRow = (withdrawalResult.rows[0] as Record<string, unknown>) ?? {};
     return reply.send({
       productId: id,
       period_months: monthsBack,
