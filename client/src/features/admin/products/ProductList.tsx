@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { Pencil, BarChart3, Package, Eye, EyeOff, RefreshCw, Plus } from 'lucide-react';
-import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { downloadProducts } from '../../../sync/engine.js';
+import { useProducts, useToggleProductActive } from '../../../hooks/api/useProducts.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 import { ProductStats } from './ProductStats.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 type ProductListView = 'list' | 'form' | 'stock' | 'stats';
 
@@ -19,14 +17,12 @@ export function ProductList() {
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<string | null>(null);
 
-  const products = useLiveQuery(
-    () =>
-      db.products
-        .where('shopId')
-        .equals(getShopId())
-        .toArray()
-        .then(arr => arr.sort((a, b) => a.name.localeCompare(b.name, 'de'))),
-    []
+  const { data: rawProducts, isLoading } = useProducts();
+  const toggleActive = useToggleProductActive();
+
+  const products = useMemo(
+    () => rawProducts ? [...rawProducts].sort((a, b) => a.name.localeCompare(b.name, 'de')) : undefined,
+    [rawProducts]
   );
 
   const categories = useMemo((): string[] => {
@@ -42,18 +38,7 @@ export function ProductList() {
   }, [products, activeCategory]);
 
   async function handleToggleActive(product: Product) {
-    const newActive = !product.active;
-    const now = Date.now();
-    await db.products.update(product.id, {
-      active: newActive,
-      updatedAt: now,
-    });
-    if (navigator.onLine) {
-      const action = newActive ? 'activate' : 'deactivate';
-      getAuthHeaders().then(headers => {
-        fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH', headers }).catch(() => {});
-      });
-    }
+    await toggleActive.mutateAsync({ productId: product.id, active: !product.active });
   }
 
   async function handleDownloadSync() {
@@ -110,7 +95,7 @@ export function ProductList() {
     return <ProductStats product={selectedProduct} onClose={handleClose} />;
   }
 
-  if (!products) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-32 text-slate-500">
         Laden...
