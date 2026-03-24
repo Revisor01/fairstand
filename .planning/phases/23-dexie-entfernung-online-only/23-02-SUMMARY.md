@@ -112,6 +112,17 @@ completed: "2026-03-24"
 - Alle idb-keyval-Importe aus client/src entfernt
 - Plan 03 kann idb-keyval aus package.json entfernen
 
+## Self-Check: PASSED
+
+- FOUND: client/src/features/auth/serverAuth.ts
+- FOUND: client/src/features/auth/pinAuth.ts
+- FOUND: client/src/features/admin/import/ImportScreen.tsx
+- FOUND: client/src/features/admin/settings/SettingsForm.tsx
+- FOUND: client/src/features/pos/PaymentFlow.tsx
+- FOUND: 23-02-SUMMARY.md
+- FOUND commit: 9e7abdf
+- FOUND commit: 48af66c
+
 ---
 *Phase: 23-dexie-entfernung-online-only*
 *Completed: 2026-03-24*
