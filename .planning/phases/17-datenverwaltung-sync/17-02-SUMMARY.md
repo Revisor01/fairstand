@@ -109,6 +109,14 @@ Keine — keine externen Services konfiguriert.
 - Mitarbeiterinnen können Produktbilder direkt beim Anlegen/Bearbeiten hochladen
 - Sync-Probleme werden im POS-Header sichtbar und können mit einem Antippen wiederholt werden
 
+## Self-Check: PASSED
+
+- FOUND: client/src/sync/useSyncStatus.ts
+- FOUND: client/src/features/admin/products/ProductForm.tsx
+- FOUND: .planning/phases/17-datenverwaltung-sync/17-02-SUMMARY.md
+- FOUND: deea203 (Task 1 commit)
+- FOUND: 7b2b716 (Task 2 commit)
+
 ---
 *Phase: 17-datenverwaltung-sync*
 *Completed: 2026-03-24*
