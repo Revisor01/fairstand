@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Mail, Send, Info } from 'lucide-react';
+import { Mail, Send, Info, Banknote, Plus, X } from 'lucide-react';
+import { get, set } from 'idb-keyval';
 import { getShopId } from '../../../db/index.js';
 
 interface Setting {
@@ -8,12 +9,20 @@ interface Setting {
   shopId: string;
 }
 
+const DEFAULT_QUICK_AMOUNTS = [500, 1000, 2000, 5000];
+
+function formatEurSimple(cents: number): string {
+  return (cents / 100).toFixed(2).replace('.', ',') + ' €';
+}
+
 export function SettingsForm() {
   const [reportEmail, setReportEmail] = useState('');
   const [reportMonthly, setReportMonthly] = useState(false);
   const [reportYearly, setReportYearly] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedKey, setSavedKey] = useState<string | null>(null);
+  const [quickAmounts, setQuickAmounts] = useState<number[]>(DEFAULT_QUICK_AMOUNTS);
+  const [newAmountStr, setNewAmountStr] = useState('');
 
   useEffect(() => {
     fetch(`/api/settings?shopId=${getShopId()}`)
@@ -25,7 +34,19 @@ export function SettingsForm() {
           if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
         }
       })
-      .catch(() => {/* ignorieren bei Offline */});
+      .catch(() => {});
+
+    // Schnellbeträge lokal laden
+    get<string>('quick_amounts').then(val => {
+      if (val) {
+        try {
+          const parsed = JSON.parse(val) as number[];
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setQuickAmounts(parsed);
+          }
+        } catch { /* default */ }
+      }
+    });
   }, []);
 
   async function saveSetting(key: string, value: string) {
@@ -59,9 +80,99 @@ export function SettingsForm() {
     saveSetting('report_yearly', checked ? 'true' : 'false');
   }
 
+  async function saveQuickAmounts(amounts: number[]) {
+    const sorted = [...amounts].sort((a, b) => a - b);
+    setQuickAmounts(sorted);
+    await set('quick_amounts', JSON.stringify(sorted));
+    setSavedKey('quick_amounts');
+    setTimeout(() => setSavedKey(null), 1500);
+  }
+
+  function handleAddQuickAmount() {
+    const val = parseFloat(newAmountStr.replace(',', '.'));
+    if (isNaN(val) || val <= 0) return;
+    const cents = Math.round(val * 100);
+    if (quickAmounts.includes(cents)) return;
+    saveQuickAmounts([...quickAmounts, cents]);
+    setNewAmountStr('');
+  }
+
+  function handleRemoveQuickAmount(cents: number) {
+    saveQuickAmounts(quickAmounts.filter(a => a !== cents));
+  }
+
+  function handleResetQuickAmounts() {
+    saveQuickAmounts(DEFAULT_QUICK_AMOUNTS);
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-lg font-semibold text-sky-800">Einstellungen</h2>
+
+      {/* Schnellbeträge */}
+      <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
+        <h3 className="text-sm font-semibold text-sky-700 flex items-center gap-2">
+          <Banknote size={16} />
+          Schnellbeträge (Kasse)
+        </h3>
+        <p className="text-xs text-slate-500">
+          Diese Beträge werden als Schnellauswahl beim Bezahlen angezeigt.
+        </p>
+
+        {/* Aktuelle Beträge */}
+        <div className="flex flex-wrap gap-2">
+          {quickAmounts.map(cents => (
+            <div
+              key={cents}
+              className="flex items-center gap-1 bg-sky-50 border border-sky-200 rounded-lg px-3 py-1.5 text-sm text-sky-700 font-medium"
+            >
+              {formatEurSimple(cents)}
+              <button
+                onPointerDown={() => handleRemoveQuickAmount(cents)}
+                className="ml-1 text-sky-400 active:text-rose-500 transition-colors"
+                title="Entfernen"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ))}
+          {quickAmounts.length === 0 && (
+            <span className="text-xs text-slate-400">Keine Schnellbeträge konfiguriert</span>
+          )}
+        </div>
+
+        {/* Neuen Betrag hinzufügen */}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            inputMode="decimal"
+            value={newAmountStr}
+            onChange={e => setNewAmountStr(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleAddQuickAmount()}
+            placeholder="z.B. 5,00"
+            className="flex-1 min-h-[44px] border border-slate-200 rounded-lg px-3 text-base focus:outline-none focus:border-sky-400"
+          />
+          <button
+            onPointerDown={handleAddQuickAmount}
+            className="bg-sky-500 active:bg-sky-700 text-white min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
+            title="Betrag hinzufügen"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
+
+        {/* Reset */}
+        <button
+          onPointerDown={handleResetQuickAmounts}
+          className="text-xs text-slate-400 active:text-slate-600 text-left transition-colors"
+        >
+          Auf Standard zurücksetzen (5€, 10€, 20€, 50€)
+        </button>
+
+        {savedKey === 'quick_amounts' && !saving && (
+          <span className="text-xs text-green-600">Gespeichert</span>
+        )}
+      </div>
 
       {/* E-Mail-Adresse */}
       <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
