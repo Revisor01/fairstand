@@ -16,8 +16,9 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
   const products = useLiveQuery(
     () =>
       db.products
-        .where('[shopId+active]')
-        .equals([SHOP_ID, 1])
+        .where('shopId')
+        .equals(SHOP_ID)
+        .and(p => p.active === true)
         .toArray() as Promise<Product[]>,
     []
   );
