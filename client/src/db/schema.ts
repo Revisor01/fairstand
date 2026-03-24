@@ -12,6 +12,7 @@ export interface Product {
   stock: number;
   minStock: number;      // 0 = kein Mindestbestand (Opt-in)
   active: boolean;
+  imageUrl?: string;     // undefined = kein Bild
   updatedAt: number;     // Unix-Timestamp ms für LWW-Sync
 }
 
@@ -88,5 +89,11 @@ export class FairstandDB extends Dexie {
       // cancelledAt und returnedItems sind optionale Felder — Dexie füllt undefined
       return Promise.resolve();
     });
+    this.version(5).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
+      outbox: '++id, shopId, createdAt, operation',
+    });
+    // Kein .upgrade() nötig — imageUrl ist optional, undefined für bestehende Einträge
   }
 }

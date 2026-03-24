@@ -91,6 +91,15 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
                   }
                 `}
               >
+                {product.imageUrl && (
+                  <div className="w-full h-20 -mx-4 -mt-4 mb-2 overflow-hidden rounded-t-xl">
+                    <img
+                      src={product.imageUrl}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
                 <span className="text-slate-800 font-medium text-sm leading-tight line-clamp-3">
                   {product.name}
                 </span>
