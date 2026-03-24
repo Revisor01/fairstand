@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Pure Online
 status: unknown
-stopped_at: Completed 22-01-PLAN.md
-last_updated: "2026-03-24T22:31:17.458Z"
+stopped_at: Completed 22-03-PLAN.md
+last_updated: "2026-03-24T22:34:24.807Z"
 progress:
   total_phases: 17
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Plan: 3 of 3
 *Updated after each plan completion*
 | Phase 22-postgresql-migration P01 | 4 | 2 tasks | 9 files |
 | Phase 22-postgresql-migration P02 | 5 | 2 tasks | 7 files |
+| Phase 22-postgresql-migration P03 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,7 @@ Recent decisions affecting current work:
 - [Phase 22-postgresql-migration]: db.execute(sql) für komplexe JSON-Abfragen statt Drizzle Query Builder — PostgreSQL jsonb-Syntax hat kein Drizzle-Äquivalent
 - [Phase 22-02]: await db.execute(sql).rows statt db.all() — node-postgres kennt kein .all()
 - [Phase 22-02]: const [row] = await db.select() mit Array-Destructuring statt .get() — idiomatisch fuer PG-Drizzle
+- [Phase 22-postgresql-migration]: Migrationsskript in server/scripts/ (standalone, kein Build-Teil) mit dynamischem better-sqlite3 Import und ON CONFLICT DO NOTHING Idempotenz
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:31:17.454Z
-Stopped at: Completed 22-01-PLAN.md
+Last session: 2026-03-24T22:34:24.805Z
+Stopped at: Completed 22-03-PLAN.md
 Resume file: None
