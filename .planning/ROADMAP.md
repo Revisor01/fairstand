@@ -46,7 +46,12 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. Ein Verkauf der offline getätigt wurde, erscheint nach Reconnect automatisch im Server und auf allen anderen Geräten desselben Ladens
   4. Admin kann Läden anlegen und deren PIN verwalten
   5. Zwei Geräte mit demselben PIN sehen identische Artikel und denselben Bestand nach Sync
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Server: shops-Tabelle, PIN-Auth-Endpoint, Server-Seed
+- [ ] 07-02-PLAN.md — Client: serverAuth.ts, getShopId(), Dexie v3 Hard Reset, useAuth umstellen
+- [ ] 07-03-PLAN.md — Client: App.tsx, engine.ts, ArticleGrid, ProductList auf dynamische shopId
 
 ### Phase 8: Bestandsprüfung & Verkaufshistorie
 **Goal**: Mitarbeiterinnen sehen Bestand direkt in der Kasse und können Verkaufshistorie einsehen — Überverkauf ist technisch ausgeschlossen
@@ -81,6 +86,6 @@ Phases execute in numeric order: 7 → 8 → 9
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
-| 7. Server-Sync & Multi-Laden | v2.0 | 0/? | Not started | - |
+| 7. Server-Sync & Multi-Laden | v2.0 | 0/3 | Not started | - |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/? | Not started | - |
 | 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |
