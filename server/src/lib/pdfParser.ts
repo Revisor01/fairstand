@@ -1,5 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
+// Worker deaktivieren für Node.js Server-Umgebung
+pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+
 export interface ParsedInvoiceRow {
   lineNumber: number;
   quantity: number;
