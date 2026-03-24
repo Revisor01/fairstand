@@ -285,7 +285,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 21-01-PLAN.md — Dexie Cold-Start-Fallback: queryFn in ArticleGrid, useProducts, useCategories (OFFL-01)
+- [x] 21-01-PLAN.md — Dexie Cold-Start-Fallback: queryFn in ArticleGrid, useProducts, useCategories (OFFL-01)
 - [ ] 21-02-PLAN.md — Outbox-Flush mit TQ-Invalidation + Offline-Indicator im POS-Header (OFFL-02, OFFL-03)
 
 ## Progress
@@ -315,4 +315,4 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete    | 2026-03-24 |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
+| 21. Offline-Fallback & Dexie als Cache | v5.0 | 1/2 | In Progress|  |

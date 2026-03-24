@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 20-03-PLAN.md
-last_updated: "2026-03-24T20:57:50.142Z"
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-24T21:04:14.180Z"
 progress:
   total_phases: 15
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 11
+  completed_plans: 10
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 20 — websocket-live-updates-cleanup
+**Current focus:** Phase 21 — offline-fallback-dexie-als-cache
 
 ## Current Position
 
-Phase: 21
-Plan: Not started
+Phase: 21 (offline-fallback-dexie-als-cache) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -85,6 +85,7 @@ Plan: Not started
 | Phase 20 P02 | 2 | 2 tasks | 3 files |
 | Phase 20-websocket-live-updates-cleanup P01 | 15 | 2 tasks | 6 files |
 | Phase 20 P03 | 155 | 2 tasks | 5 files |
+| Phase 21 P01 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -192,6 +193,7 @@ Recent decisions affecting current work:
 - [Phase 20]: useWebSocket in UnlockedApp statt AppInner — liegt innerhalb QueryClientProvider, Hook braucht useQueryClient()
 - [Phase 20]: engine.ts auf reines flushOutbox() reduziert — Download-Sync vollständig via TQ + WebSocket-Invalidation
 - [Phase 20]: getShopId() in try/catch im onmessage-Handler — wirft wenn Shop nicht gesetzt, statt globalem Fehler
+- [Phase 21]: try/catch um gesamte queryFn statt separatem Fehler-Handler: deckt Netzwerkfehler und HTTP-Fehler ab, spezifischer Throw wenn Dexie-Cache leer
 
 ### Pending Todos
 
@@ -204,6 +206,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:54:52.741Z
-Stopped at: Completed 20-03-PLAN.md
+Last session: 2026-03-24T21:04:14.178Z
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None
