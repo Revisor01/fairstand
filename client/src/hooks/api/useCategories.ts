@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getShopId } from '../../db/index.js';
+import { db, getShopId } from '../../db/index.js';
 import { getAuthHeaders } from '../../features/auth/serverAuth.js';
 import type { Category } from '../../db/index.js';
 
@@ -12,13 +12,22 @@ export function useCategories() {
       const res = await fetch(`/api/categories?shopId=${shopId}`, { headers });
       if (!res.ok) throw new Error('Kategorien konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
-      return data.map(c => ({
+      const categories = data.map(c => ({
         id: c.id as string,
         shopId: (c.shop_id ?? c.shopId) as string,
         name: c.name as string,
         sortOrder: (c.sort_order ?? c.sortOrder ?? 0) as number,
         createdAt: (c.created_at ?? c.createdAt ?? Date.now()) as number,
       }));
+
+      // Write-Through: Dexie als Offline-Cache aktuell halten
+      // Fire-and-forget — wirft keinen Fehler nach oben wenn IDB scheitert
+      db.transaction('rw', db.categories, async () => {
+        await db.categories.where('shopId').equals(shopId).delete();
+        await db.categories.bulkPut(categories);
+      }).catch(() => {});
+
+      return categories;
     },
   });
 }
