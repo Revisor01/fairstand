@@ -7,6 +7,8 @@
 - ✅ **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (shipped 2026-03-24)
 - ✅ **v3.0 Polish, Bilder & Redesign** — Phases 10-13 (shipped 2026-03-24)
 - ✅ **v4.0 Datenqualität & Stabilität** — Phases 14-17 (shipped 2026-03-24)
+- ✅ **v5.0 Online-First Live Architecture** — Phases 18-21 (shipped 2026-03-24)
+- 🚧 **v6.0 Pure Online** — Phases 22-23 (in progress)
 
 ## Phases
 
@@ -59,12 +61,22 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v5.0 Online-First Live Architecture
+<details>
+<summary>✅ v5.0 Online-First Live Architecture (Phases 18-21) — SHIPPED 2026-03-24</summary>
 
 - [x] **Phase 18: Quick Wins & Security** - Scheduler-Storno-Filter, PDF-Timeout, PDF-Validierung, CORS, PIN-Rate-Limiting, ShopId-Validierung (completed 2026-03-24)
 - [x] **Phase 19: TanStack Query Foundation** - TQ installieren, alle Reads/Writes gegen Server-API, networkMode pro Kontext (completed 2026-03-24)
 - [x] **Phase 20: WebSocket Live-Updates & Cleanup** - @fastify/websocket, Server-Broadcasts, Query-Invalidation, Outbox-Online entfernen, Sync-Button weg (completed 2026-03-24)
 - [x] **Phase 21: Offline-Fallback & Dexie als Cache** - POS offline-tauglich mit TQ-Cache + Dexie-Fallback, Outbox offline, nahtloser Wechsel (completed 2026-03-24)
+
+</details>
+
+### 🚧 v6.0 Pure Online (In Progress)
+
+**Milestone Goal:** Dexie komplett entfernen, PostgreSQL statt SQLite, kein Offline-Modus mehr — jedes Gerät sieht immer den gleichen Stand vom Server.
+
+- [ ] **Phase 22: PostgreSQL-Migration** - Server-Datenbank von SQLite auf PostgreSQL umstellen, Docker-Compose anpassen, Migrationsskript für bestehende Daten
+- [ ] **Phase 23: Dexie-Entfernung & Online-Only** - Dexie/IndexedDB/Outbox komplett entfernen, App zeigt bei fehlendem Internet klaren Hinweis, Service Worker nur noch App-Shell
 
 ## Phase Details
 
@@ -288,10 +300,41 @@ Plans:
 - [x] 21-01-PLAN.md — Dexie Cold-Start-Fallback: queryFn in ArticleGrid, useProducts, useCategories (OFFL-01)
 - [x] 21-02-PLAN.md — Outbox-Flush mit TQ-Invalidation + Offline-Indicator im POS-Header (OFFL-02, OFFL-03)
 
+### Phase 22: PostgreSQL-Migration
+**Goal**: Der Server verwendet PostgreSQL statt SQLite — die Datenbank ist produktionsreif, bestehende Daten sind übertragen, better-sqlite3 ist entfernt
+**Depends on**: Phase 21
+**Requirements**: PG-01, PG-02, PG-03, PG-04, PG-05
+**Success Criteria** (what must be TRUE):
+  1. Der Server startet und beantwortet alle API-Anfragen nach dem Wechsel auf PostgreSQL — kein Endpoint bricht, alle Daten sind vorhanden
+  2. Docker-Compose startet einen PostgreSQL-Container mit persistentem Volume — Daten überleben Container-Neustart
+  3. Ein Migrationsskript überträgt alle bestehenden SQLite-Daten (Produkte, Kategorien, Shops, Sales) in die PostgreSQL-Datenbank
+  4. better-sqlite3 ist aus package.json und allen Imports entfernt — der Build schlägt fehl wenn Reste vorhanden sind
+**Plans**: TBD
+
+Plans:
+- [ ] 22-01-PLAN.md — TBD
+- [ ] 22-02-PLAN.md — TBD
+
+### Phase 23: Dexie-Entfernung & Online-Only
+**Goal**: Dexie, IndexedDB und das Outbox-Pattern sind vollständig entfernt — die App läuft ausschließlich online, zeigt bei fehlendem Internet einen klaren Hinweis und der Service Worker cached nur die App-Shell
+**Depends on**: Phase 22
+**Requirements**: DEX-01, DEX-02, DEX-03, DEX-04, DEX-05, ONL-01, ONL-02, ONL-03
+**Success Criteria** (what must be TRUE):
+  1. Dexie.js, dexie-react-hooks und idb-keyval tauchen nicht mehr in package.json oder in einem import-Statement auf — npm run build schlägt fehl wenn Reste vorhanden sind
+  2. Der Warenkorb hält seinen Stand im React State zwischen Navigationen — nach einem bewussten Browser-Reload startet er leer (kein IndexedDB-Fallback)
+  3. Ohne aktive Internetverbindung zeigt die App sofort einen deutlichen Hinweis — kein Verkauf kann abgeschlossen werden, keine Daten werden angezeigt
+  4. Ein Verkauf wird direkt an den Server gesendet — es gibt keine Outbox, keine Retry-Queue, kein lokales Speichern
+  5. Der Service Worker cached die App-Shell (HTML, JS, CSS) für PWA-Installation — er speichert keine API-Responses oder Produktdaten
+**Plans**: TBD
+
+Plans:
+- [ ] 23-01-PLAN.md — TBD
+- [ ] 23-02-PLAN.md — TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 18 → 19 → 20 → 21
+Phases execute in numeric order: 22 → 23
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -312,7 +355,9 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 15. Datenintegrität | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
-| 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 19. TanStack Query Foundation | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete    | 2026-03-24 |
+| 18. Quick Wins & Security | v5.0 | 3/3 | Complete | 2026-03-24 |
+| 19. TanStack Query Foundation | v5.0 | 3/3 | Complete | 2026-03-24 |
+| 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete | 2026-03-24 |
+| 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
+| 22. PostgreSQL-Migration | v6.0 | 0/? | Not started | - |
+| 23. Dexie-Entfernung & Online-Only | v6.0 | 0/? | Not started | - |

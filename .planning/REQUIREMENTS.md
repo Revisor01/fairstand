@@ -46,25 +46,25 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEX-01 | — | Pending |
-| DEX-02 | — | Pending |
-| DEX-03 | — | Pending |
-| DEX-04 | — | Pending |
-| DEX-05 | — | Pending |
-| PG-01 | — | Pending |
-| PG-02 | — | Pending |
-| PG-03 | — | Pending |
-| PG-04 | — | Pending |
-| PG-05 | — | Pending |
-| ONL-01 | — | Pending |
-| ONL-02 | — | Pending |
-| ONL-03 | — | Pending |
+| DEX-01 | Phase 23 | Pending |
+| DEX-02 | Phase 23 | Pending |
+| DEX-03 | Phase 23 | Pending |
+| DEX-04 | Phase 23 | Pending |
+| DEX-05 | Phase 23 | Pending |
+| PG-01 | Phase 22 | Pending |
+| PG-02 | Phase 22 | Pending |
+| PG-03 | Phase 22 | Pending |
+| PG-04 | Phase 22 | Pending |
+| PG-05 | Phase 22 | Pending |
+| ONL-01 | Phase 23 | Pending |
+| ONL-02 | Phase 23 | Pending |
+| ONL-03 | Phase 23 | Pending |
 
 **Coverage:**
 - v6.0 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after initial definition*
+*Last updated: 2026-03-24 — Traceability nach Roadmap v6.0 eingetragen*
