@@ -8,7 +8,7 @@ RUN npm run build
 FROM node:22-alpine AS production
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci && npm prune --omit=dev
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/migrations ./migrations
 COPY --from=build /app/drizzle.config.ts ./drizzle.config.ts
