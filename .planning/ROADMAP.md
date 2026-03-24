@@ -41,7 +41,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 ### 🚧 v3.0 Polish, Bilder & Redesign
 
 - [x] **Phase 10: UI-Redesign** - Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile, luftiges Layout, Admin übersichtlicher (completed 2026-03-24)
-- [ ] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing
+- [x] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing (completed 2026-03-24)
 - [ ] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI
 - [ ] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden
 
@@ -120,7 +120,7 @@ Plans:
 
 Plans:
 - [x] 11-01-PLAN.md — PDF-Parser Format-Erkennung (Rabatt-Spalte) + Schema imageUrl + Migration
-- [ ] 11-02-PLAN.md — Image-Upload-Endpoint + Client imageUrl + ProductList Bild-Button + ArticleGrid Thumbnail
+- [x] 11-02-PLAN.md — Image-Upload-Endpoint + Client imageUrl + ProductList Bild-Button + ArticleGrid Thumbnail
 
 ### Phase 12: Bestandsampel & Umlaute
 **Goal**: Mitarbeiterinnen erkennen auf einen Blick den Vorratsstand und lesen die gesamte App in korrektem Deutsch
@@ -157,6 +157,6 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
 | 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 11. Produktbilder & PDF-Parsing | v3.0 | 1/2 | In Progress|  |
+| 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete   | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |

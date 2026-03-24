@@ -16,8 +16,8 @@
 ### Produktbilder
 
 - [x] **IMG-01**: Artikelkacheln zeigen Produktbilder (falls vorhanden)
-- [ ] **IMG-02**: Bilder können aus Etiketten-PDFs (Ordner Süd-Nord-Kontor/) extrahiert oder von der Kontor-Website geholt werden
-- [ ] **IMG-03**: Bilder können manuell in der Produktverwaltung zugewiesen werden
+- [x] **IMG-02**: Bilder können aus Etiketten-PDFs (Ordner Süd-Nord-Kontor/) extrahiert oder von der Kontor-Website geholt werden
+- [x] **IMG-03**: Bilder können manuell in der Produktverwaltung zugewiesen werden
 
 ### PDF-Parsing
 
@@ -54,8 +54,8 @@
 | UI-04 | Phase 10 | Complete |
 | UI-05 | Phase 10 | Complete |
 | IMG-01 | Phase 11 | Complete |
-| IMG-02 | Phase 11 | Pending |
-| IMG-03 | Phase 11 | Pending |
+| IMG-02 | Phase 11 | Complete |
+| IMG-03 | Phase 11 | Complete |
 | PDF-01 | Phase 11 | Complete |
 | AMP-01 | Phase 12 | Pending |
 | TXT-01 | Phase 12 | Pending |

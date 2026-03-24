@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
 status: unknown
-stopped_at: Completed 11-produktbilder-pdf-parsing 11-01-PLAN.md
-last_updated: "2026-03-24T11:47:56.084Z"
+stopped_at: Completed 11-produktbilder-pdf-parsing 11-02-PLAN.md
+last_updated: "2026-03-24T11:56:50.585Z"
 progress:
   total_phases: 7
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -68,6 +68,7 @@ Plan: 2 of 2
 | Phase 10-ui-redesign P01 | 12 | 2 tasks | 3 files |
 | Phase 10-ui-redesign P02 | 5 | 2 tasks | 2 files |
 | Phase 11 P01 | 15 | 2 tasks | 6 files |
+| Phase 11 P02 | 7 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -134,6 +135,8 @@ Recent decisions affecting current work:
 - [Phase 10-ui-redesign]: lowStockCount-Badge im Pill-Button via gap-1 statt ml-1 — konsistenteres flex-Spacing
 - [Phase 11]: PDF-Layout: Positionsnummer (1., 2., ...) steht in eigener Zeile, Daten in naechster Zeile — beide Formate folgen diesem Muster
 - [Phase 11]: Von-hinten-Strategie fuer PDF-Preis-Erkennung: letztes Euro-Item = Gesamt, vorletztes = Preis/St., letztes Prozent-Item = MwSt
+- [Phase 11]: IMAGES_DIR via env-Variable konfigurierbar (default /app/data/images) — Docker-Volume-Pfad austauschbar ohne Rebuild
+- [Phase 11]: Dexie v5 ohne .upgrade() Handler — imageUrl ist optional, bestehende Eintraege bleiben unveraendert
 
 ### Pending Todos
 
@@ -145,6 +148,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T11:47:56.082Z
-Stopped at: Completed 11-produktbilder-pdf-parsing 11-01-PLAN.md
+Last session: 2026-03-24T11:56:50.582Z
+Stopped at: Completed 11-produktbilder-pdf-parsing 11-02-PLAN.md
 Resume file: None
