@@ -4,14 +4,24 @@ import { eq } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { shops } from '../db/schema.js';
 import { hashPin } from '../lib/crypto.js';
+import { createSession } from '../lib/sessions.js';
 
 const PinAuthSchema = z.object({
   pin: z.string().min(4).max(8),
 });
 
 export async function authRoutes(fastify: FastifyInstance) {
-  // POST /api/auth/pin — PIN gegen shops-Tabelle prüfen, shopId + Token zurückgeben
-  fastify.post('/auth/pin', async (request, reply) => {
+  fastify.post('/auth/pin', {
+    config: {
+      rateLimit: {
+        max: 5,
+        timeWindow: '1 minute',
+        errorResponseBuilder: () => ({
+          error: 'Zu viele Versuche. Bitte 1 Minute warten.',
+        }),
+      },
+    },
+  }, async (request, reply) => {
     const result = PinAuthSchema.safeParse(request.body);
     if (!result.success) return reply.status(400).send({ error: 'Ungültige Anfrage' });
 
@@ -21,9 +31,8 @@ export async function authRoutes(fastify: FastifyInstance) {
     const shop = db.select().from(shops).where(eq(shops.pin, pinHash)).get();
     if (!shop) return reply.status(401).send({ error: 'Falscher PIN' });
 
-    // Token = einfaches Session-Token (zufälliger String, kein JWT-Overhead)
-    // Token wird client-seitig in idb-keyval gespeichert, kein server-seitiges Token-Management
     const token = crypto.randomUUID();
+    createSession(token, shop.shopId);
 
     return reply.send({
       shopId: shop.shopId,
