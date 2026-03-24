@@ -129,7 +129,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Jeder Artikel in der Produktliste und im Kassen-Grid trägt einen farbigen Indikator — grün für ausreichend, gelb für niedrig, rot für kritisch
   2. Kein Button, Label oder Hinweistext in der App enthält mehr ae/oe/ue/ss statt ä/ö/ü/ß
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 12-01-PLAN.md — Bestandsampel-Dot (●) in ArticleGrid + ProductList, Umlaut-Korrekturen in DailyReport + MonthlyReport
 
 ### Phase 13: GitHub-Dokumentation
 **Goal**: Das Projekt ist auf GitHub für andere Weltläden auffindbar, verständlich und nutzbar
@@ -158,5 +161,5 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
 | 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
+| 12. Bestandsampel & Umlaute | v3.0 | 0/1 | Not started | - |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
