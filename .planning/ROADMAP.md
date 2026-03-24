@@ -152,7 +152,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Das GitHub-Repository enthält eine README.md mit Projektbeschreibung und nachvollziehbarer Setup-Anleitung — ohne Screenshots
   2. Eine Open-Source-Lizenz ist im Repository hinterlegt und die README enthält einen Kontakthinweis für Anfragen anderer Weltläden
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
+- [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
 
 ### Phase 14: Online-First Architektur
 **Goal**: Server ist die einzige Wahrheit für Produktdaten — LWW-Sync durch komplettes Server-Replace ersetzen, Admin-Features offline deaktivieren, Offline-Modus nur für Verkauf/Storno/Rückgabe
@@ -204,7 +208,11 @@ Plans:
   1. Kategorien können in der Produktverwaltung als eigene Liste angelegt, umbenannt und gelöscht werden — nicht mehr nur als Freitext pro Produkt eingegeben
   2. Beim Anlegen oder Bearbeiten eines Produkts kann ein Bild in weniger Schritten zugewiesen werden als bisher
   3. Schlägt ein Sync fehl, erscheint eine klare Rückmeldung in der UI — die App versucht es automatisch erneut und gibt nicht still auf
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
+- [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
 
 ## Progress
 
