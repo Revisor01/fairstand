@@ -181,7 +181,16 @@ export function useCart() {
     dispatch({ type: 'REMOVE_ITEM', productId });
   }
 
-  function updateQuantity(productId: string, quantity: number) {
+  async function updateQuantity(productId: string, quantity: number) {
+    if (quantity <= 0) {
+      dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
+      return;
+    }
+    // Stock-Check: Menge darf nicht über Bestand hinaus
+    const product = await db.products.get(productId);
+    if (product && quantity > product.stock) {
+      return; // still ignorieren — Bestand überschritten
+    }
     dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
   }
 
