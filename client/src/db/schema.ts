@@ -94,6 +94,13 @@ export class FairstandDB extends Dexie {
       sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
       outbox: '++id, shopId, createdAt, operation',
     });
-    // Kein .upgrade() nötig — imageUrl ist optional, undefined für bestehende Einträge
+    this.version(6).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
+      outbox: '++id, shopId, createdAt, operation',
+    }).upgrade(async tx => {
+      // Fix: alte Einträge hatten shopId=undefined wegen snake_case-Bug im Sync
+      await tx.table('products').clear();
+    });
   }
 }
