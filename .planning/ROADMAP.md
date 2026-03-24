@@ -65,7 +65,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Bestandsanzeige in Artikelkacheln + Überverkauf-Blockierung in useCart
+- [x] 08-01-PLAN.md — Bestandsanzeige in Artikelkacheln + Überverkauf-Blockierung in useCart
 - [ ] 08-02-PLAN.md — Anklickbare Tagesübersicht (SaleDetailModal) + Artikel-Statistik (ProductStats + Server-Endpoint)
 
 ### Phase 9: Storno & Rückgabe
@@ -91,5 +91,5 @@ Phases execute in numeric order: 7 → 8 → 9
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete   | 2026-03-24 |
-| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/2 | Not started | - |
+| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 1/2 | In Progress|  |
 | 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |

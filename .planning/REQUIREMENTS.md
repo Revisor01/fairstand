@@ -31,8 +31,8 @@
 
 ### Bestandsprüfung
 
-- [ ] **BEST-01**: Artikel-Grid in der Kasse zeigt Preis groß und aktuellen Bestand klein
-- [ ] **BEST-02**: Wenn mehr Stück in den Warenkorb gelegt werden als im Bestand sind, wird das blockiert
+- [x] **BEST-01**: Artikel-Grid in der Kasse zeigt Preis groß und aktuellen Bestand klein
+- [x] **BEST-02**: Wenn mehr Stück in den Warenkorb gelegt werden als im Bestand sind, wird das blockiert
 
 ## Out of Scope
 
@@ -59,8 +59,8 @@
 | SHOP-04 | Phase 7 | Complete |
 | HIST-01 | Phase 8 | Pending |
 | HIST-02 | Phase 8 | Pending |
-| BEST-01 | Phase 8 | Pending |
-| BEST-02 | Phase 8 | Pending |
+| BEST-01 | Phase 8 | Complete |
+| BEST-02 | Phase 8 | Complete |
 | STOR-01 | Phase 9 | Pending |
 | STOR-02 | Phase 9 | Pending |
 
