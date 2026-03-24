@@ -16,6 +16,7 @@ const ProductSchema = z.object({
   stock: z.number().int().default(0),
   minStock: z.number().int().default(0),
   active: z.boolean().default(true),
+  imageUrl: z.string().nullable().optional(),
   updatedAt: z.number().int(),
 });
 
@@ -45,6 +46,7 @@ export async function productRoutes(fastify: FastifyInstance) {
       stock: p.stock,
       minStock: p.minStock,
       active: p.active,
+      imageUrl: p.imageUrl ?? null,
       updatedAt: p.updatedAt,
     }).onConflictDoUpdate({
       target: products.id,
@@ -58,6 +60,7 @@ export async function productRoutes(fastify: FastifyInstance) {
         stock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.stock ELSE ${products.stock} END`,
         minStock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.min_stock ELSE ${products.minStock} END`,
         active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
+        imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
         updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
       },
     }).run();

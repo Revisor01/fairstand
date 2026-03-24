@@ -12,6 +12,7 @@ export const products = sqliteTable('products', {
   stock: integer('stock').notNull().default(0),
   minStock: integer('min_stock').notNull().default(0),
   active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  imageUrl: text('image_url'),
   updatedAt: integer('updated_at').notNull(),
 });
 
