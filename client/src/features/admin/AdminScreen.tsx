@@ -39,56 +39,52 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       </header>
 
       {/* Tab-Navigation */}
-      <nav className="bg-white border-b border-sky-200 flex">
-        <button
-          onPointerDown={() => setTab('products')}
-          className={`relative flex-1 py-4 text-sm font-semibold transition-colors ${
-            tab === 'products'
-              ? 'bg-sky-500 text-white'
-              : 'text-sky-700 hover:bg-sky-50'
-          }`}
-        >
-          Produkte
-          {lowStockCount > 0 && (
-            <span className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 ml-1">
-              {lowStockCount}
-            </span>
-          )}
-        </button>
-        <button
-          onPointerDown={() => setTab('reports')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${
-            tab === 'reports'
-              ? 'bg-sky-500 text-white'
-              : 'text-sky-700 hover:bg-sky-50'
-          }`}
-        >
-          Berichte
-        </button>
-        <button
-          onPointerDown={() => setTab('import')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${
-            tab === 'import'
-              ? 'bg-sky-500 text-white'
-              : 'text-sky-700 hover:bg-sky-50'
-          }`}
-        >
-          Import
-        </button>
-        <button
-          onPointerDown={() => setTab('settings')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${
-            tab === 'settings'
-              ? 'bg-sky-500 text-white'
-              : 'text-sky-700 hover:bg-sky-50'
-          }`}
-        >
-          Einstellungen
-        </button>
+      <nav className="bg-white border-b border-sky-100 px-4 py-3">
+        <div className="flex gap-2 overflow-x-auto">
+          <button
+            onPointerDown={() => setTab('products')}
+            className={`relative flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
+              tab === 'products'
+                ? 'bg-sky-400 text-white'
+                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
+          >
+            Produkte
+            {lowStockCount > 0 && (
+              <span className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5">
+                {lowStockCount}
+              </span>
+            )}
+          </button>
+          <button
+            onPointerDown={() => setTab('reports')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
+              tab === 'reports' ? 'bg-sky-400 text-white' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
+          >
+            Berichte
+          </button>
+          <button
+            onPointerDown={() => setTab('import')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
+              tab === 'import' ? 'bg-sky-400 text-white' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
+          >
+            Import
+          </button>
+          <button
+            onPointerDown={() => setTab('settings')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
+              tab === 'settings' ? 'bg-sky-400 text-white' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
+          >
+            Einstellungen
+          </button>
+        </div>
       </nav>
 
       {/* Tab-Inhalt */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-6">
         {tab === 'products' && <ProductList />}
         {tab === 'reports' && (
           <>
