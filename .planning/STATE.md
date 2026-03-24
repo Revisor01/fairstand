@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 19-tanstack-query-foundation-03-PLAN.md
-last_updated: "2026-03-24T20:33:19.147Z"
+stopped_at: Completed 19-tanstack-query-foundation-02-PLAN.md
+last_updated: "2026-03-24T20:35:09.446Z"
 progress:
   total_phases: 15
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -81,6 +81,7 @@ Plan: 3 of 3
 | Phase 18 P03 | 20 | 2 tasks | 16 files |
 | Phase 19 P01 | 128 | 2 tasks | 4 files |
 | Phase 19 P03 | 480 | 1 tasks | 1 files |
+| Phase 19-tanstack-query-foundation P02 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -178,6 +179,8 @@ Recent decisions affecting current work:
 - [Phase 19]: AppInner-Komponente extrahiert damit QueryClientProvider als äußerster Wrapper um gesamte App-Logik liegt
 - [Phase 19]: Category.sortOrder und Category.createdAt in Mapping berücksichtigt — Interface hat mehr Felder als Plan-Dokumentation angab
 - [Phase 19]: useQuery direkt in ArticleGrid statt useProducts()-Hook: networkMode offlineFirst ist POS-spezifisch und muss am Query-Call gesetzt werden
+- [Phase 19]: ProductForm retains getShopId()/getAuthHeaders() for image upload — file uploads use direct fetch not TQ
+- [Phase 19]: useQueryClient() explicit invalidation after image upload to reload imageUrl separate from updateProduct mutation
 
 ### Pending Todos
 
@@ -190,6 +193,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:33:19.144Z
-Stopped at: Completed 19-tanstack-query-foundation-03-PLAN.md
+Last session: 2026-03-24T20:35:09.444Z
+Stopped at: Completed 19-tanstack-query-foundation-02-PLAN.md
 Resume file: None
