@@ -3,6 +3,23 @@ import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { products } from '../db/schema.js';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
+import { extname } from 'node:path';
+
+const IMAGES_DIR = process.env.IMAGES_DIR ?? '/app/data/images';
+
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
+
+const EXT_TO_MIME: Record<string, string> = {
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+};
 
 const ProductSchema = z.object({
   id: z.string(),
@@ -21,6 +38,9 @@ const ProductSchema = z.object({
 });
 
 export async function productRoutes(fastify: FastifyInstance) {
+  // Bilder-Verzeichnis sicherstellen
+  await mkdir(IMAGES_DIR, { recursive: true });
+
   // GET /products?shopId=xxx — alle Produkte eines Shops
   fastify.get('/products', async (request, reply) => {
     const { shopId } = request.query as { shopId: string };
@@ -79,5 +99,65 @@ export async function productRoutes(fastify: FastifyInstance) {
     const { id } = request.params as { id: string };
     db.update(products).set({ active: true, updatedAt: Date.now() }).where(eq(products.id, id)).run();
     return reply.send({ ok: true });
+  });
+
+  // POST /products/:id/image — Produktbild hochladen
+  fastify.post('/products/:id/image', async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    let file: Awaited<ReturnType<typeof request.file>> | null = null;
+    try {
+      file = await request.file({ limits: { fileSize: 5 * 1024 * 1024 } });
+    } catch {
+      return reply.status(400).send({ error: 'Kein Bild empfangen' });
+    }
+
+    if (!file) {
+      return reply.status(400).send({ error: 'Kein Bild empfangen' });
+    }
+
+    const mimeType = file.mimetype;
+    const ext = MIME_TO_EXT[mimeType];
+    if (!ext) {
+      return reply.status(415).send({ error: 'Nur JPEG, PNG und WebP erlaubt' });
+    }
+
+    const filename = `${id}.${ext}`;
+    const filepath = `${IMAGES_DIR}/${filename}`;
+    const buffer = await file.toBuffer();
+    await writeFile(filepath, buffer);
+
+    const imageUrl = `/api/images/${filename}`;
+    db.update(products).set({ imageUrl }).where(eq(products.id, id)).run();
+
+    return reply.send({ ok: true, imageUrl });
+  });
+
+  // GET /api/images/:filename — Produktbild ausliefern
+  fastify.get('/images/:filename', async (request, reply) => {
+    const { filename } = request.params as { filename: string };
+
+    // Sicherheitscheck: keine Path-Traversal
+    if (filename.includes('/') || filename.includes('..')) {
+      return reply.status(400).send({ error: 'Ungültiger Dateiname' });
+    }
+
+    const ext = extname(filename).slice(1).toLowerCase();
+    const mimeType = EXT_TO_MIME[ext];
+    if (!mimeType) {
+      return reply.status(415).send({ error: 'Unbekannter Dateityp' });
+    }
+
+    const filepath = `${IMAGES_DIR}/${filename}`;
+    let data: Buffer;
+    try {
+      data = await readFile(filepath);
+    } catch {
+      return reply.status(404).send({ error: 'Bild nicht gefunden' });
+    }
+
+    reply.header('Content-Type', mimeType);
+    reply.header('Cache-Control', 'public, max-age=31536000, immutable');
+    return reply.send(data);
   });
 }
