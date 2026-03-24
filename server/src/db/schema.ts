@@ -51,3 +51,11 @@ export const shops = sqliteTable('shops', {
   pin: text('pin').notNull(),            // SHA-256 Hash des PINs (6 Stellen)
   createdAt: integer('created_at').notNull(),
 });
+
+export const categories = sqliteTable('categories', {
+  id: text('id').primaryKey(),
+  shopId: text('shop_id').notNull(),
+  name: text('name').notNull(),
+  sortOrder: integer('sort_order').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+});
