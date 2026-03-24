@@ -56,7 +56,7 @@ export function DailyReport() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="text-lg font-semibold text-sky-800">Tagesuebersicht</h2>
+        <h2 className="text-lg font-semibold text-sky-800">Tagesübersicht</h2>
         <div className="flex items-center gap-2">
           <button
             onPointerDown={goToday}
@@ -92,7 +92,7 @@ export function DailyReport() {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
           <span className="text-3xl font-bold text-slate-800">{stats.count}</span>
-          <span className="text-xs text-slate-500 text-center">Verkaeufe</span>
+          <span className="text-xs text-slate-500 text-center">Verkäufe</span>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
           <span className="text-2xl font-bold text-sky-600">{formatEur(stats.totalCents)}</span>
@@ -104,7 +104,7 @@ export function DailyReport() {
         </div>
       </div>
 
-      {/* Einzelne Verkaeufe */}
+      {/* Einzelne Verkäufe */}
       {sales && sales.length > 0 ? (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <table className="w-full text-sm">
@@ -148,7 +148,7 @@ export function DailyReport() {
         </div>
       ) : (
         <div className="text-center py-12 text-slate-500 bg-white rounded-xl shadow-sm">
-          Keine Verkaeufe an diesem Tag.
+          Keine Verkäufe an diesem Tag.
         </div>
       )}
 

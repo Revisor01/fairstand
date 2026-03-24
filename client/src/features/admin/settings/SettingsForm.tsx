@@ -67,7 +67,7 @@ export function SettingsForm() {
         <h3 className="text-sm font-semibold text-sky-700">Berichts-E-Mail</h3>
         <div className="flex flex-col gap-2">
           <label className="text-sm text-slate-600" htmlFor="report-email">
-            E-Mail-Adresse fuer Berichte
+            E-Mail-Adresse für Berichte
           </label>
           <input
             id="report-email"
