@@ -30,6 +30,18 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
     getStoredSession().then(s => { if (s) setShopName(s.shopName); });
   }, []);
 
+  useEffect(() => {
+    if (cart.invalidItems.length > 0) {
+      setStockError(
+        `Artikel nicht mehr verfügbar und aus Warenkorb entfernt: ${cart.invalidItems.join(', ')}`
+      );
+      cart.clearInvalidItems();
+      // Toast nach 4 Sekunden ausblenden (längere Anzeigezeit als normale Stock-Fehler)
+      const t = setTimeout(() => setStockError(null), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [cart.invalidItems]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handlePaymentComplete(paidCents: number, changeCents: number) {
     try {
       setError(null);
