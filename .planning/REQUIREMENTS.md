@@ -5,6 +5,12 @@
 
 ## v4.0 Requirements
 
+### Architektur
+
+- [ ] **ARCH-01**: downloadProducts() ersetzt den gesamten Dexie-Produktbestand durch Server-Daten — kein LWW, komplettes Replace
+- [ ] **ARCH-02**: Admin-Features (Produktverwaltung, Import, Berichte, Einstellungen) sind offline deaktiviert mit klarem Hinweis
+- [ ] **ARCH-03**: Offline funktionieren nur Verkauf, Storno und Einzelrückgabe — Outbox + lokaler Bestandszähler bleiben erhalten
+
 ### Datenintegrität
 
 - [ ] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
@@ -45,19 +51,22 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DAT-01 | Phase 14 | Pending |
-| DAT-02 | Phase 14 | Pending |
-| DAT-03 | Phase 14 | Pending |
-| VAL-01 | Phase 14 | Pending |
-| UIX-01 | Phase 15 | Pending |
-| BST-01 | Phase 15 | Pending |
-| VRW-01 | Phase 16 | Pending |
-| VRW-02 | Phase 16 | Pending |
-| SYN-01 | Phase 16 | Pending |
+| ARCH-01 | Phase 14 | Pending |
+| ARCH-02 | Phase 14 | Pending |
+| ARCH-03 | Phase 14 | Pending |
+| DAT-01 | Phase 15 | Pending |
+| DAT-02 | Phase 15 | Pending |
+| DAT-03 | Phase 15 | Pending |
+| VAL-01 | Phase 15 | Pending |
+| UIX-01 | Phase 16 | Pending |
+| BST-01 | Phase 16 | Pending |
+| VRW-01 | Phase 17 | Pending |
+| VRW-02 | Phase 17 | Pending |
+| SYN-01 | Phase 17 | Pending |
 
 **Coverage:**
-- v4.0 requirements: 9 total
-- Mapped to phases: 9
+- v4.0 requirements: 12 total
+- Mapped to phases: 12
 - Unmapped: 0
 
 ---

@@ -6,7 +6,7 @@
 - ✅ **v1.1 Tech Debt & Deployment** — Phases 5-6 (shipped 2026-03-24)
 - ✅ **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (shipped 2026-03-24)
 - ✅ **v3.0 Polish, Bilder & Redesign** — Phases 10-13 (shipped 2026-03-24)
-- 🚧 **v4.0 Datenqualität & Stabilität** — Phases 14-16 (active)
+- 🚧 **v4.0 Datenqualität & Stabilität** — Phases 14-17 (active)
 
 ## Phases
 
@@ -51,9 +51,10 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### 🚧 v4.0 Datenqualität & Stabilität
 
-- [ ] **Phase 14: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt
-- [ ] **Phase 15: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
-- [ ] **Phase 16: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
+- [ ] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe
+- [ ] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt
+- [ ] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
+- [ ] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
 
 ## Phase Details
 
@@ -153,9 +154,20 @@ Plans:
   2. Eine Open-Source-Lizenz ist im Repository hinterlegt und die README enthält einen Kontakthinweis für Anfragen anderer Weltläden
 **Plans**: TBD
 
-### Phase 14: Datenintegrität
-**Goal**: Berichte zeigen korrekte Zahlen und der Warenkorb verliert keine Daten — Marge stimmt, Stornos sind herausgerechnet, Artikel im Cart bleiben nach Reload erhalten und ungültige Artikel werden erkannt
+### Phase 14: Online-First Architektur
+**Goal**: Server ist die einzige Wahrheit für Produktdaten — LWW-Sync durch komplettes Server-Replace ersetzen, Admin-Features offline deaktivieren, Offline-Modus nur für Verkauf/Storno/Rückgabe
 **Depends on**: Phase 13
+**Requirements**: ARCH-01, ARCH-02, ARCH-03
+**Success Criteria** (what must be TRUE):
+  1. Nach downloadProducts() ist Dexie ein exakter Spiegel des Servers — keine Geister-Produkte, keine LWW-Timestamp-Konflikte
+  2. Admin-Tabs (Produktverwaltung, Import, Berichte, Einstellungen) zeigen offline einen klaren Hinweis "Internetverbindung erforderlich" und sind nicht bedienbar
+  3. Verkauf, Storno und Einzelrückgabe funktionieren offline wie bisher — Sales gehen in die Outbox, Bestand wird lokal angepasst
+  4. Beim Reconnect: Outbox flushen → dann Server-Replace → Dexie hat korrekten Stand
+**Plans**: TBD
+
+### Phase 15: Datenintegrität
+**Goal**: Berichte zeigen korrekte Zahlen und der Warenkorb verliert keine Daten — Marge stimmt, Stornos sind herausgerechnet, Artikel im Cart bleiben nach Reload erhalten und ungültige Artikel werden erkannt
+**Depends on**: Phase 14
 **Requirements**: DAT-01, DAT-02, DAT-03, VAL-01
 **Success Criteria** (what must be TRUE):
   1. Ein Monatsbericht zeigt EK-Preis und Marge korrekt berechnet — stimmige Zahlen nach manuellem Nachrechnen einer Verkaufsliste
@@ -164,9 +176,9 @@ Plans:
   4. Wenn ein Artikel im Warenkorb liegt und inzwischen deaktiviert oder gelöscht wurde, zeigt die Kasse einen deutlichen Hinweis und verhindert den Verkaufsabschluss
 **Plans**: TBD
 
-### Phase 15: UI-Stabilität & Bestand
+### Phase 16: UI-Stabilität & Bestand
 **Goal**: Touch-Interaktion ist zuverlässig und Bestandswarnungen sind klar erkennbar — kein versehentliches Antippen beim Scrollen, kein Übersehen von knappem Vorrat
-**Depends on**: Phase 14
+**Depends on**: Phase 15
 **Requirements**: UIX-01, BST-01
 **Success Criteria** (what must be TRUE):
   1. Beim Scrollen durch das Artikel-Grid auf dem iPad wird kein Artikel versehentlich in den Warenkorb gelegt — Scrollen und Tippen sind zuverlässig unterschieden
@@ -174,9 +186,9 @@ Plans:
   3. Kritisch niedrige Bestände werden prominenter hervorgehoben als im v3.0-Stand
 **Plans**: TBD
 
-### Phase 16: Datenverwaltung & Sync
+### Phase 17: Datenverwaltung & Sync
 **Goal**: Kategorien sind zentral verwaltbar, Produktbilder lassen sich einfacher zuweisen und der Sync schlägt nicht still fehl
-**Depends on**: Phase 15
+**Depends on**: Phase 16
 **Requirements**: VRW-01, VRW-02, SYN-01
 **Success Criteria** (what must be TRUE):
   1. Kategorien können in der Produktverwaltung als eigene Liste angelegt, umbenannt und gelöscht werden — nicht mehr nur als Freitext pro Produkt eingegeben
@@ -187,7 +199,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 14 → 15 → 16
+Phases execute in numeric order: 14 → 15 → 16 → 17
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -204,6 +216,7 @@ Phases execute in numeric order: 14 → 15 → 16
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
-| 14. Datenintegrität | v4.0 | 0/? | Not started | - |
-| 15. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
-| 16. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
+| 14. Online-First Architektur | v4.0 | 0/? | Not started | - |
+| 15. Datenintegrität | v4.0 | 0/? | Not started | - |
+| 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
+| 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
