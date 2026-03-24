@@ -7,9 +7,9 @@
 
 ### Architektur
 
-- [ ] **ARCH-01**: downloadProducts() ersetzt den gesamten Dexie-Produktbestand durch Server-Daten — kein LWW, komplettes Replace
-- [ ] **ARCH-02**: Admin-Features (Produktverwaltung, Import, Berichte, Einstellungen) sind offline deaktiviert mit klarem Hinweis
-- [ ] **ARCH-03**: Offline funktionieren nur Verkauf, Storno und Einzelrückgabe — Outbox + lokaler Bestandszähler bleiben erhalten
+- [x] **ARCH-01**: downloadProducts() ersetzt den gesamten Dexie-Produktbestand durch Server-Daten — kein LWW, komplettes Replace
+- [x] **ARCH-02**: Admin-Features (Produktverwaltung, Import, Berichte, Einstellungen) sind offline deaktiviert mit klarem Hinweis
+- [x] **ARCH-03**: Offline funktionieren nur Verkauf, Storno und Einzelrückgabe — Outbox + lokaler Bestandszähler bleiben erhalten
 
 ### Datenintegrität
 
@@ -51,9 +51,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 14 | Pending |
-| ARCH-02 | Phase 14 | Pending |
-| ARCH-03 | Phase 14 | Pending |
+| ARCH-01 | Phase 14 | Complete |
+| ARCH-02 | Phase 14 | Complete |
+| ARCH-03 | Phase 14 | Complete |
 | DAT-01 | Phase 15 | Pending |
 | DAT-02 | Phase 15 | Pending |
 | DAT-03 | Phase 15 | Pending |

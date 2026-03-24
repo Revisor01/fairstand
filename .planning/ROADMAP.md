@@ -51,7 +51,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### 🚧 v4.0 Datenqualität & Stabilität
 
-- [ ] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe
+- [x] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe (completed 2026-03-24)
 - [ ] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt
 - [ ] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
 - [ ] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
@@ -166,7 +166,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 14-01-PLAN.md — LWW-Loop entfernen (engine.ts atomares Replace) + Admin-Offline-Guard (AdminScreen.tsx)
+- [x] 14-01-PLAN.md — LWW-Loop entfernen (engine.ts atomares Replace) + Admin-Offline-Guard (AdminScreen.tsx)
 
 ### Phase 15: Datenintegrität
 **Goal**: Berichte zeigen korrekte Zahlen und der Warenkorb verliert keine Daten — Marge stimmt, Stornos sind herausgerechnet, Artikel im Cart bleiben nach Reload erhalten und ungültige Artikel werden erkannt
@@ -219,7 +219,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
-| 14. Online-First Architektur | v4.0 | 0/1 | Not started | - |
+| 14. Online-First Architektur | v4.0 | 1/1 | Complete   | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 0/? | Not started | - |
 | 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |

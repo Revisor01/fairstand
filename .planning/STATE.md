@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
-status: roadmap_ready
-stopped_at: Roadmap created — Phase 14 ready to plan
-last_updated: "2026-03-24T14:00:00.000Z"
+status: unknown
+stopped_at: Completed 14-online-first-architektur-01-PLAN.md
+last_updated: "2026-03-24T13:29:01.866Z"
 progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 11
+  completed_phases: 7
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # Project State
@@ -19,18 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** v4.0 — Datenqualität & Stabilität
+**Current focus:** Phase 14 — Online-First Architektur
 
 ## Current Position
 
-Phase: 14 — Datenintegrität (not started)
-Plan: —
-Status: Roadmap ready — awaiting phase planning
-Last activity: 2026-03-24 — Roadmap v4.0 erstellt (3 Phasen, 9 Requirements)
-
-```
-v4.0 Progress: [░░░░░░░░░░░░░░░░░░░░] 0% — Phase 14/16
-```
+Phase: 14 (Online-First Architektur) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -76,6 +70,7 @@ v4.0 Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
 | Phase 11 P01 | 15 | 2 tasks | 6 files |
 | Phase 11 P02 | 7 | 2 tasks | 5 files |
 | Phase 12-bestandsampel-umlaute P01 | 8 | 2 tasks | 5 files |
+| Phase 14-online-first-architektur P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -146,6 +141,10 @@ Recent decisions affecting current work:
 - [Phase 11]: Dexie v5 ohne .upgrade() Handler — imageUrl ist optional, bestehende Eintraege bleiben unveraendert
 - [Phase 12-bestandsampel-umlaute]: Ampel-Dot als inline span mit text-[10px] leading-none in flex items-center gap-1 — kein Hook, kein Interface
 - [Phase 12-bestandsampel-umlaute]: Funktionsnamen wie handleAllesZurueck nicht umbenannt — kein sichtbarer Nutzen, Breaking Change vermieden
+- [Phase 14-online-first-architektur]: fetch() vor db.transaction(): IDB-Transaktionen time-outen bei async I/O innerhalb der Transaktion
+- [Phase 14-online-first-architektur]: where('shopId').equals(shopId).delete() statt db.products.clear() — Multi-Laden-Sicherheit
+- [Phase 14-online-first-architektur]: Kein eigener useOnlineStatus-Hook — inline State in AdminScreen ausreichend für einzelnen Anwendungsfall
+- [Phase 14-online-first-architektur]: Tab-Navigation bleibt offline sichtbar — Hinweistext im main-Block informativer als verschwundene Tabs
 
 ### Pending Todos
 
@@ -157,6 +156,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T14:00:00.000Z
-Stopped at: Roadmap v4.0 erstellt — bereit für /gsd:plan-phase 14
+Last session: 2026-03-24T13:29:01.863Z
+Stopped at: Completed 14-online-first-architektur-01-PLAN.md
 Resume file: None
