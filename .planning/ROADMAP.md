@@ -50,7 +50,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 Plans:
 - [x] 07-01-PLAN.md — Server: shops-Tabelle, PIN-Auth-Endpoint, Server-Seed
-- [ ] 07-02-PLAN.md — Client: serverAuth.ts, getShopId(), Dexie v3 Hard Reset, useAuth umstellen
+- [x] 07-02-PLAN.md — Client: serverAuth.ts, getShopId(), Dexie v3 Hard Reset, useAuth umstellen
 - [ ] 07-03-PLAN.md — Client: App.tsx, engine.ts, ArticleGrid, ProductList auf dynamische shopId
 
 ### Phase 8: Bestandsprüfung & Verkaufshistorie
@@ -86,6 +86,6 @@ Phases execute in numeric order: 7 → 8 → 9
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
-| 7. Server-Sync & Multi-Laden | v2.0 | 0/3 | Not started | - |
+| 7. Server-Sync & Multi-Laden | v2.0 | 2/3 | In Progress|  |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/? | Not started | - |
 | 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |

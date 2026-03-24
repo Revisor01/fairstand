@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
 status: unknown
-stopped_at: Completed 07-server-sync-multi-laden-01-PLAN.md
-last_updated: "2026-03-24T10:14:09.421Z"
+stopped_at: Completed 07-server-sync-multi-laden-02-PLAN.md
+last_updated: "2026-03-24T10:17:35.085Z"
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 ## Current Position
 
 Phase: 07 (server-sync-multi-laden) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Plan: 2 of 3
 | Phase 05 P01 | 2 | 3 tasks | 3 files |
 | Phase 05 P02 | 2 | 2 tasks | 2 files |
 | Phase 07-server-sync-multi-laden P01 | 8 | 2 tasks | 5 files |
+| Phase 07 P02 | 1 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,9 @@ Recent decisions affecting current work:
 - [Phase 07-server-sync-multi-laden]: Web Crypto API fuer hashPin — kein npm-Package, Node 20 unterstuetzt nativ
 - [Phase 07-server-sync-multi-laden]: Token = crypto.randomUUID() ohne server-seitiges Token-Management — client speichert in idb-keyval
 - [Phase 07-server-sync-multi-laden]: ensureShopSeeded() idempotent via shopId-existenz-check — zweiter Aufruf ist No-Op
+- [Phase 07]: setShopId('') in lock() statt null — leerer String ist falsy, getShopId() wirft korrekt, Typsicherheit bleibt gewahrt
+- [Phase 07]: Offline-Fallback in unlock() gewährt Zugang ohne PIN-Prüfung wenn Session < 2h alt — kein Server-Hash clientseitig nötig
+- [Phase 07]: serverAuth-Pattern: idb-keyval 'session'-Key mit StoredSession-Objekt (shopId, shopName, token, lastActivity)
 
 ### Pending Todos
 
@@ -119,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:14:09.418Z
-Stopped at: Completed 07-server-sync-multi-laden-01-PLAN.md
+Last session: 2026-03-24T10:17:35.082Z
+Stopped at: Completed 07-server-sync-multi-laden-02-PLAN.md
 Resume file: None
