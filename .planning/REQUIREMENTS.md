@@ -44,22 +44,23 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHOP-01 | TBD | Pending |
-| SHOP-02 | TBD | Pending |
-| SHOP-03 | TBD | Pending |
-| SHOP-04 | TBD | Pending |
-| SELF-01 | TBD | Pending |
-| SELF-02 | TBD | Pending |
-| SELF-03 | TBD | Pending |
-| UX-01 | TBD | Pending |
-| UX-02 | TBD | Pending |
-| UX-03 | TBD | Pending |
-| UX-04 | TBD | Pending |
+| SHOP-01 | Phase 24 | Pending |
+| SHOP-02 | Phase 24 | Pending |
+| SHOP-03 | Phase 24 | Pending |
+| SHOP-04 | Phase 25 | Pending |
+| SELF-01 | Phase 25 | Pending |
+| SELF-02 | Phase 25 | Pending |
+| SELF-03 | Phase 25 | Pending |
+| UX-01 | Phase 26 | Pending |
+| UX-02 | Phase 26 | Pending |
+| UX-03 | Phase 26 | Pending |
+| UX-04 | Phase 26 | Pending |
 
 **Coverage:**
 - v7.0 requirements: 11 total
-- Mapped to phases: 0
-- Unmapped: 11
+- Mapped to phases: 11
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-25*
+*Traceability updated: 2026-03-25 (roadmap created)*
