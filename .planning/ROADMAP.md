@@ -62,7 +62,11 @@ Plans:
   2. Wenn der Bestand eines Artikels erschöpft ist, kann er nicht mehr in den Warenkorb gelegt werden
   3. Eine Tagesübersicht zeigt alle Verkäufe des Tages — per Tipp auf einen Verkauf sind die enthaltenen Artikel, Mengen und Preise sichtbar
   4. Pro Artikel ist eine Statistik einsehbar: wie oft verkauft, Gesamtumsatz, über welchen Zeitraum
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Bestandsanzeige in Artikelkacheln + Überverkauf-Blockierung in useCart
+- [ ] 08-02-PLAN.md — Anklickbare Tagesübersicht (SaleDetailModal) + Artikel-Statistik (ProductStats + Server-Endpoint)
 
 ### Phase 9: Storno & Rückgabe
 **Goal**: Fehlgebuchte Verkäufe können korrigiert werden — Bestand wird korrekt zurückgebucht
@@ -87,5 +91,5 @@ Phases execute in numeric order: 7 → 8 → 9
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete   | 2026-03-24 |
-| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/? | Not started | - |
+| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/2 | Not started | - |
 | 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |
