@@ -1,4 +1,4 @@
-import { db, SHOP_ID } from './index.js';
+import { db, getShopId } from './index.js';
 import type { Product } from './schema.js';
 
 // Seed-Daten aus Rechnung 2600988 (Süd-Nord-Kontor, 16.03.2026)
@@ -385,14 +385,14 @@ const SEED_PRODUCTS: Omit<Product, 'id' | 'shopId' | 'updatedAt'>[] = [
 ];
 
 export async function seedIfEmpty(): Promise<void> {
-  const count = await db.products.where('shopId').equals(SHOP_ID).count();
+  const count = await db.products.where('shopId').equals(getShopId()).count();
   if (count > 0) return; // Bereits geseedet
 
   await db.products.bulkAdd(
     SEED_PRODUCTS.map(p => ({
       ...p,
       id: crypto.randomUUID(),
-      shopId: SHOP_ID,
+      shopId: getShopId(),
       updatedAt: Date.now(),
     }))
   );

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, SHOP_ID } from '../../../db/index.js';
+import { db, getShopId } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { startOfDay, endOfDay, subDays, format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -23,7 +23,7 @@ export function DailyReport() {
       db.sales
         .where('createdAt')
         .between(dayStart, dayEnd)
-        .filter(s => s.shopId === SHOP_ID)
+        .filter(s => s.shopId === getShopId())
         .toArray(),
     [dayStart, dayEnd],
     []

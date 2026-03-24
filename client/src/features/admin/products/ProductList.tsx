@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, SHOP_ID } from '../../../db/index.js';
+import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { downloadProducts } from '../../../sync/engine.js';
@@ -21,7 +21,10 @@ export function ProductList() {
     () =>
       db.products
         .where('shopId')
-        .equals(SHOP_ID)
+        // Sicherheitshinweis: getShopId() wirft wenn kein Shop gesetzt ist.
+        // ProductList wird nur gerendert wenn state === 'unlocked' (App.tsx),
+        // also ist shopId hier garantiert gesetzt. Kein try-catch nötig.
+        .equals(getShopId())
         .toArray()
         .then(arr => arr.sort((a, b) => a.name.localeCompare(b.name, 'de'))),
     []

@@ -1,4 +1,4 @@
-import { db, SHOP_ID } from '../../db/index.js';
+import { db, getShopId } from '../../db/index.js';
 import type { CartItem, Sale } from '../../db/index.js';
 
 /**
@@ -28,7 +28,7 @@ export async function completeSale(
 
   const sale: Sale = {
     id: crypto.randomUUID(),
-    shopId: SHOP_ID,
+    shopId: getShopId(),
     items,
     totalCents,
     paidCents,
@@ -53,7 +53,7 @@ export async function completeSale(
     await db.outbox.add({
       operation: 'SALE_COMPLETE',
       payload: sale,
-      shopId: SHOP_ID,
+      shopId: getShopId(),
       createdAt: Date.now(),
       attempts: 0,
     });

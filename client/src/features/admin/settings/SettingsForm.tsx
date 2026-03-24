@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { SHOP_ID } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
 
 interface Setting {
   key: string;
@@ -15,7 +15,7 @@ export function SettingsForm() {
   const [savedKey, setSavedKey] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/settings?shopId=${SHOP_ID}`)
+    fetch(`/api/settings?shopId=${getShopId()}`)
       .then(r => r.json())
       .then((rows: Setting[]) => {
         for (const row of rows) {
@@ -34,7 +34,7 @@ export function SettingsForm() {
       await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value, shopId: SHOP_ID }),
+        body: JSON.stringify({ key, value, shopId: getShopId() }),
       });
       setTimeout(() => setSavedKey(null), 1500);
     } catch {

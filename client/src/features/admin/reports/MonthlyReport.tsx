@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { SHOP_ID } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { ReportChart } from './ReportChart.js';
 
@@ -65,7 +65,7 @@ export function MonthlyReport() {
   useEffect(() => {
     if (!navigator.onLine) return;
     setLoadingMonthly(true);
-    fetch(`/api/reports/monthly?shopId=${SHOP_ID}&year=${year}&month=${month}`)
+    fetch(`/api/reports/monthly?shopId=${getShopId()}&year=${year}&month=${month}`)
       .then(r => r.json())
       .then((data: MonthlyResponse) => setMonthlyData(data))
       .catch(() => setMonthlyData(null))
@@ -75,7 +75,7 @@ export function MonthlyReport() {
   useEffect(() => {
     if (!navigator.onLine) return;
     setLoadingYearly(true);
-    fetch(`/api/reports/yearly?shopId=${SHOP_ID}&year=${year}`)
+    fetch(`/api/reports/yearly?shopId=${getShopId()}&year=${year}`)
       .then(r => r.json())
       .then((data: YearlyResponse) => {
         const chartData: MonthData[] = monthNames.map((name, i) => {
