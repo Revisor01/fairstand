@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db, getShopId } from '../../db/index.js';
+import { useQuery } from '@tanstack/react-query';
+import { getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
+import { getAuthHeaders } from '../auth/serverAuth.js';
 import { ArticleCard } from './ArticleCard.js';
 
 interface ArticleGridProps {
@@ -11,25 +12,41 @@ interface ArticleGridProps {
 export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
 
-  // Reaktiv — aktualisiert sich bei Bestandsänderungen
-  // useLiveQuery gibt Product[] | undefined zurück (undefined während des Ladens)
-  const products = useLiveQuery(
-    () =>
-      db.products
-        .where('shopId')
-        // Sicherheitshinweis: getShopId() wirft wenn kein Shop gesetzt ist.
-        // ArticleGrid wird nur gerendert wenn state === 'unlocked' (App.tsx),
-        // also ist shopId hier garantiert gesetzt. Kein try-catch nötig.
-        .equals(getShopId())
-        .and(p => p.active === true)
-        .toArray() as Promise<Product[]>,
-    []
-  );
+  // TQ mit networkMode 'offlineFirst' — im Online-Modus lädt vom Server,
+  // im Offline-Modus greift TQ auf den gecachten Stand zurück (LIVE-06).
+  // Gleicher queryKey ['products', shopId] wie Admin → gemeinsamer Cache.
+  const { data: products, isLoading } = useQuery<Product[]>({
+    queryKey: ['products', getShopId()],
+    queryFn: async () => {
+      const headers = await getAuthHeaders();
+      const shopId = getShopId();
+      const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
+      if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
+      const data = await res.json() as Record<string, unknown>[];
+      return data.map(p => ({
+        id: p.id as string,
+        shopId: (p.shop_id ?? p.shopId) as string,
+        articleNumber: (p.article_number ?? p.articleNumber) as string,
+        name: p.name as string,
+        category: (p.category ?? '') as string,
+        purchasePrice: (p.purchase_price ?? p.purchasePrice ?? 0) as number,
+        salePrice: (p.sale_price ?? p.salePrice) as number,
+        vatRate: (p.vat_rate ?? p.vatRate ?? 7) as number,
+        stock: (p.stock ?? 0) as number,
+        minStock: (p.min_stock ?? p.minStock ?? 0) as number,
+        active: (p.active ?? true) as boolean,
+        updatedAt: (p.updated_at ?? p.updatedAt ?? Date.now()) as number,
+        imageUrl: (p.image_url ?? p.imageUrl) as string | undefined,
+      })).filter(p => p.active); // Nur aktive Produkte für POS
+    },
+    networkMode: 'offlineFirst',
+    staleTime: 60_000, // POS: 1 Minute — etwas länger als Admin, da POS stabiler ist
+  });
 
   // Alphabetisch sortierte unique Kategorien aus den geladenen Produkten
   const categories = useMemo((): string[] => {
     if (!products) return [];
-    const unique = [...new Set((products as Product[]).map((p: Product) => p.category))].sort();
+    const unique = [...new Set(products.map((p: Product) => p.category))].sort();
     return ['Alle', ...unique];
   }, [products]);
 
@@ -39,7 +56,7 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
     return products.filter((p: Product) => p.category === activeCategory);
   }, [products, activeCategory]);
 
-  if (!products) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full text-slate-500">
         Laden...
