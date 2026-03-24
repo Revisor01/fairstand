@@ -116,7 +116,11 @@ Plans:
   2. In der Produktverwaltung kann einem Artikel ein Bild zugewiesen werden
   3. Bilder können aus Etiketten-PDFs des Süd-Nord-Kontors extrahiert oder von der Kontor-Website übernommen werden
   4. Beim Import einer Süd-Nord-Kontor-Rechnung erscheinen Menge, Artikelnummer und Preis in separaten Spalten — nicht mehr alles in der Beschreibung
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 11-01-PLAN.md — PDF-Parser Format-Erkennung (Rabatt-Spalte) + Schema imageUrl + Migration
+- [ ] 11-02-PLAN.md — Image-Upload-Endpoint + Client imageUrl + ProductList Bild-Button + ArticleGrid Thumbnail
 
 ### Phase 12: Bestandsampel & Umlaute
 **Goal**: Mitarbeiterinnen erkennen auf einen Blick den Vorratsstand und lesen die gesamte App in korrektem Deutsch
@@ -153,6 +157,6 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
 | 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 11. Produktbilder & PDF-Parsing | v3.0 | 0/? | Not started | - |
+| 11. Produktbilder & PDF-Parsing | v3.0 | 0/2 | Not started | - |
 | 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
