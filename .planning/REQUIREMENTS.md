@@ -7,12 +7,12 @@
 
 ### Live Architecture
 
-- [ ] **LIVE-01**: Wenn online, laufen alle Produkt-/Kategorie-Reads über TanStack Query direkt gegen die Server-API — kein Dexie-Umweg, kein manueller Sync-Button
-- [ ] **LIVE-02**: Produkt-/Kategorie-Writes (CRUD) gehen direkt an den Server, UI aktualisiert sich über Query-Invalidation sofort
+- [x] **LIVE-01**: Wenn online, laufen alle Produkt-/Kategorie-Reads über TanStack Query direkt gegen die Server-API — kein Dexie-Umweg, kein manueller Sync-Button
+- [x] **LIVE-02**: Produkt-/Kategorie-Writes (CRUD) gehen direkt an den Server, UI aktualisiert sich über Query-Invalidation sofort
 - [ ] **LIVE-03**: Verkäufe und Entnahmen werden online direkt an den Server gepostet (kein Outbox-Umweg)
 - [ ] **LIVE-04**: WebSocket-Verbindung pusht Produkt-/Kategorie-/Bestandsänderungen live an alle verbundenen Clients — kein Polling, kein manuelles Nachladen
 - [ ] **LIVE-05**: Dexie dient nur noch als Offline-Cache für POS — wird beim Online-Start automatisch befüllt, nicht als primäre Datenquelle
-- [ ] **LIVE-06**: TanStack Query mit networkMode 'online' (Admin) und 'offlineFirst' (POS) steuert die Datenquelle automatisch
+- [x] **LIVE-06**: TanStack Query mit networkMode 'online' (Admin) und 'offlineFirst' (POS) steuert die Datenquelle automatisch
 - [ ] **LIVE-07**: Der manuelle Sync-Button und downloadProducts()/downloadCategories() werden entfernt — WebSocket + Query-Invalidation ersetzt alles
 
 ### Offline-Fallback
@@ -58,12 +58,12 @@ Deferred — nicht in v5.0 Scope.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LIVE-01 | Phase 19 | Pending |
-| LIVE-02 | Phase 19 | Pending |
+| LIVE-01 | Phase 19 | Complete |
+| LIVE-02 | Phase 19 | Complete |
 | LIVE-03 | Phase 20 | Pending |
 | LIVE-04 | Phase 20 | Pending |
 | LIVE-05 | Phase 20 | Pending |
-| LIVE-06 | Phase 19 | Pending |
+| LIVE-06 | Phase 19 | Complete |
 | LIVE-07 | Phase 20 | Pending |
 | OFFL-01 | Phase 21 | Pending |
 | OFFL-02 | Phase 21 | Pending |
