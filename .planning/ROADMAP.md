@@ -9,6 +9,7 @@
 - ✅ **v4.0 Datenqualität & Stabilität** — Phases 14-17 (shipped 2026-03-24)
 - ✅ **v5.0 Online-First Live Architecture** — Phases 18-21 (shipped 2026-03-24)
 - ✅ **v6.0 Pure Online** — Phases 22-23 (shipped 2026-03-24)
+- 🔄 **v7.0 Multi-Shop & UX** — Phases 24-26 (in progress)
 
 ## Phases
 
@@ -80,6 +81,12 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 </details>
+
+### v7.0 Multi-Shop & UX
+
+- [ ] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI
+- [ ] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop
+- [ ] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation
 
 ## Phase Details
 
@@ -334,12 +341,45 @@ Plans:
 Plans:
 - [x] 23-01-PLAN.md — Dexie-Kern entfernen: db/schema, db/index, sync/engine, sync/triggers, useCart, useProducts, useCategories, App.tsx
 - [x] 23-02-PLAN.md — idb-keyval auf localStorage: serverAuth, pinAuth, ImportScreen, SettingsForm, PaymentFlow
-- [ ] 23-03-PLAN.md — Online-Only Abschluss: useSaleComplete, DailyReport TQ, useLowStockCount, Offline-Overlay, Service Worker, package.json
+- [x] 23-03-PLAN.md — Online-Only Abschluss: useSaleComplete, DailyReport TQ, useLowStockCount, Offline-Overlay, Service Worker, package.json
+
+### Phase 24: Master-Shop Administration
+**Goal**: Der Master-Shop (St. Secundus) kann andere Shops über eine eigene Verwaltungsansicht anlegen, PIN vergeben und deaktivieren — kein anderer Shop sieht diese Funktion
+**Depends on**: Phase 23
+**Requirements**: SHOP-01, SHOP-02, SHOP-03
+**Success Criteria** (what must be TRUE):
+  1. Nach dem Login mit dem Master-PIN erscheint in der Admin-Navigation ein "Shops"-Tab, der bei allen anderen Shops nicht sichtbar ist
+  2. Aus dem Shops-Tab heraus kann ein neuer Shop mit Name und PIN angelegt werden — nach dem Anlegen ist der Shop sofort über den neuen PIN erreichbar
+  3. Ein aktiver Shop kann deaktiviert werden — danach schlägt der Login mit dessen PIN fehl und die Mitarbeiterinnen des Shops sehen eine klare Fehlermeldung
+  4. Die Master-Verwaltung zeigt eine Liste aller Shops mit Status (aktiv/inaktiv)
+**Plans**: TBD
+
+### Phase 25: Shop-Sortiment-Isolation
+**Goal**: Jeder Shop hat ein vollständig unabhängiges Sortiment — Produkte, Preise und Bestand sind shop-spezifisch, Berichte und PDF-Imports bleiben pro Shop isoliert
+**Depends on**: Phase 24
+**Requirements**: SHOP-04, SELF-01, SELF-02, SELF-03
+**Success Criteria** (what must be TRUE):
+  1. Zwei Shops mit unterschiedlichen PINs sehen nach dem Login jeweils nur ihre eigenen Produkte — kein Artikel des anderen Shops ist sichtbar
+  2. Eine Bestandsänderung oder Preisänderung in Shop A hat keine Auswirkung auf die Produktansicht in Shop B
+  3. Der Tagesbericht und Monatsbericht zeigen ausschließlich Verkäufe des eingeloggten Shops — keine Daten anderer Shops erscheinen
+  4. Ein PDF-Import erstellt die neuen Produkte im Sortiment des eingeloggten Shops — nicht global
+**Plans**: TBD
+
+### Phase 26: Responsive UX
+**Goal**: Die App passt sich an jedes Gerät an — auf dem Desktop und iPad im Querformat steht der Warenkorb als feste Spalte daneben, auf dem iPhone und iPad im Hochformat lässt er sich per Swipe einblenden, und die Kategorien-Navigation ist schnell und klar bedienbar
+**Depends on**: Phase 25
+**Requirements**: UX-01, UX-02, UX-03, UX-04
+**Success Criteria** (what must be TRUE):
+  1. Auf dem Desktop-Browser und iPad Landscape ist der Warenkorb dauerhaft als rechte Spalte sichtbar — ohne Modal oder Overlay
+  2. Auf dem iPhone und iPad Portrait ist der Warenkorb zunächst versteckt und erscheint als Panel von rechts wenn man darauf tippt oder wischt
+  3. Die Kategorien-Navigation ermöglicht das schnelle Wechseln zwischen Kategorien mit einem einzelnen Tipp — der aktive Filter ist klar erkennbar
+  4. Das Layout funktioniert auf allen drei Geräteklassen ohne horizontales Scrollen oder abgeschnittene Elemente
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 22 → 23
+Phases execute in numeric order: 24 → 25 → 26
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -364,5 +404,8 @@ Phases execute in numeric order: 22 → 23
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
-| 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete    | 2026-03-24 |
-| 23. Dexie-Entfernung & Online-Only | v6.0 | 2/3 | Complete    | 2026-03-24 |
+| 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
+| 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
+| 24. Master-Shop Administration | v7.0 | 0/? | Not started | - |
+| 25. Shop-Sortiment-Isolation | v7.0 | 0/? | Not started | - |
+| 26. Responsive UX | v7.0 | 0/? | Not started | - |
