@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { AsyncTask, CronJob } from 'toad-scheduler';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { settings, sales } from '../db/schema.js';
+import { settings } from '../db/schema.js';
 import { sendReport, isMailConfigured } from '../services/mailer.js';
 import { buildMonthlyReportHtml, buildYearlyReportHtml } from '../services/reportTemplate.js';
 
@@ -13,8 +13,10 @@ export async function reportScheduler(fastify: FastifyInstance) {
   // Monatlich: 1. des Monats, 07:00 UTC (= 08:00 MEZ / 09:00 MESZ)
   const monthlyTask = new AsyncTask('monthly-report', async () => {
     if (!isMailConfigured()) return;
-    const emailSetting = db.select().from(settings).where(eq(settings.key, 'report_email')).get();
-    const monthlyEnabled = db.select().from(settings).where(eq(settings.key, 'report_monthly')).get();
+    const emailSettings = await db.select().from(settings).where(eq(settings.key, 'report_email'));
+    const monthlySettings = await db.select().from(settings).where(eq(settings.key, 'report_monthly'));
+    const emailSetting = emailSettings[0];
+    const monthlyEnabled = monthlySettings[0];
     if (!emailSetting || monthlyEnabled?.value !== 'true') return;
 
     const now = new Date();
@@ -23,43 +25,45 @@ export async function reportScheduler(fastify: FastifyInstance) {
     const monthStart = new Date(year, month - 1, 1).getTime();
     const monthEnd = new Date(year, month, 1).getTime();
 
-    const summary = db.all(sql`
+    const summaryResult = await db.execute(sql`
       SELECT COUNT(*) as sale_count, COALESCE(SUM(total_cents), 0) as total_cents,
              COALESCE(SUM(donation_cents), 0) as donation_cents
       FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${monthStart} AND created_at < ${monthEnd} AND cancelled_at IS NULL
     `);
 
-    // EK-Kosten via JOIN auf products.purchase_price
-    const costResult = db.all(sql`
+    // EK-Kosten via jsonb + products.purchase_price
+    const costResult = await db.execute(sql`
       SELECT COALESCE(SUM(
-        CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+        (item->>'quantity')::integer *
         COALESCE(p.purchase_price, 0)
       ), 0) as cost_cents
-      FROM sales, json_each(sales.items) as item
-      LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      LEFT JOIN products p ON p.id = item->>'productId'
       WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd} AND sales.cancelled_at IS NULL
     `);
 
-    const topArticles = db.all(sql`
-      SELECT json_extract(item.value, '$.name') as name,
-             SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)) as total_qty,
-             SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER) * CAST(json_extract(item.value, '$.salePrice') AS INTEGER)) as revenue_cents
-      FROM sales, json_each(sales.items) as item
+    const topArticles = await db.execute(sql`
+      SELECT item->>'name' as name,
+             SUM((item->>'quantity')::integer) as total_qty,
+             SUM((item->>'quantity')::integer * (item->>'salePrice')::integer) as revenue_cents
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
       WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd} AND sales.cancelled_at IS NULL
-      GROUP BY json_extract(item.value, '$.productId') ORDER BY total_qty DESC LIMIT 5
+      GROUP BY item->>'productId', item->>'name' ORDER BY total_qty DESC LIMIT 5
     `);
 
-    const totalCents = Number((summary[0] as any)?.total_cents ?? 0);
-    const costCents = Number((costResult[0] as any)?.cost_cents ?? 0);
+    const totalCents = Number((summaryResult.rows[0] as any)?.total_cents ?? 0);
+    const costCents = Number((costResult.rows[0] as any)?.cost_cents ?? 0);
 
     const html = buildMonthlyReportHtml({
       monthLabel: `${monthNames[month - 1]} ${year}`,
-      saleCount: Number((summary[0] as any)?.sale_count ?? 0),
+      saleCount: Number((summaryResult.rows[0] as any)?.sale_count ?? 0),
       totalCents,
       costCents,
       marginCents: totalCents - costCents,
-      donationCents: Number((summary[0] as any)?.donation_cents ?? 0),
-      topArticles: (topArticles as any[]).map(a => ({ name: String(a.name), total_qty: Number(a.total_qty), revenue_cents: Number(a.revenue_cents) })),
+      donationCents: Number((summaryResult.rows[0] as any)?.donation_cents ?? 0),
+      topArticles: (topArticles.rows as any[]).map(a => ({ name: String(a.name), total_qty: Number(a.total_qty), revenue_cents: Number(a.revenue_cents) })),
     });
 
     await sendReport(emailSetting.value, `Fairstand Monatsbericht ${monthNames[month - 1]} ${year}`, html);
@@ -75,38 +79,41 @@ export async function reportScheduler(fastify: FastifyInstance) {
   // Jaehrlich: 1. Januar, 08:00 UTC
   const yearlyTask = new AsyncTask('yearly-report', async () => {
     if (!isMailConfigured()) return;
-    const emailSetting = db.select().from(settings).where(eq(settings.key, 'report_email')).get();
-    const yearlyEnabled = db.select().from(settings).where(eq(settings.key, 'report_yearly')).get();
+    const emailSettings = await db.select().from(settings).where(eq(settings.key, 'report_email'));
+    const yearlySettings = await db.select().from(settings).where(eq(settings.key, 'report_yearly'));
+    const emailSetting = emailSettings[0];
+    const yearlyEnabled = yearlySettings[0];
     if (!emailSetting || yearlyEnabled?.value !== 'true') return;
 
     const year = new Date().getFullYear() - 1;
     const yearStart = new Date(year, 0, 1).getTime();
     const yearEnd = new Date(year + 1, 0, 1).getTime();
 
-    const months = db.all(sql`
-      SELECT CAST(strftime('%m', datetime(created_at / 1000, 'unixepoch')) AS INTEGER) as month,
+    const monthsResult = await db.execute(sql`
+      SELECT EXTRACT(MONTH FROM to_timestamp(created_at / 1000))::integer as month,
              COUNT(*) as sale_count, COALESCE(SUM(total_cents), 0) as total_cents,
              COALESCE(SUM(donation_cents), 0) as donation_cents
       FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${yearStart} AND created_at < ${yearEnd} AND cancelled_at IS NULL
-      GROUP BY strftime('%m', datetime(created_at / 1000, 'unixepoch')) ORDER BY month
+      GROUP BY EXTRACT(MONTH FROM to_timestamp(created_at / 1000)) ORDER BY month
     `);
 
-    // EK-Kosten pro Monat via JOIN
-    const monthlyCosts = db.all(sql`
-      SELECT CAST(strftime('%m', datetime(sales.created_at / 1000, 'unixepoch')) AS INTEGER) as month,
+    // EK-Kosten pro Monat via jsonb + products
+    const monthlyCosts = await db.execute(sql`
+      SELECT EXTRACT(MONTH FROM to_timestamp(sales.created_at / 1000))::integer as month,
              COALESCE(SUM(
-               CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+               (item->>'quantity')::integer *
                COALESCE(p.purchase_price, 0)
              ), 0) as cost_cents
-      FROM sales, json_each(sales.items) as item
-      LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      LEFT JOIN products p ON p.id = item->>'productId'
       WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${yearStart} AND sales.created_at < ${yearEnd} AND sales.cancelled_at IS NULL
-      GROUP BY strftime('%m', datetime(sales.created_at / 1000, 'unixepoch')) ORDER BY month
+      GROUP BY EXTRACT(MONTH FROM to_timestamp(sales.created_at / 1000)) ORDER BY month
     `);
 
-    const costMap = new Map((monthlyCosts as any[]).map(c => [Number(c.month), Number(c.cost_cents)]));
+    const costMap = new Map((monthlyCosts.rows as any[]).map(c => [Number(c.month), Number(c.cost_cents)]));
 
-    const html = buildYearlyReportHtml(year, (months as any[]).map(m => {
+    const html = buildYearlyReportHtml(year, (monthsResult.rows as any[]).map(m => {
       const totalCents = Number(m.total_cents);
       const costCents = costMap.get(Number(m.month)) ?? 0;
       return {

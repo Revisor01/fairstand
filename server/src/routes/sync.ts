@@ -90,9 +90,9 @@ export async function syncRoutes(fastify: FastifyInstance) {
           }
           const sale = saleResult.data;
 
-          db.transaction((tx) => {
+          await db.transaction(async (tx) => {
             // 1. Sale idempotent einfuegen (INSERT OR IGNORE via onConflictDoNothing)
-            tx.insert(sales).values({
+            await tx.insert(sales).values({
               id: sale.id,
               shopId: sale.shopId,
               items: sale.items,
@@ -103,7 +103,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
               type: sale.type ?? null,
               createdAt: sale.createdAt,
               syncedAt: Date.now(),
-            }).onConflictDoNothing().run();
+            }).onConflictDoNothing();
 
             // 2. Stock-Delta für jedes Produkt — kein Produkt-Upsert aus Sale-Items
             // Sale-Items enthalten nur Snapshots (Name, Preis), keine vollständigen
@@ -111,20 +111,19 @@ export async function syncRoutes(fastify: FastifyInstance) {
             // Felder mit Defaults überschreiben. Produkte werden über POST /api/products
             // angelegt/aktualisiert, nicht über Sales.
             for (const item of sale.items) {
-              tx.update(products)
+              await tx.update(products)
                 .set({ stock: sql`${products.stock} - ${item.quantity}` })
-                .where(eq(products.id, item.productId))
-                .run();
+                .where(eq(products.id, item.productId));
             }
 
             // 3. OutboxEvent auf dem Server protokollieren
-            tx.insert(outboxEvents).values({
+            await tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
               payload: entry.payload,
               processedAt: Date.now(),
               createdAt: entry.createdAt,
-            }).run();
+            });
           });
 
           hasStockChanged = true;
@@ -137,18 +136,17 @@ export async function syncRoutes(fastify: FastifyInstance) {
             continue;
           }
           const adj = adjustResult.data;
-          db.transaction((tx) => {
-            tx.update(products)
+          await db.transaction(async (tx) => {
+            await tx.update(products)
               .set({ stock: sql`${products.stock} + ${adj.delta}`, updatedAt: sql`${Date.now()}` })
-              .where(eq(products.id, adj.productId))
-              .run();
-            tx.insert(outboxEvents).values({
+              .where(eq(products.id, adj.productId));
+            await tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
               payload: entry.payload,
               processedAt: Date.now(),
               createdAt: entry.createdAt,
-            }).run();
+            });
           });
           hasStockChanged = true;
           processed++;
@@ -160,29 +158,27 @@ export async function syncRoutes(fastify: FastifyInstance) {
             continue;
           }
           const cancel = cancelResult.data;
-          db.transaction((tx) => {
+          await db.transaction(async (tx) => {
             // Sale als storniert markieren (idempotent via cancelledAt)
-            tx.update(sales)
+            await tx.update(sales)
               .set({ cancelledAt: cancel.cancelledAt })
-              .where(eq(sales.id, cancel.saleId))
-              .run();
+              .where(eq(sales.id, cancel.saleId));
 
             // Bestand für alle Artikel zurückbuchen (Delta +quantity)
             for (const item of cancel.items) {
-              tx.update(products)
+              await tx.update(products)
                 .set({ stock: sql`${products.stock} + ${item.quantity}` })
-                .where(eq(products.id, item.productId))
-                .run();
+                .where(eq(products.id, item.productId));
             }
 
             // OutboxEvent protokollieren
-            tx.insert(outboxEvents).values({
+            await tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
               payload: entry.payload,
               processedAt: Date.now(),
               createdAt: entry.createdAt,
-            }).run();
+            });
           });
           processed++;
         }
@@ -193,21 +189,20 @@ export async function syncRoutes(fastify: FastifyInstance) {
             continue;
           }
           const ret = returnResult.data;
-          db.transaction((tx) => {
+          await db.transaction(async (tx) => {
             // Bestand für zurückgegebenen Artikel zurückbuchen
-            tx.update(products)
+            await tx.update(products)
               .set({ stock: sql`${products.stock} + ${ret.quantity}` })
-              .where(eq(products.id, ret.productId))
-              .run();
+              .where(eq(products.id, ret.productId));
 
             // OutboxEvent protokollieren
-            tx.insert(outboxEvents).values({
+            await tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
               payload: entry.payload,
               processedAt: Date.now(),
               createdAt: entry.createdAt,
-            }).run();
+            });
           });
           processed++;
         }
