@@ -7,7 +7,7 @@ import { PaymentFlow } from './PaymentFlow.js';
 import { SaleSummary } from './SaleSummary.js';
 import { LowStockBanner } from './LowStockBanner.js';
 import { useCart } from './useCart.js';
-import { completeSale } from './useSaleComplete.js';
+import { completeSale, completeWithdrawal } from './useSaleComplete.js';
 import { getStoredSession } from '../auth/serverAuth.js';
 import { useSyncStatus, resetFailedEntries } from '../../sync/useSyncStatus.js';
 
@@ -88,6 +88,18 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
     setLastSale(null);
     setView('pos');
     setIsCartOpen(true);
+  }
+
+  async function handleWithdrawal() {
+    try {
+      setError(null);
+      const sale = await completeWithdrawal(cart.items);
+      setLastSale(sale);
+      setView('summary');
+      setIsCartOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Fehler bei der Entnahme.');
+    }
   }
 
   // --- View: Zusammenfassung ---
@@ -240,6 +252,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
           setIsCartOpen(false);
           setView('payment');
         }}
+        onWithdrawal={handleWithdrawal}
       />
     </div>
   );

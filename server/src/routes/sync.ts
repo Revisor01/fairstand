@@ -9,6 +9,7 @@ const SaleItemSchema = z.object({
   articleNumber: z.string(),
   name: z.string(),
   salePrice: z.number().int(),
+  purchasePrice: z.number().int().optional(),
   quantity: z.number().int().positive(),
 });
 
@@ -20,6 +21,7 @@ const SaleSchema = z.object({
   paidCents: z.number().int(),
   changeCents: z.number().int(),
   donationCents: z.number().int(),
+  type: z.enum(['sale', 'withdrawal']).optional(),
   createdAt: z.number().int(),
   syncedAt: z.number().int().optional(),
 });
@@ -88,6 +90,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
               paidCents: sale.paidCents,
               changeCents: sale.changeCents,
               donationCents: sale.donationCents,
+              type: sale.type ?? null,
               createdAt: sale.createdAt,
               syncedAt: Date.now(),
             }).onConflictDoNothing().run();

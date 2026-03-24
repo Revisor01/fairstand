@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { X, Trash2, AlertCircle } from 'lucide-react';
+import { X, Trash2, AlertCircle, HandHeart } from 'lucide-react';
 import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -11,6 +11,7 @@ interface CartPanelProps {
   onUpdateQuantity: (productId: string, quantity: number) => Promise<{ blocked?: boolean; stock?: number }>;
   onRemoveItem: (productId: string) => void;
   onCheckout: () => void;
+  onWithdrawal?: () => void;
 }
 
 export function CartPanel({
@@ -21,6 +22,7 @@ export function CartPanel({
   onUpdateQuantity,
   onRemoveItem,
   onCheckout,
+  onWithdrawal,
 }: CartPanelProps) {
   const [stockWarning, setStockWarning] = useState<string | null>(null);
 
@@ -96,22 +98,39 @@ export function CartPanel({
 
         {/* Footer */}
         <div className="px-4 py-4 border-t border-sky-100 bg-white shrink-0">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-3">
             <span className="text-slate-600 font-medium">Gesamt</span>
             <span className="text-slate-800 text-xl font-bold">{formatEur(total)}</span>
           </div>
-          <button
-            onPointerDown={onCheckout}
-            disabled={items.length === 0}
-            className="
-              w-full h-14 rounded-xl text-xl font-semibold
-              bg-sky-400 text-slate-800
-              disabled:opacity-40 disabled:cursor-not-allowed
-              active:bg-sky-500 transition-colors
-            "
-          >
-            Bezahlen
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              onPointerDown={onCheckout}
+              disabled={items.length === 0}
+              className="
+                w-full h-14 rounded-xl text-xl font-semibold
+                bg-sky-400 text-slate-800
+                disabled:opacity-40 disabled:cursor-not-allowed
+                active:bg-sky-500 transition-colors
+              "
+            >
+              Bezahlen
+            </button>
+            {onWithdrawal && (
+              <button
+                onPointerDown={onWithdrawal}
+                disabled={items.length === 0}
+                className="
+                  w-full h-11 rounded-xl text-sm font-medium flex items-center justify-center gap-2
+                  border-2 border-amber-300 text-amber-700
+                  disabled:opacity-40 disabled:cursor-not-allowed
+                  active:bg-amber-50 transition-colors
+                "
+              >
+                <HandHeart size={18} />
+                Entnahme KG (zum EK)
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>

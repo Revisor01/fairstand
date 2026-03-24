@@ -34,12 +34,15 @@ export function DailyReport() {
   );
 
   const stats = useMemo(() => {
-    if (!sales) return { count: 0, totalCents: 0, donationCents: 0 };
+    if (!sales) return { count: 0, totalCents: 0, donationCents: 0, withdrawalCents: 0 };
     const active = sales.filter(s => !s.cancelledAt);
+    const regularSales = active.filter(s => s.type !== 'withdrawal');
+    const withdrawals = active.filter(s => s.type === 'withdrawal');
     return {
-      count: active.length,
-      totalCents: active.reduce((sum, s) => sum + s.totalCents, 0),
-      donationCents: active.reduce((sum, s) => sum + s.donationCents, 0),
+      count: regularSales.length,
+      totalCents: regularSales.reduce((sum, s) => sum + s.totalCents, 0),
+      donationCents: regularSales.reduce((sum, s) => sum + s.donationCents, 0),
+      withdrawalCents: withdrawals.reduce((sum, s) => sum + s.totalCents, 0),
     };
   }, [sales]);
 
@@ -90,19 +93,25 @@ export function DailyReport() {
       <p className="text-sm text-slate-500">{dateLabel}</p>
 
       {/* Kennzahlen-Kacheln */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
           <span className="text-3xl font-bold text-slate-800">{stats.count}</span>
           <span className="text-xs text-slate-500 text-center">Verkäufe</span>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
           <span className="text-2xl font-bold text-sky-600">{formatEur(stats.totalCents)}</span>
-          <span className="text-xs text-slate-500 text-center">Gesamtumsatz</span>
+          <span className="text-xs text-slate-500 text-center">Umsatz</span>
         </div>
         <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
           <span className="text-2xl font-bold text-green-600">{formatEur(stats.donationCents)}</span>
           <span className="text-xs text-slate-500 text-center">Spenden</span>
         </div>
+        {stats.withdrawalCents > 0 && (
+          <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
+            <span className="text-2xl font-bold text-amber-600">{formatEur(stats.withdrawalCents)}</span>
+            <span className="text-xs text-slate-500 text-center">Entnahmen (EK)</span>
+          </div>
+        )}
       </div>
 
       {/* Einzelne Verkäufe */}
@@ -134,6 +143,7 @@ export function DailyReport() {
                     <td className={`px-4 py-3 ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-600'}`}>
                       {format(new Date(sale.createdAt), 'HH:mm')}
                       {sale.cancelledAt && <span className="ml-1 text-xs font-medium text-red-500">Storno</span>}
+                      {sale.type === 'withdrawal' && <span className="ml-1 text-xs font-medium text-amber-600">Entnahme</span>}
                     </td>
                     <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-800'}`}>
                       {formatEur(sale.totalCents)}
