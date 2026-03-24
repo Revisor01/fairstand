@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
-import { downloadProducts } from '../../../sync/engine.js';
+import { downloadProducts, downloadCategories } from '../../../sync/engine.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 import { ProductStats } from './ProductStats.js';
@@ -16,6 +16,13 @@ export function ProductList() {
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<string | null>(null);
+  const [showCatModal, setShowCatModal] = useState(false);
+  const [newCatName, setNewCatName] = useState('');
+
+  const dbCategories = useLiveQuery(
+    () => db.categories.where('shopId').equals(getShopId()).sortBy('name'),
+    []
+  );
 
   // Alle Produkte des aktuellen Shops (auch inaktive), alphabetisch nach Name
   const products = useLiveQuery(
@@ -42,6 +49,67 @@ export function ProductList() {
     if (activeCategory === 'Alle') return products;
     return products.filter(p => p.category === activeCategory);
   }, [products, activeCategory]);
+
+  async function handleAddCategory() {
+    const name = newCatName.trim();
+    if (!name) return;
+    if (!navigator.onLine) {
+      alert('Kategorien können nur bei bestehender Internetverbindung verwaltet werden.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shopId: getShopId(), name }),
+      });
+      if (!res.ok) throw new Error('Fehler beim Anlegen der Kategorie');
+      await downloadCategories();
+      setNewCatName('');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Fehler beim Anlegen der Kategorie');
+    }
+  }
+
+  async function handleRenameCategory(id: string, oldName: string) {
+    const newName = window.prompt('Neuer Name:', oldName);
+    if (!newName || !newName.trim() || newName.trim() === oldName) return;
+    if (!navigator.onLine) {
+      alert('Kategorien können nur bei bestehender Internetverbindung verwaltet werden.');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/categories/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName.trim() }),
+      });
+      if (!res.ok) throw new Error('Fehler beim Umbenennen der Kategorie');
+      await downloadCategories();
+      await downloadProducts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Fehler beim Umbenennen der Kategorie');
+    }
+  }
+
+  async function handleDeleteCategory(id: string) {
+    if (!navigator.onLine) {
+      alert('Kategorien können nur bei bestehender Internetverbindung verwaltet werden.');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+      if (res.status === 409) {
+        const data = await res.json() as { error: string };
+        alert(data.error);
+        return;
+      }
+      if (!res.ok) throw new Error('Fehler beim Löschen der Kategorie');
+      await downloadCategories();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Fehler beim Löschen der Kategorie');
+    }
+  }
 
   async function handleToggleActive(product: Product) {
     const newActive = !product.active;
@@ -177,6 +245,78 @@ export function ProductList() {
           </button>
         ))}
       </div>
+
+      {/* Kategorien verwalten */}
+      <div>
+        <button
+          onPointerDown={() => setShowCatModal(true)}
+          className="text-sky-600 text-sm underline"
+        >
+          Kategorien verwalten
+        </button>
+      </div>
+
+      {/* Kategorie-Verwaltungs-Modal */}
+      {showCatModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md flex flex-col gap-4 p-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-sky-800">Kategorien verwalten</h3>
+              <button
+                onPointerDown={() => setShowCatModal(false)}
+                className="text-slate-500 hover:text-slate-700 text-xl font-bold px-2 py-1 rounded-lg"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Kategorienliste */}
+            <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
+              {!dbCategories || dbCategories.length === 0 ? (
+                <p className="text-slate-500 text-sm text-center py-4">Noch keine Kategorien angelegt.</p>
+              ) : (
+                dbCategories.map(cat => (
+                  <div key={cat.id} className="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
+                    <span className="text-slate-800 font-medium">{cat.name}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onPointerDown={() => handleRenameCategory(cat.id, cat.name)}
+                        className="text-sky-600 text-sm hover:text-sky-800 px-2 py-1 rounded"
+                      >
+                        Umbenennen
+                      </button>
+                      <button
+                        onPointerDown={() => handleDeleteCategory(cat.id)}
+                        className="text-rose-600 text-sm hover:text-rose-800 px-2 py-1 rounded"
+                      >
+                        Löschen
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Neue Kategorie hinzufügen */}
+            <div className="flex gap-2 border-t border-slate-200 pt-4">
+              <input
+                type="text"
+                value={newCatName}
+                onChange={e => setNewCatName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddCategory()}
+                placeholder="Neue Kategorie..."
+                className="flex-1 h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
+              />
+              <button
+                onPointerDown={handleAddCategory}
+                className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-medium px-4 py-2 rounded-lg h-11 text-sm transition-colors"
+              >
+                Hinzufügen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sync-Ergebnis */}
       {syncResult && (

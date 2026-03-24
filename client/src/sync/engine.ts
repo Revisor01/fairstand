@@ -1,5 +1,5 @@
 import { db, getShopId } from '../db/index.js';
-import type { OutboxEntry, Product } from '../db/index.js';
+import type { OutboxEntry, Product, Category } from '../db/index.js';
 
 let flushing = false;
 
@@ -106,6 +106,17 @@ export async function downloadProducts(): Promise<number> {
   });
 
   return mapped.length;
+}
+
+export async function downloadCategories(): Promise<void> {
+  const shopId = getShopId();
+  const res = await fetch(`/api/categories?shopId=${shopId}`);
+  if (!res.ok) throw new Error(`Kategorie-Download fehlgeschlagen: ${res.status}`);
+  const serverCats = await res.json() as Category[];
+  await db.transaction('rw', db.categories, async () => {
+    await db.categories.where('shopId').equals(shopId).delete();
+    await db.categories.bulkPut(serverCats);
+  });
 }
 
 // Startup-Download wurde entfernt — App.tsx ruft downloadProducts() nach Login auf
