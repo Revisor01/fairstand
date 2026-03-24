@@ -1,5 +1,24 @@
 # Milestones
 
+## v5.0 Online-First Live Architecture (Shipped: 2026-03-24)
+
+**Phases completed:** 4 phases, 11 plans, 17 tasks
+
+**Key accomplishments:**
+
+- Report-Scheduler filtert jetzt stornierte Verkäufe (5 SQL-Queries), CORS akzeptiert keinen Wildcard-Default mehr sondern verlangt explizite CORS_ORIGIN Env-Var
+- Magic-Byte-Validierung und 30s Promise.race()-Timeout härten den PDF-Upload-Endpoint gegen Nicht-PDF-Uploads und indefinit blockierende Parser-Aufrufe
+- One-liner:
+- useProducts.ts
+- Four admin components migrated from useLiveQuery/Dexie to TanStack Query — reads from server, writes via mutations with automatic query invalidation
+- ArticleGrid im POS auf TanStack Query mit networkMode 'offlineFirst' umgestellt — Kasse zeigt gecachte Produkte wenn offline (LIVE-06), gleicher queryKey wie Admin für gemeinsamen Cache
+- @fastify/websocket-Endpoint /api/ws mit Token-Auth, shopId-basiertem broadcast() und Invalidierungs-Signalen aus products, categories und sync
+- completeSale/completeWithdrawal senden Verkäufe online direkt via POST /api/sync ohne Outbox-Umweg; useProducts/useCategories schreiben nach jedem Fetch fire-and-forget in Dexie als Offline-Cache für Phase 21.
+- One-liner:
+- flushOutbox() invalidiert nach Sync ['products', shopId] via optionalem QueryClient; POS-Header zeigt WifiOff-Badge bei fehlender Verbindung
+
+---
+
 ## v4.0 Datenqualität & Stabilität (Shipped: 2026-03-24)
 
 **Phases completed:** 11 phases, 17 plans, 28 tasks

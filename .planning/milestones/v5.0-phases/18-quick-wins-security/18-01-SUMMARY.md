@@ -107,6 +107,14 @@ CORS_ORIGIN=https://fairstand.godsapp.de,http://localhost:5173
 - Phase 18-02 (PDF-Parser-Timeout) und 18-03 (Rate-Limiting) können unabhängig fortgesetzt werden
 - CORS und Storno-Filter sind abgeschlossen — keine offenen Punkte aus diesem Plan
 
+## Self-Check: PASSED
+
+- FOUND: .planning/phases/18-quick-wins-security/18-01-SUMMARY.md
+- FOUND: server/src/scheduler/reportScheduler.ts
+- FOUND: server/src/index.ts
+- FOUND: commit 3ee1bae (fix: storno-filter reportScheduler)
+- FOUND: commit 138dcef (feat: CORS fail-closed, integriert in 18-03)
+
 ---
 *Phase: 18-quick-wins-security*
 *Completed: 2026-03-24*
