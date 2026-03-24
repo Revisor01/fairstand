@@ -75,7 +75,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Aus der Tagesübersicht heraus kann ein vollständiger Verkauf storniert werden — der Bestand aller enthaltenen Artikel wird zurückgebucht
   2. Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden — nur der Bestand des zurückgegebenen Artikels ändert sich
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 09-01-PLAN.md — Schemas (Dexie v4 + Drizzle), Server-Handler (SALE_CANCEL + ITEM_RETURN), UI (Storno-Button + Rückgabe-Buttons + visuelle Markierung)
 
 ## Progress
 
@@ -92,4 +95,4 @@ Phases execute in numeric order: 7 → 8 → 9
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete   | 2026-03-24 |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 1/2 | In Progress|  |
-| 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |
+| 9. Storno & Rückgabe | v2.0 | 0/1 | Not started | - |
