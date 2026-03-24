@@ -1,175 +1,208 @@
 import { useState } from 'react';
-import { NumPad } from './NumPad.js';
+import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
 interface PaymentFlowProps {
   totalCents: number;
+  items: CartItem[];
   onComplete: (paidCents: number, changeCents: number) => void;
   onCancel: () => void;
 }
 
-type PaymentStep = 'paid' | 'change';
-
-export function PaymentFlow({ totalCents, onComplete, onCancel }: PaymentFlowProps) {
-  const [step, setStep] = useState<PaymentStep>('paid');
-  const [paidCents, setPaidCents] = useState<number>(0);
+export function PaymentFlow({ totalCents, items, onComplete, onCancel }: PaymentFlowProps) {
+  const [inputStr, setInputStr] = useState<string>('');
   const [changeCents, setChangeCents] = useState<number>(0);
-  const [error, setError] = useState<string | null>(null);
 
-  const difference = paidCents - totalCents; // paidCents - Gesamtpreis
-  const donationCents = difference - changeCents;
+  // Betrag aus String berechnen
+  const parsed = parseFloat(inputStr.replace(',', '.'));
+  const paidCents = isNaN(parsed) || inputStr === '' ? 0 : Math.round(parsed * 100);
 
-  function handlePaidConfirm(cents: number) {
-    if (cents < totalCents) {
-      setError(`Bezahlter Betrag zu gering. Mindestens ${formatEur(totalCents)} nötig.`);
-      return;
-    }
-    setError(null);
-    setPaidCents(cents);
+  const difference = paidCents - totalCents;
+  const donationCents = Math.max(0, difference - changeCents);
+
+  const canComplete = paidCents >= totalCents;
+  const hasInput = inputStr !== '';
+  const tooLow = hasInput && paidCents > 0 && paidCents < totalCents;
+
+  // Wenn paidCents sich ändert, changeCents zurücksetzen
+  function handleNumpadInput(digit: string) {
+    setInputStr(prev => {
+      // Spezialfall: "," nur einmal erlauben
+      if (digit === ',' && prev.includes(',')) return prev;
+      // Spezialfall: "00" am Anfang nicht erlauben
+      if (digit === '00' && prev === '') return prev;
+      return prev + digit;
+    });
     setChangeCents(0);
-    setStep('change');
   }
 
-  function handleChangeConfirm(cents: number) {
-    const maxChange = paidCents - totalCents;
-    const safeChange = Math.min(cents, maxChange);
-    setChangeCents(safeChange);
+  function handleBackspace() {
+    setInputStr(prev => prev.slice(0, -1));
+    setChangeCents(0);
   }
 
-  function handleComplete() {
-    onComplete(paidCents, changeCents);
+  function handleKeinWechselgeld() {
+    setChangeCents(0);
   }
 
-  if (step === 'paid') {
-    return (
-      <div className="flex flex-col h-full">
-        {/* Header */}
-        <div className="px-6 pt-6 pb-2">
-          <h2 className="text-xl font-bold text-slate-800">Bezahlung</h2>
-          <p className="text-slate-500 mt-1">
-            Gesamtpreis: <span className="font-semibold text-slate-700">{formatEur(totalCents)}</span>
-          </p>
-          {error && (
-            <div className="mt-2 p-3 bg-rose-50 text-rose-600 rounded-xl text-sm">
-              {error}
-            </div>
-          )}
-        </div>
-
-        <div className="flex-1">
-          <NumPad
-            label="Bezahlter Betrag"
-            onConfirm={handlePaidConfirm}
-            onCancel={onCancel}
-          />
-        </div>
-      </div>
-    );
+  function handleAllesZurueck() {
+    setChangeCents(Math.max(0, difference));
   }
 
-  // step === 'change'
   return (
-    <div className="flex flex-col h-full">
-      {/* Info-Bereich */}
-      <div className="px-6 pt-6 pb-4 bg-sky-50 border-b border-sky-100">
-        <h2 className="text-xl font-bold text-slate-800 mb-3">Wechselgeld</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 bg-sky-50">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm p-6 space-y-5">
 
-        <div className="grid grid-cols-2 gap-3">
-          <InfoRow label="Gesamtpreis" value={formatEur(totalCents)} />
-          <InfoRow label="Bezahlt" value={formatEur(paidCents)} />
-          <InfoRow label="Differenz" value={formatEur(difference)} />
-          <InfoRow label="Wechselgeld" value={formatEur(changeCents)} />
+        {/* Kopfzeile */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold text-slate-800">Bezahlung</h2>
+          <button
+            onPointerDown={onCancel}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-400 hover:bg-sky-50 active:bg-sky-100 transition-colors"
+            aria-label="Bezahlung abbrechen"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        {/* Spende — live berechnet */}
-        <div className="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-          <p className="text-emerald-700 text-sm font-medium">Spende</p>
-          <p className="text-emerald-600 text-2xl font-bold">{formatEur(Math.max(0, donationCents))}</p>
+        {/* Artikelliste */}
+        <div className="max-h-40 overflow-y-auto space-y-1">
+          {items.map((item, idx) => (
+            <div key={`${item.productId}-${idx}`} className="flex justify-between items-center py-1">
+              <span className="text-sm text-slate-700 flex-1 truncate pr-2">{item.name}</span>
+              <span className="text-sm text-slate-500 shrink-0">
+                {item.quantity} × {formatEur(item.salePrice)}
+              </span>
+            </div>
+          ))}
         </div>
-      </div>
+        <div className="border-t border-sky-100" />
 
-      {/* Wechselgeld-Eingabe */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-6 pt-4">
-          <p className="text-slate-500 text-sm mb-3">
-            Wechselgeld eingeben (max. {formatEur(difference)})
-          </p>
+        {/* Gesamtsumme */}
+        <div className="flex justify-between items-center">
+          <span className="text-slate-500 text-sm">Gesamt</span>
+          <span className="text-2xl font-bold text-slate-800">{formatEur(totalCents)}</span>
+        </div>
+        <div className="border-t border-sky-100" />
 
-          {/* Schnell-Buttons für Wechselgeld */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <ChangeButton
-              label="Kein Wechselgeld"
-              onPress={() => setChangeCents(0)}
-              active={changeCents === 0}
-            />
-            <ChangeButton
-              label="Alles zurück"
-              onPress={() => setChangeCents(difference)}
-              active={changeCents === difference}
-            />
-          </div>
-
-          {/* Wechselgeld-Numpad */}
-          <NumPad
-            label={`Wechselgeld (max. ${formatEur(difference)})`}
-            onConfirm={handleChangeConfirm}
-            onCancel={() => {
-              setStep('paid');
-              setPaidCents(0);
-            }}
+        {/* Bezahlt-Eingabe */}
+        <div className="space-y-3">
+          <label className="text-slate-500 text-sm block">Bezahlt</label>
+          <input
+            type="text"
+            inputMode="decimal"
+            readOnly
+            value={inputStr}
+            placeholder="0,00"
+            className="w-full h-14 text-xl text-center border-2 border-sky-200 rounded-xl focus:border-sky-400 outline-none text-slate-800 font-semibold"
           />
-        </div>
-      </div>
 
-      {/* Abschließen-Button */}
-      <div className="px-6 pb-6 pt-2 bg-white border-t border-sky-100 shrink-0">
+          {/* Ziffernfeld */}
+          <div className="grid grid-cols-3 gap-2">
+            {['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(d => (
+              <button
+                key={d}
+                onPointerDown={() => handleNumpadInput(d)}
+                className="h-11 rounded-xl text-lg font-semibold text-slate-800 bg-sky-50 active:bg-sky-200 transition-colors"
+              >
+                {d}
+              </button>
+            ))}
+            <button
+              onPointerDown={() => handleNumpadInput('00')}
+              className="h-11 rounded-xl text-lg font-semibold text-slate-800 bg-sky-50 active:bg-sky-200 transition-colors"
+            >
+              00
+            </button>
+            <button
+              onPointerDown={() => handleNumpadInput('0')}
+              className="h-11 rounded-xl text-lg font-semibold text-slate-800 bg-sky-50 active:bg-sky-200 transition-colors"
+            >
+              0
+            </button>
+            <button
+              onPointerDown={() => handleNumpadInput(',')}
+              className="h-11 rounded-xl text-lg font-semibold text-slate-800 bg-sky-50 active:bg-sky-200 transition-colors"
+            >
+              ,
+            </button>
+            {/* Backspace über die volle Breite */}
+            <button
+              onPointerDown={handleBackspace}
+              className="col-span-3 h-11 rounded-xl text-slate-500 bg-slate-100 active:bg-slate-200 transition-colors flex items-center justify-center"
+              aria-label="Letzte Ziffer löschen"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Fehlerhinweis */}
+        {tooLow && (
+          <div className="bg-rose-50 text-rose-600 rounded-xl p-3 text-sm">
+            Betrag zu gering. Mindestens {formatEur(totalCents)} nötig.
+          </div>
+        )}
+
+        {/* Live-Ergebnis */}
+        {canComplete && (
+          <div className="space-y-3">
+            {/* Schnellauswahl */}
+            <div className="flex gap-2">
+              <button
+                onPointerDown={handleKeinWechselgeld}
+                className={`flex-1 min-h-[44px] rounded-full text-sm font-medium transition-colors ${
+                  changeCents === 0
+                    ? 'bg-sky-400 text-white'
+                    : 'bg-sky-100 text-sky-700 active:bg-sky-200'
+                }`}
+              >
+                Kein Wechselgeld
+              </button>
+              <button
+                onPointerDown={handleAllesZurueck}
+                className={`flex-1 min-h-[44px] rounded-full text-sm font-medium transition-colors ${
+                  changeCents === difference
+                    ? 'bg-sky-400 text-white'
+                    : 'bg-sky-100 text-sky-700 active:bg-sky-200'
+                }`}
+              >
+                Alles zurück
+              </button>
+            </div>
+
+            {/* Wechselgeld-Zeile */}
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 text-sm">Wechselgeld</span>
+              <span className="text-slate-800 font-semibold">{formatEur(changeCents)}</span>
+            </div>
+
+            {/* Spende */}
+            <div className="bg-emerald-50 rounded-xl p-3 flex justify-between items-center">
+              <span className="text-emerald-700 text-sm font-medium">Spende</span>
+              <span className="text-emerald-600 text-lg font-bold">{formatEur(donationCents)}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Abschließen-Button */}
         <button
-          onPointerDown={handleComplete}
-          className="
-            w-full h-14 rounded-xl text-xl font-semibold
-            bg-sky-400 text-slate-800
-            active:bg-sky-500 transition-colors
-          "
+          onPointerDown={() => canComplete && onComplete(paidCents, changeCents)}
+          disabled={!canComplete}
+          className={`w-full h-14 rounded-xl text-xl font-semibold transition-colors ${
+            canComplete
+              ? 'bg-sky-400 text-slate-800 active:bg-sky-500'
+              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+          }`}
         >
           Abschließen
         </button>
+
       </div>
     </div>
-  );
-}
-
-// --- Hilfskomponenten ---
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white rounded-xl px-3 py-2">
-      <p className="text-slate-400 text-xs">{label}</p>
-      <p className="text-slate-800 font-semibold">{value}</p>
-    </div>
-  );
-}
-
-function ChangeButton({
-  label,
-  onPress,
-  active,
-}: {
-  label: string;
-  onPress: () => void;
-  active: boolean;
-}) {
-  return (
-    <button
-      onPointerDown={onPress}
-      className={`
-        px-4 py-2 rounded-full text-sm font-medium min-h-[44px] transition-colors
-        ${active
-          ? 'bg-sky-400 text-white'
-          : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
-        }
-      `}
-    >
-      {label}
-    </button>
   );
 }
