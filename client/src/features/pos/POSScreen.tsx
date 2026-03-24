@@ -9,6 +9,7 @@ import { LowStockBanner } from './LowStockBanner.js';
 import { useCart } from './useCart.js';
 import { completeSale, completeWithdrawal } from './useSaleComplete.js';
 import { getStoredSession } from '../auth/serverAuth.js';
+import { useProducts } from '../../hooks/api/useProducts.js';
 
 type POSView = 'pos' | 'payment' | 'summary';
 
@@ -20,6 +21,7 @@ interface POSScreenProps {
 
 export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScreenProps) {
   const cart = useCart();
+  const { data: products = [] } = useProducts();
   const [view, setView] = useState<POSView>('pos');
   const [lastSale, setLastSale] = useState<Sale | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -53,6 +55,22 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
       return () => clearTimeout(t);
     }
   }, [cart.invalidItems]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Offline-Overlay — überschreibt gesamte UI bei fehlender Verbindung
+  if (!isOnline) {
+    return (
+      <div className="fixed inset-0 z-50 bg-sky-50 flex flex-col items-center justify-center gap-6 p-8">
+        <WifiOff size={64} className="text-sky-300" />
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-700 mb-2">Keine Internetverbindung</h2>
+          <p className="text-slate-500 text-sm max-w-xs">
+            Die Fairstand Kasse benötigt eine aktive Internetverbindung.
+            Bitte WLAN oder Mobilfunk aktivieren.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   async function handlePaymentComplete(paidCents: number, changeCents: number) {
     try {
@@ -105,7 +123,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
     if (reason === null) return; // Abbruch
     try {
       setError(null);
-      const sale = await completeWithdrawal(cart.items, reason);
+      const sale = await completeWithdrawal(cart.items, products, reason);
       setLastSale(sale);
       setView('summary');
       setIsCartOpen(false);

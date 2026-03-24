@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import type { Sale } from '../../../db/index.js';
-import { db } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
 
 interface SaleDetailModalProps {
@@ -17,30 +18,30 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
 
     const cancelledAt = Date.now();
 
-    // Lokaler Soft-Delete
-    await db.sales.update(sale.id, { cancelledAt });
-
-    // Bestand lokal für alle Items zurückbuchen
-    for (const item of sale.items) {
-      await db.products
-        .where('id')
-        .equals(item.productId)
-        .modify((p: { stock: number }) => { p.stock += item.quantity; });
-    }
-
-    // Outbox-Eintrag erstellen
-    await db.outbox.add({
-      operation: 'SALE_CANCEL',
-      payload: {
-        saleId: sale.id,
-        shopId: sale.shopId,
-        items: sale.items,
-        cancelledAt,
-      },
-      shopId: sale.shopId,
-      createdAt: Date.now(),
-      attempts: 0,
+    const headers = await getAuthHeaders();
+    const res = await fetch('/api/sync', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        entries: [{
+          operation: 'SALE_CANCEL',
+          payload: {
+            saleId: sale.id,
+            shopId: sale.shopId,
+            items: sale.items,
+            cancelledAt,
+          },
+          shopId: getShopId(),
+          createdAt: Date.now(),
+          attempts: 0,
+        }],
+      }),
     });
+
+    if (!res.ok) {
+      window.alert('Storno fehlgeschlagen. Bitte Internetverbindung prüfen.');
+      return;
+    }
 
     onSaleChanged?.();
     onClose();
@@ -49,30 +50,31 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
   async function handleReturnItem(productId: string, quantity: number) {
     const returnedAt = Date.now();
 
-    // Lokale Markierung des zurückgegebenen Artikels
-    const existing = sale.returnedItems ?? [];
-    await db.sales.update(sale.id, { returnedItems: [...existing, productId] });
-
-    // Bestand lokal zurückbuchen
-    await db.products
-      .where('id')
-      .equals(productId)
-      .modify((p: { stock: number }) => { p.stock += quantity; });
-
-    // Outbox-Eintrag erstellen
-    await db.outbox.add({
-      operation: 'ITEM_RETURN',
-      payload: {
-        saleId: sale.id,
-        shopId: sale.shopId,
-        productId,
-        quantity,
-        returnedAt,
-      },
-      shopId: sale.shopId,
-      createdAt: Date.now(),
-      attempts: 0,
+    const headers = await getAuthHeaders();
+    const res = await fetch('/api/sync', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        entries: [{
+          operation: 'ITEM_RETURN',
+          payload: {
+            saleId: sale.id,
+            shopId: sale.shopId,
+            productId,
+            quantity,
+            returnedAt,
+          },
+          shopId: getShopId(),
+          createdAt: Date.now(),
+          attempts: 0,
+        }],
+      }),
     });
+
+    if (!res.ok) {
+      window.alert('Rückgabe fehlgeschlagen. Bitte Internetverbindung prüfen.');
+      return;
+    }
 
     onSaleChanged?.();
     // Modal bleibt offen für weitere Rückgaben
