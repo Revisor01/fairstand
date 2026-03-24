@@ -2,6 +2,18 @@ import type { FastifyInstance } from 'fastify';
 import multipart from '@fastify/multipart';
 import { parseSuedNordKontorPdf } from '../lib/pdfParser.js';
 
+/**
+ * Prueft ob ein Buffer ein gueltiges PDF ist anhand der Magic Bytes.
+ * PDF-Dateien beginnen immer mit "%PDF" (0x25 0x50 0x44 0x46).
+ */
+function isPdf(buf: Buffer): boolean {
+  return buf.length >= 4 &&
+    buf[0] === 0x25 && // %
+    buf[1] === 0x50 && // P
+    buf[2] === 0x44 && // D
+    buf[3] === 0x46;   // F
+}
+
 export async function importRoutes(fastify: FastifyInstance) {
   await fastify.register(multipart, {
     limits: {
@@ -21,6 +33,9 @@ export async function importRoutes(fastify: FastifyInstance) {
 
     try {
       const buffer = await data.toBuffer();
+      if (!isPdf(buffer)) {
+        return reply.status(400).send({ error: 'Datei ist kein gültiges PDF (Magic Bytes ungültig)' });
+      }
       const rows = await parseSuedNordKontorPdf(buffer);
       return reply.send({ rows, filename: data.filename });
     } catch (err) {
