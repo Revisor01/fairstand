@@ -270,9 +270,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [x] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
-- [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
-- [x] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
+- [ ] 20-01-PLAN.md — Server: @fastify/websocket + /api/ws Route + broadcast() + Integration in products/categories/sync
+- [ ] 20-02-PLAN.md — Client: useSaleComplete Online-Direct-POST + Dexie Write-Through in useProducts/useCategories
+- [ ] 20-03-PLAN.md — Client: useWebSocket Hook + Cleanup (Sync-Button, Sync-Badge, downloadProducts entfernen)
 
 ### Phase 21: Offline-Fallback & Dexie als Cache
 **Goal**: Die Kasse funktioniert nahtlos offline und online — beim Verlassen des WLANs schaltet sie automatisch auf Dexie-Cache um, beim Reconnect flusht sie die Outbox und holt sich den aktuellen Stand
@@ -285,9 +285,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [x] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
-- [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
-- [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
+- [ ] 21-01-PLAN.md — TBD
+- [ ] 21-02-PLAN.md — TBD
+- [ ] 21-03-PLAN.md — TBD
 
 ## Progress
 
@@ -315,5 +315,5 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
+| 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/3 | Not started | - |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
