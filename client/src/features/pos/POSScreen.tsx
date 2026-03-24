@@ -22,6 +22,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const [lastSale, setLastSale] = useState<Sale | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [stockError, setStockError] = useState<string | null>(null);
 
   async function handlePaymentComplete(paidCents: number, changeCents: number) {
     try {
@@ -192,11 +193,24 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
       </header>
 
+      {/* Stock-Fehler Toast */}
+      {stockError && (
+        <div className="mx-4 mt-2 px-4 py-3 bg-rose-50 text-rose-700 text-sm rounded-xl shadow-sm">
+          {stockError}
+        </div>
+      )}
+
       {/* Artikel-Grid */}
       <div className="flex-1 overflow-hidden">
         <ArticleGrid onAddToCart={product => {
-          cart.addItem(product);
-          setIsCartOpen(true);
+          const result = cart.addItem(product);
+          if (!result.added) {
+            setStockError(`"${product.name}" ist nicht mehr auf Lager.`);
+            setTimeout(() => setStockError(null), 2500);
+          } else {
+            setStockError(null);
+            setIsCartOpen(true);
+          }
         }} />
       </div>
 
