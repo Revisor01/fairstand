@@ -9,8 +9,8 @@
 
 - [x] **SYNC-01**: Beim App-Start werden alle Produkte automatisch vom Server geladen (Server = Single Source of Truth)
 - [x] **SYNC-02**: Verkäufe die offline getätigt werden, werden automatisch zum Server hochgesynct wenn Internet verfügbar
-- [ ] **SYNC-03**: Jedes Gerät sieht denselben Produktbestand — Bestandsänderungen durch Verkäufe sind sofort nach Sync auf allen Geräten sichtbar
-- [ ] **SYNC-04**: Lokale Dexie-DB dient nur als Offline-Cache — Seed-Daten nur als Fallback wenn Server nicht erreichbar UND lokale DB leer
+- [x] **SYNC-03**: Jedes Gerät sieht denselben Produktbestand — Bestandsänderungen durch Verkäufe sind sofort nach Sync auf allen Geräten sichtbar
+- [x] **SYNC-04**: Lokale Dexie-DB dient nur als Offline-Cache — Seed-Daten nur als Fallback wenn Server nicht erreichbar UND lokale DB leer
 
 ### Multi-Laden
 
@@ -51,8 +51,8 @@
 |-------------|-------|--------|
 | SYNC-01 | Phase 7 | Complete |
 | SYNC-02 | Phase 7 | Complete |
-| SYNC-03 | Phase 7 | Pending |
-| SYNC-04 | Phase 7 | Pending |
+| SYNC-03 | Phase 7 | Complete |
+| SYNC-04 | Phase 7 | Complete |
 | SHOP-01 | Phase 7 | Complete |
 | SHOP-02 | Phase 7 | Complete |
 | SHOP-03 | Phase 7 | Complete |
