@@ -3,11 +3,12 @@ import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
 import { MonthlyReport } from './reports/MonthlyReport.js';
 import { SettingsForm } from './settings/SettingsForm.js';
+import { CategoryManager } from './settings/CategoryManager.js';
 import { ImportScreen } from './import/ImportScreen.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 import { getStoredSession } from '../auth/serverAuth.js';
 
-type AdminTab = 'products' | 'reports' | 'settings' | 'import';
+type AdminTab = 'products' | 'reports' | 'settings' | 'import' | 'categories';
 
 interface AdminScreenProps {
   onSwitchToPOS: () => void;
@@ -85,6 +86,14 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
             Import
           </button>
           <button
+            onPointerDown={() => setTab('categories')}
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
+              tab === 'categories' ? 'bg-sky-400 text-white' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
+          >
+            Kategorien
+          </button>
+          <button
             onPointerDown={() => setTab('settings')}
             className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap min-h-[44px] transition-colors ${
               tab === 'settings' ? 'bg-sky-400 text-white' : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
@@ -117,6 +126,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
               </>
             )}
             {tab === 'import' && <ImportScreen />}
+            {tab === 'categories' && <CategoryManager />}
             {tab === 'settings' && <SettingsForm />}
           </>
         )}
