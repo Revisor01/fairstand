@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Pure Online
 status: unknown
-stopped_at: Completed 22-03-PLAN.md
-last_updated: "2026-03-24T22:34:24.807Z"
+stopped_at: Completed 23-01-PLAN.md
+last_updated: "2026-03-24T22:50:02.367Z"
 progress:
   total_phases: 17
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 22 — PostgreSQL-Migration
+**Current focus:** Phase 23 — Dexie-Entfernung & Online-Only
 
 ## Current Position
 
-Phase: 22 (PostgreSQL-Migration) — EXECUTING
-Plan: 3 of 3
+Phase: 23 (Dexie-Entfernung & Online-Only) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: 3 of 3
 | Phase 22-postgresql-migration P01 | 4 | 2 tasks | 9 files |
 | Phase 22-postgresql-migration P02 | 5 | 2 tasks | 7 files |
 | Phase 22-postgresql-migration P03 | 8 | 2 tasks | 3 files |
+| Phase 23-dexie-entfernung-online-only P01 | 2 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 22-02]: await db.execute(sql).rows statt db.all() — node-postgres kennt kein .all()
 - [Phase 22-02]: const [row] = await db.select() mit Array-Destructuring statt .get() — idiomatisch fuer PG-Drizzle
 - [Phase 22-postgresql-migration]: Migrationsskript in server/scripts/ (standalone, kein Build-Teil) mit dynamischem better-sqlite3 Import und ON CONFLICT DO NOTHING Idempotenz
+- [Phase 23-dexie-entfernung-online-only]: Dexie-Typen direkt in db/index.ts definiert statt re-exportiert — schema.ts nicht mehr nötig
+- [Phase 23-dexie-entfernung-online-only]: useCart updateQuantity ohne Stock-Check — Validation bleibt bei addItem via checkStockBeforeAdd
 
 ### Pending Todos
 
@@ -79,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:34:24.805Z
-Stopped at: Completed 22-03-PLAN.md
+Last session: 2026-03-24T22:50:02.365Z
+Stopped at: Completed 23-01-PLAN.md
 Resume file: None

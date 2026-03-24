@@ -7,10 +7,10 @@
 
 ### Dexie Removal
 
-- [ ] **DEX-01**: Dexie.js, dexie-react-hooks und idb-keyval sind komplett aus dem Projekt entfernt (package.json, imports, code)
-- [ ] **DEX-02**: IndexedDB wird nirgends mehr verwendet — keine lokale Datenbank auf dem Client
-- [ ] **DEX-03**: Outbox-Pattern komplett entfernt — kein sync/engine.ts, kein sync/triggers.ts, kein flushOutbox
-- [ ] **DEX-04**: Warenkorb wird in TanStack Query / React State gehalten, nicht in IndexedDB
+- [x] **DEX-01**: Dexie.js, dexie-react-hooks und idb-keyval sind komplett aus dem Projekt entfernt (package.json, imports, code)
+- [x] **DEX-02**: IndexedDB wird nirgends mehr verwendet — keine lokale Datenbank auf dem Client
+- [x] **DEX-03**: Outbox-Pattern komplett entfernt — kein sync/engine.ts, kein sync/triggers.ts, kein flushOutbox
+- [x] **DEX-04**: Warenkorb wird in TanStack Query / React State gehalten, nicht in IndexedDB
 - [ ] **DEX-05**: Sales/Reports werden ausschließlich vom Server geladen (TQ queries), kein lokales Dexie-Query
 
 ### PostgreSQL Migration
@@ -46,10 +46,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEX-01 | Phase 23 | Pending |
-| DEX-02 | Phase 23 | Pending |
-| DEX-03 | Phase 23 | Pending |
-| DEX-04 | Phase 23 | Pending |
+| DEX-01 | Phase 23 | Complete |
+| DEX-02 | Phase 23 | Complete |
+| DEX-03 | Phase 23 | Complete |
+| DEX-04 | Phase 23 | Complete |
 | DEX-05 | Phase 23 | Pending |
 | PG-01 | Phase 22 | Complete |
 | PG-02 | Phase 22 | Complete |
