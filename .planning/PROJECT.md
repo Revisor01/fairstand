@@ -26,17 +26,15 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Touch-optimiertes Design für iPad/iPhone — v1.0
 - ✓ CI/CD mit GitHub Actions + Portainer Auto-Deploy — v1.0
 
+- ✓ Server als Single Source of Truth — bidirektionaler Sync, Dexie nur Offline-Cache — v2.0
+- ✓ Multi-Laden mit PIN-Authentifizierung — shops-Tabelle, PIN öffnet Laden — v2.0
+- ✓ Bestandsprüfung in der Kasse — Preis + Bestand im Grid, Überverkauf blockiert — v2.0
+- ✓ Verkaufshistorie — anklickbare Tagesübersicht + Artikel-Statistik — v2.0
+- ✓ Storno & Rückgabe — Verkauf stornieren, Einzelartikel zurückgeben — v2.0
+
 ### Active
 
-## Current Milestone: v2.0 Server-Sync, Multi-Laden & Kernfunktionen
-
-**Goal:** Server als Single Source of Truth mit Multi-Laden-Architektur. Architektur-Fehler aus v1.x beheben (jedes Gerät war isoliert) + fehlende Kernfunktionen (Storno, Bestandsprüfung, Verkaufshistorie).
-
-**Target features:**
-- Server-Sync + Multi-Laden (PIN pro Shop, Laden-Config in DB, bidirektionaler Sync)
-- Verkaufshistorie pro Artikel + Gesamtübersicht
-- Storno/Rückgabe
-- Bestandsprüfung in der Kasse (Preis groß, Bestand klein, Überverkauf blockiert)
+(Keine aktiven Requirements — nächster Milestone definiert neue)
 
 ### Out of Scope
 
@@ -59,12 +57,12 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v1.1 shipped, v2.0 starting)
+### Current State (v2.0 shipped)
 
 - Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- v1.0: 4 Phasen, v1.1: 2 Phasen (Tech Debt + Deployment)
+- 9 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD
-- **Kritisches Problem:** Jedes Gerät hat isolierte Dexie-DB — Server ist nicht Single Source of Truth. Multi-Laden hardcoded. Muss in v2.0 grundlegend umgebaut werden.
+- Server ist Single Source of Truth, Multi-Laden mit PIN, Bestandsprüfung, Storno/Rückgabe
 
 ## Constraints
 
@@ -82,7 +80,7 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | PWA statt native App | Kein App Store nötig, läuft auf allen Geräten, sofortige Updates | ✓ Good — funktioniert offline auf iPad |
 | Offline-First mit Dexie.js + Outbox | Kein WLAN in der Kirche, Delta-Sync wenn online | ✓ Good — zuverlässig auch ohne Netz |
 | PDF-Parsing serverseitig mit pdfjs-dist | Konsistentes TCPDF-Format, iPad-Entlastung | ✓ Good — koordinatenbasiert, alle Spalten erkannt |
-| Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | ⚠️ Revisit — hardcoded shopId, kein Server-Sync, v2.0 fixt das |
+| Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | ✓ Fixed v2.0 — shops-Tabelle, PIN-Auth, dynamischer shopId |
 | Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
 | Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ✓ Fixed — PATCH deactivate + Download-Sync in Phase 5 |
 
@@ -91,4 +89,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v2.0 milestone start*
+*Last updated: 2026-03-24 after v2.0 milestone shipped*

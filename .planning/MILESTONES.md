@@ -1,5 +1,20 @@
 # Milestones
 
+## v2.0 Server-Sync, Multi-Laden & Kernfunktionen (Shipped: 2026-03-24)
+
+**Phases completed:** 3 phases, 6 plans, 8 tasks
+
+**Key accomplishments:**
+
+- shops-Tabelle in Drizzle + POST /api/auth/pin Endpoint + idempotenter Seed mit Shop "St. Secundus Hennstedt" und 33 Produkten
+- Server-PIN-Auth mit idb-keyval-Session + dynamischer shopId-Modul-Variable ersetzt hardcodierte SHOP_ID-Konstante; Dexie auf Version 3 mit products.clear()-Upgrade
+- One-liner:
+- Artikelkacheln zeigen Bestand (Ausverkauft/Noch X/X Stk.) via AddItemResult-Pattern mit 6 Vitest Unit-Tests
+- Tippbare Verkaufszeilen in DailyReport mit SaleDetailModal (Artikel-Breakdown offline) und serverseitiger Artikel-Statistik via ProductStats-Komponente mit GET /api/reports/product/:id/stats
+- Storno (STOR-01):
+
+---
+
 ## v1.0 Fairstand Kassensystem (Shipped: 2026-03-23)
 
 **Phases completed:** 4 phases, 10 plans, 17 tasks
