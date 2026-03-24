@@ -101,7 +101,11 @@ Plans:
   3. Der Shop-Name ist in der Titelzeile oben sichtbar, ohne dass man dafür navigieren muss
   4. Das Gesamtlayout hat mehr Whitespace — Elemente sind großzügig gesetzt, nichts wirkt gedrängt
   5. Der Admin-Bereich ist kompakt und übersichtlich — alle Einstellungen ohne Scrollen findbar
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — PaymentFlow-Redesign (Ein-Screen, Artikelliste, Live-Berechnung) + Shop-Name in POS- und Admin-Header
+- [ ] 10-02-PLAN.md — Spacing-Erhöhung ArticleGrid + Pill-Tabs in AdminScreen
 
 ### Phase 11: Produktbilder & PDF-Parsing
 **Goal**: Artikelkacheln zeigen Produktbilder und Rechnungen werden vollständig korrekt in Menge, Artikelnummer und Preis geparst
@@ -148,7 +152,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete | 2026-03-24 |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
-| 10. UI-Redesign | v3.0 | 0/? | Not started | - |
+| 10. UI-Redesign | v3.0 | 0/2 | Not started | - |
 | 11. Produktbilder & PDF-Parsing | v3.0 | 0/? | Not started | - |
 | 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
