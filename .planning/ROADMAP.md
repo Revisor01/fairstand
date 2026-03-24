@@ -152,7 +152,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete | 2026-03-24 |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
-| 10. UI-Redesign | v3.0 | 2/2 | Complete   | 2026-03-24 |
+| 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
 | 11. Produktbilder & PDF-Parsing | v3.0 | 0/? | Not started | - |
 | 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
