@@ -34,7 +34,17 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Keine aktiven Requirements — nächster Milestone definiert neue)
+## Current Milestone: v3.0 Polish, Bilder & Redesign
+
+**Goal:** UI-Redesign (luftiger, kompakter, stylischer), Produktbilder, besseres PDF-Parsing, Bestandsampel, Umlaute, README + Lizenz.
+
+**Target features:**
+- Redesign: Kassendialog kompakt, Bezahlseite mit Artikeln, Live-Berechnung, Shop-Name in Titelzeile
+- Produktbilder aus Kontor-Website + Etiketten-PDFs
+- Bestandsampel (grün/gelb/rot)
+- PDF-Parsing verbessern
+- Umlaute überall (öäüß)
+- README + Lizenz auf GitHub
 
 ### Out of Scope
 
@@ -89,4 +99,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v2.0 milestone shipped*
+*Last updated: 2026-03-24 after v3.0 milestone start*

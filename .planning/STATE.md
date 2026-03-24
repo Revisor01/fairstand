@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
-status: unknown
-stopped_at: Completed 09-storno-rueckgabe-01-PLAN.md
-last_updated: "2026-03-24T11:01:11.532Z"
+milestone: v3.0
+milestone_name: Polish, Bilder & Redesign
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-24T12:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
