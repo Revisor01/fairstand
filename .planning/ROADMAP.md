@@ -312,8 +312,8 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 22-01-PLAN.md — Docker-Infra (docker-compose PostgreSQL), Drizzle Schema pgTable, DB-Connection Pool
-- [ ] 22-02-PLAN.md — Async-Refactor aller Routes + seed.ts + reportScheduler.ts + PostgreSQL-SQL
+- [x] 22-01-PLAN.md — Docker-Infra (docker-compose PostgreSQL), Drizzle Schema pgTable, DB-Connection Pool
+- [x] 22-02-PLAN.md — Async-Refactor aller Routes + seed.ts + reportScheduler.ts + PostgreSQL-SQL
 - [ ] 22-03-PLAN.md — Datenmigrationsskript SQLite→PostgreSQL + better-sqlite3 entfernen
 
 ### Phase 23: Dexie-Entfernung & Online-Only
@@ -360,5 +360,5 @@ Phases execute in numeric order: 22 → 23
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
-| 22. PostgreSQL-Migration | v6.0 | 0/? | Not started | - |
+| 22. PostgreSQL-Migration | v6.0 | 2/3 | In Progress|  |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 0/? | Not started | - |
