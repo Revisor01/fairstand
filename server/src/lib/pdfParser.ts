@@ -41,7 +41,9 @@ function groupByRows(items: PdfTextItem[], tolerance = 2): PdfTextItem[][] {
 }
 
 /**
- * Zeile ist eine Rechnungsposition wenn das erste Item eine laufende Nummer ist (z.B. "1.", "12.").
+ * Zeile ist eine Positionsnummer-Zeile wenn das erste und einzige Item
+ * eine laufende Nummer ist (z.B. "1.", "12.").
+ * Beide Rechnungsformate trennen die Positionsnummer in eine eigene Zeile.
  */
 function isInvoiceRow(row: PdfTextItem[]): boolean {
   if (row.length === 0) return false;
@@ -102,10 +104,6 @@ function extractEvp(designation: string): { cleanName: string; evpCents: number 
 
 /**
  * Prüft ob ein Text-Item im X-Bereich der Bezeichnungsspalte liegt.
- * Die Bezeichnungsspalte liegt typischerweise nach der Artikelnummer (x > 100)
- * und vor den Preis-Spalten.
- * Wir verwenden einen pragmatischen Ansatz: Items zwischen Index 2 und vorletztem
- * Euro-Item in einer bekannten Hauptzeile als Bezeichnungs-X-Bereich.
  */
 function isInDesignationXRange(item: PdfTextItem, minX: number, maxX: number): boolean {
   const x = item.transform[4];
@@ -113,122 +111,105 @@ function isInDesignationXRange(item: PdfTextItem, minX: number, maxX: number): b
 }
 
 /**
- * Parsed eine einzelne Rechnungszeile und moeglicherweise Fortsetzungszeilen.
- * Gibt die ParsedInvoiceRow oder null bei Fehler zurueck.
+ * Parsed eine einzelne Rechnungszeile.
+ *
+ * Layout (beide Formate):
+ *   dataRow = [Menge, Artikelnummer, Bezeichnung..., (Rabatt%), Preis/St., MwSt%, Gesamt]
+ *
+ * Strategie "von hinten zählen":
+ *   - letztes €-Item = Gesamt (verwerfen)
+ *   - vorletztes €-Item = Preis/St.
+ *   - letztes %-Item = MwSt (7 oder 19)
+ *   - %-Item vor Preis/St. = Rabatt (ignorieren, kein parseWarning)
+ *   - Bezeichnung = Items zwischen Index 2 und dem frühesten Preis/Prozent-Item
  */
 function parseInvoiceRowFromItems(
-  mainRow: PdfTextItem[],
+  lineNumber: number,
+  dataRow: PdfTextItem[],
   continuationRows: PdfTextItem[][]
 ): ParsedInvoiceRow | null {
   const warnings: string[] = [];
 
-  // Laufende Nummer aus erstem Item (z.B. "1.") -> lineNumber = 1
-  const lineNumberStr = mainRow[0].str.trim().replace('.', '');
-  const lineNumber = parseInt(lineNumberStr, 10);
-  if (isNaN(lineNumber)) return null;
-
-  // Items ohne das laufende Nummer-Item
-  const items = mainRow.slice(1);
-
-  if (items.length < 3) {
+  if (dataRow.length < 3) {
     warnings.push('Zu wenige Spalten in Zeile');
   }
 
-  // Item 0 (nach Nummer): Menge
-  const quantityStr = items[0]?.str.trim() ?? '';
+  // Item 0: Menge
+  const quantityStr = dataRow[0]?.str.trim() ?? '';
   const quantity = parseInt(quantityStr, 10);
   if (isNaN(quantity)) {
     warnings.push(`Ungueltige Menge: "${quantityStr}"`);
   }
 
   // Item 1: Artikelnummer
-  const articleNumber = items[1]?.str.trim() ?? '';
+  const articleNumber = dataRow[1]?.str.trim() ?? '';
   if (!articleNumber) {
     warnings.push('Artikelnummer fehlt');
   }
 
-  // Bezeichnung: Items 2 bis N, dabei Euro-Items (enthalten "€") und Prozent-Items am Ende raushalten
-  // Strategie: Von hinten nach vorne Euro- und Prozent-Items als Preis/MwSt identifizieren
-  let purchasePriceCents: number | null = null;
-  let vatRate: 7 | 19 | null = null;
+  // Finde Euro- und Prozent-Items ab Index 2
+  const euroIndices: number[] = [];
+  const percentIndices: number[] = [];
 
-  // Finde von hinten: letztes %-Item = MwSt, vorletztes €-Item = Preis/St., letztes €-Item = Gesamt
-  const euroItems: number[] = [];
-  const percentItems: number[] = [];
-
-  for (let i = 2; i < items.length; i++) {
-    const str = items[i].str.trim();
-    if (str.includes('%')) percentItems.push(i);
-    else if (str.includes('€') && str !== '€') euroItems.push(i);
-    // Manche PDFs haben "€" als separates Token — nur Items mit tatsaechlichem Wert
+  for (let i = 2; i < dataRow.length; i++) {
+    const str = dataRow[i].str.trim();
+    if (str.includes('%')) {
+      percentIndices.push(i);
+    } else if (str.includes('€') && str !== '€') {
+      // Nur Items mit echtem Wert (nicht alleinstehendes "€"-Token)
+      euroIndices.push(i);
+    }
   }
 
-  // Letztes %-Item: MwSt
-  if (percentItems.length > 0) {
-    const mwstIdx = percentItems[percentItems.length - 1];
-    const mwst = parseMwSt(items[mwstIdx].str);
-    if (mwst !== null) {
-      vatRate = mwst;
-    } else {
-      // Koennte Rabatt-Spalte sein (z.B. "30 %") — suche weiteres %-Item
-      if (percentItems.length > 1) {
-        const mwstIdx2 = percentItems[percentItems.length - 2];
-        // Nein, nur das letzte ist MwSt (Rabatt kommt vor Preis/St.)
-        // Versuche das vorletzte %-Item falls das letzte kein gueltiger MwSt-Satz ist
-        const mwst2 = parseMwSt(items[mwstIdx2].str);
-        if (mwst2 !== null) {
-          vatRate = mwst2;
-        } else {
-          warnings.push(`Unbekannter MwSt-Satz: "${items[mwstIdx].str}"`);
-        }
-      } else {
-        warnings.push(`Unbekannter MwSt-Satz: "${items[mwstIdx].str}"`);
-      }
+  // MwSt: letztes %-Item muss 7 oder 19 sein
+  let vatRate: 7 | 19 | null = null;
+  if (percentIndices.length > 0) {
+    const mwstIdx = percentIndices[percentIndices.length - 1];
+    vatRate = parseMwSt(dataRow[mwstIdx].str);
+    if (vatRate === null) {
+      warnings.push(`Unbekannter MwSt-Satz: "${dataRow[mwstIdx].str}"`);
     }
   } else {
     warnings.push('MwSt nicht gefunden');
   }
 
-  // Euro-Items: letztes = Gesamt (verwerfen), vorletztes = Preis/St.
-  // Aber: Rabatt-Spalte ist leer oder "30 %" — kein Euro-Item
-  // Daher: zweitletztes Euro-Item ist Preis/St., letztes ist Gesamt
-  if (euroItems.length >= 2) {
-    const priceIdx = euroItems[euroItems.length - 2];
-    const priceVal = parseEuroCents(items[priceIdx].str);
+  // Preis/St.: zweitletztes €-Item (letztes ist Gesamt)
+  let purchasePriceCents: number | null = null;
+  if (euroIndices.length >= 2) {
+    const priceIdx = euroIndices[euroIndices.length - 2];
+    const priceVal = parseEuroCents(dataRow[priceIdx].str);
     if (priceVal !== null) {
       purchasePriceCents = priceVal;
     } else {
-      warnings.push(`Ungültiger Preis/St.: "${items[priceIdx].str}"`);
+      warnings.push(`Ungültiger Preis/St.: "${dataRow[priceIdx].str}"`);
     }
-  } else if (euroItems.length === 1) {
-    // Nur ein Euro-Item: koennte Preis/St. sein ohne Gesamt-Spalte auf dieser Zeile
-    const priceVal = parseEuroCents(items[euroItems[0]].str);
+  } else if (euroIndices.length === 1) {
+    // Nur ein €-Item: koennte Preis/St. sein ohne Gesamt-Spalte auf dieser Zeile
+    const priceVal = parseEuroCents(dataRow[euroIndices[0]].str);
     if (priceVal !== null) {
       purchasePriceCents = priceVal;
     } else {
-      warnings.push(`Ungültiger Preis: "${items[euroItems[0]].str}"`);
+      warnings.push(`Ungültiger Preis: "${dataRow[euroIndices[0]].str}"`);
     }
   } else {
     warnings.push('Preis/St. nicht gefunden');
   }
 
-  // Bezeichnung: alle Items zwischen Artikelnummer und erstem Preis/Prozent-Item
-  const firstPriceOrPercentIdx = Math.min(
-    ...[...euroItems, ...percentItems].filter((i) => i >= 2)
-  );
+  // Bezeichnung: alle Items zwischen Index 2 und dem frühesten €/%-Item
+  // Das früheste solcher Items bestimmt die rechte Grenze der Bezeichnung
+  const allPriceIndices = [...euroIndices, ...percentIndices].filter((i) => i >= 2);
+  const firstPriceIdx = allPriceIndices.length > 0 ? Math.min(...allPriceIndices) : dataRow.length;
 
-  let designationItems = items.slice(2, isFinite(firstPriceOrPercentIdx) ? firstPriceOrPercentIdx : undefined);
+  let designationItems = dataRow.slice(2, firstPriceIdx);
   let designationText = designationItems.map((i) => i.str.trim()).join(' ');
 
   // Fortsetzungszeilen hinzufuegen (mehrzeilige Bezeichnungen)
-  // X-Bereich der Bezeichnungsspalte aus Hauptzeile bestimmen
-  const designationMinX = items[2]?.transform[4] ?? 0;
-  const designationMaxX = firstPriceOrPercentIdx < items.length
-    ? items[firstPriceOrPercentIdx].transform[4]
+  const designationMinX = dataRow[2]?.transform[4] ?? 0;
+  const designationMaxX = firstPriceIdx < dataRow.length
+    ? dataRow[firstPriceIdx].transform[4]
     : 999;
 
   for (const contRow of continuationRows) {
-    // Nur Items im X-Bereich der Bezeichnungsspalte
     const contItems = contRow.filter((item) =>
       isInDesignationXRange(item, designationMinX - 10, designationMaxX + 10)
     );
@@ -240,7 +221,7 @@ function parseInvoiceRowFromItems(
 
   designationText = designationText.trim();
 
-  // EVP aus kombinierter Bezeichnung extrahieren (nach Zusammenfuegen aller Zeilen)
+  // EVP aus kombinierter Bezeichnung extrahieren
   const { cleanName, evpCents } = extractEvp(designationText);
 
   const row: ParsedInvoiceRow = {
@@ -263,6 +244,10 @@ function parseInvoiceRowFromItems(
 /**
  * Parsed alle Seiten einer Sued-Nord-Kontor-Rechnung.
  * Liefert ein Array mit allen erkannten Rechnungspositionen.
+ *
+ * Layout-Erkenntnis: Die Positionsnummer ("1.", "2.", ...) steht in einer eigenen
+ * Zeile, direkt gefolgt von der Datenzeile (Menge, Artikelnummer, Bezeichnung, etc.).
+ * Beide Rechnungsformate (mit und ohne Rabatt-Spalte) folgen diesem Muster.
  */
 export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   const uint8Array = new Uint8Array(buffer);
@@ -278,7 +263,6 @@ export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvo
 
     const rowGroups = groupByRows(textItems);
 
-    // Zeilen iterieren: Rechnungszeilen erkennen, Fortsetzungszeilen sammeln
     let i = 0;
     while (i < rowGroups.length) {
       const row = rowGroups[i];
@@ -293,26 +277,43 @@ export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvo
         continue;
       }
 
-      // Rechnungszeile gefunden — Fortsetzungszeilen sammeln (max 2)
+      // Positionsnummer-Zeile gefunden — Zeilennummer extrahieren
+      const lineNumberStr = row[0].str.trim().replace('.', '');
+      const lineNumber = parseInt(lineNumberStr, 10);
+      if (isNaN(lineNumber)) {
+        i++;
+        continue;
+      }
+
+      // Nächste Zeile: Datenzeile mit Menge, Artikelnummer, Bezeichnung, Preis usw.
+      // Diese Zeile darf keine Positionsnummer sein (ist sie nie in den Rechnungen)
+      let dataRow: PdfTextItem[] | null = null;
       const continuationRows: PdfTextItem[][] = [];
       let j = i + 1;
-      while (j < rowGroups.length && continuationRows.length < 2) {
-        const nextRow = rowGroups[j];
-        // Naechste Zeile ist Rechnungszeile oder Header -> stoppen
-        if (isInvoiceRow(nextRow) || isHeaderRow(nextRow)) break;
-        // Nur Zeilen hinzufuegen die nicht leer sind
-        if (nextRow.length > 0) {
-          continuationRows.push(nextRow);
-        }
+
+      if (j < rowGroups.length && !isInvoiceRow(rowGroups[j]) && !isHeaderRow(rowGroups[j])) {
+        dataRow = rowGroups[j];
         j++;
+
+        // Weitere Zeilen: Fortsetzungszeilen fuer mehrzeilige Bezeichnungen (max 3)
+        while (j < rowGroups.length && continuationRows.length < 3) {
+          const nextRow = rowGroups[j];
+          if (isInvoiceRow(nextRow) || isHeaderRow(nextRow)) break;
+          if (nextRow.length > 0) {
+            continuationRows.push(nextRow);
+          }
+          j++;
+        }
       }
 
-      const parsed = parseInvoiceRowFromItems(row, continuationRows);
-      if (parsed) {
-        allRows.push(parsed);
+      if (dataRow && dataRow.length > 0) {
+        const parsed = parseInvoiceRowFromItems(lineNumber, dataRow, continuationRows);
+        if (parsed) {
+          allRows.push(parsed);
+        }
       }
 
-      i = j; // Weiter nach den Fortsetzungszeilen
+      i = j;
     }
   }
 
