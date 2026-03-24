@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
-import { db, getShopId } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
 import type { Sale } from '../../../db/index.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
 import { startOfDay, endOfDay, subDays, format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -22,16 +23,34 @@ export function DailyReport() {
   const dayStart = useMemo(() => startOfDay(selectedDate).getTime(), [selectedDate]);
   const dayEnd = useMemo(() => endOfDay(selectedDate).getTime(), [selectedDate]);
 
-  const sales = useLiveQuery(
-    () =>
-      db.sales
-        .where('createdAt')
-        .between(dayStart, dayEnd)
-        .filter(s => s.shopId === getShopId())
-        .toArray(),
-    [dayStart, dayEnd],
-    []
-  );
+  const { data: sales = [] } = useQuery<Sale[]>({
+    queryKey: ['sales', getShopId(), dayStart, dayEnd],
+    queryFn: async () => {
+      const shopId = getShopId();
+      const headers = await getAuthHeaders();
+      const res = await fetch(
+        `/api/sales?shopId=${shopId}&from=${dayStart}&to=${dayEnd}`,
+        { headers }
+      );
+      if (!res.ok) throw new Error('Verkäufe konnten nicht geladen werden');
+      const data = await res.json() as Record<string, unknown>[];
+      // Server gibt snake_case zurück — mappen
+      return data.map(s => ({
+        id: s.id as string,
+        shopId: (s.shop_id ?? s.shopId) as string,
+        items: (s.items ?? []) as Sale['items'],
+        totalCents: (s.total_cents ?? s.totalCents ?? 0) as number,
+        paidCents: (s.paid_cents ?? s.paidCents ?? 0) as number,
+        changeCents: (s.change_cents ?? s.changeCents ?? 0) as number,
+        donationCents: (s.donation_cents ?? s.donationCents ?? 0) as number,
+        type: (s.type ?? 'sale') as Sale['type'],
+        withdrawalReason: (s.withdrawal_reason ?? s.withdrawalReason) as string | undefined,
+        createdAt: (s.created_at ?? s.createdAt) as number,
+        cancelledAt: (s.cancelled_at ?? s.cancelledAt) as number | undefined,
+        returnedItems: (s.returned_items ?? s.returnedItems) as string[] | undefined,
+      }));
+    },
+  });
 
   const stats = useMemo(() => {
     if (!sales) return { count: 0, totalCents: 0, donationCents: 0, withdrawalCents: 0 };
