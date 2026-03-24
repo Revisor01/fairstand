@@ -24,6 +24,7 @@ export const sales = sqliteTable('sales', {
   paidCents: integer('paid_cents').notNull(),
   changeCents: integer('change_cents').notNull(),
   donationCents: integer('donation_cents').notNull(),
+  type: text('type'), // 'sale' | 'withdrawal' | null (null = sale for backwards compat)
   createdAt: integer('created_at').notNull(),
   syncedAt: integer('synced_at'),
   cancelledAt: integer('cancelled_at'),
