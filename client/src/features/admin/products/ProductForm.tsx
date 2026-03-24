@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
+import { downloadCategories } from '../../../sync/engine.js';
 
 interface ProductFormProps {
   product?: Product;
@@ -46,6 +48,20 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const dbCategories = useLiveQuery(
+    () => db.categories.where('shopId').equals(getShopId()).sortBy('name'),
+    []
+  );
+
+  // Kategorien laden falls Tabelle leer ist (fire-and-forget)
+  useLiveQuery(async () => {
+    const count = await db.categories.where('shopId').equals(getShopId()).count();
+    if (count === 0 && navigator.onLine) {
+      downloadCategories().catch(() => {});
+    }
+    return count;
+  }, []);
 
   function handleChange(field: keyof FormValues, value: string) {
     setValues(prev => ({ ...prev, [field]: value }));
@@ -175,13 +191,19 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-slate-600">Kategorie</label>
-          <input
-            type="text"
+          <select
             value={values.category}
             onChange={e => handleChange('category', e.target.value)}
-            className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400"
-            placeholder="z.B. Schokolade"
-          />
+            className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400 bg-white"
+          >
+            <option value="">-- keine Kategorie --</option>
+            {values.category && !dbCategories?.some(c => c.name === values.category) && (
+              <option value={values.category}>{values.category} (nicht mehr in Liste)</option>
+            )}
+            {dbCategories?.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

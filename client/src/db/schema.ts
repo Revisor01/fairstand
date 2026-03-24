@@ -1,5 +1,13 @@
 import Dexie, { type EntityTable } from 'dexie';
 
+export interface Category {
+  id: string;
+  shopId: string;
+  name: string;
+  sortOrder: number;
+  createdAt: number;
+}
+
 export interface Product {
   id: string;
   shopId: string;
@@ -58,6 +66,7 @@ export class FairstandDB extends Dexie {
   sales!: EntityTable<Sale, 'id'>;
   outbox!: EntityTable<OutboxEntry, 'id'>;
   cartItems!: EntityTable<PersistedCartItem, 'productId'>;
+  categories!: EntityTable<Category, 'id'>;
 
   constructor() {
     super('fairstand-db');
@@ -112,6 +121,13 @@ export class FairstandDB extends Dexie {
       sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
       outbox: '++id, shopId, createdAt, operation',
       cartItems: 'productId, shopId', // productId = PK, shopId = Index für Shop-Isolation
+    });
+    this.version(8).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
+      outbox: '++id, shopId, createdAt, operation',
+      cartItems: 'productId, shopId',
+      categories: 'id, shopId, name',
     });
   }
 }
