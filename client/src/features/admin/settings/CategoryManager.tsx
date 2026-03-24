@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { PenLine, Trash2, Plus } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import { downloadCategories, downloadProducts } from '../../../sync/engine.js';
 
@@ -70,22 +71,22 @@ export function CategoryManager() {
           <p className="text-slate-500 text-sm text-center py-4">Noch keine Kategorien angelegt.</p>
         ) : (
           categories.map(cat => (
-            <div key={cat.id} className="flex flex-col gap-2 bg-white rounded-xl shadow-sm px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-slate-800 font-medium text-base leading-snug">{cat.name}</span>
-              <div className="flex items-center gap-2">
-                <button
-                  onPointerDown={() => handleRename(cat.id, cat.name)}
-                  className="flex-1 sm:flex-none bg-sky-100 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-base transition-colors"
-                >
-                  Umbenennen
-                </button>
-                <button
-                  onPointerDown={() => handleDelete(cat.id)}
-                  className="flex-1 sm:flex-none bg-rose-100 active:bg-rose-300 text-rose-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-base transition-colors"
-                >
-                  Löschen
-                </button>
-              </div>
+            <div key={cat.id} className="flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3">
+              <span className="text-slate-800 font-medium text-base leading-snug flex-1 min-w-0 truncate">{cat.name}</span>
+              <button
+                onPointerDown={() => handleRename(cat.id, cat.name)}
+                title="Umbenennen"
+                className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors shrink-0"
+              >
+                <PenLine size={18} />
+              </button>
+              <button
+                onPointerDown={() => handleDelete(cat.id)}
+                title="Löschen"
+                className="bg-rose-100 active:bg-rose-300 text-rose-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors shrink-0"
+              >
+                <Trash2 size={18} />
+              </button>
             </div>
           ))
         )}
@@ -103,9 +104,10 @@ export function CategoryManager() {
         />
         <button
           onPointerDown={handleAdd}
-          className="bg-sky-500 active:bg-sky-700 text-white font-medium px-4 py-2 rounded-lg min-h-[44px] text-base transition-colors"
+          className="bg-sky-500 active:bg-sky-700 text-white min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
+          title="Hinzufügen"
         >
-          Hinzufügen
+          <Plus size={20} />
         </button>
       </div>
     </div>

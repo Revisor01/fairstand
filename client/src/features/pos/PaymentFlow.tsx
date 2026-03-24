@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X, Delete } from 'lucide-react';
 import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -13,7 +14,6 @@ export function PaymentFlow({ totalCents, items, onComplete, onCancel }: Payment
   const [inputStr, setInputStr] = useState<string>('');
   const [changeCents, setChangeCents] = useState<number>(0);
 
-  // Betrag aus String berechnen
   const parsed = parseFloat(inputStr.replace(',', '.'));
   const paidCents = isNaN(parsed) || inputStr === '' ? 0 : Math.round(parsed * 100);
 
@@ -24,12 +24,9 @@ export function PaymentFlow({ totalCents, items, onComplete, onCancel }: Payment
   const hasInput = inputStr !== '';
   const tooLow = hasInput && paidCents > 0 && paidCents < totalCents;
 
-  // Wenn paidCents sich ändert, changeCents zurücksetzen
   function handleNumpadInput(digit: string) {
     setInputStr(prev => {
-      // Spezialfall: "," nur einmal erlauben
       if (digit === ',' && prev.includes(',')) return prev;
-      // Spezialfall: "00" am Anfang nicht erlauben
       if (digit === '00' && prev === '') return prev;
       return prev + digit;
     });
@@ -58,12 +55,10 @@ export function PaymentFlow({ totalCents, items, onComplete, onCancel }: Payment
           <h2 className="text-xl font-bold text-slate-800">Bezahlung</h2>
           <button
             onPointerDown={onCancel}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-400 hover:bg-sky-50 active:bg-sky-100 transition-colors"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-400 active:bg-sky-100 transition-colors"
             aria-label="Bezahlung abbrechen"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X size={22} />
           </button>
         </div>
 
@@ -134,9 +129,7 @@ export function PaymentFlow({ totalCents, items, onComplete, onCancel }: Payment
               className="col-span-3 h-11 rounded-xl text-slate-500 bg-slate-100 active:bg-slate-200 transition-colors flex items-center justify-center"
               aria-label="Letzte Ziffer löschen"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-              </svg>
+              <Delete size={20} />
             </button>
           </div>
         </div>

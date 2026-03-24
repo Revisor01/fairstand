@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { X, Trash2, AlertCircle } from 'lucide-react';
 import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -7,7 +8,7 @@ interface CartPanelProps {
   items: CartItem[];
   total: number;
   onClose: () => void;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
+  onUpdateQuantity: (productId: string, quantity: number) => Promise<{ blocked?: boolean; stock?: number }>;
   onRemoveItem: (productId: string) => void;
   onCheckout: () => void;
 }
@@ -21,6 +22,19 @@ export function CartPanel({
   onRemoveItem,
   onCheckout,
 }: CartPanelProps) {
+  const [stockWarning, setStockWarning] = useState<string | null>(null);
+
+  async function handleUpdateQuantity(productId: string, quantity: number) {
+    const result = await onUpdateQuantity(productId, quantity);
+    if (result.blocked) {
+      const item = items.find(i => i.productId === productId);
+      setStockWarning(`"${item?.name}" — max. ${result.stock} auf Lager`);
+      setTimeout(() => setStockWarning(null), 2500);
+    } else {
+      setStockWarning(null);
+    }
+  }
+
   return (
     <>
       {/* Overlay */}
@@ -45,21 +59,20 @@ export function CartPanel({
           <h2 className="text-lg font-semibold text-slate-800">Warenkorb</h2>
           <button
             onPointerDown={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-500 hover:text-slate-800 rounded-lg hover:bg-sky-50"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-500 active:text-slate-800 rounded-lg active:bg-sky-50"
             aria-label="Warenkorb schließen"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X size={22} />
           </button>
         </div>
+
+        {/* Stock-Warnung */}
+        {stockWarning && (
+          <div className="mx-4 mt-2 px-3 py-2 bg-amber-50 text-amber-700 text-sm rounded-lg flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0" />
+            {stockWarning}
+          </div>
+        )}
 
         {/* Artikel-Liste */}
         <div className="flex-1 overflow-y-auto px-4 py-2">
@@ -73,7 +86,7 @@ export function CartPanel({
                 <CartItemRow
                   key={item.productId}
                   item={item}
-                  onUpdateQuantity={onUpdateQuantity}
+                  onUpdateQuantity={handleUpdateQuantity}
                   onRemove={onRemoveItem}
                 />
               ))}
@@ -124,12 +137,10 @@ function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
         </span>
         <button
           onPointerDown={() => onRemove(item.productId)}
-          className="min-h-[36px] min-w-[36px] flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-lg shrink-0"
+          className="min-h-[36px] min-w-[36px] flex items-center justify-center text-rose-500 active:bg-rose-50 rounded-lg shrink-0"
           aria-label="Entfernen"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
+          <Trash2 size={16} />
         </button>
       </div>
 

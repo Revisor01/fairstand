@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Mail, Send, Info } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
 
 interface Setting {
@@ -64,7 +65,10 @@ export function SettingsForm() {
 
       {/* E-Mail-Adresse */}
       <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
-        <h3 className="text-sm font-semibold text-sky-700">Berichts-E-Mail</h3>
+        <h3 className="text-sm font-semibold text-sky-700 flex items-center gap-2">
+          <Mail size={16} />
+          Berichts-E-Mail
+        </h3>
         <div className="flex flex-col gap-2">
           <label className="text-sm text-slate-600" htmlFor="report-email">
             E-Mail-Adresse für Berichte
@@ -76,7 +80,7 @@ export function SettingsForm() {
             onChange={e => setReportEmail(e.target.value)}
             onBlur={handleEmailBlur}
             placeholder="beispiel@email.de"
-            className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400"
+            className="h-12 text-base border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400"
           />
           {savedKey === 'report_email' && !saving && (
             <span className="text-xs text-green-600">Gespeichert</span>
@@ -85,9 +89,12 @@ export function SettingsForm() {
 
         {/* Automatischer Versand */}
         <div className="flex flex-col gap-3 pt-2 border-t border-slate-100">
-          <h3 className="text-sm font-semibold text-sky-700">Automatischer Versand</h3>
+          <h3 className="text-sm font-semibold text-sky-700 flex items-center gap-2">
+            <Send size={16} />
+            Automatischer Versand
+          </h3>
 
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
             <input
               type="checkbox"
               checked={reportMonthly}
@@ -97,7 +104,7 @@ export function SettingsForm() {
             <span className="text-sm text-slate-700">Monatlichen Bericht per Mail senden</span>
           </label>
 
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
             <input
               type="checkbox"
               checked={reportYearly}
@@ -110,9 +117,12 @@ export function SettingsForm() {
       </div>
 
       {/* Hinweis SMTP */}
-      <div className="bg-sky-50 rounded-xl p-4 text-sm text-sky-700 border border-sky-100">
-        <p className="font-medium mb-1">SMTP-Konfiguration</p>
-        <p>Die SMTP-Konfiguration erfolgt ueber die Server-Umgebungsvariablen. E-Mail-Versand funktioniert nur wenn SMTP_HOST und SMTP_USER im Docker-Container gesetzt sind.</p>
+      <div className="bg-sky-50 rounded-xl p-4 text-sm text-sky-700 border border-sky-100 flex gap-3">
+        <Info size={18} className="shrink-0 mt-0.5" />
+        <div>
+          <p className="font-medium mb-1">SMTP-Konfiguration</p>
+          <p>Die SMTP-Konfiguration erfolgt ueber die Server-Umgebungsvariablen. E-Mail-Versand funktioniert nur wenn SMTP_HOST und SMTP_USER im Docker-Container gesetzt sind.</p>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { ArrowLeft, ImagePlus, X as XIcon } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { downloadCategories } from '../../../sync/engine.js';
@@ -194,9 +195,10 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
         </h2>
         <button
           onPointerDown={onClose}
-          className="text-slate-500 hover:text-slate-700 text-sm px-3 py-2 rounded-lg h-11"
+          className="text-slate-500 active:text-slate-700 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg transition-colors"
+          aria-label="Abbrechen"
         >
-          Abbrechen
+          <ArrowLeft size={20} />
         </button>
       </div>
 
@@ -320,7 +322,8 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
               className="w-24 h-24 object-cover rounded-xl border border-slate-200"
             />
           )}
-          <label className="flex items-center justify-center h-12 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-sky-400 text-sm text-slate-500 transition-colors">
+          <label className="flex items-center justify-center gap-2 h-12 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer active:border-sky-400 text-sm text-slate-500 transition-colors">
+            <ImagePlus size={18} />
             {imagePreview ? 'Bild ändern' : 'Bild auswählen'}
             <input
               type="file"
@@ -342,8 +345,9 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
                 setImagePreview(null);
                 setPendingImageFile(null);
               }}
-              className="text-xs text-rose-500 hover:text-rose-700 text-left"
+              className="flex items-center gap-1 text-xs text-rose-500 active:text-rose-700 text-left"
             >
+              <XIcon size={14} />
               Bild entfernen
             </button>
           )}
