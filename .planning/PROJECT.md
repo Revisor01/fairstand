@@ -49,22 +49,19 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Bild-Upload mit Preview in ProductForm — v4.0
 - ✓ Sync-Status-Badge und automatischer Retry — v4.0
 
+- ✓ TanStack Query als primäre Datenschicht — Produkt-/Kategorie-Reads direkt vom Server, Dexie nur Offline-Cache — v5.0
+- ✓ WebSocket Live-Updates — Änderungen sofort auf allen Geräten, kein Polling/manueller Sync — v5.0
+- ✓ Online-Direktverkauf — Verkäufe online ohne Outbox-Umweg, offline Outbox als Fallback — v5.0
+- ✓ Dexie Cold-Start-Fallback — POS startet offline mit gecachten Produkten — v5.0
+- ✓ Report-Scheduler Storno-Filter — cancelled_at IS NULL in allen SQL-Queries — v5.0
+- ✓ CORS fail-closed — Server startet nicht ohne explizite CORS_ORIGIN — v5.0
+- ✓ PIN Rate-Limiting — max 5 Versuche/min/IP via @fastify/rate-limit — v5.0
+- ✓ PDF Magic-Byte-Validierung + 30s Timeout — v5.0
+- ✓ Server-seitige shopId-Validierung — Session-Token erzwingt Shop-Isolation — v5.0
+
 ### Active
 
-## Current Milestone: v5.0 Online-First Live Architecture
-
-**Goal:** Server als Single Source of Truth mit WebSocket Live-Updates. Dexie nur noch als Offline-Cache für die Kasse. Alle bekannten Concerns aus v4.0 aufräumen.
-
-**Target features:**
-- Online-Modus: Alle Reads/Writes direkt gegen Server-API, kein Dexie-Umweg
-- WebSocket: Produkt-/Kategorie-/Bestandsänderungen sofort auf allen Geräten
-- Dexie nur Offline-Fallback: POS cached beim Start, arbeitet offline gegen Cache
-- TanStack Query für Server-State-Management mit Offline-Awareness
-- Report-Scheduler: Stornierte Verkäufe filtern
-- CORS: Explizite Origin statt Wildcard
-- PIN: Rate-Limiting auf Server
-- PDF-Parser: Timeout für hängende Parses
-- Shop-ID: Server-seitige Validierung gegen Session
+(Kein aktiver Milestone — bereit für v6.0)
 
 ### Out of Scope
 
@@ -89,12 +86,12 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Current State (v4.0 shipped)
 
-- Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4 (v8), Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 17 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + Phase 13 offen), alle shipped
+- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Dexie.js 4 (v8), Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
+- 21 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + Phase 13 offen), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD
-- Online-First: Server-Replace statt LWW, Admin online-only, Kasse offline
-- Zentrales Kategorie-Management, Cart-Persistenz, Sync-Status-Badge
-- 19 Dateien geändert, 826 Zeilen hinzugefügt
+- Online-First mit WebSocket: TanStack Query als primäre Datenschicht, WebSocket für Live-Updates, Dexie nur noch Offline-Cache
+- Zentrales Kategorie-Management, Entnahme-Funktion (KG zum EK), Schnellbetrags-Buttons, Lucide Icons
+- Session-Auth mit In-Memory Store, shopId-Validierung, Rate-Limiting, CORS fail-closed
 
 ## Constraints
 
@@ -119,6 +116,10 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Lucide-React Icons | Konsistente SVG Line-Icons statt Emoji/Inline-SVGs | ✓ Good — einheitliches Look&Feel |
 | Entnahme KG zum EK | Kirchengemeinde entnimmt Waren zum EK für Eigenverbrauch | ✓ Good — type='withdrawal' in Sale |
 | Sale-Sync ohne Produkt-Upsert | SALE_COMPLETE überschrieb Produktdaten (category='') mit Defaults | ✓ Good — nur Stock-Delta, kein Upsert |
+| TanStack Query statt Dexie-First | Dexie-Reads verursachten Delay und Cache-Divergenz | ✓ Good — Live-Daten online, Dexie nur Offline-Cache |
+| WebSocket statt manueller Sync | Manueller Sync-Button war UX-Problem, Änderungen nicht sofort sichtbar | ✓ Good — Live-Updates auf allen Geräten |
+| Session-Auth mit In-Memory Store | Zuvor kein server-seitiges Token-Management, shopId nur clientseitig | ✓ Good — erzwingt Shop-Isolation |
+| CORS fail-closed | Wildcard-Default war Sicherheitsrisiko | ✓ Good — Server startet nicht ohne CORS_ORIGIN |
 | Admin online-only, Kasse offline | Offline-Admin erzeugte nur Cache-Konflikte ohne Nutzen | ✓ Good — saubere Trennung, kein Datenverlust |
 
 ## Evolution
@@ -126,4 +127,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v5.0 milestone started*
+*Last updated: 2026-03-24 after v5.0 milestone complete*
