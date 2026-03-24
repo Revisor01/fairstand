@@ -1,5 +1,8 @@
 import { get, set } from 'idb-keyval';
 
+// Fester Kassen-PIN für St. Secundus Hennstedt
+const DEFAULT_PIN = '140381';
+
 async function hashPin(pin: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(pin);
@@ -14,7 +17,15 @@ export async function setupPin(pin: string): Promise<void> {
   await set('pinHash', hash);
 }
 
+export async function ensureDefaultPin(): Promise<void> {
+  const existing = await get<string>('pinHash');
+  if (!existing) {
+    await setupPin(DEFAULT_PIN);
+  }
+}
+
 export async function verifyPin(pin: string): Promise<boolean> {
+  await ensureDefaultPin();
   const stored = await get<string>('pinHash');
   if (!stored) return false;
   const hash = await hashPin(pin);
@@ -32,8 +43,8 @@ export async function isSessionValid(): Promise<boolean> {
 }
 
 export async function hasPinSetup(): Promise<boolean> {
-  const hash = await get<string>('pinHash');
-  return Boolean(hash);
+  await ensureDefaultPin();
+  return true;
 }
 
 export async function logout(): Promise<void> {
