@@ -1,10 +1,22 @@
 import { useEffect, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useAuth } from './features/auth/useAuth.js';
 import { PinScreen } from './features/auth/PinScreen.jsx';
 import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
 import { useLowStockCount } from './hooks/useLowStockCount.js';
 import { downloadProducts } from './sync/engine.js';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60 * 1000,
+      retry: 1,
+    },
+  },
+});
 
 // Separate Komponente damit useLowStockCount immer korrekt aufgerufen wird
 function UnlockedApp({ onLock }: { onLock: () => void }) {
@@ -31,7 +43,7 @@ function UnlockedApp({ onLock }: { onLock: () => void }) {
   );
 }
 
-export default function App() {
+function AppInner() {
   const { state, unlock, setup, lock } = useAuth();
 
   useEffect(() => {
@@ -67,5 +79,14 @@ export default function App() {
     <div className="min-h-screen bg-sky-50">
       <UnlockedApp onLock={lock} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppInner />
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
   );
 }

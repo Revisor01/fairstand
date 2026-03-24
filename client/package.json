@@ -10,6 +10,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.95.2",
+    "@tanstack/react-query-devtools": "^5.95.2",
     "date-fns": "^4",
     "dexie": "^4.3",
     "dexie-react-hooks": "^4.2.0",
