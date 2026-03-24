@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
 import { MonthlyReport } from './reports/MonthlyReport.js';
 import { SettingsForm } from './settings/SettingsForm.js';
 import { ImportScreen } from './import/ImportScreen.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
+import { getStoredSession } from '../auth/serverAuth.js';
 
 type AdminTab = 'products' | 'reports' | 'settings' | 'import';
 
@@ -15,6 +16,11 @@ interface AdminScreenProps {
 export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
   const [tab, setTab] = useState<AdminTab>('products');
   const lowStockCount = useLowStockCount();
+  const [shopName, setShopName] = useState<string>('');
+
+  useEffect(() => {
+    getStoredSession().then(s => { if (s) setShopName(s.shopName); });
+  }, []);
 
   return (
     <div className="min-h-screen bg-sky-50 flex flex-col">
@@ -26,7 +32,10 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
         >
           Zur Kasse
         </button>
-        <h1 className="text-xl font-bold">Verwaltung</h1>
+        <div className="flex flex-col">
+          <h1 className="text-xl font-bold leading-tight">Verwaltung</h1>
+          {shopName && <p className="text-sky-200 text-xs leading-tight">{shopName}</p>}
+        </div>
       </header>
 
       {/* Tab-Navigation */}

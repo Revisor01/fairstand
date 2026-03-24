@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Sale } from '../../db/index.js';
 import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
@@ -7,6 +7,7 @@ import { SaleSummary } from './SaleSummary.js';
 import { LowStockBanner } from './LowStockBanner.js';
 import { useCart } from './useCart.js';
 import { completeSale } from './useSaleComplete.js';
+import { getStoredSession } from '../auth/serverAuth.js';
 
 type POSView = 'pos' | 'payment' | 'summary';
 
@@ -23,6 +24,11 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stockError, setStockError] = useState<string | null>(null);
+  const [shopName, setShopName] = useState<string>('');
+
+  useEffect(() => {
+    getStoredSession().then(s => { if (s) setShopName(s.shopName); });
+  }, []);
 
   async function handlePaymentComplete(paidCents: number, changeCents: number) {
     try {
@@ -94,23 +100,22 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   // --- View: Bezahlung ---
   if (view === 'payment') {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen">
         {error && (
-          <div className="p-3 m-4 bg-rose-50 text-rose-600 rounded-xl text-sm">
+          <div className="absolute top-4 left-4 right-4 p-3 bg-rose-50 text-rose-600 rounded-xl text-sm z-10">
             {error}
           </div>
         )}
-        <div className="flex-1">
-          <PaymentFlow
-            totalCents={cart.total}
-            onComplete={handlePaymentComplete}
-            onCancel={() => {
-              setError(null);
-              setView('pos');
-              setIsCartOpen(true);
-            }}
-          />
-        </div>
+        <PaymentFlow
+          totalCents={cart.total}
+          items={cart.items}
+          onComplete={handlePaymentComplete}
+          onCancel={() => {
+            setError(null);
+            setView('pos');
+            setIsCartOpen(true);
+          }}
+        />
       </div>
     );
   }
@@ -125,7 +130,10 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
 
       {/* Header */}
       <header className="bg-sky-400 text-white flex items-center justify-between px-4 py-3 shrink-0 shadow-sm">
-        <h1 className="text-xl font-bold">Fairstand Kasse</h1>
+        <div className="flex flex-col">
+          <h1 className="text-xl font-bold leading-tight">Fairstand Kasse</h1>
+          {shopName && <p className="text-sky-100 text-xs leading-tight">{shopName}</p>}
+        </div>
 
         <div className="flex items-center gap-3">
           {/* Warenkorb-Button mit Badge */}
