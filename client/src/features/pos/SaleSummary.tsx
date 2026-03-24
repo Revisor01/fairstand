@@ -45,6 +45,9 @@ export function SaleSummary({ sale, onNext, onCorrect }: SaleSummaryProps) {
             <div className="border-t border-sky-50" />
             <div className="text-xs text-slate-400">
               {sale.items.length} Artikel entnommen
+              {sale.withdrawalReason && (
+                <span className="block mt-1 text-amber-600">Grund: {sale.withdrawalReason}</span>
+              )}
             </div>
           </>
         ) : (

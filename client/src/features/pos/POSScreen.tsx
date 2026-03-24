@@ -101,9 +101,11 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   }
 
   async function handleWithdrawal() {
+    const reason = window.prompt('Grund der Entnahme (optional):', '');
+    if (reason === null) return; // Abbruch
     try {
       setError(null);
-      const sale = await completeWithdrawal(cart.items);
+      const sale = await completeWithdrawal(cart.items, reason);
       setLastSale(sale);
       setView('summary');
       setIsCartOpen(false);
