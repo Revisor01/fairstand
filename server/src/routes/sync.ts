@@ -95,36 +95,12 @@ export async function syncRoutes(fastify: FastifyInstance) {
               syncedAt: Date.now(),
             }).onConflictDoNothing().run();
 
-            // 2. Produkte aus Items upserten — LWW (Last-Writer-Wins) bei Konflikt
+            // 2. Stock-Delta für jedes Produkt — kein Produkt-Upsert aus Sale-Items
+            // Sale-Items enthalten nur Snapshots (Name, Preis), keine vollständigen
+            // Produktdaten (category, purchasePrice etc.). Ein Upsert würde diese
+            // Felder mit Defaults überschreiben. Produkte werden über POST /api/products
+            // angelegt/aktualisiert, nicht über Sales.
             for (const item of sale.items) {
-              tx.insert(products).values({
-                id: item.productId,
-                shopId: sale.shopId,
-                articleNumber: item.articleNumber,
-                name: item.name,
-                category: '',
-                purchasePrice: 0,
-                salePrice: item.salePrice,
-                vatRate: 7,
-                stock: 0,
-                active: true,
-                updatedAt: sale.createdAt,
-              }).onConflictDoUpdate({
-                target: products.id,
-                set: {
-                  articleNumber: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.article_number ELSE ${products.articleNumber} END`,
-                  name: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.name ELSE ${products.name} END`,
-                  category: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.category ELSE ${products.category} END`,
-                  purchasePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.purchase_price ELSE ${products.purchasePrice} END`,
-                  salePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.sale_price ELSE ${products.salePrice} END`,
-                  vatRate: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.vat_rate ELSE ${products.vatRate} END`,
-                  stock: sql`${products.stock}`, // Stock bleibt — Delta kommt danach
-                  active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
-                  updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
-                },
-              }).run();
-
-              // Stock als Delta reduzieren — nie Absolutwert (OFF-04)
               tx.update(products)
                 .set({ stock: sql`${products.stock} - ${item.quantity}` })
                 .where(eq(products.id, item.productId))
