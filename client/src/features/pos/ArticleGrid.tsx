@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
-import { formatEur } from './utils.js';
+import { ArticleCard } from './ArticleCard.js';
 
 interface ArticleGridProps {
   onAddToCart: (product: Product) => void;
@@ -77,61 +77,11 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4">
             {filteredProducts.map((product: Product) => (
-              <button
+              <ArticleCard
                 key={product.id}
-                onPointerDown={() => { if (product.stock > 0) onAddToCart(product); }}
-                disabled={product.stock <= 0}
-                className={`
-                  bg-white shadow-sm rounded-xl min-h-[80px] p-4
-                  flex flex-col justify-between items-start
-                  transition-colors text-left
-                  ${product.stock <= 0
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'active:bg-sky-50'
-                  }
-                `}
-              >
-                {product.imageUrl && (
-                  <div className="w-full h-20 -mx-4 -mt-4 mb-2 overflow-hidden rounded-t-xl">
-                    <img
-                      src={product.imageUrl}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <span className="text-slate-800 font-medium text-sm leading-tight line-clamp-3">
-                  {product.name}
-                </span>
-                <div className="flex items-baseline gap-2 mt-1 w-full justify-between">
-                  <span className="text-sky-700 font-semibold text-sm">
-                    {formatEur(product.salePrice)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className={`text-[10px] leading-none ${
-                      product.stock === 0
-                        ? 'text-rose-500'
-                        : product.minStock > 0 && product.stock <= product.minStock
-                          ? 'text-amber-500'
-                          : 'text-emerald-500'
-                    }`}>●</span>
-                    <span className={`text-xs font-medium ${
-                      product.stock <= 0
-                        ? 'text-rose-500'
-                        : product.minStock > 0 && product.stock <= product.minStock
-                          ? 'text-amber-600'
-                          : 'text-slate-400'
-                    }`}>
-                      {product.stock <= 0
-                        ? 'Ausverkauft'
-                        : product.minStock > 0 && product.stock <= product.minStock
-                          ? `Noch ${product.stock}`
-                          : `${product.stock} Stk.`
-                      }
-                    </span>
-                  </span>
-                </div>
-              </button>
+                product={product}
+                onAddToCart={onAddToCart}
+              />
             ))}
           </div>
         )}
