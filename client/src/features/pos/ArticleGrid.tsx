@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getShopId } from '../../db/index.js';
+import { db, getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
 import { getAuthHeaders } from '../auth/serverAuth.js';
 import { ArticleCard } from './ArticleCard.js';
@@ -18,26 +18,37 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products', getShopId()],
     queryFn: async () => {
-      const headers = await getAuthHeaders();
-      const shopId = getShopId();
-      const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
-      if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
-      const data = await res.json() as Record<string, unknown>[];
-      return data.map(p => ({
-        id: p.id as string,
-        shopId: (p.shop_id ?? p.shopId) as string,
-        articleNumber: (p.article_number ?? p.articleNumber) as string,
-        name: p.name as string,
-        category: (p.category ?? '') as string,
-        purchasePrice: (p.purchase_price ?? p.purchasePrice ?? 0) as number,
-        salePrice: (p.sale_price ?? p.salePrice) as number,
-        vatRate: (p.vat_rate ?? p.vatRate ?? 7) as number,
-        stock: (p.stock ?? 0) as number,
-        minStock: (p.min_stock ?? p.minStock ?? 0) as number,
-        active: (p.active ?? true) as boolean,
-        updatedAt: (p.updated_at ?? p.updatedAt ?? Date.now()) as number,
-        imageUrl: (p.image_url ?? p.imageUrl) as string | undefined,
-      })).filter(p => p.active); // Nur aktive Produkte für POS
+      try {
+        const headers = await getAuthHeaders();
+        const shopId = getShopId();
+        const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
+        if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
+        const data = await res.json() as Record<string, unknown>[];
+        return data.map(p => ({
+          id: p.id as string,
+          shopId: (p.shop_id ?? p.shopId) as string,
+          articleNumber: (p.article_number ?? p.articleNumber) as string,
+          name: p.name as string,
+          category: (p.category ?? '') as string,
+          purchasePrice: (p.purchase_price ?? p.purchasePrice ?? 0) as number,
+          salePrice: (p.sale_price ?? p.salePrice) as number,
+          vatRate: (p.vat_rate ?? p.vatRate ?? 7) as number,
+          stock: (p.stock ?? 0) as number,
+          minStock: (p.min_stock ?? p.minStock ?? 0) as number,
+          active: (p.active ?? true) as boolean,
+          updatedAt: (p.updated_at ?? p.updatedAt ?? Date.now()) as number,
+          imageUrl: (p.image_url ?? p.imageUrl) as string | undefined,
+        })).filter(p => p.active); // Nur aktive Produkte für POS
+      } catch {
+        // Cold-Start offline: Dexie-Cache laden
+        const shopId = getShopId();
+        const cached = await db.products
+          .where('shopId').equals(shopId)
+          .filter(p => p.active)
+          .toArray();
+        if (cached.length > 0) return cached;
+        throw new Error('Keine Produkte verfügbar (offline, kein lokaler Cache)');
+      }
     },
     networkMode: 'offlineFirst',
     staleTime: 60_000, // POS: 1 Minute — etwas länger als Admin, da POS stabiler ist
