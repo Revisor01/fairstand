@@ -21,8 +21,8 @@
 
 ### Verkaufshistorie
 
-- [ ] **HIST-01**: Tagesübersicht zeigt Liste aller Verkäufe — anklickbar für Detailansicht (welche Artikel, Menge, Preis)
-- [ ] **HIST-02**: Pro Artikel: Verkaufsstatistik einsehbar (wie oft verkauft, Umsatz, Zeitraum) — um zu planen was sich lohnt
+- [x] **HIST-01**: Tagesübersicht zeigt Liste aller Verkäufe — anklickbar für Detailansicht (welche Artikel, Menge, Preis)
+- [x] **HIST-02**: Pro Artikel: Verkaufsstatistik einsehbar (wie oft verkauft, Umsatz, Zeitraum) — um zu planen was sich lohnt
 
 ### Storno & Rückgabe
 
@@ -57,8 +57,8 @@
 | SHOP-02 | Phase 7 | Complete |
 | SHOP-03 | Phase 7 | Complete |
 | SHOP-04 | Phase 7 | Complete |
-| HIST-01 | Phase 8 | Pending |
-| HIST-02 | Phase 8 | Pending |
+| HIST-01 | Phase 8 | Complete |
+| HIST-02 | Phase 8 | Complete |
 | BEST-01 | Phase 8 | Complete |
 | BEST-02 | Phase 8 | Complete |
 | STOR-01 | Phase 9 | Pending |

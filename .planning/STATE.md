@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
 status: unknown
-stopped_at: Completed 08-bestandspruefung-verkaufshistorie-01-PLAN.md
-last_updated: "2026-03-24T10:37:02.099Z"
+stopped_at: Completed 08-bestandspruefung-verkaufshistorie-02-PLAN.md
+last_updated: "2026-03-24T10:41:31.423Z"
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -63,6 +63,7 @@ Plan: 2 of 2
 | Phase 07 P02 | 1 | 2 tasks | 4 files |
 | Phase 07-server-sync-multi-laden P03 | 15 | 2 tasks | 13 files |
 | Phase 08-bestandspruefung-verkaufshistorie P01 | 7 | 2 tasks | 4 files |
+| Phase 08-bestandspruefung-verkaufshistorie P02 | 10 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,8 @@ Recent decisions affecting current work:
 - [Phase 08]: checkStockBeforeAdd als exportierte Pure Function statt inline in addItem — ermöglicht Unit-Tests ohne React-Hooks
 - [Phase 08]: proxyProduct.stock = saleItem.quantity beim Storno-Re-Fill — addItem mit stock:0 würde alle Korrektur-Artikel blockieren
 - [Phase 08]: Toast-Logik in POSScreen statt ArticleGrid — ArticleGrid Props-Interface bleibt stabil, Feedback-Logik beim Aufrufer
+- [Phase 08-bestandspruefung-verkaufshistorie]: [Phase 08-02]: Sale-Objekt als Prop an SaleDetailModal — kein eigenes Dexie-Query im Modal, offline-fähig ohne extra Query
+- [Phase 08-bestandspruefung-verkaufshistorie]: [Phase 08-02]: ProductStats fetcht nur bei navigator.onLine — konsistent mit MonthlyReport-Muster aus Phase 03
 
 ### Pending Todos
 
@@ -131,6 +134,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:37:02.097Z
-Stopped at: Completed 08-bestandspruefung-verkaufshistorie-01-PLAN.md
+Last session: 2026-03-24T10:41:31.421Z
+Stopped at: Completed 08-bestandspruefung-verkaufshistorie-02-PLAN.md
 Resume file: None
