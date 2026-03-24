@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
-status: roadmap_ready
-stopped_at: null
-last_updated: "2026-03-24T12:00:00.000Z"
+status: unknown
+stopped_at: Completed 10-ui-redesign 10-01-PLAN.md
+last_updated: "2026-03-24T11:30:43.073Z"
 progress:
-  total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 7
+  completed_phases: 3
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** v3.0 — Phase 10 als nächstes (UI-Redesign)
+**Current focus:** Phase 10 — ui-redesign
 
 ## Current Position
 
-Phase: 10 (not started)
-Plan: Not started
-
-```
-v3.0 Progress: [ ][ ][ ][ ] 0/4 phases
-```
+Phase: 10 (ui-redesign) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -69,6 +65,7 @@ v3.0 Progress: [ ][ ][ ][ ] 0/4 phases
 | Phase 08-bestandspruefung-verkaufshistorie P01 | 7 | 2 tasks | 4 files |
 | Phase 08-bestandspruefung-verkaufshistorie P02 | 10 | 2 tasks | 5 files |
 | Phase 09-storno-rueckgabe P01 | 3 | 3 tasks | 6 files |
+| Phase 10-ui-redesign P01 | 12 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -129,6 +126,8 @@ Recent decisions affecting current work:
 - [Phase 09]: Dexie v4 migration: cancelledAt als Index auf sales
 - [Phase 09]: window.confirm fuer Storno-Bestaetigung — einfachste Touch-kompatible Loesung ohne Custom-Modal
 - [Phase 09]: onSaleChanged als optionale Prop in SaleDetailModal — rueckwaertskompatibel
+- [Phase 10-ui-redesign]: PaymentFlow kein 2-Step-Flow mehr — Ein-Screen mit Live-Berechnungen
+- [Phase 10-ui-redesign]: getStoredSession()-Pattern fuer Shop-Name in Header — konsistent mit serverAuth
 
 ### Pending Todos
 
@@ -140,6 +139,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T12:00:00.000Z
-Stopped at: v3.0 Roadmap erstellt
+Last session: 2026-03-24T11:30:43.071Z
+Stopped at: Completed 10-ui-redesign 10-01-PLAN.md
 Resume file: None
