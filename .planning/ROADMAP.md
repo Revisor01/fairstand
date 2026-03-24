@@ -235,7 +235,12 @@ Plans:
   4. Ein API-Request von einer nicht konfigurierten Origin wird vom Server mit CORS-Fehler abgelehnt — kein Wildcard-Default
   5. Nach 5 falschen PIN-Versuchen innerhalb einer Minute gibt der Server 429 Too Many Requests zurück — weiteres Raten ist blockiert
   6. Ein Versuch mit einem gültigen Token auf Daten einer anderen shopId zuzugreifen wird server-seitig mit 403 abgelehnt
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — Scheduler Storno-Filter (5 SQL-Queries) + CORS fail-closed (FIX-01, SEC-01)
+- [ ] 18-02-PLAN.md — PDF Magic-Byte-Validierung + Promise.race() 30s-Timeout (FIX-02, FIX-03)
+- [ ] 18-03-PLAN.md — @fastify/rate-limit PIN-Endpoint + Session-Store + shopId-Middleware + Client Auth-Header (SEC-02, SEC-03)
 
 ### Phase 19: TanStack Query Foundation
 **Goal**: Alle Produkt- und Kategorie-Reads sowie alle CRUD-Writes laufen über TanStack Query direkt gegen den Server — Dexie ist nicht mehr primäre Datenquelle im Online-Modus
@@ -293,7 +298,7 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 15. Datenintegrität | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
-| 18. Quick Wins & Security | v5.0 | 0/? | Not started | - |
+| 18. Quick Wins & Security | v5.0 | 0/3 | Not started | - |
 | 19. TanStack Query Foundation | v5.0 | 0/? | Not started | - |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
