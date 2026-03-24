@@ -265,9 +265,6 @@ function parseInvoiceRowFromItems(
  * Liefert ein Array mit allen erkannten Rechnungspositionen.
  */
 export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
-  // Worker deaktivieren fuer serverseitige Nutzung
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '';
-
   const uint8Array = new Uint8Array(buffer);
   const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
   const pdf = await loadingTask.promise;
