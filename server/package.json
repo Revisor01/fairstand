@@ -14,7 +14,6 @@
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/schedule": "^6.0.0",
     "@fastify/websocket": "^11.2.0",
-    "better-sqlite3": "^11",
     "pg": "^8.13",
     "drizzle-kit": "^0.30",
     "drizzle-orm": "^0.40",
@@ -25,7 +24,6 @@
     "zod": "^3"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7",
     "@types/pg": "^8",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.11",
