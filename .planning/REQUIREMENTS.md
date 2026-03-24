@@ -15,13 +15,13 @@
 
 ### Produktbilder
 
-- [ ] **IMG-01**: Artikelkacheln zeigen Produktbilder (falls vorhanden)
+- [x] **IMG-01**: Artikelkacheln zeigen Produktbilder (falls vorhanden)
 - [ ] **IMG-02**: Bilder können aus Etiketten-PDFs (Ordner Süd-Nord-Kontor/) extrahiert oder von der Kontor-Website geholt werden
 - [ ] **IMG-03**: Bilder können manuell in der Produktverwaltung zugewiesen werden
 
 ### PDF-Parsing
 
-- [ ] **PDF-01**: Verbessertes Parsing der Süd-Nord-Kontor Rechnungen — Menge, Artikelnummer, Preis korrekt in separate Spalten statt alles in Beschreibung (Testdatei: Rechnung 2552709.pdf)
+- [x] **PDF-01**: Verbessertes Parsing der Süd-Nord-Kontor Rechnungen — Menge, Artikelnummer, Preis korrekt in separate Spalten statt alles in Beschreibung (Testdatei: Rechnung 2552709.pdf)
 
 ### Bestandsampel
 
@@ -53,10 +53,10 @@
 | UI-03 | Phase 10 | Complete |
 | UI-04 | Phase 10 | Complete |
 | UI-05 | Phase 10 | Complete |
-| IMG-01 | Phase 11 | Pending |
+| IMG-01 | Phase 11 | Complete |
 | IMG-02 | Phase 11 | Pending |
 | IMG-03 | Phase 11 | Pending |
-| PDF-01 | Phase 11 | Pending |
+| PDF-01 | Phase 11 | Complete |
 | AMP-01 | Phase 12 | Pending |
 | TXT-01 | Phase 12 | Pending |
 | GH-01 | Phase 13 | Pending |

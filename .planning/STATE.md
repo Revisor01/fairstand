@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
 status: unknown
-stopped_at: Completed 10-ui-redesign 10-02-PLAN.md
-last_updated: "2026-03-24T11:35:19.854Z"
+stopped_at: Completed 11-produktbilder-pdf-parsing 11-01-PLAN.md
+last_updated: "2026-03-24T11:47:56.084Z"
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 10 — ui-redesign
+**Current focus:** Phase 11 — produktbilder-pdf-parsing
 
 ## Current Position
 
-Phase: 11
-Plan: Not started
+Phase: 11 (produktbilder-pdf-parsing) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Plan: Not started
 | Phase 09-storno-rueckgabe P01 | 3 | 3 tasks | 6 files |
 | Phase 10-ui-redesign P01 | 12 | 2 tasks | 3 files |
 | Phase 10-ui-redesign P02 | 5 | 2 tasks | 2 files |
+| Phase 11 P01 | 15 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,8 @@ Recent decisions affecting current work:
 - [Phase 10-ui-redesign]: getStoredSession()-Pattern fuer Shop-Name in Header — konsistent mit serverAuth
 - [Phase 10-ui-redesign]: Pill-Tabs in AdminScreen verwenden bg-sky-400 (aktiv) — konsistent mit Kategorie-Tabs in ArticleGrid
 - [Phase 10-ui-redesign]: lowStockCount-Badge im Pill-Button via gap-1 statt ml-1 — konsistenteres flex-Spacing
+- [Phase 11]: PDF-Layout: Positionsnummer (1., 2., ...) steht in eigener Zeile, Daten in naechster Zeile — beide Formate folgen diesem Muster
+- [Phase 11]: Von-hinten-Strategie fuer PDF-Preis-Erkennung: letztes Euro-Item = Gesamt, vorletztes = Preis/St., letztes Prozent-Item = MwSt
 
 ### Pending Todos
 
@@ -142,6 +145,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T11:33:15.145Z
-Stopped at: Completed 10-ui-redesign 10-02-PLAN.md
+Last session: 2026-03-24T11:47:56.082Z
+Stopped at: Completed 11-produktbilder-pdf-parsing 11-01-PLAN.md
 Resume file: None
