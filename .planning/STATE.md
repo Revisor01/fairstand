@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
 status: unknown
-stopped_at: Completed 16-ui-stabilit-t-bestand-01-PLAN.md
-last_updated: "2026-03-24T14:58:01.194Z"
+stopped_at: Completed 17-datenverwaltung-sync-01-PLAN.md
+last_updated: "2026-03-24T15:11:37.515Z"
 progress:
   total_phases: 11
   completed_phases: 9
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 17
+  completed_plans: 16
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 16 — UI-Stabilität & Bestand
+**Current focus:** Phase 17 — Datenverwaltung & Sync
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
+Phase: 17 (Datenverwaltung & Sync) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Plan: Not started
 | Phase 15-datenintegrit-t P01 | 5 | 2 tasks | 1 files |
 | Phase 15-datenintegrit-t P02 | 2 | 3 tasks | 4 files |
 | Phase 16-ui-stabilit-t-bestand P01 | 5 | 2 tasks | 4 files |
+| Phase 17-datenverwaltung-sync P01 | 3 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,9 @@ Recent decisions affecting current work:
 - [Phase 15-datenintegrit-t]: loaded-Flag in useCart: verhindert Race-Condition zwischen persist-Effect und loadAndValidate beim Mount
 - [Phase 16-ui-stabilit-t-bestand]: shouldTriggerTap als exportierte pure Funktion statt DOM-Tests: kein @testing-library/react installiert, analog checkStockBeforeAdd-Muster
 - [Phase 16-ui-stabilit-t-bestand]: useRef statt useState fuer Pointer-Start-Position: kein Re-Render beim Finger-Aufsetzen (D-UIX-01)
+- [Phase 17-datenverwaltung-sync]: Dexie v8 ohne .upgrade()-Handler: neue categories-Tabelle braucht kein Upgrade
+- [Phase 17-datenverwaltung-sync]: DELETE /api/categories/:id gibt 409 bei Produkt-Nutzung — korrekter HTTP-Konflikt-Statuscode
+- [Phase 17-datenverwaltung-sync]: PATCH /categories/:id Bulk-Update: alle Produkte mit altem Kategorienamen werden in gleicher Route aktualisiert
 
 ### Pending Todos
 
@@ -164,6 +168,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T14:56:58.914Z
-Stopped at: Completed 16-ui-stabilit-t-bestand-01-PLAN.md
+Last session: 2026-03-24T15:11:37.513Z
+Stopped at: Completed 17-datenverwaltung-sync-01-PLAN.md
 Resume file: None

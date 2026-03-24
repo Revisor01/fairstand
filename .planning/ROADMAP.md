@@ -155,7 +155,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
+- [x] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
 - [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
 
 ### Phase 14: Online-First Architektur
@@ -237,4 +237,4 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
+| 17. Datenverwaltung & Sync | v4.0 | 1/2 | In Progress|  |
