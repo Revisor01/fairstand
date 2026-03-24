@@ -9,6 +9,7 @@ import { settingsRoutes } from './routes/settings.js';
 import { importRoutes } from './routes/import.js';
 import { reportScheduler } from './scheduler/reportScheduler.js';
 import { authRoutes } from './routes/auth.js';
+import { categoryRoutes } from './routes/categories.js';
 import { ensureShopSeeded } from './db/seed.js';
 
 const fastify = Fastify({ logger: true });
@@ -24,6 +25,7 @@ await fastify.register(reportRoutes, { prefix: '/api' });
 await fastify.register(settingsRoutes, { prefix: '/api' });
 await fastify.register(importRoutes, { prefix: '/api' });
 await fastify.register(authRoutes, { prefix: '/api' });
+await fastify.register(categoryRoutes, { prefix: '/api' });
 await fastify.register(fastifySchedule);
 await fastify.register(reportScheduler);
 
