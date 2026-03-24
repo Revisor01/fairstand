@@ -78,7 +78,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   3. Ein Verkauf der offline getätigt wurde, erscheint nach Reconnect automatisch im Server und auf allen anderen Geräten desselben Ladens
   4. Admin kann Läden anlegen und deren PIN verwalten
   5. Zwei Geräte mit demselben PIN sehen identische Artikel und denselben Bestand nach Sync
-**Plans**: 3 plans
+**Plans**: 2 plans
 
 Plans:
 - [x] 07-01-PLAN.md — Server: shops-Tabelle, PIN-Auth-Endpoint, Server-Seed
@@ -235,7 +235,7 @@ Plans:
   4. Ein API-Request von einer nicht konfigurierten Origin wird vom Server mit CORS-Fehler abgelehnt — kein Wildcard-Default
   5. Nach 5 falschen PIN-Versuchen innerhalb einer Minute gibt der Server 429 Too Many Requests zurück — weiteres Raten ist blockiert
   6. Ein Versuch mit einem gültigen Token auf Daten einer anderen shopId zuzugreifen wird server-seitig mit 403 abgelehnt
-**Plans**: 3 plans
+**Plans**: 2 plans
 
 Plans:
 - [x] 18-01-PLAN.md — Scheduler Storno-Filter (5 SQL-Queries) + CORS fail-closed (FIX-01, SEC-01)
@@ -251,7 +251,7 @@ Plans:
   2. Eine Produktänderung (Preis, Name, Bestand) durch den Admin ist nach dem Speichern sofort in der Ansicht aktualisiert — kein Reload nötig
   3. Im Admin-Kontext (networkMode: 'online') zeigt TanStack Query offline einen Pending-Zustand statt veraltete Daten — keine irreführenden Cached-Werte
   4. Im POS-Kontext (networkMode: 'offlineFirst') arbeitet die Kasse auch ohne Netz mit dem letzten bekannten Produktstand
-**Plans**: 3 plans
+**Plans**: 2 plans
 
 Plans:
 - [x] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
@@ -267,7 +267,7 @@ Plans:
   2. Ein Verkauf im Online-Modus erscheint sofort auf dem Server — kein Outbox-Eintrag, keine Sync-Verzögerung
   3. Der manuelle Sync-Button ist aus der UI entfernt — kein sichtbares Sync-Konzept für Nutzerinnen im Online-Modus
   4. Dexie enthält nur noch POS-relevante Offline-Daten (Warenkorb, Offline-Sales) — keine redundante Produktkopie für den Admin
-**Plans**: 3 plans
+**Plans**: 2 plans
 
 Plans:
 - [x] 20-01-PLAN.md — Server: @fastify/websocket + /api/ws Route + broadcast() + Integration in products/categories/sync
@@ -282,12 +282,11 @@ Plans:
   1. Nach dem Einloggen kann das iPad in den Flugzeugmodus wechseln — Kasse zeigt weiterhin alle Artikel und lässt Verkäufe abschließen
   2. Offline getätigte Verkäufe erscheinen automatisch auf dem Server, sobald die Verbindung wiederhergestellt ist — keine Benutzerinteraktion nötig
   3. Die Umschaltung zwischen Online- und Offline-Modus ist für die Nutzerin unsichtbar — keine Fehlermeldungen, kein manuelles Eingreifen, nahtloser Übergang
-**Plans**: 3 plans
+**Plans**: 2 plans
 
 Plans:
-- [ ] 21-01-PLAN.md — TBD
-- [ ] 21-02-PLAN.md — TBD
-- [ ] 21-03-PLAN.md — TBD
+- [ ] 21-01-PLAN.md — Dexie Cold-Start-Fallback: queryFn in ArticleGrid, useProducts, useCategories (OFFL-01)
+- [ ] 21-02-PLAN.md — Outbox-Flush mit TQ-Invalidation + Offline-Indicator im POS-Header (OFFL-02, OFFL-03)
 
 ## Progress
 
