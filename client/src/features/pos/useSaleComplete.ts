@@ -1,14 +1,11 @@
-import { db, getShopId } from '../../db/index.js';
+import { getShopId } from '../../db/index.js';
 import type { CartItem, Sale, Product } from '../../db/index.js';
 import { getAuthHeaders } from '../auth/serverAuth.js';
 
 /**
- * Schreibt einen Verkauf in Dexie und sendet ihn online direkt an den Server.
- * Online: direkt POST /api/sync, Sale.syncedAt setzen
- * Offline: OutboxEntry für späteren Sync erstellen
- *
- * Wichtig: db.outbox ist NICHT Teil der Dexie-Transaktion — verhindert IDB-Timeout
- * bei async fetch() innerhalb der Transaktion.
+ * Schreibt einen Verkauf direkt an den Server.
+ * Online-Only: kein Dexie, kein Outbox-Fallback.
+ * Bei Server-Fehler: throw new Error — Nutzerin sieht Fehlermeldung.
  */
 export async function completeSale(
   items: CartItem[],
@@ -39,91 +36,35 @@ export async function completeSale(
     createdAt: Date.now(),
   };
 
-  // Sale + Stock-Delta immer in Dexie (Verlauf, Storno, Offline-Fallback)
-  await db.transaction('rw', [db.sales, db.products], async () => {
-    await db.sales.add(sale);
-
-    for (const item of items) {
-      await db.products
-        .where('id')
-        .equals(item.productId)
-        .modify((p: { stock: number; updatedAt: number }) => {
-          p.stock -= item.quantity;
-          p.updatedAt = Date.now();
-        });
-    }
+  const headers = await getAuthHeaders();
+  const res = await fetch('/api/sync', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      entries: [{ operation: 'SALE_COMPLETE', payload: sale, shopId: getShopId(), createdAt: Date.now(), attempts: 0 }],
+    }),
   });
-
-  if (navigator.onLine) {
-    // Online: direkt an Server senden
-    try {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/sync', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          entries: [{
-            operation: 'SALE_COMPLETE',
-            payload: sale,
-            shopId: getShopId(),
-            createdAt: Date.now(),
-            attempts: 0,
-          }],
-        }),
-      });
-      if (res.ok) {
-        await db.sales.update(sale.id, { syncedAt: Date.now() });
-      } else {
-        // Server-Fehler → in Outbox für späteren Retry
-        await db.outbox.add({
-          operation: 'SALE_COMPLETE',
-          payload: sale,
-          shopId: getShopId(),
-          createdAt: Date.now(),
-          attempts: 0,
-        });
-      }
-    } catch {
-      // Netzwerkfehler → in Outbox für späteren Retry
-      await db.outbox.add({
-        operation: 'SALE_COMPLETE',
-        payload: sale,
-        shopId: getShopId(),
-        createdAt: Date.now(),
-        attempts: 0,
-      });
-    }
-  } else {
-    // Offline: in Outbox schreiben
-    await db.outbox.add({
-      operation: 'SALE_COMPLETE',
-      payload: sale,
-      shopId: getShopId(),
-      createdAt: Date.now(),
-      attempts: 0,
-    });
-  }
-
+  if (!res.ok) throw new Error('Verkauf konnte nicht gesendet werden. Bitte Internetverbindung prüfen.');
   return sale;
 }
 
 /**
  * Entnahme durch die Kirchengemeinde zum EK-Preis.
- * Bestand wird reduziert, totalCents = Summe der EK-Preise.
- * Online: direkt POST /api/sync
- * Offline: OutboxEntry für späteren Sync erstellen
+ * EK-Preise kommen aus den übergebenen products (TQ-Cache).
+ * Online-Only: kein Dexie, kein Outbox-Fallback.
+ * Bei Server-Fehler: throw new Error — Nutzerin sieht Fehlermeldung.
  */
-export async function completeWithdrawal(items: CartItem[], reason?: string): Promise<Sale> {
-  // EK-Preise aus Dexie holen und als purchasePrice-Snapshot anhängen
-  const enrichedItems = await Promise.all(
-    items.map(async (item) => {
-      const product = await db.products.get(item.productId) as Product | undefined;
-      return {
-        ...item,
-        purchasePrice: product?.purchasePrice ?? 0,
-      };
-    })
-  );
+export async function completeWithdrawal(
+  items: CartItem[],
+  products: Product[],
+  reason?: string
+): Promise<Sale> {
+  // EK-Preise aus den übergebenen products anreichern
+  const productMap = new Map(products.map(p => [p.id, p]));
+  const enrichedItems = items.map(item => ({
+    ...item,
+    purchasePrice: productMap.get(item.productId)?.purchasePrice ?? 0,
+  }));
 
   const totalCents = enrichedItems.reduce((sum, i) => sum + (i.purchasePrice ?? 0) * i.quantity, 0);
 
@@ -140,70 +81,14 @@ export async function completeWithdrawal(items: CartItem[], reason?: string): Pr
     createdAt: Date.now(),
   };
 
-  // Sale + Stock-Delta immer in Dexie (Verlauf, Storno, Offline-Fallback)
-  await db.transaction('rw', [db.sales, db.products], async () => {
-    await db.sales.add(sale);
-
-    for (const item of items) {
-      await db.products
-        .where('id')
-        .equals(item.productId)
-        .modify((p: { stock: number; updatedAt: number }) => {
-          p.stock -= item.quantity;
-          p.updatedAt = Date.now();
-        });
-    }
+  const headers = await getAuthHeaders();
+  const res = await fetch('/api/sync', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      entries: [{ operation: 'SALE_COMPLETE', payload: sale, shopId: getShopId(), createdAt: Date.now(), attempts: 0 }],
+    }),
   });
-
-  if (navigator.onLine) {
-    // Online: direkt an Server senden
-    try {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/sync', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          entries: [{
-            operation: 'SALE_COMPLETE',
-            payload: sale,
-            shopId: getShopId(),
-            createdAt: Date.now(),
-            attempts: 0,
-          }],
-        }),
-      });
-      if (res.ok) {
-        await db.sales.update(sale.id, { syncedAt: Date.now() });
-      } else {
-        // Server-Fehler → in Outbox für späteren Retry
-        await db.outbox.add({
-          operation: 'SALE_COMPLETE',
-          payload: sale,
-          shopId: getShopId(),
-          createdAt: Date.now(),
-          attempts: 0,
-        });
-      }
-    } catch {
-      // Netzwerkfehler → in Outbox für späteren Retry
-      await db.outbox.add({
-        operation: 'SALE_COMPLETE',
-        payload: sale,
-        shopId: getShopId(),
-        createdAt: Date.now(),
-        attempts: 0,
-      });
-    }
-  } else {
-    // Offline: in Outbox schreiben
-    await db.outbox.add({
-      operation: 'SALE_COMPLETE',
-      payload: sale,
-      shopId: getShopId(),
-      createdAt: Date.now(),
-      attempts: 0,
-    });
-  }
-
+  if (!res.ok) throw new Error('Entnahme konnte nicht gesendet werden. Bitte Internetverbindung prüfen.');
   return sale;
 }

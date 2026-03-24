@@ -1,20 +1,10 @@
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db, getShopId } from '../db/index.js';
+import { useProducts } from './api/useProducts.js';
 
 export function useLowStockProducts() {
-  return useLiveQuery(
-    () =>
-      db.products
-        .where('[shopId+active]')
-        .equals([getShopId(), 1])
-        .filter(p => p.minStock > 0 && p.stock <= p.minStock)
-        .toArray(),
-    [],
-    []
-  );
+  const { data: products = [] } = useProducts();
+  return products.filter(p => p.active && p.minStock > 0 && p.stock <= p.minStock);
 }
 
 export function useLowStockCount(): number {
-  const products = useLowStockProducts();
-  return products.length;
+  return useLowStockProducts().length;
 }
