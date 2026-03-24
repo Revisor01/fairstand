@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 import fastifySchedule from '@fastify/schedule';
+import { websocketRoutes } from './routes/websocket.js';
 import { healthRoutes } from './routes/health.js';
 import { syncRoutes } from './routes/sync.js';
 import { productRoutes } from './routes/products.js';
@@ -58,6 +59,9 @@ fastify.addHook('preHandler', async (request, reply) => {
   // Session an Request anhängen für shopId-Validierung in Routen
   (request as any).session = session;
 });
+
+// WebSocket-Route MUSS vor anderen Routen registriert werden
+await fastify.register(websocketRoutes);
 
 await fastify.register(healthRoutes, { prefix: '/api' });
 await fastify.register(syncRoutes, { prefix: '/api' });
