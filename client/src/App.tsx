@@ -6,7 +6,7 @@ import { PinScreen } from './features/auth/PinScreen.jsx';
 import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
 import { useLowStockCount } from './hooks/useLowStockCount.js';
-import { downloadProducts } from './sync/engine.js';
+import { useWebSocket } from './hooks/useWebSocket.js';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,13 +22,7 @@ const queryClient = new QueryClient({
 function UnlockedApp({ onLock }: { onLock: () => void }) {
   const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
   const lowStockCount = useLowStockCount();
-
-  // Beim ersten Rendern nach Login: Produkte vom Server laden wenn online
-  useEffect(() => {
-    if (navigator.onLine) {
-      downloadProducts().catch(() => {});
-    }
-  }, []); // Nur beim Mount — nicht bei jedem Re-Render
+  useWebSocket(); // WebSocket-Verbindung herstellen und aufrechterhalten
 
   if (activeView === 'admin') {
     return <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />;
