@@ -191,7 +191,10 @@ Plans:
   1. Beim Scrollen durch das Artikel-Grid auf dem iPad wird kein Artikel versehentlich in den Warenkorb gelegt — Scrollen und Tippen sind zuverlässig unterschieden
   2. Wenn ein Artikel unter den Mindestbestand fällt, ist die Warnung im Kassen-Grid und in der Produktliste sofort sichtbar — ohne explizit in die Verwaltung navigieren zu müssen
   3. Kritisch niedrige Bestände werden prominenter hervorgehoben als im v3.0-Stand
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 16-01-PLAN.md — ArticleCard-Extraktion mit Pointer-Movement-Threshold + Bestandsampel-Verbesserung + LowStockBanner
 
 ### Phase 17: Datenverwaltung & Sync
 **Goal**: Kategorien sind zentral verwaltbar, Produktbilder lassen sich einfacher zuweisen und der Sync schlägt nicht still fehl
@@ -225,5 +228,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
-| 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
+| 16. UI-Stabilität & Bestand | v4.0 | 0/1 | Not started | - |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
