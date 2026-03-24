@@ -19,11 +19,11 @@
 
 ### UI-Bugfixes
 
-- [ ] **UIX-01**: Scroll vs. Tap wird korrekt unterschieden — kein versehentliches Antippen beim Scrollen im Artikel-Grid
+- [x] **UIX-01**: Scroll vs. Tap wird korrekt unterschieden — kein versehentliches Antippen beim Scrollen im Artikel-Grid
 
 ### Bestandsmanagement
 
-- [ ] **BST-01**: Bestandswarnungen verbessern — klarere/frühere Hinweise bei niedrigem Vorrat
+- [x] **BST-01**: Bestandswarnungen verbessern — klarere/frühere Hinweise bei niedrigem Vorrat
 
 ### Datenverwaltung
 
@@ -58,8 +58,8 @@
 | DAT-02 | Phase 15 | Complete |
 | DAT-03 | Phase 15 | Complete |
 | VAL-01 | Phase 15 | Complete |
-| UIX-01 | Phase 16 | Pending |
-| BST-01 | Phase 16 | Pending |
+| UIX-01 | Phase 16 | Complete |
+| BST-01 | Phase 16 | Complete |
 | VRW-01 | Phase 17 | Pending |
 | VRW-02 | Phase 17 | Pending |
 | SYN-01 | Phase 17 | Pending |

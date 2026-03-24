@@ -53,7 +53,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe (completed 2026-03-24)
 - [x] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt (completed 2026-03-24)
-- [ ] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
+- [x] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer (completed 2026-03-24)
 - [ ] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
 
 ## Phase Details
@@ -194,7 +194,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 16-01-PLAN.md — ArticleCard-Extraktion mit Pointer-Movement-Threshold + Bestandsampel-Verbesserung + LowStockBanner
+- [x] 16-01-PLAN.md — ArticleCard-Extraktion mit Pointer-Movement-Threshold + Bestandsampel-Verbesserung + LowStockBanner
 
 ### Phase 17: Datenverwaltung & Sync
 **Goal**: Kategorien sind zentral verwaltbar, Produktbilder lassen sich einfacher zuweisen und der Sync schlägt nicht still fehl
@@ -228,5 +228,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
-| 16. UI-Stabilität & Bestand | v4.0 | 0/1 | Not started | - |
+| 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete   | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
