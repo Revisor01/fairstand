@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { X, Delete, Minus, Plus } from 'lucide-react';
-import { get } from 'idb-keyval';
 import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -20,16 +19,15 @@ export function PaymentFlow({ totalCents, items, onComplete, onCancel }: Payment
 
   // Schnellbeträge aus Settings laden
   useEffect(() => {
-    get<string>('quick_amounts').then(val => {
-      if (val) {
-        try {
-          const parsed = JSON.parse(val) as number[];
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setQuickAmounts(parsed);
-          }
-        } catch { /* default beibehalten */ }
-      }
-    });
+    const val = localStorage.getItem('quick_amounts');
+    if (val) {
+      try {
+        const parsed = JSON.parse(val) as number[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setQuickAmounts(parsed);
+        }
+      } catch { /* default beibehalten */ }
+    }
   }, []);
 
   const parsed = parseFloat(inputStr.replace(',', '.'));
