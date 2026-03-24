@@ -48,6 +48,10 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    product?.imageUrl ?? null
+  );
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
 
   const dbCategories = useLiveQuery(
     () => db.categories.where('shopId').equals(getShopId()).sortBy('name'),
@@ -109,6 +113,19 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productData),
           }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+
+          if (pendingImageFile) {
+            const formData = new FormData();
+            formData.append('image', pendingImageFile);
+            const imgRes = await fetch(`/api/products/${product.id}/image`, {
+              method: 'POST',
+              body: formData,
+            }).catch(() => null);
+            if (imgRes?.ok) {
+              const { imageUrl } = await imgRes.json() as { imageUrl: string };
+              await db.products.update(product.id, { imageUrl });
+            }
+          }
         }
       } else {
         const stock = Math.max(0, parseInt(values.stock, 10) || 0);
@@ -128,13 +145,36 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
         };
         await db.products.add(productData);
 
-        // Server-Sync bei Online-Status (fire-and-forget, Fehler nicht blockieren)
+        // Server-Sync bei Online-Status
         if (navigator.onLine) {
-          fetch('/api/products', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData),
-          }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+          if (pendingImageFile) {
+            // Wenn Bild vorhanden: Server-POST awaiten damit wir die ID für den Bild-Upload haben
+            const serverOk = await fetch('/api/products', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(productData),
+            }).then(r => r.ok).catch(() => false);
+
+            if (serverOk) {
+              const formData = new FormData();
+              formData.append('image', pendingImageFile);
+              const imgRes = await fetch(`/api/products/${productData.id}/image`, {
+                method: 'POST',
+                body: formData,
+              }).catch(() => null);
+              if (imgRes?.ok) {
+                const { imageUrl } = await imgRes.json() as { imageUrl: string };
+                await db.products.update(productData.id, { imageUrl });
+              }
+            }
+          } else {
+            // Kein Bild: fire-and-forget
+            fetch('/api/products', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(productData),
+            }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+          }
         }
       }
 
@@ -269,6 +309,44 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
             onChange={e => handleChange('minStock', e.target.value)}
             className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400"
           />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-slate-600">Produktbild</label>
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt=""
+              className="w-24 h-24 object-cover rounded-xl border border-slate-200"
+            />
+          )}
+          <label className="flex items-center justify-center h-12 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-sky-400 text-sm text-slate-500 transition-colors">
+            {imagePreview ? 'Bild ändern' : 'Bild auswählen'}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              onChange={e => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  setPendingImageFile(f);
+                  setImagePreview(URL.createObjectURL(f));
+                }
+              }}
+            />
+          </label>
+          {imagePreview && (
+            <button
+              type="button"
+              onPointerDown={() => {
+                setImagePreview(null);
+                setPendingImageFile(null);
+              }}
+              className="text-xs text-rose-500 hover:text-rose-700 text-left"
+            >
+              Bild entfernen
+            </button>
+          )}
         </div>
       </div>
 
