@@ -20,6 +20,9 @@ interface StatsData {
   revenue_cents: number;
   first_sale_at: number | null;
   last_sale_at: number | null;
+  withdrawal_count: number;
+  withdrawal_qty: number;
+  withdrawal_ek_cents: number;
 }
 
 export function ProductStats({ product, onClose }: ProductStatsProps) {
@@ -97,7 +100,7 @@ export function ProductStats({ product, onClose }: ProductStatsProps) {
 
       {!loading && !error && stats && (
         <>
-          {/* Kennzahlen */}
+          {/* Kennzahlen — Verkäufe */}
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
               <span className="text-3xl font-bold text-slate-800">{stats.total_qty}</span>
@@ -113,11 +116,32 @@ export function ProductStats({ product, onClose }: ProductStatsProps) {
             </div>
           </div>
 
+          {/* Kennzahlen — Entnahmen (nur wenn vorhanden) */}
+          {stats.withdrawal_qty > 0 && (
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-amber-50 rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
+                <span className="text-3xl font-bold text-amber-700">{stats.withdrawal_qty}</span>
+                <span className="text-xs text-amber-600 text-center">Stück entnommen</span>
+              </div>
+              <div className="bg-amber-50 rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
+                <span className="text-2xl font-bold text-amber-700">{formatEur(stats.withdrawal_ek_cents)}</span>
+                <span className="text-xs text-amber-600 text-center">Warenwert (EK)</span>
+              </div>
+              <div className="bg-amber-50 rounded-xl shadow-sm p-4 flex flex-col items-center justify-center gap-1">
+                <span className="text-3xl font-bold text-amber-700">{stats.withdrawal_count}</span>
+                <span className="text-xs text-amber-600 text-center">Entnahmen</span>
+              </div>
+            </div>
+          )}
+
           {/* Zeitraum-Info */}
           <div className="bg-white rounded-xl shadow-sm p-4 text-sm text-slate-600">
             <p>Zeitraum: letzte {stats.period_months} Monate (ab {format(new Date(stats.since_ts), 'd. MMM yyyy', { locale: de })})</p>
             {stats.last_sale_at && (
               <p className="mt-1">Letzter Verkauf: {format(new Date(stats.last_sale_at), 'd. MMM yyyy, HH:mm', { locale: de })} Uhr</p>
+            )}
+            {stats.withdrawal_qty > 0 && (
+              <p className="mt-1 text-amber-600">Gesamt bewegt: {stats.total_qty + stats.withdrawal_qty} Stück (Verkauf + Entnahme)</p>
             )}
             {stats.total_qty === 0 && (
               <p className="mt-2 text-slate-400">In diesem Zeitraum keine Verkäufe.</p>
