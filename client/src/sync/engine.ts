@@ -1,10 +1,11 @@
-import { db } from '../db/index.js';
+import { db, getShopId } from '../db/index.js';
 import type { OutboxEntry } from '../db/index.js';
 import { getAuthHeaders } from '../features/auth/serverAuth.js';
+import type { QueryClient } from '@tanstack/react-query';
 
 let flushing = false;
 
-export async function flushOutbox(): Promise<void> {
+export async function flushOutbox(queryClient?: QueryClient): Promise<void> {
   // Guard gegen parallele Ausfuehrung (Doppel-Trigger bei schnellem Reconnect)
   if (flushing) return;
   flushing = true;
@@ -51,6 +52,16 @@ export async function flushOutbox(): Promise<void> {
       const payload = entry.payload as { id?: string };
       if (payload?.id) {
         await db.sales.update(payload.id, { syncedAt: Date.now() });
+      }
+    }
+
+    // TQ-Cache invalidieren: frische Produktdaten nach Sync
+    if (queryClient) {
+      try {
+        const shopId = getShopId();
+        queryClient.invalidateQueries({ queryKey: ['products', shopId] });
+      } catch {
+        // getShopId() kann werfen wenn Session abgelaufen — ignorieren
       }
     }
 
