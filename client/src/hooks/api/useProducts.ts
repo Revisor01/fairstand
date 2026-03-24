@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getShopId } from '../../db/index.js';
+import { db, getShopId } from '../../db/index.js';
 import { getAuthHeaders } from '../../features/auth/serverAuth.js';
 import type { Product } from '../../db/index.js';
 
@@ -31,7 +31,16 @@ export function useProducts() {
       const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
       if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
-      return data.map(mapServerProduct);
+      const products = data.map(mapServerProduct);
+
+      // Write-Through: Dexie als Offline-Cache aktuell halten
+      // Fire-and-forget — wirft keinen Fehler nach oben wenn IDB scheitert
+      db.transaction('rw', db.products, async () => {
+        await db.products.where('shopId').equals(shopId).delete();
+        await db.products.bulkPut(products);
+      }).catch(() => {});
+
+      return products;
     },
   });
 }
