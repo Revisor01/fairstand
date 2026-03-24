@@ -14,6 +14,7 @@ import { authRoutes } from './routes/auth.js';
 import { categoryRoutes } from './routes/categories.js';
 import { ensureShopSeeded } from './db/seed.js';
 import { validateSession } from './lib/sessions.js';
+import { pool } from './db/index.js';
 
 const fastify = Fastify({ logger: true });
 
@@ -73,6 +74,10 @@ await fastify.register(authRoutes, { prefix: '/api' });
 await fastify.register(categoryRoutes, { prefix: '/api' });
 await fastify.register(fastifySchedule);
 await fastify.register(reportScheduler);
+
+fastify.addHook('onClose', async () => {
+  await pool.end();
+});
 
 await ensureShopSeeded();
 
