@@ -1,5 +1,19 @@
 # Milestones
 
+## v6.0 Pure Online (Shipped: 2026-03-24)
+
+**Phases completed:** 2 phases, 6 plans, 10 tasks
+
+**Key accomplishments:**
+
+- postgres:16-alpine in docker-compose mit Health Check, pg Pool in Drizzle, alle 6 Tabellen von sqliteTable auf pgTable migriert, TypeScript-Build clean
+- Alle synchronen better-sqlite3-Aufrufe (.run()/.get()/.all()) in 7 Server-Dateien auf async/await + node-postgres umgestellt, SQLite-JSON-Funktionen durch PostgreSQL-Äquivalente ersetzt, TypeScript-Build fehlerfrei
+- Standalone SQLite→PostgreSQL Migrationsskript mit idempotenten INSERT...ON CONFLICT DO NOTHING Queries für alle 5 Tabellen; better-sqlite3 vollständig aus server/package.json entfernt (PG-05)
+- One-liner:
+- idb-keyval komplett aus 5 Dateien entfernt — Session, PIN, Import-Historie und Schnellbetraege nutzen jetzt synchrones localStorage
+
+---
+
 ## v5.0 Online-First Live Architecture (Shipped: 2026-03-24)
 
 **Phases completed:** 4 phases, 11 plans, 17 tasks

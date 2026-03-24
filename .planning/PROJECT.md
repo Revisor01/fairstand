@@ -2,11 +2,11 @@
 
 ## What This Is
 
-Eine Offline-fähige Progressive Web App (PWA) als Kassensystem für den Fairstand der Ev.-Luth. Kirchengemeinde St. Secundus Hennstedt. Der Fairstand verkauft fair gehandelte Waren vom Süd-Nord-Kontor vor und nach Gottesdiensten. Die App ermöglicht Kassenführung, Warenwirtschaft, Rechnungsimport und Spendenerfassung — optimiert für iPad/iPhone-Nutzung ohne WLAN in der Kirche.
+Eine Online-Only Progressive Web App (PWA) als Kassensystem für den Fairstand der Ev.-Luth. Kirchengemeinde St. Secundus Hennstedt. Der Fairstand verkauft fair gehandelte Waren vom Süd-Nord-Kontor vor und nach Gottesdiensten. Die App ermöglicht Kassenführung, Warenwirtschaft, Rechnungsimport und Spendenerfassung — optimiert für iPad/iPhone-Nutzung. Server mit PostgreSQL als Single Source of Truth, alle Daten live vom Server.
 
 ## Core Value
 
-Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
+Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
 
 ## Requirements
 
@@ -59,24 +59,21 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ PDF Magic-Byte-Validierung + 30s Timeout — v5.0
 - ✓ Server-seitige shopId-Validierung — Session-Token erzwingt Shop-Isolation — v5.0
 
+- ✓ PostgreSQL statt SQLite — Drizzle ORM mit node-postgres, Docker-Compose mit persistentem Volume — v6.0
+- ✓ Dexie.js, dexie-react-hooks, idb-keyval komplett entfernt — keine IndexedDB mehr — v6.0
+- ✓ Outbox-Pattern komplett entfernt — Verkäufe gehen direkt an den Server — v6.0
+- ✓ Warenkorb nur in React State (kein Dexie/IndexedDB-Fallback) — v6.0
+- ✓ Sales/Reports ausschließlich vom Server (TanStack Query) — v6.0
+- ✓ Online-Only: Offline-Overlay bei fehlendem Internet — v6.0
+- ✓ Service Worker nur noch App-Shell-Caching — v6.0
+
 ### Active
 
-## Current Milestone: v6.0 Pure Online
-
-**Goal:** Dexie komplett entfernen. PostgreSQL statt SQLite. Alles live vom Server — kein Cache, kein Offline-Fallback. Jedes Gerät sieht immer den gleichen Stand.
-
-**Target features:**
-- Dexie.js + IndexedDB komplett entfernen — keine lokale Datenbank mehr
-- PostgreSQL statt SQLite als Server-Datenbank (Drizzle ORM macht den Wechsel einfach)
-- Outbox-Pattern entfernen — Verkäufe gehen immer direkt an den Server
-- TanStack Query als einzige Datenschicht (kein Dexie-Fallback)
-- Warenkorb in TQ-State statt Dexie-Persistenz
-- Sales/Reports alle vom Server (kein lokales Dexie-Query)
-- Docker-Compose mit PostgreSQL-Container
+(Keine aktiven Requirements — nächster Milestone noch nicht definiert)
 
 ### Out of Scope
 
-- Native App (App Store) — PWA reicht, spart Apple Developer Account (100€/Jahr)
+- Native App (App Store) — PWA reicht (Apple Developer Account vorhanden, erst ab v7.0)
 - Anbindung an echte Zahlungsterminals (EC-Karte etc.) — reine Barzahlung
 - Automatische Nachbestellung beim Süd-Nord-Kontor — manuelle Bestellung reicht
 - Kundenverwaltung / Kundenkonten — Laufkundschaft vor der Kirche
@@ -95,13 +92,14 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v4.0 shipped)
+### Current State (v6.0 shipped)
 
-- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Dexie.js 4 (v8), Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 21 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + Phase 13 offen), alle shipped
-- Live auf fairstand.godsapp.de mit CI/CD
-- Online-First mit WebSocket: TanStack Query als primäre Datenschicht, WebSocket für Live-Updates, Dexie nur noch Offline-Cache
-- Zentrales Kategorie-Management, Entnahme-Funktion (KG zum EK), Schnellbetrags-Buttons, Lucide Icons
+- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer
+- 23 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0), alle shipped
+- Live auf fairstand.godsapp.de mit CI/CD (GitHub Actions → Portainer Webhook)
+- Online-Only: TanStack Query als einzige Datenschicht, WebSocket für Live-Updates, keine lokale DB
+- PostgreSQL in Docker-Compose mit persistentem Volume, alle Routes async/await
+- Keine Dexie.js, keine IndexedDB, kein Outbox-Pattern — alles direkt Server-seitig
 - Session-Auth mit In-Memory Store, shopId-Validierung, Rate-Limiting, CORS fail-closed
 
 ## Constraints
@@ -132,10 +130,14 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Session-Auth mit In-Memory Store | Zuvor kein server-seitiges Token-Management, shopId nur clientseitig | ✓ Good — erzwingt Shop-Isolation |
 | CORS fail-closed | Wildcard-Default war Sicherheitsrisiko | ✓ Good — Server startet nicht ohne CORS_ORIGIN |
 | Admin online-only, Kasse offline | Offline-Admin erzeugte nur Cache-Konflikte ohne Nutzen | ✓ Good — saubere Trennung, kein Datenverlust |
+| PostgreSQL statt SQLite | Produktionsreife DB, Connection-Pooling, JSON-native | ✓ Good — Docker-Compose, Drizzle-Migration nahtlos |
+| Dexie komplett entfernt | Cache-Layer verursachte mehr Bugs als Nutzen, Kirche hat Mobilnetz | ✓ Good — 795 LOC weniger, keine Cache-Divergenz |
+| Online-Only statt Offline-First | Mobilnetz-Abdeckung in der Kirche macht Offline überflüssig | ✓ Good — drastisch vereinfachte Architektur |
+| idb-keyval → localStorage | IndexedDB-Overhead für kleine Key-Values unnötig | ✓ Good — synchroner Zugriff, eine Dependency weniger |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v6.0 milestone started*
+*Last updated: 2026-03-24 after v6.0 milestone shipped*
