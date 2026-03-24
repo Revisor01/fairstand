@@ -17,9 +17,21 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
   const [tab, setTab] = useState<AdminTab>('products');
   const lowStockCount = useLowStockCount();
   const [shopName, setShopName] = useState<string>('');
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     getStoredSession().then(s => { if (s) setShopName(s.shopName); });
+  }, []);
+
+  useEffect(() => {
+    const onOnline = () => setIsOnline(true);
+    const onOffline = () => setIsOnline(false);
+    window.addEventListener('online', onOnline);
+    window.addEventListener('offline', onOffline);
+    return () => {
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('offline', onOffline);
+    };
   }, []);
 
   return (
@@ -85,16 +97,29 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
 
       {/* Tab-Inhalt */}
       <main className="flex-1 p-6">
-        {tab === 'products' && <ProductList />}
-        {tab === 'reports' && (
+        {!isOnline ? (
+          <div className="flex flex-col items-center justify-center h-48 gap-3 text-center">
+            <p className="text-slate-500 text-base font-medium">
+              Internetverbindung erforderlich
+            </p>
+            <p className="text-slate-400 text-sm">
+              Die Verwaltung ist nur online verfügbar.
+            </p>
+          </div>
+        ) : (
           <>
-            <DailyReport />
-            <hr className="my-6 border-slate-200" />
-            <MonthlyReport />
+            {tab === 'products' && <ProductList />}
+            {tab === 'reports' && (
+              <>
+                <DailyReport />
+                <hr className="my-6 border-slate-200" />
+                <MonthlyReport />
+              </>
+            )}
+            {tab === 'import' && <ImportScreen />}
+            {tab === 'settings' && <SettingsForm />}
           </>
         )}
-        {tab === 'import' && <ImportScreen />}
-        {tab === 'settings' && <SettingsForm />}
       </main>
     </div>
   );
