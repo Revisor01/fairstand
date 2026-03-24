@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, getShopId } from '../../../db/index.js';
+import type { Sale } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { startOfDay, endOfDay, subDays, format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { SaleDetailModal } from './SaleDetailModal.js';
 
 function toDateInputValue(date: Date): string {
   const y = date.getFullYear();
@@ -14,6 +16,7 @@ function toDateInputValue(date: Date): string {
 
 export function DailyReport() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const dayStart = useMemo(() => startOfDay(selectedDate).getTime(), [selectedDate]);
   const dayEnd = useMemo(() => endOfDay(selectedDate).getTime(), [selectedDate]);
@@ -109,6 +112,7 @@ export function DailyReport() {
                 <th className="text-left px-4 py-3 text-sky-700 font-semibold">Uhrzeit</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-semibold">Summe</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-semibold">Spende</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -116,7 +120,11 @@ export function DailyReport() {
                 .slice()
                 .sort((a, b) => b.createdAt - a.createdAt)
                 .map(sale => (
-                  <tr key={sale.id} className="border-b border-slate-50 last:border-0">
+                  <tr
+                    key={sale.id}
+                    className="border-b border-slate-50 last:border-0 cursor-pointer hover:bg-sky-50 active:bg-sky-100 transition-colors"
+                    onPointerDown={() => setSelectedSale(sale)}
+                  >
                     <td className="px-4 py-3 text-slate-600">
                       {format(new Date(sale.createdAt), 'HH:mm')}
                     </td>
@@ -126,6 +134,7 @@ export function DailyReport() {
                     <td className="px-4 py-3 text-right text-green-600 font-medium">
                       {sale.donationCents > 0 ? formatEur(sale.donationCents) : '—'}
                     </td>
+                    <td className="px-4 py-3 text-slate-300 text-lg">›</td>
                   </tr>
                 ))}
             </tbody>
@@ -135,6 +144,10 @@ export function DailyReport() {
         <div className="text-center py-12 text-slate-500 bg-white rounded-xl shadow-sm">
           Keine Verkaeufe an diesem Tag.
         </div>
+      )}
+
+      {selectedSale && (
+        <SaleDetailModal sale={selectedSale} onClose={() => setSelectedSale(null)} />
       )}
     </div>
   );
