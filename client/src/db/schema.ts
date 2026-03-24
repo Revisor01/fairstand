@@ -48,6 +48,7 @@ export interface Sale {
   changeCents: number;
   donationCents: number;
   type?: 'sale' | 'withdrawal'; // undefined/'sale' = normaler Verkauf, 'withdrawal' = Entnahme KG zum EK
+  withdrawalReason?: string; // Grund der Entnahme (z.B. "Gemeindenachmittag", "Küche")
   createdAt: number;  // Unix-Timestamp ms
   syncedAt?: number;  // undefined = noch nicht gesynct
   cancelledAt?: number;     // Unix-Timestamp ms, undefined = aktiv
