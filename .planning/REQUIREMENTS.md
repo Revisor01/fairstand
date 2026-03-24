@@ -26,8 +26,8 @@
 
 ### Storno & Rückgabe
 
-- [ ] **STOR-01**: Verkauf kann aus der Tagesübersicht storniert werden — Bestand wird zurückgebucht
-- [ ] **STOR-02**: Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden
+- [x] **STOR-01**: Verkauf kann aus der Tagesübersicht storniert werden — Bestand wird zurückgebucht
+- [x] **STOR-02**: Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden
 
 ### Bestandsprüfung
 
@@ -61,8 +61,8 @@
 | HIST-02 | Phase 8 | Complete |
 | BEST-01 | Phase 8 | Complete |
 | BEST-02 | Phase 8 | Complete |
-| STOR-01 | Phase 9 | Pending |
-| STOR-02 | Phase 9 | Pending |
+| STOR-01 | Phase 9 | Complete |
+| STOR-02 | Phase 9 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 14 total

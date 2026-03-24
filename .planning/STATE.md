@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
 status: unknown
-stopped_at: Completed 08-bestandspruefung-verkaufshistorie-02-PLAN.md
-last_updated: "2026-03-24T10:44:28.298Z"
+stopped_at: Completed 09-storno-rueckgabe-01-PLAN.md
+last_updated: "2026-03-24T10:53:39.229Z"
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 08 — bestandspruefung-verkaufshistorie
+**Current focus:** Phase 09 — storno-rueckgabe
 
 ## Current Position
 
-Phase: 9
-Plan: Not started
+Phase: 09 (storno-rueckgabe) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Plan: Not started
 | Phase 07-server-sync-multi-laden P03 | 15 | 2 tasks | 13 files |
 | Phase 08-bestandspruefung-verkaufshistorie P01 | 7 | 2 tasks | 4 files |
 | Phase 08-bestandspruefung-verkaufshistorie P02 | 10 | 2 tasks | 5 files |
+| Phase 09-storno-rueckgabe P01 | 3 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -121,6 +122,9 @@ Recent decisions affecting current work:
 - [Phase 08]: Toast-Logik in POSScreen statt ArticleGrid — ArticleGrid Props-Interface bleibt stabil, Feedback-Logik beim Aufrufer
 - [Phase 08-bestandspruefung-verkaufshistorie]: [Phase 08-02]: Sale-Objekt als Prop an SaleDetailModal — kein eigenes Dexie-Query im Modal, offline-fähig ohne extra Query
 - [Phase 08-bestandspruefung-verkaufshistorie]: [Phase 08-02]: ProductStats fetcht nur bei navigator.onLine — konsistent mit MonthlyReport-Muster aus Phase 03
+- [Phase 09]: Dexie v4 migration: cancelledAt als Index auf sales
+- [Phase 09]: window.confirm fuer Storno-Bestaetigung — einfachste Touch-kompatible Loesung ohne Custom-Modal
+- [Phase 09]: onSaleChanged als optionale Prop in SaleDetailModal — rueckwaertskompatibel
 
 ### Pending Todos
 
@@ -134,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:41:31.421Z
-Stopped at: Completed 08-bestandspruefung-verkaufshistorie-02-PLAN.md
+Last session: 2026-03-24T10:53:39.227Z
+Stopped at: Completed 09-storno-rueckgabe-01-PLAN.md
 Resume file: None
