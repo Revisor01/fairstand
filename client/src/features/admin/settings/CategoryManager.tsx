@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { PenLine, Trash2, Plus } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import { downloadCategories, downloadProducts } from '../../../sync/engine.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 export function CategoryManager() {
   const [newCatName, setNewCatName] = useState('');
@@ -18,8 +19,8 @@ export function CategoryManager() {
     try {
       const res = await fetch('/api/categories', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shopId: getShopId(), name }),
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ name }),
       });
       if (!res.ok) throw new Error('Fehler beim Anlegen');
       await downloadCategories();
@@ -35,7 +36,7 @@ export function CategoryManager() {
     try {
       const res = await fetch(`/api/categories/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ name: newName.trim() }),
       });
       if (!res.ok) throw new Error('Fehler beim Umbenennen');
@@ -48,7 +49,10 @@ export function CategoryManager() {
 
   async function handleDelete(id: string) {
     try {
-      const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE',
+        headers: await getAuthHeaders(),
+      });
       if (res.status === 409) {
         const data = await res.json() as { error: string };
         alert(data.error);

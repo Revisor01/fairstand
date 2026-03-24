@@ -1,5 +1,6 @@
 import { db, getShopId } from '../db/index.js';
 import type { OutboxEntry, Product, Category } from '../db/index.js';
+import { getAuthHeaders } from '../features/auth/serverAuth.js';
 
 let flushing = false;
 
@@ -21,7 +22,7 @@ export async function flushOutbox(): Promise<void> {
     try {
       res = await fetch('/api/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ entries: pending }),
       });
     } catch {
@@ -80,7 +81,9 @@ interface ServerProduct {
 
 export async function downloadProducts(): Promise<number> {
   const shopId = getShopId();
-  const res = await fetch(`/api/products?shopId=${shopId}`);
+  const res = await fetch(`/api/products?shopId=${shopId}`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error(`Download fehlgeschlagen: ${res.status}`);
   const serverProducts: ServerProduct[] = await res.json();
 
@@ -110,7 +113,9 @@ export async function downloadProducts(): Promise<number> {
 
 export async function downloadCategories(): Promise<void> {
   const shopId = getShopId();
-  const res = await fetch(`/api/categories?shopId=${shopId}`);
+  const res = await fetch(`/api/categories?shopId=${shopId}`, {
+    headers: await getAuthHeaders(),
+  });
   if (!res.ok) throw new Error(`Kategorie-Download fehlgeschlagen: ${res.status}`);
   const serverCats = await res.json() as Category[];
   await db.transaction('rw', db.categories, async () => {

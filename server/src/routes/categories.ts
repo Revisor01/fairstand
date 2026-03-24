@@ -4,12 +4,10 @@ import { db } from '../db/index.js';
 import { categories, products } from '../db/schema.js';
 
 export async function categoryRoutes(fastify: FastifyInstance) {
-  // GET /categories?shopId=xxx — alle Kategorien des Shops
+  // GET /categories — alle Kategorien des authentifizierten Shops
   fastify.get('/categories', async (request, reply) => {
-    const { shopId } = request.query as { shopId?: string };
-    if (!shopId) {
-      return reply.status(400).send({ error: 'shopId erforderlich' });
-    }
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
 
     const rows = await db
       .select()
@@ -28,17 +26,18 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
   // POST /categories — neue Kategorie anlegen
   fastify.post('/categories', async (request, reply) => {
-    const body = request.body as { shopId?: string; name?: string };
-    const { shopId, name } = body ?? {};
+    const session = (request as any).session as { shopId: string };
+    const body = request.body as { name?: string };
+    const { name } = body ?? {};
 
-    if (!shopId || !name || !name.trim()) {
-      return reply.status(400).send({ error: 'shopId und name erforderlich' });
+    if (!name || !name.trim()) {
+      return reply.status(400).send({ error: 'name erforderlich' });
     }
 
     const id = crypto.randomUUID();
     await db.insert(categories).values({
       id,
-      shopId,
+      shopId: session.shopId,
       name: name.trim(),
       sortOrder: 0,
       createdAt: Date.now(),
@@ -50,6 +49,7 @@ export async function categoryRoutes(fastify: FastifyInstance) {
   // PATCH /categories/:id — Kategorie umbenennen (Bulk-Update in Produkten)
   fastify.patch('/categories/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
     const body = request.body as { name?: string };
     const { name } = body ?? {};
 
@@ -65,6 +65,11 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
     if (!cat) {
       return reply.status(404).send({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // ShopId-Validierung: Kategorie muss zum Shop der Session gehören
+    if (cat.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
 
     const oldName = cat.name;
@@ -88,6 +93,7 @@ export async function categoryRoutes(fastify: FastifyInstance) {
   // DELETE /categories/:id — Kategorie löschen (nur wenn keine Produkte)
   fastify.delete('/categories/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
 
     const [cat] = await db
       .select()
@@ -97,6 +103,11 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
     if (!cat) {
       return reply.status(404).send({ error: 'Kategorie nicht gefunden' });
+    }
+
+    // ShopId-Validierung: Kategorie muss zum Shop der Session gehören
+    if (cat.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
 
     // Prüfen wie viele Produkte diese Kategorie verwenden

@@ -4,6 +4,7 @@ import { de } from 'date-fns/locale';
 import { getShopId } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { ReportChart } from './ReportChart.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 const monthNames = Array.from({ length: 12 }, (_, i) =>
   format(new Date(2026, i, 1), 'MMMM', { locale: de })
@@ -65,31 +66,35 @@ export function MonthlyReport() {
   useEffect(() => {
     if (!navigator.onLine) return;
     setLoadingMonthly(true);
-    fetch(`/api/reports/monthly?shopId=${getShopId()}&year=${year}&month=${month}`)
-      .then(r => r.json())
-      .then((data: MonthlyResponse) => setMonthlyData(data))
-      .catch(() => setMonthlyData(null))
-      .finally(() => setLoadingMonthly(false));
+    getAuthHeaders().then(headers =>
+      fetch(`/api/reports/monthly?shopId=${getShopId()}&year=${year}&month=${month}`, { headers })
+        .then(r => r.json())
+        .then((data: MonthlyResponse) => setMonthlyData(data))
+        .catch(() => setMonthlyData(null))
+        .finally(() => setLoadingMonthly(false))
+    );
   }, [year, month]);
 
   useEffect(() => {
     if (!navigator.onLine) return;
     setLoadingYearly(true);
-    fetch(`/api/reports/yearly?shopId=${getShopId()}&year=${year}`)
-      .then(r => r.json())
-      .then((data: YearlyResponse) => {
-        const chartData: MonthData[] = monthNames.map((name, i) => {
-          const mData = data.months.find(m => m.month === i + 1);
-          return {
-            month: name.slice(0, 3),
-            umsatz: mData?.total_cents ?? 0,
-            spenden: mData?.donation_cents ?? 0,
-          };
-        });
-        setYearlyData(chartData);
-      })
-      .catch(() => setYearlyData([]))
-      .finally(() => setLoadingYearly(false));
+    getAuthHeaders().then(headers =>
+      fetch(`/api/reports/yearly?shopId=${getShopId()}&year=${year}`, { headers })
+        .then(r => r.json())
+        .then((data: YearlyResponse) => {
+          const chartData: MonthData[] = monthNames.map((name, i) => {
+            const mData = data.months.find(m => m.month === i + 1);
+            return {
+              month: name.slice(0, 3),
+              umsatz: mData?.total_cents ?? 0,
+              spenden: mData?.donation_cents ?? 0,
+            };
+          });
+          setYearlyData(chartData);
+        })
+        .catch(() => setYearlyData([]))
+        .finally(() => setLoadingYearly(false))
+    );
   }, [year]);
 
   if (!navigator.onLine) {

@@ -41,10 +41,10 @@ export async function productRoutes(fastify: FastifyInstance) {
   // Bilder-Verzeichnis sicherstellen
   await mkdir(IMAGES_DIR, { recursive: true });
 
-  // GET /products?shopId=xxx — alle Produkte eines Shops
+  // GET /products — alle Produkte des authentifizierten Shops
   fastify.get('/products', async (request, reply) => {
-    const { shopId } = request.query as { shopId: string };
-    if (!shopId) return reply.status(400).send({ error: 'shopId required' });
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
     const rows = db.select().from(products).where(eq(products.shopId, shopId)).all();
     return reply.send(rows);
   });
@@ -54,6 +54,11 @@ export async function productRoutes(fastify: FastifyInstance) {
     const result = ProductSchema.safeParse(request.body);
     if (!result.success) return reply.status(400).send({ error: result.error.flatten() });
     const p = result.data;
+    // ShopId-Validierung: Produkt muss zum Shop der Session gehören
+    const session = (request as any).session as { shopId: string };
+    if (p.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
+    }
     db.insert(products).values({
       id: p.id,
       shopId: p.shopId,

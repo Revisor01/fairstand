@@ -66,6 +66,14 @@ export async function syncRoutes(fastify: FastifyInstance) {
       return reply.status(400).send({ error: result.error.flatten() });
     }
 
+    // ShopId-Validierung: alle Entries müssen zum Shop der Session gehören
+    const session = (request as any).session as { shopId: string };
+    for (const entry of result.data.entries) {
+      if (entry.shopId !== session.shopId) {
+        return reply.status(403).send({ error: 'Zugriff verweigert: shopId stimmt nicht überein' });
+      }
+    }
+
     let processed = 0;
     const errors: Array<{ index: number; message: string }> = [];
 

@@ -6,6 +6,7 @@ import { flushOutbox } from '../../../sync/engine.js';
 import { UploadZone } from './UploadZone.js';
 import { ReviewTable } from './ReviewTable.js';
 import type { MatchedRow } from './ReviewTable.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 interface ParsedInvoiceRow {
   lineNumber: number;
@@ -63,8 +64,10 @@ export function ImportScreen() {
       const formData = new FormData();
       formData.append('file', file);
 
+      const authHeaders = await getAuthHeaders();
       const res = await fetch('/api/import/parse', {
         method: 'POST',
+        headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
         body: formData,
         // Kein Content-Type Header — Browser setzt multipart boundary automatisch
       });
@@ -145,11 +148,13 @@ export function ImportScreen() {
 
           // Fire-and-forget Server-Sync fuer neues Produkt
           if (navigator.onLine) {
-            fetch('/api/products', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(newProduct),
-            }).catch(() => {});
+            getAuthHeaders().then(headers => {
+              fetch('/api/products', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(newProduct),
+              }).catch(() => {});
+            });
           }
         } else {
           productId = row.existingProductId!;
