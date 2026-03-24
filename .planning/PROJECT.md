@@ -38,22 +38,20 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Verbessertes PDF-Parsing (Menge, Artikelnummer, Preis getrennt) — v3.0
 - ✓ Umlaute konsequent in gesamter UI — v3.0
 
+- ✓ Online-First Architektur: Server-Replace statt LWW, Admin offline deaktiviert — v4.0
+- ✓ Stornierte Verkäufe aus allen Berichten und Statistiken gefiltert — v4.0
+- ✓ Marge/EK-Preis korrekt in Monatsberichten — v4.0
+- ✓ Warenkorb überlebt Page-Reload (Dexie-Persistenz) — v4.0
+- ✓ Cart-Validierung: ungültige Artikel erkannt und entfernt — v4.0
+- ✓ Scroll vs. Tap zuverlässig unterschieden auf iPad — v4.0
+- ✓ Bestandswarnungen prominenter (farbiger Rahmen, größerer Dot) — v4.0
+- ✓ Zentrales Kategorie-Management mit CRUD — v4.0
+- ✓ Bild-Upload mit Preview in ProductForm — v4.0
+- ✓ Sync-Status-Badge und automatischer Retry — v4.0
+
 ### Active
 
-## Current Milestone: v4.0 Datenqualität & Stabilität
-
-**Goal:** Bugfixes und Verbesserungen bei Marge/EK-Preis, Storno-Statistiken, Cart-Persistenz, Scroll/Tap-Bug, Kategorie-Management und Bestandswarnungen.
-
-**Target features:**
-- Marge/EK-Preis-Berechnung korrigieren
-- Storno korrekt aus Statistiken/Top-Artikeln rausrechnen
-- Warenkorb überlebt Page-Reload (Dexie-Persistenz)
-- Scroll vs. Tap UI-Bug fixen
-- Zentrales Kategorie-Management
-- Bestandswarnungen verbessern
-- Cart-Validierung
-- Sync-Verbesserungen
-- Produktbild-Upload verbessern
+(Kein aktiver Milestone — bereit für v5.0)
 
 ### Out of Scope
 
@@ -76,13 +74,14 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v3.0 shipped)
+### Current State (v4.0 shipped)
 
-- Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 12 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0), alle shipped
+- Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4 (v8), Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
+- 17 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + Phase 13 offen), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD
-- Server ist Single Source of Truth, Multi-Laden mit PIN, Bestandsprüfung, Storno/Rückgabe
-- UI-Redesign mit kompaktem Payment-Flow, Produktbildern, Bestandsampel
+- Online-First: Server-Replace statt LWW, Admin online-only, Kasse offline
+- Zentrales Kategorie-Management, Cart-Persistenz, Sync-Status-Badge
+- 19 Dateien geändert, 826 Zeilen hinzugefügt
 
 ## Constraints
 
@@ -103,10 +102,12 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | ✓ Fixed v2.0 — shops-Tabelle, PIN-Auth, dynamischer shopId |
 | Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
 | Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ✓ Fixed — PATCH deactivate + Download-Sync in Phase 5 |
+| Online-First statt LWW | LWW verursachte Phantom-Produkte und ignorierte Server-Deaktivierungen | ✓ Good — Server-Replace eliminiert alle Cache-Divergenz-Bugs |
+| Admin online-only, Kasse offline | Offline-Admin erzeugte nur Cache-Konflikte ohne Nutzen | ✓ Good — saubere Trennung, kein Datenverlust |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v4.0 milestone start*
+*Last updated: 2026-03-24 after v4.0 milestone complete*
