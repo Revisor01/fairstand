@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
 status: unknown
-stopped_at: Completed 11-produktbilder-pdf-parsing 11-02-PLAN.md
-last_updated: "2026-03-24T11:57:46.641Z"
+stopped_at: Completed 12-bestandsampel-umlaute 12-01-PLAN.md
+last_updated: "2026-03-24T12:04:54.588Z"
 progress:
   total_phases: 7
-  completed_phases: 5
-  total_plans: 10
-  completed_plans: 10
+  completed_phases: 6
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 11 — produktbilder-pdf-parsing
+**Current focus:** Phase 12 — bestandsampel-umlaute
 
 ## Current Position
 
-Phase: 12
-Plan: Not started
+Phase: 12 (bestandsampel-umlaute) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Plan: Not started
 | Phase 10-ui-redesign P02 | 5 | 2 tasks | 2 files |
 | Phase 11 P01 | 15 | 2 tasks | 6 files |
 | Phase 11 P02 | 7 | 2 tasks | 5 files |
+| Phase 12-bestandsampel-umlaute P01 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,8 @@ Recent decisions affecting current work:
 - [Phase 11]: Von-hinten-Strategie fuer PDF-Preis-Erkennung: letztes Euro-Item = Gesamt, vorletztes = Preis/St., letztes Prozent-Item = MwSt
 - [Phase 11]: IMAGES_DIR via env-Variable konfigurierbar (default /app/data/images) — Docker-Volume-Pfad austauschbar ohne Rebuild
 - [Phase 11]: Dexie v5 ohne .upgrade() Handler — imageUrl ist optional, bestehende Eintraege bleiben unveraendert
+- [Phase 12-bestandsampel-umlaute]: Ampel-Dot als inline span mit text-[10px] leading-none in flex items-center gap-1 — kein Hook, kein Interface
+- [Phase 12-bestandsampel-umlaute]: Funktionsnamen wie handleAllesZurueck nicht umbenannt — kein sichtbarer Nutzen, Breaking Change vermieden
 
 ### Pending Todos
 
@@ -148,6 +151,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T11:56:50.582Z
-Stopped at: Completed 11-produktbilder-pdf-parsing 11-02-PLAN.md
+Last session: 2026-03-24T12:04:54.585Z
+Stopped at: Completed 12-bestandsampel-umlaute 12-01-PLAN.md
 Resume file: None

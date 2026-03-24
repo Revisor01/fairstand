@@ -25,11 +25,11 @@
 
 ### Bestandsampel
 
-- [ ] **AMP-01**: Farbindikator (grün/gelb/rot) für Vorratsstand in der Produktliste und im Kassen-Grid
+- [x] **AMP-01**: Farbindikator (grün/gelb/rot) für Vorratsstand in der Produktliste und im Kassen-Grid
 
 ### Umlaute
 
-- [ ] **TXT-01**: Konsequent öäüß in der gesamten UI verwenden statt ae/oe/ue/ss
+- [x] **TXT-01**: Konsequent öäüß in der gesamten UI verwenden statt ae/oe/ue/ss
 
 ### GitHub
 
@@ -57,8 +57,8 @@
 | IMG-02 | Phase 11 | Complete |
 | IMG-03 | Phase 11 | Complete |
 | PDF-01 | Phase 11 | Complete |
-| AMP-01 | Phase 12 | Pending |
-| TXT-01 | Phase 12 | Pending |
+| AMP-01 | Phase 12 | Complete |
+| TXT-01 | Phase 12 | Complete |
 | GH-01 | Phase 13 | Pending |
 | GH-02 | Phase 13 | Pending |
 

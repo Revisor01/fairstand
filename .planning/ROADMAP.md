@@ -42,7 +42,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 10: UI-Redesign** - Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile, luftiges Layout, Admin übersichtlicher (completed 2026-03-24)
 - [x] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing (completed 2026-03-24)
-- [ ] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI
+- [x] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI (completed 2026-03-24)
 - [ ] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden
 
 ## Phase Details
@@ -132,7 +132,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 12-01-PLAN.md — Bestandsampel-Dot (●) in ArticleGrid + ProductList, Umlaut-Korrekturen in DailyReport + MonthlyReport
+- [x] 12-01-PLAN.md — Bestandsampel-Dot (●) in ArticleGrid + ProductList, Umlaut-Korrekturen in DailyReport + MonthlyReport
 
 ### Phase 13: GitHub-Dokumentation
 **Goal**: Das Projekt ist auf GitHub für andere Weltläden auffindbar, verständlich und nutzbar
@@ -161,5 +161,5 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
 | 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 12. Bestandsampel & Umlaute | v3.0 | 0/1 | Not started | - |
+| 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete   | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
