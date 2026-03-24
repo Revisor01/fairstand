@@ -43,7 +43,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 10: UI-Redesign** - Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile, luftiges Layout, Admin übersichtlicher (completed 2026-03-24)
 - [x] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing (completed 2026-03-24)
 - [x] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI (completed 2026-03-24)
-- [ ] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden
+- [x] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden (completed 2026-03-24)
 
 ## Phase Details
 
@@ -162,4 +162,4 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete    | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete    | 2026-03-24 |
-| 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
+| 13. GitHub-Dokumentation | v3.0 | 0/? | Complete    | 2026-03-24 |

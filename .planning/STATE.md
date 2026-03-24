@@ -4,7 +4,7 @@ milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
 status: unknown
 stopped_at: Completed 12-bestandsampel-umlaute 12-01-PLAN.md
-last_updated: "2026-03-24T12:05:24.335Z"
+last_updated: "2026-03-24T12:06:33.878Z"
 progress:
   total_phases: 7
   completed_phases: 6
@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 12 — bestandsampel-umlaute
+**Current focus:** Phase 13 — github-dokumentation
 
 ## Current Position
 
