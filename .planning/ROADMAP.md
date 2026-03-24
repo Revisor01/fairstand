@@ -5,7 +5,8 @@
 - ✅ **v1.0 Fairstand Kassensystem** — Phases 1-4 (shipped 2026-03-23)
 - ✅ **v1.1 Tech Debt & Deployment** — Phases 5-6 (shipped 2026-03-24)
 - ✅ **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (shipped 2026-03-24)
-- 🚧 **v3.0 Polish, Bilder & Redesign** — Phases 10-13 (active)
+- ✅ **v3.0 Polish, Bilder & Redesign** — Phases 10-13 (shipped 2026-03-24)
+- 🚧 **v4.0 Datenqualität & Stabilität** — Phases 14-16 (active)
 
 ## Phases
 
@@ -38,12 +39,21 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v3.0 Polish, Bilder & Redesign
+<details>
+<summary>✅ v3.0 Polish, Bilder & Redesign (Phases 10-13) — SHIPPED 2026-03-24</summary>
 
-- [x] **Phase 10: UI-Redesign** - Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile, luftiges Layout, Admin übersichtlicher (completed 2026-03-24)
-- [x] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing (completed 2026-03-24)
-- [x] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI (completed 2026-03-24)
-- [x] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden (completed 2026-03-24)
+- [x] Phase 10: UI-Redesign (2/2 plans) — completed 2026-03-24
+- [x] Phase 11: Produktbilder & PDF-Parsing (2/2 plans) — completed 2026-03-24
+- [x] Phase 12: Bestandsampel & Umlaute (1/1 plans) — completed 2026-03-24
+- [x] Phase 13: GitHub-Dokumentation (0/? plans) — completed 2026-03-24
+
+</details>
+
+### 🚧 v4.0 Datenqualität & Stabilität
+
+- [ ] **Phase 14: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt
+- [ ] **Phase 15: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
+- [ ] **Phase 16: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
 
 ## Phase Details
 
@@ -143,10 +153,41 @@ Plans:
   2. Eine Open-Source-Lizenz ist im Repository hinterlegt und die README enthält einen Kontakthinweis für Anfragen anderer Weltläden
 **Plans**: TBD
 
+### Phase 14: Datenintegrität
+**Goal**: Berichte zeigen korrekte Zahlen und der Warenkorb verliert keine Daten — Marge stimmt, Stornos sind herausgerechnet, Artikel im Cart bleiben nach Reload erhalten und ungültige Artikel werden erkannt
+**Depends on**: Phase 13
+**Requirements**: DAT-01, DAT-02, DAT-03, VAL-01
+**Success Criteria** (what must be TRUE):
+  1. Ein Monatsbericht zeigt EK-Preis und Marge korrekt berechnet — stimmige Zahlen nach manuellem Nachrechnen einer Verkaufsliste
+  2. Stornierte Verkäufe erscheinen nicht mehr in Umsatz-Summen und Top-Artikel-Rankings
+  3. Nach einem Page-Reload sind die Artikel im Warenkorb noch da — kein Datenverlust durch Browser-Refresh
+  4. Wenn ein Artikel im Warenkorb liegt und inzwischen deaktiviert oder gelöscht wurde, zeigt die Kasse einen deutlichen Hinweis und verhindert den Verkaufsabschluss
+**Plans**: TBD
+
+### Phase 15: UI-Stabilität & Bestand
+**Goal**: Touch-Interaktion ist zuverlässig und Bestandswarnungen sind klar erkennbar — kein versehentliches Antippen beim Scrollen, kein Übersehen von knappem Vorrat
+**Depends on**: Phase 14
+**Requirements**: UIX-01, BST-01
+**Success Criteria** (what must be TRUE):
+  1. Beim Scrollen durch das Artikel-Grid auf dem iPad wird kein Artikel versehentlich in den Warenkorb gelegt — Scrollen und Tippen sind zuverlässig unterschieden
+  2. Wenn ein Artikel unter den Mindestbestand fällt, ist die Warnung im Kassen-Grid und in der Produktliste sofort sichtbar — ohne explizit in die Verwaltung navigieren zu müssen
+  3. Kritisch niedrige Bestände werden prominenter hervorgehoben als im v3.0-Stand
+**Plans**: TBD
+
+### Phase 16: Datenverwaltung & Sync
+**Goal**: Kategorien sind zentral verwaltbar, Produktbilder lassen sich einfacher zuweisen und der Sync schlägt nicht still fehl
+**Depends on**: Phase 15
+**Requirements**: VRW-01, VRW-02, SYN-01
+**Success Criteria** (what must be TRUE):
+  1. Kategorien können in der Produktverwaltung als eigene Liste angelegt, umbenannt und gelöscht werden — nicht mehr nur als Freitext pro Produkt eingegeben
+  2. Beim Anlegen oder Bearbeiten eines Produkts kann ein Bild in weniger Schritten zugewiesen werden als bisher
+  3. Schlägt ein Sync fehl, erscheint eine klare Rückmeldung in der UI — die App versucht es automatisch erneut und gibt nicht still auf
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 10 → 11 → 12 → 13
+Phases execute in numeric order: 14 → 15 → 16
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -159,7 +200,10 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete | 2026-03-24 |
 | 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
 | 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
-| 10. UI-Redesign | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete    | 2026-03-24 |
-| 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete    | 2026-03-24 |
-| 13. GitHub-Dokumentation | v3.0 | 0/? | Complete    | 2026-03-24 |
+| 10. UI-Redesign | v3.0 | 2/2 | Complete | 2026-03-24 |
+| 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete | 2026-03-24 |
+| 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
+| 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
+| 14. Datenintegrität | v4.0 | 0/? | Not started | - |
+| 15. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
+| 16. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |

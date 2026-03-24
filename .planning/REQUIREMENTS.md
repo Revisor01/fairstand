@@ -45,20 +45,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DAT-01 | TBD | Pending |
-| DAT-02 | TBD | Pending |
-| DAT-03 | TBD | Pending |
-| UIX-01 | TBD | Pending |
-| BST-01 | TBD | Pending |
-| VRW-01 | TBD | Pending |
-| VRW-02 | TBD | Pending |
-| VAL-01 | TBD | Pending |
-| SYN-01 | TBD | Pending |
+| DAT-01 | Phase 14 | Pending |
+| DAT-02 | Phase 14 | Pending |
+| DAT-03 | Phase 14 | Pending |
+| VAL-01 | Phase 14 | Pending |
+| UIX-01 | Phase 15 | Pending |
+| BST-01 | Phase 15 | Pending |
+| VRW-01 | Phase 16 | Pending |
+| VRW-02 | Phase 16 | Pending |
+| SYN-01 | Phase 16 | Pending |
 
 **Coverage:**
 - v4.0 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9
+- Mapped to phases: 9
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
+*Traceability updated: 2026-03-24 (roadmap created)*

@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
-status: defining_requirements
-stopped_at: Milestone v4.0 started
-last_updated: "2026-03-24T13:50:00.000Z"
+status: roadmap_ready
+stopped_at: Roadmap created — Phase 14 ready to plan
+last_updated: "2026-03-24T14:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,10 +23,14 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 14 — Datenintegrität (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-24 — Milestone v4.0 started
+Status: Roadmap ready — awaiting phase planning
+Last activity: 2026-03-24 — Roadmap v4.0 erstellt (3 Phasen, 9 Requirements)
+
+```
+v4.0 Progress: [░░░░░░░░░░░░░░░░░░░░] 0% — Phase 14/16
+```
 
 ## Performance Metrics
 
@@ -153,6 +157,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T12:04:54.585Z
-Stopped at: Completed 12-bestandsampel-umlaute 12-01-PLAN.md
+Last session: 2026-03-24T14:00:00.000Z
+Stopped at: Roadmap v4.0 erstellt — bereit für /gsd:plan-phase 14
 Resume file: None
