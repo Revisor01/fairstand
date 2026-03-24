@@ -27,6 +27,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND created_at >= ${monthStart}
         AND created_at < ${monthEnd}
         AND cancelled_at IS NULL
+        AND (type IS NULL OR type = 'sale')
     `);
 
     // EK-Kosten (cost_cents) berechnet aus items JSON + products.purchase_price
@@ -43,6 +44,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
         AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
     `);
 
     const topArticles = db.all(sql`
@@ -56,6 +58,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
         AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
       GROUP BY json_extract(item.value, '$.productId')
       ORDER BY total_qty DESC
       LIMIT 5
@@ -102,6 +105,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND created_at >= ${yearStart}
         AND created_at < ${yearEnd}
         AND cancelled_at IS NULL
+        AND (type IS NULL OR type = 'sale')
       GROUP BY strftime('%m', datetime(created_at / 1000, 'unixepoch'))
       ORDER BY month
     `);
@@ -120,6 +124,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND sales.created_at >= ${yearStart}
         AND sales.created_at < ${yearEnd}
         AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
       GROUP BY strftime('%m', datetime(sales.created_at / 1000, 'unixepoch'))
       ORDER BY month
     `);
@@ -154,7 +159,8 @@ export async function reportRoutes(fastify: FastifyInstance) {
     since.setMonth(since.getMonth() - monthsBack);
     const sinceTs = since.getTime();
 
-    const result = db.all(sql`
+    // Verkäufe (type IS NULL oder 'sale')
+    const salesResult = db.all(sql`
       SELECT
         COUNT(DISTINCT sales.id) as sale_count,
         COALESCE(SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)), 0) as total_qty,
@@ -169,18 +175,40 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND json_extract(item.value, '$.productId') = ${id}
         AND sales.created_at >= ${sinceTs}
         AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
     `);
 
-    const row = (result[0] as Record<string, unknown>) ?? {};
+    // Entnahmen (type = 'withdrawal')
+    const withdrawalResult = db.all(sql`
+      SELECT
+        COUNT(DISTINCT sales.id) as withdrawal_count,
+        COALESCE(SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)), 0) as withdrawal_qty,
+        COALESCE(SUM(
+          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+          COALESCE(CAST(json_extract(item.value, '$.purchasePrice') AS INTEGER), 0)
+        ), 0) as withdrawal_ek_cents
+      FROM sales, json_each(sales.items) as item
+      WHERE sales.shop_id = ${shopId}
+        AND json_extract(item.value, '$.productId') = ${id}
+        AND sales.created_at >= ${sinceTs}
+        AND sales.cancelled_at IS NULL
+        AND sales.type = 'withdrawal'
+    `);
+
+    const saleRow = (salesResult[0] as Record<string, unknown>) ?? {};
+    const wdRow = (withdrawalResult[0] as Record<string, unknown>) ?? {};
     return reply.send({
       productId: id,
       period_months: monthsBack,
       since_ts: sinceTs,
-      sale_count: Number(row.sale_count ?? 0),
-      total_qty: Number(row.total_qty ?? 0),
-      revenue_cents: Number(row.revenue_cents ?? 0),
-      first_sale_at: row.first_sale_at ? Number(row.first_sale_at) : null,
-      last_sale_at: row.last_sale_at ? Number(row.last_sale_at) : null,
+      sale_count: Number(saleRow.sale_count ?? 0),
+      total_qty: Number(saleRow.total_qty ?? 0),
+      revenue_cents: Number(saleRow.revenue_cents ?? 0),
+      first_sale_at: saleRow.first_sale_at ? Number(saleRow.first_sale_at) : null,
+      last_sale_at: saleRow.last_sale_at ? Number(saleRow.last_sale_at) : null,
+      withdrawal_count: Number(wdRow.withdrawal_count ?? 0),
+      withdrawal_qty: Number(wdRow.withdrawal_qty ?? 0),
+      withdrawal_ek_cents: Number(wdRow.withdrawal_ek_cents ?? 0),
     });
   });
 }
