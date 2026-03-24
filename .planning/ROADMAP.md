@@ -329,8 +329,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — TBD
-- [ ] 23-02-PLAN.md — TBD
+- [ ] 23-01-PLAN.md — Dexie-Kern entfernen: db/schema, db/index, sync/engine, sync/triggers, useCart, useProducts, useCategories, App.tsx
+- [ ] 23-02-PLAN.md — idb-keyval auf localStorage: serverAuth, pinAuth, ImportScreen, SettingsForm, PaymentFlow
+- [ ] 23-03-PLAN.md — Online-Only Abschluss: useSaleComplete, DailyReport TQ, useLowStockCount, Offline-Overlay, Service Worker, package.json
 
 ## Progress
 
@@ -360,5 +361,5 @@ Phases execute in numeric order: 22 → 23
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
-| 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete   | 2026-03-24 |
+| 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete    | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 0/? | Not started | - |
