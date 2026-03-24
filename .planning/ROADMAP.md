@@ -76,7 +76,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Dexie komplett entfernen, PostgreSQL statt SQLite, kein Offline-Modus mehr — jedes Gerät sieht immer den gleichen Stand vom Server.
 
 - [x] **Phase 22: PostgreSQL-Migration** - Server-Datenbank von SQLite auf PostgreSQL umstellen, Docker-Compose anpassen, Migrationsskript für bestehende Daten (completed 2026-03-24)
-- [ ] **Phase 23: Dexie-Entfernung & Online-Only** - Dexie/IndexedDB/Outbox komplett entfernen, App zeigt bei fehlendem Internet klaren Hinweis, Service Worker nur noch App-Shell
+- [x] **Phase 23: Dexie-Entfernung & Online-Only** - Dexie/IndexedDB/Outbox komplett entfernen, App zeigt bei fehlendem Internet klaren Hinweis, Service Worker nur noch App-Shell (completed 2026-03-24)
 
 ## Phase Details
 
@@ -362,4 +362,4 @@ Phases execute in numeric order: 22 → 23
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete | 2026-03-24 |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete    | 2026-03-24 |
-| 23. Dexie-Entfernung & Online-Only | v6.0 | 2/3 | In Progress|  |
+| 23. Dexie-Entfernung & Online-Only | v6.0 | 2/3 | Complete    | 2026-03-24 |
