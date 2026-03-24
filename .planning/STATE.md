@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: Pure Online
 status: unknown
-stopped_at: Completed 23-01-PLAN.md
-last_updated: "2026-03-24T22:50:02.367Z"
+stopped_at: Completed 23-02-PLAN.md
+last_updated: "2026-03-24T22:50:47.712Z"
 progress:
   total_phases: 17
   completed_phases: 1
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 ## Current Position
 
 Phase: 23 (Dexie-Entfernung & Online-Only) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: 2 of 3
 | Phase 22-postgresql-migration P02 | 5 | 2 tasks | 7 files |
 | Phase 22-postgresql-migration P03 | 8 | 2 tasks | 3 files |
 | Phase 23-dexie-entfernung-online-only P01 | 2 | 2 tasks | 8 files |
+| Phase 23-dexie-entfernung-online-only P02 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 22-postgresql-migration]: Migrationsskript in server/scripts/ (standalone, kein Build-Teil) mit dynamischem better-sqlite3 Import und ON CONFLICT DO NOTHING Idempotenz
 - [Phase 23-dexie-entfernung-online-only]: Dexie-Typen direkt in db/index.ts definiert statt re-exportiert — schema.ts nicht mehr nötig
 - [Phase 23-dexie-entfernung-online-only]: useCart updateQuantity ohne Stock-Check — Validation bleibt bei addItem via checkStockBeforeAdd
+- [Phase 23-dexie-entfernung-online-only]: async-Signaturen in Auth-Funktionen beibehalten trotz synchronem localStorage — keine Breaking Changes fuer Aufrufer
+- [Phase 23-dexie-entfernung-online-only]: ImportScreen: Produkt-Matching und Bestandsbuchung via API statt Dexie (db entfernt nach Plan 01)
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:50:02.365Z
-Stopped at: Completed 23-01-PLAN.md
+Last session: 2026-03-24T22:50:47.709Z
+Stopped at: Completed 23-02-PLAN.md
 Resume file: None

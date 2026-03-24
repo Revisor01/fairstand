@@ -11,7 +11,7 @@
 - [x] **DEX-02**: IndexedDB wird nirgends mehr verwendet — keine lokale Datenbank auf dem Client
 - [x] **DEX-03**: Outbox-Pattern komplett entfernt — kein sync/engine.ts, kein sync/triggers.ts, kein flushOutbox
 - [x] **DEX-04**: Warenkorb wird in TanStack Query / React State gehalten, nicht in IndexedDB
-- [ ] **DEX-05**: Sales/Reports werden ausschließlich vom Server geladen (TQ queries), kein lokales Dexie-Query
+- [x] **DEX-05**: Sales/Reports werden ausschließlich vom Server geladen (TQ queries), kein lokales Dexie-Query
 
 ### PostgreSQL Migration
 
@@ -50,7 +50,7 @@
 | DEX-02 | Phase 23 | Complete |
 | DEX-03 | Phase 23 | Complete |
 | DEX-04 | Phase 23 | Complete |
-| DEX-05 | Phase 23 | Pending |
+| DEX-05 | Phase 23 | Complete |
 | PG-01 | Phase 22 | Complete |
 | PG-02 | Phase 22 | Complete |
 | PG-03 | Phase 22 | Complete |
