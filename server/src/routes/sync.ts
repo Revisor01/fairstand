@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { sales, products, outboxEvents } from '../db/schema.js';
+import { broadcast } from './websocket.js';
 
 const SaleItemSchema = z.object({
   productId: z.string(),
@@ -76,6 +77,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
 
     let processed = 0;
     const errors: Array<{ index: number; message: string }> = [];
+    let hasStockChanged = false;
 
     for (let i = 0; i < result.data.entries.length; i++) {
       const entry = result.data.entries[i];
@@ -125,6 +127,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
             }).run();
           });
 
+          hasStockChanged = true;
           processed++;
         }
         if (entry.operation === 'STOCK_ADJUST') {
@@ -147,6 +150,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
               createdAt: entry.createdAt,
             }).run();
           });
+          hasStockChanged = true;
           processed++;
         }
         if (entry.operation === 'SALE_CANCEL') {
@@ -210,6 +214,10 @@ export async function syncRoutes(fastify: FastifyInstance) {
       } catch (err) {
         errors.push({ index: i, message: String(err) });
       }
+    }
+
+    if (hasStockChanged) {
+      broadcast({ type: 'stock_changed', shopId: session.shopId });
     }
 
     return reply.send({ processed, errors });

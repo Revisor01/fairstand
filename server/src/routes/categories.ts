@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { eq, sql, and, asc } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { categories, products } from '../db/schema.js';
+import { broadcast } from './websocket.js';
 
 export async function categoryRoutes(fastify: FastifyInstance) {
   // GET /categories — alle Kategorien des authentifizierten Shops
@@ -43,6 +44,7 @@ export async function categoryRoutes(fastify: FastifyInstance) {
       createdAt: Date.now(),
     });
 
+    broadcast({ type: 'categories_changed', shopId: session.shopId });
     return { ok: true, id };
   });
 
@@ -87,6 +89,8 @@ export async function categoryRoutes(fastify: FastifyInstance) {
       .set({ name: newName })
       .where(eq(categories.id, id));
 
+    broadcast({ type: 'categories_changed', shopId: session.shopId });
+    broadcast({ type: 'products_changed', shopId: session.shopId });
     return { ok: true };
   });
 
@@ -125,6 +129,7 @@ export async function categoryRoutes(fastify: FastifyInstance) {
 
     await db.delete(categories).where(eq(categories.id, id));
 
+    broadcast({ type: 'categories_changed', shopId: session.shopId });
     return { ok: true };
   });
 }

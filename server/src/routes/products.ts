@@ -5,6 +5,7 @@ import { db } from '../db/index.js';
 import { products } from '../db/schema.js';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { extname } from 'node:path';
+import { broadcast } from './websocket.js';
 
 const IMAGES_DIR = process.env.IMAGES_DIR ?? '/app/data/images';
 
@@ -89,21 +90,26 @@ export async function productRoutes(fastify: FastifyInstance) {
         updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
       },
     }).run();
-    return reply.status(201).send({ ok: true });
+    reply.status(201).send({ ok: true });
+    broadcast({ type: 'products_changed', shopId: session.shopId });
   });
 
   // PATCH /products/:id/deactivate — Soft-Delete
   fastify.patch('/products/:id/deactivate', async (request, reply) => {
     const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
     db.update(products).set({ active: false, updatedAt: Date.now() }).where(eq(products.id, id)).run();
-    return reply.send({ ok: true });
+    reply.send({ ok: true });
+    broadcast({ type: 'products_changed', shopId: session.shopId });
   });
 
   // PATCH /products/:id/activate — Reaktivieren
   fastify.patch('/products/:id/activate', async (request, reply) => {
     const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
     db.update(products).set({ active: true, updatedAt: Date.now() }).where(eq(products.id, id)).run();
-    return reply.send({ ok: true });
+    reply.send({ ok: true });
+    broadcast({ type: 'products_changed', shopId: session.shopId });
   });
 
   // POST /products/:id/image — Produktbild hochladen
