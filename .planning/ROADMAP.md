@@ -63,7 +63,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 18: Quick Wins & Security** - Scheduler-Storno-Filter, PDF-Timeout, PDF-Validierung, CORS, PIN-Rate-Limiting, ShopId-Validierung (completed 2026-03-24)
 - [x] **Phase 19: TanStack Query Foundation** - TQ installieren, alle Reads/Writes gegen Server-API, networkMode pro Kontext (completed 2026-03-24)
-- [ ] **Phase 20: WebSocket Live-Updates & Cleanup** - @fastify/websocket, Server-Broadcasts, Query-Invalidation, Outbox-Online entfernen, Sync-Button weg
+- [x] **Phase 20: WebSocket Live-Updates & Cleanup** - @fastify/websocket, Server-Broadcasts, Query-Invalidation, Outbox-Online entfernen, Sync-Button weg (completed 2026-03-24)
 - [ ] **Phase 21: Offline-Fallback & Dexie als Cache** - POS offline-tauglich mit TQ-Cache + Dexie-Fallback, Outbox offline, nahtloser Wechsel
 
 ## Phase Details
@@ -272,7 +272,7 @@ Plans:
 Plans:
 - [x] 20-01-PLAN.md — Server: @fastify/websocket + /api/ws Route + broadcast() + Integration in products/categories/sync
 - [x] 20-02-PLAN.md — Client: useSaleComplete Online-Direct-POST + Dexie Write-Through in useProducts/useCategories
-- [ ] 20-03-PLAN.md — Client: useWebSocket Hook + Cleanup (Sync-Button, Sync-Badge, downloadProducts entfernen)
+- [x] 20-03-PLAN.md — Client: useWebSocket Hook + Cleanup (Sync-Button, Sync-Badge, downloadProducts entfernen)
 
 ### Phase 21: Offline-Fallback & Dexie als Cache
 **Goal**: Die Kasse funktioniert nahtlos offline und online — beim Verlassen des WLANs schaltet sie automatisch auf Dexie-Cache um, beim Reconnect flusht sie die Outbox und holt sich den aktuellen Stand
@@ -315,5 +315,5 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
 | 19. TanStack Query Foundation | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 20. WebSocket Live-Updates & Cleanup | v5.0 | 2/3 | In Progress|  |
+| 20. WebSocket Live-Updates & Cleanup | v5.0 | 3/3 | Complete   | 2026-03-24 |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |

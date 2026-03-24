@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 20-websocket-live-updates-cleanup-01-PLAN.md
-last_updated: "2026-03-24T20:50:23.231Z"
+stopped_at: Completed 20-03-PLAN.md
+last_updated: "2026-03-24T20:54:52.743Z"
 progress:
   total_phases: 15
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -84,6 +84,7 @@ Plan: 3 of 3
 | Phase 19-tanstack-query-foundation P02 | 3 | 2 tasks | 4 files |
 | Phase 20 P02 | 2 | 2 tasks | 3 files |
 | Phase 20-websocket-live-updates-cleanup P01 | 15 | 2 tasks | 6 files |
+| Phase 20 P03 | 155 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -188,6 +189,9 @@ Recent decisions affecting current work:
 - [Phase 20]: Dexie Write-Through fire-and-forget (.catch(() => {})) in useProducts/useCategories — TQ-Query-Fehler werden nicht maskiert
 - [Phase 20-websocket-live-updates-cleanup]: Token via Query-Param /api/ws?token=... statt Authorization-Header: WebSocket-Upgrade-Requests koennen keine custom Header setzen
 - [Phase 20-websocket-live-updates-cleanup]: hasStockChanged-Flag in sync.ts: ein broadcast pro Batch statt pro Entry verhindert unnoetige Invalidierungsflut
+- [Phase 20]: useWebSocket in UnlockedApp statt AppInner — liegt innerhalb QueryClientProvider, Hook braucht useQueryClient()
+- [Phase 20]: engine.ts auf reines flushOutbox() reduziert — Download-Sync vollständig via TQ + WebSocket-Invalidation
+- [Phase 20]: getShopId() in try/catch im onmessage-Handler — wirft wenn Shop nicht gesetzt, statt globalem Fehler
 
 ### Pending Todos
 
@@ -200,6 +204,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:50:23.229Z
-Stopped at: Completed 20-websocket-live-updates-cleanup-01-PLAN.md
+Last session: 2026-03-24T20:54:52.741Z
+Stopped at: Completed 20-03-PLAN.md
 Resume file: None
