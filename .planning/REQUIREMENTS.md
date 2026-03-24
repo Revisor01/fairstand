@@ -13,8 +13,8 @@
 
 ### Datenintegrität
 
-- [ ] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
-- [ ] **DAT-02**: Stornierte Verkäufe werden korrekt aus Umsatz-Statistiken und Top-Artikel-Rankings herausgerechnet
+- [x] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
+- [x] **DAT-02**: Stornierte Verkäufe werden korrekt aus Umsatz-Statistiken und Top-Artikel-Rankings herausgerechnet
 - [ ] **DAT-03**: Warenkorb überlebt einen Page-Reload — Artikel bleiben nach Browser-Refresh erhalten (Dexie-Persistenz)
 
 ### UI-Bugfixes
@@ -54,8 +54,8 @@
 | ARCH-01 | Phase 14 | Complete |
 | ARCH-02 | Phase 14 | Complete |
 | ARCH-03 | Phase 14 | Complete |
-| DAT-01 | Phase 15 | Pending |
-| DAT-02 | Phase 15 | Pending |
+| DAT-01 | Phase 15 | Complete |
+| DAT-02 | Phase 15 | Complete |
 | DAT-03 | Phase 15 | Pending |
 | VAL-01 | Phase 15 | Pending |
 | UIX-01 | Phase 16 | Pending |

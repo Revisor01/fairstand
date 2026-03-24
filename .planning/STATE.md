@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
 status: unknown
-stopped_at: Completed 14-online-first-architektur-01-PLAN.md
-last_updated: "2026-03-24T13:31:56.580Z"
+stopped_at: Completed 15-datenintegrit-t-01-PLAN.md
+last_updated: "2026-03-24T14:44:44.703Z"
 progress:
   total_phases: 11
   completed_phases: 7
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 14 — Online-First Architektur
+**Current focus:** Phase 15 — Datenintegrität
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
+Phase: 15 (Datenintegrität) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Plan: Not started
 | Phase 11 P02 | 7 | 2 tasks | 5 files |
 | Phase 12-bestandsampel-umlaute P01 | 8 | 2 tasks | 5 files |
 | Phase 14-online-first-architektur P01 | 2 | 2 tasks | 2 files |
+| Phase 15-datenintegrit-t P01 | 5 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,7 @@ Recent decisions affecting current work:
 - [Phase 14-online-first-architektur]: where('shopId').equals(shopId).delete() statt db.products.clear() — Multi-Laden-Sicherheit
 - [Phase 14-online-first-architektur]: Kein eigener useOnlineStatus-Hook — inline State in AdminScreen ausreichend für einzelnen Anwendungsfall
 - [Phase 14-online-first-architektur]: Tab-Navigation bleibt offline sichtbar — Hinweistext im main-Block informativer als verschwundene Tabs
+- [Phase 15-datenintegrit-t]: IS NULL statt = 0 fuer cancelled_at-Filter in Report-Queries: SQLite speichert cancelledAt als INTEGER NULL, nicht als 0
 
 ### Pending Todos
 
@@ -156,6 +158,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T13:29:01.863Z
-Stopped at: Completed 14-online-first-architektur-01-PLAN.md
+Last session: 2026-03-24T14:44:44.700Z
+Stopped at: Completed 15-datenintegrit-t-01-PLAN.md
 Resume file: None
