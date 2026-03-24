@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
-status: roadmap_ready
-stopped_at: null
-last_updated: "2026-03-24T20:00:00.000Z"
+status: unknown
+stopped_at: Completed 18-quick-wins-security-02-PLAN.md
+last_updated: "2026-03-24T20:07:13.920Z"
 progress:
-  total_phases: 4
+  total_phases: 15
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,18 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Milestone v5.0 — Online-First Live Architecture
+**Current focus:** Phase 18 — quick-wins-security
 
 ## Current Position
 
-Phase: 18 (Quick Wins & Security) — not started
-Plan: —
-Status: Roadmap defined, ready to plan Phase 18
-Last activity: 2026-03-24 — Roadmap v5.0 created
-
-```
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0/4 phases
-```
+Phase: 18 (quick-wins-security) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -82,6 +76,7 @@ Progress: [░░░░░░░░░░░░░░░░░░░░] 0/4 pha
 | Phase 16-ui-stabilit-t-bestand P01 | 5 | 2 tasks | 4 files |
 | Phase 17-datenverwaltung-sync P01 | 3 | 2 tasks | 9 files |
 | Phase 17-datenverwaltung-sync P02 | 3 | 2 tasks | 5 files |
+| Phase 18-quick-wins-security P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -169,6 +164,8 @@ Recent decisions affecting current work:
 - [v5.0 Roadmap]: FIX + SEC zusammengefasst in Phase 18 — beide unabhängig von Architektur-Refactor, hoher Sicherheitswert bei niedrigem Risiko
 - [v5.0 Roadmap]: LIVE-01 + LIVE-02 + LIVE-06 in Phase 19 — TQ-Foundation muss stehen bevor WebSocket (Phase 20) Query-Invalidation nutzen kann
 - [v5.0 Roadmap]: OFFL-01-03 in Phase 21 nach LIVE komplett — Offline-Fallback testet den fertigen Stack, nicht die Übergangszustände
+- [Phase 18-quick-wins-security]: isPdf() als Modul-Level-Funktion in import.ts — testbar ohne Fastify-Kontext, Magic-Byte-Check vor Parser-Aufruf
+- [Phase 18-quick-wins-security]: _parsePdf() nicht exportiert, parseSuedNordKontorPdf() als Promise.race()-Wrapper mit PDF_PARSE_TIMEOUT_MS=30s
 
 ### Pending Todos
 
@@ -181,6 +178,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T15:15:51.065Z
-Stopped at: Completed 17-datenverwaltung-sync-02-PLAN.md
+Last session: 2026-03-24T20:07:13.918Z
+Stopped at: Completed 18-quick-wins-security-02-PLAN.md
 Resume file: None

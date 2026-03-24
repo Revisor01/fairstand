@@ -30,8 +30,8 @@
 ### Bugfixes & Tech Debt
 
 - [ ] **FIX-01**: Report-Scheduler filtert stornierte Verkäufe (AND cancelled_at IS NULL) in allen 4 SQL-Queries
-- [ ] **FIX-02**: PDF-Parser hat 30-Sekunden-Timeout via Promise.race(), bricht bei hängenden PDFs ab
-- [ ] **FIX-03**: PDF-Upload validiert tatsächliches PDF-Format (Magic Bytes), nicht nur Dateiendung
+- [x] **FIX-02**: PDF-Parser hat 30-Sekunden-Timeout via Promise.race(), bricht bei hängenden PDFs ab
+- [x] **FIX-03**: PDF-Upload validiert tatsächliches PDF-Format (Magic Bytes), nicht nur Dateiendung
 
 ## Future Requirements
 
@@ -72,8 +72,8 @@ Deferred — nicht in v5.0 Scope.
 | SEC-02 | Phase 18 | Pending |
 | SEC-03 | Phase 18 | Pending |
 | FIX-01 | Phase 18 | Pending |
-| FIX-02 | Phase 18 | Pending |
-| FIX-03 | Phase 18 | Pending |
+| FIX-02 | Phase 18 | Complete |
+| FIX-03 | Phase 18 | Complete |
 
 **Coverage:**
 - v5.0 requirements: 16 total
