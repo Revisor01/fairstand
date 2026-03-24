@@ -69,5 +69,14 @@ export class FairstandDB extends Dexie {
         }
       });
     });
+    this.version(3).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt',
+      outbox: '++id, shopId, createdAt, operation',
+    }).upgrade(async tx => {
+      // Hard Reset: alle lokalen Produkte löschen
+      // Beim v2.0-Update lädt die App alles neu vom Server
+      await tx.table('products').clear();
+    });
   }
 }
