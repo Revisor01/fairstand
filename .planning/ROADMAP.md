@@ -177,7 +177,11 @@ Plans:
   2. Stornierte Verkäufe erscheinen nicht mehr in Umsatz-Summen und Top-Artikel-Rankings
   3. Nach einem Page-Reload sind die Artikel im Warenkorb noch da — kein Datenverlust durch Browser-Refresh
   4. Wenn ein Artikel im Warenkorb liegt und inzwischen deaktiviert oder gelöscht wurde, zeigt die Kasse einen deutlichen Hinweis und verhindert den Verkaufsabschluss
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 15-01-PLAN.md — SQL-Fixes in reports.ts: AND cancelled_at IS NULL in allen 6 Queries (DAT-01, DAT-02)
+- [ ] 15-02-PLAN.md — Dexie v7 cartItems-Tabelle + useCart Persistenz + Validierung + Toast (DAT-03, VAL-01)
 
 ### Phase 16: UI-Stabilität & Bestand
 **Goal**: Touch-Interaktion ist zuverlässig und Bestandswarnungen sind klar erkennbar — kein versehentliches Antippen beim Scrollen, kein Übersehen von knappem Vorrat
@@ -220,6 +224,6 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 15. Datenintegrität | v4.0 | 0/? | Not started | - |
+| 15. Datenintegrität | v4.0 | 0/2 | Not started | - |
 | 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
