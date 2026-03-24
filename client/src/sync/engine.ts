@@ -64,18 +64,18 @@ export async function flushOutbox(): Promise<void> {
 
 interface ServerProduct {
   id: string;
-  shop_id: string;
-  article_number: string;
+  shopId: string;
+  articleNumber: string;
   name: string;
   category: string;
-  purchase_price: number;
-  sale_price: number;
-  vat_rate: number;
+  purchasePrice: number;
+  salePrice: number;
+  vatRate: number;
   stock: number;
-  min_stock: number;
-  active: boolean | number; // SQLite boolean kann 0/1 sein
-  image_url?: string | null;
-  updated_at: number;
+  minStock: number;
+  active: boolean | number;
+  imageUrl?: string | null;
+  updatedAt: number;
 }
 
 export async function downloadProducts(): Promise<number> {
@@ -87,18 +87,18 @@ export async function downloadProducts(): Promise<number> {
   for (const sp of serverProducts) {
     const mapped: Product = {
       id: sp.id,
-      shopId: sp.shop_id,
-      articleNumber: sp.article_number,
+      shopId: sp.shopId,
+      articleNumber: sp.articleNumber,
       name: sp.name,
       category: sp.category,
-      purchasePrice: sp.purchase_price,
-      salePrice: sp.sale_price,
-      vatRate: sp.vat_rate,
+      purchasePrice: sp.purchasePrice,
+      salePrice: sp.salePrice,
+      vatRate: sp.vatRate,
       stock: sp.stock,
-      minStock: sp.min_stock,
+      minStock: sp.minStock,
       active: Boolean(sp.active),
-      imageUrl: sp.image_url ?? undefined,
-      updatedAt: sp.updated_at,
+      imageUrl: sp.imageUrl ?? undefined,
+      updatedAt: sp.updatedAt,
     };
 
     // LWW: Nur ueberschreiben wenn Server-Daten neuer
