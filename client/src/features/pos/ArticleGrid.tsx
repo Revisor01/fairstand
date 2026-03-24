@@ -69,20 +69,20 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
       </div>
 
       {/* Produkt-Grid */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-6">
         {filteredProducts.length === 0 ? (
           <div className="flex items-center justify-center h-32 text-slate-500">
             Keine Produkte verfügbar
           </div>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4">
             {filteredProducts.map((product: Product) => (
               <button
                 key={product.id}
                 onPointerDown={() => { if (product.stock > 0) onAddToCart(product); }}
                 disabled={product.stock <= 0}
                 className={`
-                  bg-white shadow-sm rounded-xl min-h-[80px] p-3
+                  bg-white shadow-sm rounded-xl min-h-[80px] p-4
                   flex flex-col justify-between items-start
                   transition-colors text-left
                   ${product.stock <= 0
