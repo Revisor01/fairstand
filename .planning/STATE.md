@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
 last_updated: "2026-03-24T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -16,17 +16,19 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-23)
+See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** v2.0 — Defining requirements
+**Current focus:** v2.0 — Phase 7 bereit zur Planung
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 7 (Server-Sync & Multi-Laden) — Not started
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-24 — Milestone v2.0 started
+Status: Roadmap erstellt, Phase 7 bereit für `/gsd:plan-phase 7`
+Last activity: 2026-03-24 — v2.0 Roadmap erstellt (3 Phasen, 14 Requirements)
+
+Progress: `░░░░░░░░░░` 0/3 Phasen abgeschlossen
 
 ## Performance Metrics
 
@@ -98,12 +100,12 @@ Recent decisions affecting current work:
 - [Phase 04]: Buffer-Strategie (toBuffer()) statt Disk-Write beim PDF-Upload — kein temporaeres Volume noetig
 - [Phase 04-rechnungsimport]: defaultValue + onBlur fuer Euro-Felder in ReviewTable — vermeidet Cursor-Springen bei Dezimal-Eingabe
 - [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
-- [Phase 04-rechnungsimport]: defaultValue + onBlur fuer Euro-Felder in ReviewTable — vermeidet Cursor-Springen bei Dezimal-Eingabe
-- [Phase 04-rechnungsimport]: MatchedRow-Interface in ReviewTable.tsx exportiert — Single Source of Truth, kein Doppel-Interface
 - [Phase 05]: Stock im LWW-Block unveraendert belassen — Delta-Update danach separat
 - [Phase 05]: Fire-and-forget PATCH statt Outbox fuer Produkt-Toggle
 - [Phase 05]: ServerProduct interface for snake_case to camelCase mapping in download sync
 - [Phase 05]: LWW per-product comparison in download sync preserves newer local edits
+- [v2.0 Roadmap]: SYNC + SHOP architektonisch untrennbar — beide in Phase 7 (PIN-Auth setzt Shop-Kontext voraus, Sync arbeitet shop-gefiltert)
+- [v2.0 Roadmap]: STOR-01 baut auf HIST-01 (Tagesübersicht) auf — Phase 9 nach Phase 8
 
 ### Pending Todos
 
@@ -112,10 +114,11 @@ None yet.
 ### Blockers/Concerns
 
 - iOS/Safari-Pitfall: navigator.storage.persist() Verhalten auf iOS 17+ Home-Screen-PWA noch nicht auf physischem Gerät validiert
-- PDF-Parsing (Phase 4): Süd-Nord-Kontor PDF-Struktur unbekannt, muss mit echter Rechnung validiert werden
+- v2.0 Phase 7: Bestehende lokale Dexie-Daten der Nutzerinnen müssen bei Architektur-Umbau migriert oder zurückgesetzt werden — Migration-Strategie klären
+- v2.0 Phase 7: PIN-Auth ersetzt bisherige lokale PIN-Auth (idb-keyval) — Backwards-Compatibility oder Hard-Reset beim ersten Start mit v2.0
 
 ## Session Continuity
 
-Last session: 2026-03-23T18:43:32.624Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-03-24T00:00:00.000Z
+Stopped at: v2.0 Roadmap erstellt (3 Phasen)
 Resume file: None

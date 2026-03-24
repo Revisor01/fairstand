@@ -49,25 +49,25 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SYNC-01 | TBD | Pending |
-| SYNC-02 | TBD | Pending |
-| SYNC-03 | TBD | Pending |
-| SYNC-04 | TBD | Pending |
-| SHOP-01 | TBD | Pending |
-| SHOP-02 | TBD | Pending |
-| SHOP-03 | TBD | Pending |
-| SHOP-04 | TBD | Pending |
-| HIST-01 | TBD | Pending |
-| HIST-02 | TBD | Pending |
-| STOR-01 | TBD | Pending |
-| STOR-02 | TBD | Pending |
-| BEST-01 | TBD | Pending |
-| BEST-02 | TBD | Pending |
+| SYNC-01 | Phase 7 | Pending |
+| SYNC-02 | Phase 7 | Pending |
+| SYNC-03 | Phase 7 | Pending |
+| SYNC-04 | Phase 7 | Pending |
+| SHOP-01 | Phase 7 | Pending |
+| SHOP-02 | Phase 7 | Pending |
+| SHOP-03 | Phase 7 | Pending |
+| SHOP-04 | Phase 7 | Pending |
+| HIST-01 | Phase 8 | Pending |
+| HIST-02 | Phase 8 | Pending |
+| BEST-01 | Phase 8 | Pending |
+| BEST-02 | Phase 8 | Pending |
+| STOR-01 | Phase 9 | Pending |
+| STOR-02 | Phase 9 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-24*
+*Requirements defined: 2026-03-24 | Traceability updated: 2026-03-24*

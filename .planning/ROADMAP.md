@@ -3,7 +3,8 @@
 ## Milestones
 
 - ✅ **v1.0 Fairstand Kassensystem** — Phases 1-4 (shipped 2026-03-23)
-- 🚧 **v1.1 Tech Debt & Deployment** — Phases 5-6 (in progress)
+- ✅ **v1.1 Tech Debt & Deployment** — Phases 5-6 (shipped 2026-03-24)
+- 🚧 **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (active)
 
 ## Phases
 
@@ -19,43 +20,58 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v1.1 Tech Debt & Deployment
+<details>
+<summary>✅ v1.1 Tech Debt & Deployment (Phases 5-6) — SHIPPED 2026-03-24</summary>
 
-### Phase 5: Tech Debt Fixes
-**Goal**: Bekannte technische Schulden aus v1.0 beheben — LWW-Sync, Produkt-Deaktivierung, Download-Sync, Reporting-Lücke
-**Depends on**: v1.0
-**Requirements**: TD-01, TD-02, TD-03, TD-04
+- [x] Phase 5: Tech Debt Fixes (2/2 plans) — completed 2026-03-23
+- [x] Phase 6: GitHub & Deployment (3/3 plans) — completed 2026-03-24
+
+</details>
+
+### 🚧 v2.0 Server-Sync, Multi-Laden & Kernfunktionen
+
+- [ ] **Phase 7: Server-Sync & Multi-Laden** - Architektur-Umbau: Server wird Single Source of Truth, PIN-basierte Laden-Auswahl
+- [ ] **Phase 8: Bestandsprüfung & Verkaufshistorie** - Kassen-UX mit Bestandsanzeige und Überverkauf-Blockierung, Tages- und Artikelstatistik
+- [ ] **Phase 9: Storno & Rückgabe** - Vollständige Transaktionskorrektur mit Bestandsrückverfolgung
+
+## Phase Details
+
+### Phase 7: Server-Sync & Multi-Laden
+**Goal**: Server ist Single Source of Truth — jedes Gerät arbeitet mit demselben Datenstand, Läden werden über PIN-Authentifizierung getrennt
+**Depends on**: Phase 6 (live Deployment)
+**Requirements**: SYNC-01, SYNC-02, SYNC-03, SYNC-04, SHOP-01, SHOP-02, SHOP-03, SHOP-04
 **Success Criteria** (what must be TRUE):
-  1. Produkt-Upsert im Sync-Handler nutzt Timestamp-Vergleich (LWW) statt onConflictDoNothing
-  2. Produkt-Deaktivierung wird per PATCH an den Server synchronisiert
-  3. Frischer Client kann Produktdaten vom Server laden (Download-Sync)
-  4. extra_donation_cents wird im Monatsbericht angezeigt
-**Plans:** 2 plans
+  1. Beim App-Start erscheint ein PIN-Dialog — der eingegebene PIN öffnet den zugehörigen Laden mit seinen Artikeln
+  2. Produkte werden beim App-Start automatisch vom Server geladen — lokale Seed-Daten kommen nur wenn Server nicht erreichbar und DB leer
+  3. Ein Verkauf der offline getätigt wurde, erscheint nach Reconnect automatisch im Server und auf allen anderen Geräten desselben Ladens
+  4. Admin kann Läden anlegen und deren PIN verwalten
+  5. Zwei Geräte mit demselben PIN sehen identische Artikel und denselben Bestand nach Sync
+**Plans**: TBD
 
-Plans:
-- [x] 05-01-PLAN.md — LWW-Sync-Fix, PRODUCT_TOGGLE Server-Sync, extra_donation_cents Reportkarte
-- [x] 05-02-PLAN.md — Download-Sync Server→Client mit manuellem "Daten laden" Button
-
-### Phase 6: GitHub & Deployment
-**Goal**: App auf server.godsapp.de live deployen — GitHub Repo, CI/CD Pipeline, Domain, Portainer Stack
-**Depends on**: Phase 5
-**Requirements**: DEP-04, DEP-05, DEP-06, DEP-07, DEP-08, DEP-09
+### Phase 8: Bestandsprüfung & Verkaufshistorie
+**Goal**: Mitarbeiterinnen sehen Bestand direkt in der Kasse und können Verkaufshistorie einsehen — Überverkauf ist technisch ausgeschlossen
+**Depends on**: Phase 7
+**Requirements**: BEST-01, BEST-02, HIST-01, HIST-02
 **Success Criteria** (what must be TRUE):
-  1. Code liegt auf GitHub mit funktionierendem Actions Workflow
-  2. Docker Images werden automatisch gebaut und zu GHCR gepusht
-  3. fairstand.godsapp.de ist erreichbar mit gültigem SSL-Zertifikat
-  4. Push auf main löst automatisches Deployment via Portainer Webhook aus
-**Plans:** 3 plans
+  1. Jede Artikelkachel in der Kasse zeigt den aktuellen Bestand als kleine Zahl neben dem Preis
+  2. Wenn der Bestand eines Artikels erschöpft ist, kann er nicht mehr in den Warenkorb gelegt werden
+  3. Eine Tagesübersicht zeigt alle Verkäufe des Tages — per Tipp auf einen Verkauf sind die enthaltenen Artikel, Mengen und Preise sichtbar
+  4. Pro Artikel ist eine Statistik einsehbar: wie oft verkauft, Gesamtumsatz, über welchen Zeitraum
+**Plans**: TBD
 
-Plans:
-- [ ] 06-01-PLAN.md — GitHub Repo erstellen, Code pushen, docker-compose.portainer.yml erstellen
-- [ ] 06-02-PLAN.md — KeyHelp Domain + Apache Custom Config fuer Traefik-Proxy
-- [ ] 06-03-PLAN.md — Portainer Stack deployen + Webhook + Auto-Deploy
+### Phase 9: Storno & Rückgabe
+**Goal**: Fehlgebuchte Verkäufe können korrigiert werden — Bestand wird korrekt zurückgebucht
+**Depends on**: Phase 8 (Tagesübersicht aus HIST-01 ist Einstiegspunkt für Storno)
+**Requirements**: STOR-01, STOR-02
+**Success Criteria** (what must be TRUE):
+  1. Aus der Tagesübersicht heraus kann ein vollständiger Verkauf storniert werden — der Bestand aller enthaltenen Artikel wird zurückgebucht
+  2. Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden — nur der Bestand des zurückgegebenen Artikels ändert sich
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 5 → 6
+Phases execute in numeric order: 7 → 8 → 9
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -64,4 +80,7 @@ Phases execute in numeric order: 5 → 6
 | 3. Warenwirtschaft & Berichte | v1.0 | 3/3 | Complete | 2026-03-23 |
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
-| 6. GitHub & Deployment | v1.1 | 0/3 | Not started | - |
+| 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
+| 7. Server-Sync & Multi-Laden | v2.0 | 0/? | Not started | - |
+| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 0/? | Not started | - |
+| 9. Storno & Rückgabe | v2.0 | 0/? | Not started | - |
