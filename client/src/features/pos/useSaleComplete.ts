@@ -113,7 +113,7 @@ export async function completeSale(
  * Online: direkt POST /api/sync
  * Offline: OutboxEntry für späteren Sync erstellen
  */
-export async function completeWithdrawal(items: CartItem[]): Promise<Sale> {
+export async function completeWithdrawal(items: CartItem[], reason?: string): Promise<Sale> {
   // EK-Preise aus Dexie holen und als purchasePrice-Snapshot anhängen
   const enrichedItems = await Promise.all(
     items.map(async (item) => {
@@ -136,6 +136,7 @@ export async function completeWithdrawal(items: CartItem[]): Promise<Sale> {
     changeCents: 0,
     donationCents: 0,
     type: 'withdrawal',
+    withdrawalReason: reason?.trim() || undefined,
     createdAt: Date.now(),
   };
 

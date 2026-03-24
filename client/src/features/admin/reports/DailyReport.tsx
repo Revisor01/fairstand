@@ -143,7 +143,12 @@ export function DailyReport() {
                     <td className={`px-4 py-3 ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-600'}`}>
                       {format(new Date(sale.createdAt), 'HH:mm')}
                       {sale.cancelledAt && <span className="ml-1 text-xs font-medium text-red-500">Storno</span>}
-                      {sale.type === 'withdrawal' && <span className="ml-1 text-xs font-medium text-amber-600">Entnahme</span>}
+                      {!sale.cancelledAt && sale.type !== 'withdrawal' && <span className="ml-1 text-xs font-medium text-sky-500">Verkauf</span>}
+                      {sale.type === 'withdrawal' && (
+                        <span className="ml-1 text-xs font-medium text-amber-600">
+                          Entnahme{sale.withdrawalReason ? ` — ${sale.withdrawalReason}` : ''}
+                        </span>
+                      )}
                     </td>
                     <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-800'}`}>
                       {formatEur(sale.totalCents)}
