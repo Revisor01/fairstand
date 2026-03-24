@@ -1,7 +1,11 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { flushOutbox } from './engine.js';
 
+let registered = false;
+
 export function registerSyncTriggers(queryClient?: QueryClient): void {
+  if (registered) return;
+  registered = true;
   // Sofortiger Flush beim App-Start wenn bereits online (Pitfall 3 aus RESEARCH.md)
   if (navigator.onLine) {
     void flushOutbox(queryClient);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useAuth } from './features/auth/useAuth.js';
 import { PinScreen } from './features/auth/PinScreen.jsx';
@@ -7,6 +7,7 @@ import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
 import { useLowStockCount } from './hooks/useLowStockCount.js';
 import { useWebSocket } from './hooks/useWebSocket.js';
+import { registerSyncTriggers } from './sync/triggers.js';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,13 @@ const queryClient = new QueryClient({
 function UnlockedApp({ onLock }: { onLock: () => void }) {
   const [activeView, setActiveView] = useState<'pos' | 'admin'>('pos');
   const lowStockCount = useLowStockCount();
-  useWebSocket(); // WebSocket-Verbindung herstellen und aufrechterhalten
+  const queryClient = useQueryClient();
+  useWebSocket();
+
+  // Sync-Triggers mit QueryClient registrieren für Post-Flush-Invalidation
+  useEffect(() => {
+    registerSyncTriggers(queryClient);
+  }, [queryClient]);
 
   if (activeView === 'admin') {
     return <AdminScreen onSwitchToPOS={() => setActiveView('pos')} />;
