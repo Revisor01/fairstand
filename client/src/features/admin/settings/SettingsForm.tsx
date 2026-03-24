@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Mail, Send, Info, Banknote, Plus, X } from 'lucide-react';
-import { get, set } from 'idb-keyval';
 import { getShopId } from '../../../db/index.js';
 import { getAuthHeaders } from '../../auth/serverAuth.js';
 
@@ -40,16 +39,15 @@ export function SettingsForm() {
     );
 
     // Schnellbeträge lokal laden
-    get<string>('quick_amounts').then(val => {
-      if (val) {
-        try {
-          const parsed = JSON.parse(val) as number[];
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setQuickAmounts(parsed);
-          }
-        } catch { /* default */ }
-      }
-    });
+    const val = localStorage.getItem('quick_amounts');
+    if (val) {
+      try {
+        const parsed = JSON.parse(val) as number[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setQuickAmounts(parsed);
+        }
+      } catch { /* default */ }
+    }
   }, []);
 
   async function saveSetting(key: string, value: string) {
@@ -86,7 +84,7 @@ export function SettingsForm() {
   async function saveQuickAmounts(amounts: number[]) {
     const sorted = [...amounts].sort((a, b) => a - b);
     setQuickAmounts(sorted);
-    await set('quick_amounts', JSON.stringify(sorted));
+    localStorage.setItem('quick_amounts', JSON.stringify(sorted));
     setSavedKey('quick_amounts');
     setTimeout(() => setSavedKey(null), 1500);
   }
