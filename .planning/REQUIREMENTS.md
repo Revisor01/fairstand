@@ -23,13 +23,13 @@
 
 ### Security & Hardening
 
-- [ ] **SEC-01**: CORS erlaubt nur explizit konfigurierte Origins (kein Wildcard-Default)
+- [x] **SEC-01**: CORS erlaubt nur explizit konfigurierte Origins (kein Wildcard-Default)
 - [ ] **SEC-02**: PIN-Eingabe hat Server-seitiges Rate-Limiting (max. 5 Versuche pro Minute pro IP)
 - [ ] **SEC-03**: Server validiert shopId gegen die authentifizierte Session — kein Zugriff auf fremde Shop-Daten
 
 ### Bugfixes & Tech Debt
 
-- [ ] **FIX-01**: Report-Scheduler filtert stornierte Verkäufe (AND cancelled_at IS NULL) in allen 4 SQL-Queries
+- [x] **FIX-01**: Report-Scheduler filtert stornierte Verkäufe (AND cancelled_at IS NULL) in allen 4 SQL-Queries
 - [x] **FIX-02**: PDF-Parser hat 30-Sekunden-Timeout via Promise.race(), bricht bei hängenden PDFs ab
 - [x] **FIX-03**: PDF-Upload validiert tatsächliches PDF-Format (Magic Bytes), nicht nur Dateiendung
 
@@ -68,10 +68,10 @@ Deferred — nicht in v5.0 Scope.
 | OFFL-01 | Phase 21 | Pending |
 | OFFL-02 | Phase 21 | Pending |
 | OFFL-03 | Phase 21 | Pending |
-| SEC-01 | Phase 18 | Pending |
+| SEC-01 | Phase 18 | Complete |
 | SEC-02 | Phase 18 | Pending |
 | SEC-03 | Phase 18 | Pending |
-| FIX-01 | Phase 18 | Pending |
+| FIX-01 | Phase 18 | Complete |
 | FIX-02 | Phase 18 | Complete |
 | FIX-03 | Phase 18 | Complete |
 
