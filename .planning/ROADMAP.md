@@ -298,7 +298,7 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 15. Datenintegrität | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
-| 18. Quick Wins & Security | v5.0 | 3/3 | Complete   | 2026-03-24 |
+| 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
 | 19. TanStack Query Foundation | v5.0 | 0/? | Not started | - |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
