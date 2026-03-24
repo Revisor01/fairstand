@@ -15,7 +15,7 @@
 
 - [x] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
 - [x] **DAT-02**: Stornierte Verkäufe werden korrekt aus Umsatz-Statistiken und Top-Artikel-Rankings herausgerechnet
-- [ ] **DAT-03**: Warenkorb überlebt einen Page-Reload — Artikel bleiben nach Browser-Refresh erhalten (Dexie-Persistenz)
+- [x] **DAT-03**: Warenkorb überlebt einen Page-Reload — Artikel bleiben nach Browser-Refresh erhalten (Dexie-Persistenz)
 
 ### UI-Bugfixes
 
@@ -32,7 +32,7 @@
 
 ### Validierung
 
-- [ ] **VAL-01**: Cart-Validierung — ungültige/veraltete Artikel im Warenkorb erkennen und behandeln
+- [x] **VAL-01**: Cart-Validierung — ungültige/veraltete Artikel im Warenkorb erkennen und behandeln
 
 ### Sync
 
@@ -56,8 +56,8 @@
 | ARCH-03 | Phase 14 | Complete |
 | DAT-01 | Phase 15 | Complete |
 | DAT-02 | Phase 15 | Complete |
-| DAT-03 | Phase 15 | Pending |
-| VAL-01 | Phase 15 | Pending |
+| DAT-03 | Phase 15 | Complete |
+| VAL-01 | Phase 15 | Complete |
 | UIX-01 | Phase 16 | Pending |
 | BST-01 | Phase 16 | Pending |
 | VRW-01 | Phase 17 | Pending |

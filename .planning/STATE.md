@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
 status: unknown
-stopped_at: Completed 15-datenintegrit-t-01-PLAN.md
-last_updated: "2026-03-24T14:44:44.703Z"
+stopped_at: Completed 15-datenintegrit-t-02-PLAN.md
+last_updated: "2026-03-24T14:45:18.771Z"
 progress:
   total_phases: 11
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -72,6 +72,7 @@ Plan: 2 of 2
 | Phase 12-bestandsampel-umlaute P01 | 8 | 2 tasks | 5 files |
 | Phase 14-online-first-architektur P01 | 2 | 2 tasks | 2 files |
 | Phase 15-datenintegrit-t P01 | 5 | 2 tasks | 1 files |
+| Phase 15-datenintegrit-t P02 | 2 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,8 @@ Recent decisions affecting current work:
 - [Phase 14-online-first-architektur]: Kein eigener useOnlineStatus-Hook — inline State in AdminScreen ausreichend für einzelnen Anwendungsfall
 - [Phase 14-online-first-architektur]: Tab-Navigation bleibt offline sichtbar — Hinweistext im main-Block informativer als verschwundene Tabs
 - [Phase 15-datenintegrit-t]: IS NULL statt = 0 fuer cancelled_at-Filter in Report-Queries: SQLite speichert cancelledAt als INTEGER NULL, nicht als 0
+- [Phase 15-datenintegrit-t]: getShopId() aus db/index.js: Single Source of Truth für Shop-ID, kein synchrones Äquivalent in serverAuth.ts
+- [Phase 15-datenintegrit-t]: loaded-Flag in useCart: verhindert Race-Condition zwischen persist-Effect und loadAndValidate beim Mount
 
 ### Pending Todos
 
@@ -158,6 +161,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T14:44:44.700Z
-Stopped at: Completed 15-datenintegrit-t-01-PLAN.md
+Last session: 2026-03-24T14:45:18.769Z
+Stopped at: Completed 15-datenintegrit-t-02-PLAN.md
 Resume file: None

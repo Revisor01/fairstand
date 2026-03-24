@@ -52,7 +52,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 ### 🚧 v4.0 Datenqualität & Stabilität
 
 - [x] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe (completed 2026-03-24)
-- [ ] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt
+- [x] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt (completed 2026-03-24)
 - [ ] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer
 - [ ] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
 
@@ -181,7 +181,7 @@ Plans:
 
 Plans:
 - [x] 15-01-PLAN.md — SQL-Fixes in reports.ts: AND cancelled_at IS NULL in allen 6 Queries (DAT-01, DAT-02)
-- [ ] 15-02-PLAN.md — Dexie v7 cartItems-Tabelle + useCart Persistenz + Validierung + Toast (DAT-03, VAL-01)
+- [x] 15-02-PLAN.md — Dexie v7 cartItems-Tabelle + useCart Persistenz + Validierung + Toast (DAT-03, VAL-01)
 
 ### Phase 16: UI-Stabilität & Bestand
 **Goal**: Touch-Interaktion ist zuverlässig und Bestandswarnungen sind klar erkennbar — kein versehentliches Antippen beim Scrollen, kein Übersehen von knappem Vorrat
@@ -224,6 +224,6 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 15. Datenintegrität | v4.0 | 1/2 | In Progress|  |
+| 15. Datenintegrität | v4.0 | 2/2 | Complete   | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
