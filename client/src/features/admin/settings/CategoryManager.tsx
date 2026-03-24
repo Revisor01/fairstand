@@ -70,18 +70,18 @@ export function CategoryManager() {
           <p className="text-slate-500 text-sm text-center py-4">Noch keine Kategorien angelegt.</p>
         ) : (
           categories.map(cat => (
-            <div key={cat.id} className="flex items-center justify-between bg-white rounded-xl shadow-sm px-4 py-3">
-              <span className="text-slate-800 font-medium">{cat.name}</span>
+            <div key={cat.id} className="flex flex-col gap-2 bg-white rounded-xl shadow-sm px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-slate-800 font-medium text-base leading-snug">{cat.name}</span>
               <div className="flex items-center gap-2">
                 <button
                   onPointerDown={() => handleRename(cat.id, cat.name)}
-                  className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                  className="flex-1 sm:flex-none bg-sky-100 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-base transition-colors"
                 >
                   Umbenennen
                 </button>
                 <button
                   onPointerDown={() => handleDelete(cat.id)}
-                  className="bg-rose-100 hover:bg-rose-200 active:bg-rose-300 text-rose-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                  className="flex-1 sm:flex-none bg-rose-100 active:bg-rose-300 text-rose-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-base transition-colors"
                 >
                   Löschen
                 </button>
@@ -99,11 +99,11 @@ export function CategoryManager() {
           onChange={e => setNewCatName(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAdd()}
           placeholder="Neue Kategorie..."
-          className="flex-1 h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
+          className="flex-1 min-h-[44px] border border-slate-200 rounded-lg px-3 text-base focus:outline-none focus:border-sky-400"
         />
         <button
           onPointerDown={handleAdd}
-          className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-medium px-4 py-2 rounded-lg h-11 text-sm transition-colors"
+          className="bg-sky-500 active:bg-sky-700 text-white font-medium px-4 py-2 rounded-lg min-h-[44px] text-base transition-colors"
         >
           Hinzufügen
         </button>

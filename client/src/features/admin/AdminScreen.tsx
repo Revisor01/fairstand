@@ -41,7 +41,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       <header className="bg-sky-600 text-white px-4 py-3 flex items-center gap-3">
         <button
           onPointerDown={onSwitchToPOS}
-          className="bg-sky-500 hover:bg-sky-400 active:bg-sky-700 text-white font-semibold px-4 py-2 rounded-lg text-sm"
+          className="bg-sky-500 hover:bg-sky-400 active:bg-sky-700 text-white font-semibold px-4 py-2 rounded-lg text-sm min-h-[44px]"
         >
           Zur Kasse
         </button>
@@ -105,7 +105,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       </nav>
 
       {/* Tab-Inhalt */}
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-4">
         {!isOnline ? (
           <div className="flex flex-col items-center justify-center h-48 gap-3 text-center">
             <p className="text-slate-500 text-base font-medium">
