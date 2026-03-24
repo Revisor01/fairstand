@@ -309,11 +309,12 @@ Plans:
   2. Docker-Compose startet einen PostgreSQL-Container mit persistentem Volume — Daten überleben Container-Neustart
   3. Ein Migrationsskript überträgt alle bestehenden SQLite-Daten (Produkte, Kategorien, Shops, Sales) in die PostgreSQL-Datenbank
   4. better-sqlite3 ist aus package.json und allen Imports entfernt — der Build schlägt fehl wenn Reste vorhanden sind
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 22-01-PLAN.md — TBD
-- [ ] 22-02-PLAN.md — TBD
+- [ ] 22-01-PLAN.md — Docker-Infra (docker-compose PostgreSQL), Drizzle Schema pgTable, DB-Connection Pool
+- [ ] 22-02-PLAN.md — Async-Refactor aller Routes + seed.ts + reportScheduler.ts + PostgreSQL-SQL
+- [ ] 22-03-PLAN.md — Datenmigrationsskript SQLite→PostgreSQL + better-sqlite3 entfernen
 
 ### Phase 23: Dexie-Entfernung & Online-Only
 **Goal**: Dexie, IndexedDB und das Outbox-Pattern sind vollständig entfernt — die App läuft ausschließlich online, zeigt bei fehlendem Internet einen klaren Hinweis und der Service Worker cached nur die App-Shell
@@ -325,7 +326,7 @@ Plans:
   3. Ohne aktive Internetverbindung zeigt die App sofort einen deutlichen Hinweis — kein Verkauf kann abgeschlossen werden, keine Daten werden angezeigt
   4. Ein Verkauf wird direkt an den Server gesendet — es gibt keine Outbox, keine Retry-Queue, kein lokales Speichern
   5. Der Service Worker cached die App-Shell (HTML, JS, CSS) für PWA-Installation — er speichert keine API-Responses oder Produktdaten
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 23-01-PLAN.md — TBD
