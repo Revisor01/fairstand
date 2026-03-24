@@ -163,7 +163,10 @@ Plans:
   2. Admin-Tabs (Produktverwaltung, Import, Berichte, Einstellungen) zeigen offline einen klaren Hinweis "Internetverbindung erforderlich" und sind nicht bedienbar
   3. Verkauf, Storno und Einzelrückgabe funktionieren offline wie bisher — Sales gehen in die Outbox, Bestand wird lokal angepasst
   4. Beim Reconnect: Outbox flushen → dann Server-Replace → Dexie hat korrekten Stand
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 14-01-PLAN.md — LWW-Loop entfernen (engine.ts atomares Replace) + Admin-Offline-Guard (AdminScreen.tsx)
 
 ### Phase 15: Datenintegrität
 **Goal**: Berichte zeigen korrekte Zahlen und der Warenkorb verliert keine Daten — Marge stimmt, Stornos sind herausgerechnet, Artikel im Cart bleiben nach Reload erhalten und ungültige Artikel werden erkannt
@@ -216,7 +219,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
-| 14. Online-First Architektur | v4.0 | 0/? | Not started | - |
+| 14. Online-First Architektur | v4.0 | 0/1 | Not started | - |
 | 15. Datenintegrität | v4.0 | 0/? | Not started | - |
 | 16. UI-Stabilität & Bestand | v4.0 | 0/? | Not started | - |
 | 17. Datenverwaltung & Sync | v4.0 | 0/? | Not started | - |
