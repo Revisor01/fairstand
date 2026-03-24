@@ -95,7 +95,7 @@ export function MonthlyReport() {
   if (!navigator.onLine) {
     return (
       <div className="bg-slate-50 rounded-xl p-6 text-center text-slate-500 mt-4">
-        <p className="text-lg font-medium">Berichte sind nur online verfuegbar</p>
+        <p className="text-lg font-medium">Berichte sind nur online verfügbar</p>
         <p className="text-sm mt-1">Bitte stelle eine Internetverbindung her.</p>
       </div>
     );
@@ -138,7 +138,7 @@ export function MonthlyReport() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
               <span className="text-3xl font-bold text-slate-800">{summary.sale_count}</span>
-              <span className="text-xs text-slate-500 text-center">Verkaeufe</span>
+              <span className="text-xs text-slate-500 text-center">Verkäufe</span>
             </div>
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
               <span className="text-xl font-bold text-sky-500">{formatEur(summary.total_cents)}</span>
@@ -158,7 +158,7 @@ export function MonthlyReport() {
             </div>
             <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
               <span className="text-xl font-bold text-amber-500">{formatEur(summary.extra_donation_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">Ueberzahlung</span>
+              <span className="text-xs text-slate-500 text-center">Überzahlung</span>
             </div>
           </div>
 
@@ -190,7 +190,7 @@ export function MonthlyReport() {
           )}
         </>
       ) : (
-        <p className="text-slate-500 text-sm">Keine Daten fuer diesen Monat.</p>
+        <p className="text-slate-500 text-sm">Keine Daten für diesen Monat.</p>
       )}
 
       {/* Jahresverlauf-Chart */}
