@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v5.0
-milestone_name: Online-First Live Architecture
-status: unknown
-stopped_at: Completed 21-02-PLAN.md
-last_updated: "2026-03-24T21:18:49.732Z"
+milestone: v6.0
+milestone_name: Pure Online
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-24T22:00:00.000Z"
 progress:
-  total_phases: 15
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -18,13 +18,15 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-24)
 
-**Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 21 — offline-fallback-dexie-als-cache
+**Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
+**Current focus:** Milestone v6.0 — Pure Online
 
 ## Current Position
 
-Phase: 21
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-24 — Milestone v6.0 started
 
 ## Performance Metrics
 

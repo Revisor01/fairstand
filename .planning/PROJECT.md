@@ -61,7 +61,18 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Kein aktiver Milestone — bereit für v6.0)
+## Current Milestone: v6.0 Pure Online
+
+**Goal:** Dexie komplett entfernen. PostgreSQL statt SQLite. Alles live vom Server — kein Cache, kein Offline-Fallback. Jedes Gerät sieht immer den gleichen Stand.
+
+**Target features:**
+- Dexie.js + IndexedDB komplett entfernen — keine lokale Datenbank mehr
+- PostgreSQL statt SQLite als Server-Datenbank (Drizzle ORM macht den Wechsel einfach)
+- Outbox-Pattern entfernen — Verkäufe gehen immer direkt an den Server
+- TanStack Query als einzige Datenschicht (kein Dexie-Fallback)
+- Warenkorb in TQ-State statt Dexie-Persistenz
+- Sales/Reports alle vom Server (kein lokales Dexie-Query)
+- Docker-Compose mit PostgreSQL-Container
 
 ### Out of Scope
 
@@ -95,7 +106,7 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ## Constraints
 
-- **Offline-First:** Kirche hat kein WLAN — App muss vollständig offline funktionieren, Sync bei Netz
+- **Online-Only:** App braucht Internet — kein Offline-Modus mehr (Kirche hat mittlerweile Mobilnetz-Abdeckung)
 - **Touch-Optimiert:** Primäres Gerät ist iPad, muss mit Fingern bedienbar sein
 - **PDF-Parsing:** Rechnungen vom Süd-Nord-Kontor kommen als PDF, müssen serverseitig geparst werden
 - **Einfachheit:** Mitarbeiterinnen sind keine Tech-Experten — die Kasse muss sofort verständlich sein
@@ -127,4 +138,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v5.0 milestone complete*
+*Last updated: 2026-03-24 after v6.0 milestone started*
