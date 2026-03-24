@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Settings, Lock } from 'lucide-react';
+import { ShoppingCart, Settings, Lock, WifiOff } from 'lucide-react';
 import type { Sale } from '../../db/index.js';
 import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
@@ -26,9 +26,21 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const [error, setError] = useState<string | null>(null);
   const [stockError, setStockError] = useState<string | null>(null);
   const [shopName, setShopName] = useState<string>('');
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     getStoredSession().then(s => { if (s) setShopName(s.shopName); });
+  }, []);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   useEffect(() => {
@@ -149,6 +161,12 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         <div className="flex flex-col">
           <h1 className="text-xl font-bold leading-tight">Fairstand Kasse</h1>
           {shopName && <p className="text-sky-100 text-xs leading-tight">{shopName}</p>}
+          {!isOnline && (
+            <span className="flex items-center gap-1 text-sky-200 text-xs mt-0.5">
+              <WifiOff size={12} />
+              Offline
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
