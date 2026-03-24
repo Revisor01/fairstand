@@ -17,4 +17,9 @@ export function registerSyncTriggers(): void {
       void flushOutbox();
     }
   });
+
+  // Trigger 3: Periodischer Retry alle 30 Sekunden wenn online (SYN-01)
+  setInterval(() => {
+    if (navigator.onLine) void flushOutbox();
+  }, 30_000);
 }
