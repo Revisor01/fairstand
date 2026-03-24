@@ -28,8 +28,15 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-- TD-01 bis TD-04: Tech Debt behoben — Validated in Phase 5
-- DEP-04 bis DEP-09: Deployment & CI/CD — Phase 6 (pending)
+## Current Milestone: v2.0 Server-Sync, Multi-Laden & Kernfunktionen
+
+**Goal:** Server als Single Source of Truth mit Multi-Laden-Architektur. Architektur-Fehler aus v1.x beheben (jedes Gerät war isoliert) + fehlende Kernfunktionen (Storno, Bestandsprüfung, Verkaufshistorie).
+
+**Target features:**
+- Server-Sync + Multi-Laden (PIN pro Shop, Laden-Config in DB, bidirektionaler Sync)
+- Verkaufshistorie pro Artikel + Gesamtübersicht
+- Storno/Rückgabe
+- Bestandsprüfung in der Kasse (Preis groß, Bestand klein, Überverkauf blockiert)
 
 ### Out of Scope
 
@@ -52,11 +59,12 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v1.1 Phase 5 complete)
+### Current State (v1.1 shipped, v2.0 starting)
 
 - Tech Stack: React 19, Vite 6, Tailwind 4, Dexie.js 4, Fastify 5, SQLite + Drizzle ORM, pdfjs-dist 5, Recharts, Nodemailer
-- 6 Phasen (4 v1.0 + 2 v1.1), Phase 5 Tech Debt behoben
-- Tech Debt aus v1.0 resolved: LWW-Sync, Produkt-Deaktivierung PATCH, Download-Sync, extra_donation Report
+- v1.0: 4 Phasen, v1.1: 2 Phasen (Tech Debt + Deployment)
+- Live auf fairstand.godsapp.de mit CI/CD
+- **Kritisches Problem:** Jedes Gerät hat isolierte Dexie-DB — Server ist nicht Single Source of Truth. Multi-Laden hardcoded. Muss in v2.0 grundlegend umgebaut werden.
 
 ## Constraints
 
@@ -74,7 +82,7 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | PWA statt native App | Kein App Store nötig, läuft auf allen Geräten, sofortige Updates | ✓ Good — funktioniert offline auf iPad |
 | Offline-First mit Dexie.js + Outbox | Kein WLAN in der Kirche, Delta-Sync wenn online | ✓ Good — zuverlässig auch ohne Netz |
 | PDF-Parsing serverseitig mit pdfjs-dist | Konsistentes TCPDF-Format, iPad-Entlastung | ✓ Good — koordinatenbasiert, alle Spalten erkannt |
-| Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | — Pending — bisher nur ein Laden |
+| Multi-Laden-Architektur (shopId) | Option für weitere Gemeinden | ⚠️ Revisit — hardcoded shopId, kein Server-Sync, v2.0 fixt das |
 | Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
 | Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ✓ Fixed — PATCH deactivate + Download-Sync in Phase 5 |
 
@@ -83,4 +91,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-23 after v1.1 Phase 5 (Tech Debt Fixes)*
+*Last updated: 2026-03-24 after v2.0 milestone start*
