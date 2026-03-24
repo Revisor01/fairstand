@@ -1,73 +1,71 @@
-# Requirements: Fairstand Kassensystem v2.0
+# Requirements: Fairstand Kassensystem v3.0
 
 **Defined:** 2026-03-24
-**Core Value:** Server als Single Source of Truth mit Multi-Laden-Architektur — jedes Gerät sieht denselben Datenstand, Offline-Cache nur als Fallback.
+**Core Value:** Polish und visuelle Verbesserungen — die App soll auf einen Blick erfassbar, luftig und stylisch sein.
 
-## v2.0 Requirements
+## v3.0 Requirements
 
-### Sync & Architektur
+### Redesign
 
-- [x] **SYNC-01**: Beim App-Start werden alle Produkte automatisch vom Server geladen (Server = Single Source of Truth)
-- [x] **SYNC-02**: Verkäufe die offline getätigt werden, werden automatisch zum Server hochgesynct wenn Internet verfügbar
-- [x] **SYNC-03**: Jedes Gerät sieht denselben Produktbestand — Bestandsänderungen durch Verkäufe sind sofort nach Sync auf allen Geräten sichtbar
-- [x] **SYNC-04**: Lokale Dexie-DB dient nur als Offline-Cache — Seed-Daten nur als Fallback wenn Server nicht erreichbar UND lokale DB leer
+- [ ] **UI-01**: Kassendialog und Bezahlseite sind kompakt (wie der Abschlussdialog) — nicht fullscreen, alles auf einen Blick erfassbar
+- [ ] **UI-02**: Bezahlseite zeigt Artikelliste + Gesamtsumme groß + Live-Berechnung von Wechselgeld/Spende beim Eingeben
+- [ ] **UI-03**: Shop-Name wird in der Titelzeile oben angezeigt
+- [ ] **UI-04**: Gesamtes Layout luftiger, kompakter und stylischer — mehr Whitespace, weniger gedrängt
+- [ ] **UI-05**: Admin/Einstellungen übersichtlicher und kompakter gestaltet
 
-### Multi-Laden
+### Produktbilder
 
-- [x] **SHOP-01**: Laden-Konfiguration (Name, PIN, shopId) wird in der Server-Datenbank gespeichert, nicht hardcoded
-- [x] **SHOP-02**: Beim App-Start wird ein 6-stelliger PIN abgefragt — der PIN identifiziert und öffnet den zugehörigen Laden
-- [x] **SHOP-03**: Produkte gehören zu einem Laden — jeder Laden sieht nur seine eigenen Artikel
-- [x] **SHOP-04**: Admin kann Läden anlegen und bearbeiten (Name, PIN)
+- [ ] **IMG-01**: Artikelkacheln zeigen Produktbilder (falls vorhanden)
+- [ ] **IMG-02**: Bilder können aus Etiketten-PDFs (Ordner Süd-Nord-Kontor/) extrahiert oder von der Kontor-Website geholt werden
+- [ ] **IMG-03**: Bilder können manuell in der Produktverwaltung zugewiesen werden
 
-### Verkaufshistorie
+### PDF-Parsing
 
-- [x] **HIST-01**: Tagesübersicht zeigt Liste aller Verkäufe — anklickbar für Detailansicht (welche Artikel, Menge, Preis)
-- [x] **HIST-02**: Pro Artikel: Verkaufsstatistik einsehbar (wie oft verkauft, Umsatz, Zeitraum) — um zu planen was sich lohnt
+- [ ] **PDF-01**: Verbessertes Parsing der Süd-Nord-Kontor Rechnungen — Menge, Artikelnummer, Preis korrekt in separate Spalten statt alles in Beschreibung (Testdatei: Rechnung 2552709.pdf)
 
-### Storno & Rückgabe
+### Bestandsampel
 
-- [x] **STOR-01**: Verkauf kann aus der Tagesübersicht storniert werden — Bestand wird zurückgebucht
-- [x] **STOR-02**: Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden
+- [ ] **AMP-01**: Farbindikator (grün/gelb/rot) für Vorratsstand in der Produktliste und im Kassen-Grid
 
-### Bestandsprüfung
+### Umlaute
 
-- [x] **BEST-01**: Artikel-Grid in der Kasse zeigt Preis groß und aktuellen Bestand klein
-- [x] **BEST-02**: Wenn mehr Stück in den Warenkorb gelegt werden als im Bestand sind, wird das blockiert
+- [ ] **TXT-01**: Konsequent öäüß in der gesamten UI verwenden statt ae/oe/ue/ss
+
+### GitHub
+
+- [ ] **GH-01**: README.md mit Projektbeschreibung und Setup-Anleitung (keine Screenshots)
+- [ ] **GH-02**: Open-Source-Lizenz — frei für alle Weltläden (ev + kath), Kontakthinweis für Account-Anfragen
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Produktbilder | v3.0 — erst Architektur richtig machen |
-| Bestandsampel (Farbindikator) | v3.0 |
-| PDF-Parsing verbessern | v3.0 |
-| Umlaute überall | v3.0 |
-| Redesign | v3.0 |
-| README + Lizenz | v3.0 |
+| Multi-Laden Admin-UI (Läden anlegen per Web) | Funktioniert bereits über Server-Seed/DB |
+| Real-time Push zwischen Geräten | Polling/manuell reicht für Kirchenverkauf |
+| Native App | PWA reicht |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SYNC-01 | Phase 7 | Complete |
-| SYNC-02 | Phase 7 | Complete |
-| SYNC-03 | Phase 7 | Complete |
-| SYNC-04 | Phase 7 | Complete |
-| SHOP-01 | Phase 7 | Complete |
-| SHOP-02 | Phase 7 | Complete |
-| SHOP-03 | Phase 7 | Complete |
-| SHOP-04 | Phase 7 | Complete |
-| HIST-01 | Phase 8 | Complete |
-| HIST-02 | Phase 8 | Complete |
-| BEST-01 | Phase 8 | Complete |
-| BEST-02 | Phase 8 | Complete |
-| STOR-01 | Phase 9 | Complete |
-| STOR-02 | Phase 9 | Complete |
+| UI-01 | TBD | Pending |
+| UI-02 | TBD | Pending |
+| UI-03 | TBD | Pending |
+| UI-04 | TBD | Pending |
+| UI-05 | TBD | Pending |
+| IMG-01 | TBD | Pending |
+| IMG-02 | TBD | Pending |
+| IMG-03 | TBD | Pending |
+| PDF-01 | TBD | Pending |
+| AMP-01 | TBD | Pending |
+| TXT-01 | TBD | Pending |
+| GH-01 | TBD | Pending |
+| GH-02 | TBD | Pending |
 
 **Coverage:**
-- v2.0 requirements: 14 total
-- Mapped to phases: 14
-- Unmapped: 0
+- v3.0 requirements: 13 total
+- Mapped to phases: 0
+- Unmapped: 13
 
 ---
-*Requirements defined: 2026-03-24 | Traceability updated: 2026-03-24*
+*Requirements defined: 2026-03-24*
