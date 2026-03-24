@@ -1,6 +1,5 @@
-import { useReducer, useState, useEffect } from 'react';
-import type { CartItem, Product, PersistedCartItem } from '../../db/index.js';
-import { db, getShopId } from '../../db/index.js';
+import { useReducer, useState } from 'react';
+import type { CartItem, Product } from '../../db/index.js';
 
 // --- AddItemResult ---
 
@@ -25,8 +24,7 @@ type CartAction =
   | { type: 'ADD_ITEM'; product: Product }
   | { type: 'REMOVE_ITEM'; productId: string }
   | { type: 'UPDATE_QUANTITY'; productId: string; quantity: number }
-  | { type: 'CLEAR' }
-  | { type: 'LOAD'; items: CartItem[] }; // NEU — für Mount aus Dexie
+  | { type: 'CLEAR' };
 
 // --- State ---
 
@@ -51,7 +49,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           ),
         };
       }
-      // Preis-Snapshot zum Zeitpunkt des Hinzufügens — nie nachträglich aus DB aktualisieren
+      // Preis-Snapshot zum Zeitpunkt des Hinzufügens — nie nachträglich aktualisieren
       const newItem: CartItem = {
         productId: action.product.id,
         articleNumber: action.product.articleNumber,
@@ -79,9 +77,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case 'CLEAR':
       return initialState;
 
-    case 'LOAD':
-      return { items: action.items };
-
     default:
       return state;
   }
@@ -91,82 +86,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
 export function useCart() {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-  const [loaded, setLoaded] = useState(false);
   const [invalidItems, setInvalidItems] = useState<string[]>([]);
 
   const total = state.items.reduce((sum, i) => sum + i.salePrice * i.quantity, 0);
-
-  // Effect 1 — Mount: Laden und Validieren
-  useEffect(() => {
-    async function loadAndValidate() {
-      let shopId: string;
-      try {
-        shopId = getShopId();
-      } catch {
-        setLoaded(true);
-        return; // nicht eingeloggt — leerer Cart ist korrekt
-      }
-
-      const stored = await db.cartItems
-        .where('shopId').equals(shopId).toArray();
-
-      if (stored.length === 0) {
-        setLoaded(true);
-        return;
-      }
-
-      const productIds = stored.map(i => i.productId);
-      const currentProducts = await db.products
-        .where('id').anyOf(productIds).toArray();
-      const productMap = new Map(currentProducts.map(p => [p.id, p]));
-
-      const valid: CartItem[] = [];
-      const removed: string[] = [];
-
-      for (const item of stored) {
-        const p = productMap.get(item.productId);
-        if (!p || !p.active) {
-          removed.push(item.name); // nicht mehr existent oder deaktiviert
-          continue;
-        }
-        // Preis-Snapshot beibehalten — per Phase-01-Entscheidung NICHT aus DB aktualisieren
-        const { shopId: _shopId, ...cartItem } = item; // shopId aus PersistedCartItem entfernen
-        valid.push(cartItem);
-      }
-
-      if (valid.length > 0) {
-        dispatch({ type: 'LOAD', items: valid });
-      }
-      if (removed.length > 0) {
-        setInvalidItems(removed);
-      }
-      setLoaded(true);
-    }
-    loadAndValidate();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Effect 2 — Persistieren nach jeder Reducer-Aktion
-  useEffect(() => {
-    if (!loaded) return; // loaded-Flag: verhindert Löschen vor erstem Laden
-
-    let shopId: string;
-    try {
-      shopId = getShopId();
-    } catch {
-      return; // nicht eingeloggt — nicht persistieren
-    }
-
-    async function persist() {
-      await db.transaction('rw', db.cartItems, async () => {
-        await db.cartItems.where('shopId').equals(shopId).delete();
-        if (state.items.length > 0) {
-          const toStore: PersistedCartItem[] = state.items.map(i => ({ ...i, shopId }));
-          await db.cartItems.bulkPut(toStore);
-        }
-      });
-    }
-    persist();
-  }, [state.items, loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function addItem(product: Product): AddItemResult {
     const result = checkStockBeforeAdd(product, state.items);
@@ -182,15 +104,6 @@ export function useCart() {
   }
 
   async function updateQuantity(productId: string, quantity: number): Promise<{ blocked?: boolean; stock?: number }> {
-    if (quantity <= 0) {
-      dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
-      return {};
-    }
-    // Stock-Check: Menge darf nicht über Bestand hinaus
-    const product = await db.products.get(productId);
-    if (product && quantity > product.stock) {
-      return { blocked: true, stock: product.stock };
-    }
     dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
     return {};
   }
