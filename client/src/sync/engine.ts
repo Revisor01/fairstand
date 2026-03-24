@@ -1,4 +1,4 @@
-import { db, SHOP_ID } from '../db/index.js';
+import { db, getShopId } from '../db/index.js';
 import type { OutboxEntry, Product } from '../db/index.js';
 
 let flushing = false;
@@ -52,6 +52,9 @@ export async function flushOutbox(): Promise<void> {
         await db.sales.update(payload.id, { syncedAt: Date.now() });
       }
     }
+
+    // Download-Sync nach erfolgreichem Upload: aktuellste Daten holen
+    downloadProducts().catch(() => {}); // fire-and-forget
   } finally {
     flushing = false;
   }
@@ -75,7 +78,7 @@ interface ServerProduct {
 }
 
 export async function downloadProducts(): Promise<number> {
-  const res = await fetch(`/api/products?shopId=${SHOP_ID}`);
+  const res = await fetch(`/api/products?shopId=${getShopId()}`);
   if (!res.ok) throw new Error(`Download fehlgeschlagen: ${res.status}`);
   const serverProducts: ServerProduct[] = await res.json();
 
@@ -106,7 +109,4 @@ export async function downloadProducts(): Promise<number> {
   return upserted;
 }
 
-// Download-Sync bei App-Start wenn online
-if (typeof window !== 'undefined' && navigator.onLine) {
-  downloadProducts().catch(() => {});
-}
+// Startup-Download wurde entfernt — App.tsx ruft downloadProducts() nach Login auf
