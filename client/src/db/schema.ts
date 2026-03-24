@@ -26,6 +26,10 @@ export interface SaleItem {
 
 export type CartItem = SaleItem;
 
+export interface PersistedCartItem extends SaleItem {
+  shopId: string; // nötig für Shop-Isolation in Dexie-Index
+}
+
 export interface Sale {
   id: string;
   shopId: string;
@@ -53,6 +57,7 @@ export class FairstandDB extends Dexie {
   products!: EntityTable<Product, 'id'>;
   sales!: EntityTable<Sale, 'id'>;
   outbox!: EntityTable<OutboxEntry, 'id'>;
+  cartItems!: EntityTable<PersistedCartItem, 'productId'>;
 
   constructor() {
     super('fairstand-db');
@@ -101,6 +106,12 @@ export class FairstandDB extends Dexie {
     }).upgrade(async tx => {
       // Fix: alte Einträge hatten shopId=undefined wegen snake_case-Bug im Sync
       await tx.table('products').clear();
+    });
+    this.version(7).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
+      outbox: '++id, shopId, createdAt, operation',
+      cartItems: 'productId, shopId', // productId = PK, shopId = Index für Shop-Isolation
     });
   }
 }
