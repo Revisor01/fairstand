@@ -1,5 +1,3 @@
-import { get, set } from 'idb-keyval';
-
 // Fester Kassen-PIN für St. Secundus Hennstedt
 const DEFAULT_PIN = '140381';
 
@@ -14,11 +12,11 @@ async function hashPin(pin: string): Promise<string> {
 
 export async function setupPin(pin: string): Promise<void> {
   const hash = await hashPin(pin);
-  await set('pinHash', hash);
+  localStorage.setItem('pinHash', hash);
 }
 
 export async function ensureDefaultPin(): Promise<void> {
-  const existing = await get<string>('pinHash');
+  const existing = localStorage.getItem('pinHash');
   if (!existing) {
     await setupPin(DEFAULT_PIN);
   }
@@ -26,18 +24,19 @@ export async function ensureDefaultPin(): Promise<void> {
 
 export async function verifyPin(pin: string): Promise<boolean> {
   await ensureDefaultPin();
-  const stored = await get<string>('pinHash');
+  const stored = localStorage.getItem('pinHash');
   if (!stored) return false;
   const hash = await hashPin(pin);
   return hash === stored;
 }
 
 export async function updateActivity(): Promise<void> {
-  await set('lastActivity', Date.now());
+  localStorage.setItem('lastActivity', String(Date.now()));
 }
 
 export async function isSessionValid(): Promise<boolean> {
-  const last = await get<number>('lastActivity');
+  const lastStr = localStorage.getItem('lastActivity');
+  const last = lastStr ? parseInt(lastStr, 10) : null;
   if (!last) return false;
   return Date.now() - last < 120 * 60 * 1000;
 }
@@ -48,5 +47,5 @@ export async function hasPinSetup(): Promise<boolean> {
 }
 
 export async function logout(): Promise<void> {
-  await set('lastActivity', 0);
+  localStorage.setItem('lastActivity', '0');
 }

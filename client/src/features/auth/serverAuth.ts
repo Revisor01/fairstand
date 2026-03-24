@@ -1,5 +1,3 @@
-import { get, set, del } from 'idb-keyval';
-
 // Session-Daten die lokal gespeichert werden
 export interface StoredSession {
   shopId: string;
@@ -24,7 +22,7 @@ export async function serverLogin(pin: string): Promise<StoredSession | null> {
       token: data.token,
       lastActivity: Date.now(),
     };
-    await set('session', session);
+    localStorage.setItem('session', JSON.stringify(session));
     return session;
   } catch {
     // Netzwerkfehler — offline-Fallback (getStoredSession prüft gespeicherte Session)
@@ -34,19 +32,20 @@ export async function serverLogin(pin: string): Promise<StoredSession | null> {
 
 // Gespeicherte Session laden (für Offline-Fallback + App-Start-Check)
 export async function getStoredSession(): Promise<StoredSession | null> {
-  return await get<StoredSession>('session') ?? null;
+  const raw = localStorage.getItem('session');
+  return raw ? JSON.parse(raw) as StoredSession : null;
 }
 
 // Session löschen (Logout)
 export async function clearSession(): Promise<void> {
-  await del('session');
+  localStorage.removeItem('session');
 }
 
 // lastActivity aktualisieren (für Session-Timeout)
 export async function updateActivity(): Promise<void> {
   const session = await getStoredSession();
   if (!session) return;
-  await set('session', { ...session, lastActivity: Date.now() });
+  localStorage.setItem('session', JSON.stringify({ ...session, lastActivity: Date.now() }));
 }
 
 // Session-Timeout: 2 Stunden (120 Min) — identisch zu bisherigem pinAuth.ts
