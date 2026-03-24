@@ -35,11 +35,13 @@ export interface Sale {
   donationCents: number;
   createdAt: number;  // Unix-Timestamp ms
   syncedAt?: number;  // undefined = noch nicht gesynct
+  cancelledAt?: number;     // Unix-Timestamp ms, undefined = aktiv
+  returnedItems?: string[]; // productIds die zurückgegeben wurden
 }
 
 export interface OutboxEntry {
   id?: number; // ++id auto-increment
-  operation: 'SALE_COMPLETE' | 'STOCK_ADJUST';
+  operation: 'SALE_COMPLETE' | 'STOCK_ADJUST' | 'SALE_CANCEL' | 'ITEM_RETURN';
   payload: unknown;
   shopId: string;
   createdAt: number;
@@ -77,6 +79,14 @@ export class FairstandDB extends Dexie {
       // Hard Reset: alle lokalen Produkte löschen
       // Beim v2.0-Update lädt die App alles neu vom Server
       await tx.table('products').clear();
+    });
+    this.version(4).stores({
+      products: 'id, shopId, category, active, [shopId+active]',
+      sales: 'id, shopId, createdAt, syncedAt, cancelledAt',
+      outbox: '++id, shopId, createdAt, operation',
+    }).upgrade(_tx => {
+      // cancelledAt und returnedItems sind optionale Felder — Dexie füllt undefined
+      return Promise.resolve();
     });
   }
 }

@@ -25,6 +25,7 @@ export const sales = sqliteTable('sales', {
   donationCents: integer('donation_cents').notNull(),
   createdAt: integer('created_at').notNull(),
   syncedAt: integer('synced_at'),
+  cancelledAt: integer('cancelled_at'),
 });
 
 export const settings = sqliteTable('settings', {
