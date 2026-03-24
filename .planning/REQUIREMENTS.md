@@ -1,85 +1,70 @@
-# Requirements: Fairstand Kassensystem v5.0
+# Requirements: Fairstand Kassensystem v6.0
 
 **Defined:** 2026-03-24
-**Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
+**Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
 
-## v5.0 Requirements
+## v6.0 Requirements
 
-### Live Architecture
+### Dexie Removal
 
-- [x] **LIVE-01**: Wenn online, laufen alle Produkt-/Kategorie-Reads über TanStack Query direkt gegen die Server-API — kein Dexie-Umweg, kein manueller Sync-Button
-- [x] **LIVE-02**: Produkt-/Kategorie-Writes (CRUD) gehen direkt an den Server, UI aktualisiert sich über Query-Invalidation sofort
-- [x] **LIVE-03**: Verkäufe und Entnahmen werden online direkt an den Server gepostet (kein Outbox-Umweg)
-- [x] **LIVE-04**: WebSocket-Verbindung pusht Produkt-/Kategorie-/Bestandsänderungen live an alle verbundenen Clients — kein Polling, kein manuelles Nachladen
-- [x] **LIVE-05**: Dexie dient nur noch als Offline-Cache für POS — wird beim Online-Start automatisch befüllt, nicht als primäre Datenquelle
-- [x] **LIVE-06**: TanStack Query mit networkMode 'online' (Admin) und 'offlineFirst' (POS) steuert die Datenquelle automatisch
-- [x] **LIVE-07**: Der manuelle Sync-Button und downloadProducts()/downloadCategories() werden entfernt — WebSocket + Query-Invalidation ersetzt alles
+- [ ] **DEX-01**: Dexie.js, dexie-react-hooks und idb-keyval sind komplett aus dem Projekt entfernt (package.json, imports, code)
+- [ ] **DEX-02**: IndexedDB wird nirgends mehr verwendet — keine lokale Datenbank auf dem Client
+- [ ] **DEX-03**: Outbox-Pattern komplett entfernt — kein sync/engine.ts, kein sync/triggers.ts, kein flushOutbox
+- [ ] **DEX-04**: Warenkorb wird in TanStack Query / React State gehalten, nicht in IndexedDB
+- [ ] **DEX-05**: Sales/Reports werden ausschließlich vom Server geladen (TQ queries), kein lokales Dexie-Query
 
-### Offline-Fallback
+### PostgreSQL Migration
 
-- [x] **OFFL-01**: POS funktioniert vollständig offline mit TanStack Query Offline-Cache + Dexie-Fallback
-- [x] **OFFL-02**: Verkäufe/Entnahmen werden offline in die Outbox geschrieben und bei Reconnect automatisch geflusht
-- [x] **OFFL-03**: Online/Offline-Wechsel wird nahtlos erkannt — Datenquelle schaltet automatisch um, ohne Benutzerinteraktion
+- [ ] **PG-01**: Server verwendet PostgreSQL statt SQLite (Drizzle ORM mit drizzle-orm/node-postgres)
+- [ ] **PG-02**: Docker-Compose enthält PostgreSQL-Container mit Volume für Datenpersistenz
+- [ ] **PG-03**: Alle Drizzle-Schema-Definitionen sind auf PostgreSQL-Syntax migriert (text → varchar, integer → serial etc.)
+- [ ] **PG-04**: Bestehende SQLite-Daten können über ein Migrationsskript nach PostgreSQL übertragen werden
+- [ ] **PG-05**: better-sqlite3 ist komplett entfernt (package.json, imports)
 
-### Security & Hardening
+### Online-Only Architecture
 
-- [x] **SEC-01**: CORS erlaubt nur explizit konfigurierte Origins (kein Wildcard-Default)
-- [x] **SEC-02**: PIN-Eingabe hat Server-seitiges Rate-Limiting (max. 5 Versuche pro Minute pro IP)
-- [x] **SEC-03**: Server validiert shopId gegen die authentifizierte Session — kein Zugriff auf fremde Shop-Daten
-
-### Bugfixes & Tech Debt
-
-- [x] **FIX-01**: Report-Scheduler filtert stornierte Verkäufe (AND cancelled_at IS NULL) in allen 4 SQL-Queries
-- [x] **FIX-02**: PDF-Parser hat 30-Sekunden-Timeout via Promise.race(), bricht bei hängenden PDFs ab
-- [x] **FIX-03**: PDF-Upload validiert tatsächliches PDF-Format (Magic Bytes), nicht nur Dateiendung
+- [ ] **ONL-01**: App zeigt bei fehlendem Internet einen klaren Hinweis — keine Funktionalität ohne Server
+- [ ] **ONL-02**: Verkäufe/Entnahmen werden immer direkt an den Server gesendet — kein Fallback, kein Retry-Queue
+- [ ] **ONL-03**: Service Worker dient nur noch für App-Shell-Caching (PWA Install), nicht für Daten-Caching
 
 ## Future Requirements
 
-Deferred — nicht in v5.0 Scope.
-
-- **SCALE-01**: Report-Scheduler iteriert über alle Shops statt hardcoded shopId
-- **SCALE-02**: Horizontal-Scaling: PostgreSQL statt SQLite wenn >1 Instance
-- **UX-01**: "Last synced" Anzeige in Reports — wie alt sind die angezeigten Daten
-- **UX-02**: Storno rückgängig machen (un-cancel)
-- **TEST-01**: Cart-Validierung nach Produkt-Deaktivierung End-to-End testen
-- **TEST-02**: PDF-Parser Edge-Cases: Multi-Page, lange Namen, ungewöhnliche MwSt
+- **NATIVE-01**: Native iOS App via App Store (Apple Developer Account vorhanden)
+- **SCALE-01**: Report-Scheduler iteriert über alle Shops
+- **UX-01**: Storno rückgängig machen (un-cancel)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Multi-Tab Support | App designed für einzelnes iPad, kein SharedWorker nötig |
-| Real-time Collaboration (mehrere Kassen gleichzeitig) | Ein Fairstand = ein Gerät |
-| Service Worker Background Sync | iOS unterstützt es nicht, online/visibilitychange reicht |
-| TanStack Query PersistQueryClient | Dexie-Cache reicht für Offline, kein localStorage nötig |
-| Produkt-Upsert bei SALE_COMPLETE | Absichtlich entfernt in v4.0 — Produkte nur über eigenen Endpoint |
+| Offline-Modus | Bewusst entfernt — Cache verursacht mehr Probleme als er löst |
+| Dexie/IndexedDB | Komplett entfernt in v6.0 |
+| SQLite | Durch PostgreSQL ersetzt |
+| Native App | Erst v7.0 — PWA reicht aktuell |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LIVE-01 | Phase 19 | Complete |
-| LIVE-02 | Phase 19 | Complete |
-| LIVE-03 | Phase 20 | Complete |
-| LIVE-04 | Phase 20 | Complete |
-| LIVE-05 | Phase 20 | Complete |
-| LIVE-06 | Phase 19 | Complete |
-| LIVE-07 | Phase 20 | Complete |
-| OFFL-01 | Phase 21 | Complete |
-| OFFL-02 | Phase 21 | Complete |
-| OFFL-03 | Phase 21 | Complete |
-| SEC-01 | Phase 18 | Complete |
-| SEC-02 | Phase 18 | Complete |
-| SEC-03 | Phase 18 | Complete |
-| FIX-01 | Phase 18 | Complete |
-| FIX-02 | Phase 18 | Complete |
-| FIX-03 | Phase 18 | Complete |
+| DEX-01 | — | Pending |
+| DEX-02 | — | Pending |
+| DEX-03 | — | Pending |
+| DEX-04 | — | Pending |
+| DEX-05 | — | Pending |
+| PG-01 | — | Pending |
+| PG-02 | — | Pending |
+| PG-03 | — | Pending |
+| PG-04 | — | Pending |
+| PG-05 | — | Pending |
+| ONL-01 | — | Pending |
+| ONL-02 | — | Pending |
+| ONL-03 | — | Pending |
 
 **Coverage:**
-- v5.0 requirements: 16 total
-- Mapped to phases: 16
-- Unmapped: 0
+- v6.0 requirements: 13 total
+- Mapped to phases: 0
+- Unmapped: 13
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after roadmap v5.0 created*
+*Last updated: 2026-03-24 after initial definition*
