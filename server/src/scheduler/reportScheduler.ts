@@ -26,7 +26,7 @@ export async function reportScheduler(fastify: FastifyInstance) {
     const summary = db.all(sql`
       SELECT COUNT(*) as sale_count, COALESCE(SUM(total_cents), 0) as total_cents,
              COALESCE(SUM(donation_cents), 0) as donation_cents
-      FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${monthStart} AND created_at < ${monthEnd}
+      FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${monthStart} AND created_at < ${monthEnd} AND cancelled_at IS NULL
     `);
 
     // EK-Kosten via JOIN auf products.purchase_price
@@ -37,7 +37,7 @@ export async function reportScheduler(fastify: FastifyInstance) {
       ), 0) as cost_cents
       FROM sales, json_each(sales.items) as item
       LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
-      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd}
+      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd} AND sales.cancelled_at IS NULL
     `);
 
     const topArticles = db.all(sql`
@@ -45,7 +45,7 @@ export async function reportScheduler(fastify: FastifyInstance) {
              SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)) as total_qty,
              SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER) * CAST(json_extract(item.value, '$.salePrice') AS INTEGER)) as revenue_cents
       FROM sales, json_each(sales.items) as item
-      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd}
+      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${monthStart} AND sales.created_at < ${monthEnd} AND sales.cancelled_at IS NULL
       GROUP BY json_extract(item.value, '$.productId') ORDER BY total_qty DESC LIMIT 5
     `);
 
@@ -87,7 +87,7 @@ export async function reportScheduler(fastify: FastifyInstance) {
       SELECT CAST(strftime('%m', datetime(created_at / 1000, 'unixepoch')) AS INTEGER) as month,
              COUNT(*) as sale_count, COALESCE(SUM(total_cents), 0) as total_cents,
              COALESCE(SUM(donation_cents), 0) as donation_cents
-      FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${yearStart} AND created_at < ${yearEnd}
+      FROM sales WHERE shop_id = ${SHOP_ID} AND created_at >= ${yearStart} AND created_at < ${yearEnd} AND cancelled_at IS NULL
       GROUP BY strftime('%m', datetime(created_at / 1000, 'unixepoch')) ORDER BY month
     `);
 
@@ -100,7 +100,7 @@ export async function reportScheduler(fastify: FastifyInstance) {
              ), 0) as cost_cents
       FROM sales, json_each(sales.items) as item
       LEFT JOIN products p ON p.id = json_extract(item.value, '$.productId')
-      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${yearStart} AND sales.created_at < ${yearEnd}
+      WHERE sales.shop_id = ${SHOP_ID} AND sales.created_at >= ${yearStart} AND sales.created_at < ${yearEnd} AND sales.cancelled_at IS NULL
       GROUP BY strftime('%m', datetime(sales.created_at / 1000, 'unixepoch')) ORDER BY month
     `);
 
