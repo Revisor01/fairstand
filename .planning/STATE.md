@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Server-Sync, Multi-Laden & Kernfunktionen
-status: roadmap_ready
-stopped_at: null
-last_updated: "2026-03-24T00:00:00.000Z"
+status: unknown
+stopped_at: Completed 07-server-sync-multi-laden-01-PLAN.md
+last_updated: "2026-03-24T10:14:09.421Z"
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** v2.0 — Phase 7 bereit zur Planung
+**Current focus:** Phase 07 — server-sync-multi-laden
 
 ## Current Position
 
-Phase: 7 (Server-Sync & Multi-Laden) — Not started
-Plan: —
-Status: Roadmap erstellt, Phase 7 bereit für `/gsd:plan-phase 7`
-Last activity: 2026-03-24 — v2.0 Roadmap erstellt (3 Phasen, 14 Requirements)
-
-Progress: `░░░░░░░░░░` 0/3 Phasen abgeschlossen
+Phase: 07 (server-sync-multi-laden) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -63,6 +59,7 @@ Progress: `░░░░░░░░░░` 0/3 Phasen abgeschlossen
 | Phase 04-rechnungsimport P02 | 8 | 3 tasks | 4 files |
 | Phase 05 P01 | 2 | 3 tasks | 3 files |
 | Phase 05 P02 | 2 | 2 tasks | 2 files |
+| Phase 07-server-sync-multi-laden P01 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -106,6 +103,9 @@ Recent decisions affecting current work:
 - [Phase 05]: LWW per-product comparison in download sync preserves newer local edits
 - [v2.0 Roadmap]: SYNC + SHOP architektonisch untrennbar — beide in Phase 7 (PIN-Auth setzt Shop-Kontext voraus, Sync arbeitet shop-gefiltert)
 - [v2.0 Roadmap]: STOR-01 baut auf HIST-01 (Tagesübersicht) auf — Phase 9 nach Phase 8
+- [Phase 07-server-sync-multi-laden]: Web Crypto API fuer hashPin — kein npm-Package, Node 20 unterstuetzt nativ
+- [Phase 07-server-sync-multi-laden]: Token = crypto.randomUUID() ohne server-seitiges Token-Management — client speichert in idb-keyval
+- [Phase 07-server-sync-multi-laden]: ensureShopSeeded() idempotent via shopId-existenz-check — zweiter Aufruf ist No-Op
 
 ### Pending Todos
 
@@ -119,6 +119,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T00:00:00.000Z
-Stopped at: v2.0 Roadmap erstellt (3 Phasen)
+Last session: 2026-03-24T10:14:09.418Z
+Stopped at: Completed 07-server-sync-multi-laden-01-PLAN.md
 Resume file: None
