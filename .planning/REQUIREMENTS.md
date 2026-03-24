@@ -1,74 +1,85 @@
-# Requirements: Fairstand Kassensystem v4.0
+# Requirements: Fairstand Kassensystem v5.0
 
 **Defined:** 2026-03-24
-**Core Value:** Datenqualität und Stabilität — die Kasse rechnet korrekt, verliert keine Daten und reagiert zuverlässig auf Touch.
+**Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
 
-## v4.0 Requirements
+## v5.0 Requirements
 
-### Architektur
+### Live Architecture
 
-- [x] **ARCH-01**: downloadProducts() ersetzt den gesamten Dexie-Produktbestand durch Server-Daten — kein LWW, komplettes Replace
-- [x] **ARCH-02**: Admin-Features (Produktverwaltung, Import, Berichte, Einstellungen) sind offline deaktiviert mit klarem Hinweis
-- [x] **ARCH-03**: Offline funktionieren nur Verkauf, Storno und Einzelrückgabe — Outbox + lokaler Bestandszähler bleiben erhalten
+- [ ] **LIVE-01**: Wenn online, laufen alle Produkt-/Kategorie-Reads über TanStack Query direkt gegen die Server-API — kein Dexie-Umweg, kein manueller Sync-Button
+- [ ] **LIVE-02**: Produkt-/Kategorie-Writes (CRUD) gehen direkt an den Server, UI aktualisiert sich über Query-Invalidation sofort
+- [ ] **LIVE-03**: Verkäufe und Entnahmen werden online direkt an den Server gepostet (kein Outbox-Umweg)
+- [ ] **LIVE-04**: WebSocket-Verbindung pusht Produkt-/Kategorie-/Bestandsänderungen live an alle verbundenen Clients — kein Polling, kein manuelles Nachladen
+- [ ] **LIVE-05**: Dexie dient nur noch als Offline-Cache für POS — wird beim Online-Start automatisch befüllt, nicht als primäre Datenquelle
+- [ ] **LIVE-06**: TanStack Query mit networkMode 'online' (Admin) und 'offlineFirst' (POS) steuert die Datenquelle automatisch
+- [ ] **LIVE-07**: Der manuelle Sync-Button und downloadProducts()/downloadCategories() werden entfernt — WebSocket + Query-Invalidation ersetzt alles
 
-### Datenintegrität
+### Offline-Fallback
 
-- [x] **DAT-01**: Marge/EK-Preis wird korrekt berechnet und in Berichten angezeigt — aktuell fehlerhafte Berechnung
-- [x] **DAT-02**: Stornierte Verkäufe werden korrekt aus Umsatz-Statistiken und Top-Artikel-Rankings herausgerechnet
-- [x] **DAT-03**: Warenkorb überlebt einen Page-Reload — Artikel bleiben nach Browser-Refresh erhalten (Dexie-Persistenz)
+- [ ] **OFFL-01**: POS funktioniert vollständig offline mit TanStack Query Offline-Cache + Dexie-Fallback
+- [ ] **OFFL-02**: Verkäufe/Entnahmen werden offline in die Outbox geschrieben und bei Reconnect automatisch geflusht
+- [ ] **OFFL-03**: Online/Offline-Wechsel wird nahtlos erkannt — Datenquelle schaltet automatisch um, ohne Benutzerinteraktion
 
-### UI-Bugfixes
+### Security & Hardening
 
-- [x] **UIX-01**: Scroll vs. Tap wird korrekt unterschieden — kein versehentliches Antippen beim Scrollen im Artikel-Grid
+- [ ] **SEC-01**: CORS erlaubt nur explizit konfigurierte Origins (kein Wildcard-Default)
+- [ ] **SEC-02**: PIN-Eingabe hat Server-seitiges Rate-Limiting (max. 5 Versuche pro Minute pro IP)
+- [ ] **SEC-03**: Server validiert shopId gegen die authentifizierte Session — kein Zugriff auf fremde Shop-Daten
 
-### Bestandsmanagement
+### Bugfixes & Tech Debt
 
-- [x] **BST-01**: Bestandswarnungen verbessern — klarere/frühere Hinweise bei niedrigem Vorrat
+- [ ] **FIX-01**: Report-Scheduler filtert stornierte Verkäufe (AND cancelled_at IS NULL) in allen 4 SQL-Queries
+- [ ] **FIX-02**: PDF-Parser hat 30-Sekunden-Timeout via Promise.race(), bricht bei hängenden PDFs ab
+- [ ] **FIX-03**: PDF-Upload validiert tatsächliches PDF-Format (Magic Bytes), nicht nur Dateiendung
 
-### Datenverwaltung
+## Future Requirements
 
-- [x] **VRW-01**: Zentrales Kategorie-Management — Kategorien als eigene Entität verwalten, nicht nur als Freitext pro Produkt
-- [x] **VRW-02**: Produktbild-Upload verbessern — einfacherer Workflow für Bildzuweisung
+Deferred — nicht in v5.0 Scope.
 
-### Validierung
-
-- [x] **VAL-01**: Cart-Validierung — ungültige/veraltete Artikel im Warenkorb erkennen und behandeln
-
-### Sync
-
-- [x] **SYN-01**: Sync-Robustheit verbessern — Fehlerbehandlung und Retry-Logik optimieren
+- **SCALE-01**: Report-Scheduler iteriert über alle Shops statt hardcoded shopId
+- **SCALE-02**: Horizontal-Scaling: PostgreSQL statt SQLite wenn >1 Instance
+- **UX-01**: "Last synced" Anzeige in Reports — wie alt sind die angezeigten Daten
+- **UX-02**: Storno rückgängig machen (un-cancel)
+- **TEST-01**: Cart-Validierung nach Produkt-Deaktivierung End-to-End testen
+- **TEST-02**: PDF-Parser Edge-Cases: Multi-Page, lange Namen, ungewöhnliche MwSt
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| README + Lizenz auf GitHub | Aus v3.0 offen, separater Quick-Task |
-| Multi-Laden Admin-UI (Läden anlegen per Web) | Funktioniert über Server-Seed/DB |
-| Real-time Push zwischen Geräten | Polling/manuell reicht für Kirchenverkauf |
-| Native App | PWA reicht |
+| Multi-Tab Support | App designed für einzelnes iPad, kein SharedWorker nötig |
+| Real-time Collaboration (mehrere Kassen gleichzeitig) | Ein Fairstand = ein Gerät |
+| Service Worker Background Sync | iOS unterstützt es nicht, online/visibilitychange reicht |
+| TanStack Query PersistQueryClient | Dexie-Cache reicht für Offline, kein localStorage nötig |
+| Produkt-Upsert bei SALE_COMPLETE | Absichtlich entfernt in v4.0 — Produkte nur über eigenen Endpoint |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 14 | Complete |
-| ARCH-02 | Phase 14 | Complete |
-| ARCH-03 | Phase 14 | Complete |
-| DAT-01 | Phase 15 | Complete |
-| DAT-02 | Phase 15 | Complete |
-| DAT-03 | Phase 15 | Complete |
-| VAL-01 | Phase 15 | Complete |
-| UIX-01 | Phase 16 | Complete |
-| BST-01 | Phase 16 | Complete |
-| VRW-01 | Phase 17 | Complete |
-| VRW-02 | Phase 17 | Complete |
-| SYN-01 | Phase 17 | Complete |
+| LIVE-01 | — | Pending |
+| LIVE-02 | — | Pending |
+| LIVE-03 | — | Pending |
+| LIVE-04 | — | Pending |
+| LIVE-05 | — | Pending |
+| LIVE-06 | — | Pending |
+| LIVE-07 | — | Pending |
+| OFFL-01 | — | Pending |
+| OFFL-02 | — | Pending |
+| OFFL-03 | — | Pending |
+| SEC-01 | — | Pending |
+| SEC-02 | — | Pending |
+| SEC-03 | — | Pending |
+| FIX-01 | — | Pending |
+| FIX-02 | — | Pending |
+| FIX-03 | — | Pending |
 
 **Coverage:**
-- v4.0 requirements: 12 total
-- Mapped to phases: 12
-- Unmapped: 0
+- v5.0 requirements: 16 total
+- Mapped to phases: 0
+- Unmapped: 16
 
 ---
 *Requirements defined: 2026-03-24*
-*Traceability updated: 2026-03-24 (roadmap created)*
+*Last updated: 2026-03-24 after initial definition*
