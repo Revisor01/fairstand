@@ -51,7 +51,20 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Kein aktiver Milestone — bereit für v5.0)
+## Current Milestone: v5.0 Online-First Live Architecture
+
+**Goal:** Server als Single Source of Truth mit WebSocket Live-Updates. Dexie nur noch als Offline-Cache für die Kasse. Alle bekannten Concerns aus v4.0 aufräumen.
+
+**Target features:**
+- Online-Modus: Alle Reads/Writes direkt gegen Server-API, kein Dexie-Umweg
+- WebSocket: Produkt-/Kategorie-/Bestandsänderungen sofort auf allen Geräten
+- Dexie nur Offline-Fallback: POS cached beim Start, arbeitet offline gegen Cache
+- TanStack Query für Server-State-Management mit Offline-Awareness
+- Report-Scheduler: Stornierte Verkäufe filtern
+- CORS: Explizite Origin statt Wildcard
+- PIN: Rate-Limiting auf Server
+- PDF-Parser: Timeout für hängende Parses
+- Shop-ID: Server-seitige Validierung gegen Session
 
 ### Out of Scope
 
@@ -103,6 +116,9 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Cent-Integer für alle Preise | Keine Rundungsfehler bei Geldbeträgen | ✓ Good |
 | Fire-and-forget Server-Sync für Produkte | Admin-Bereich braucht Internet, POS nicht | ✓ Fixed — PATCH deactivate + Download-Sync in Phase 5 |
 | Online-First statt LWW | LWW verursachte Phantom-Produkte und ignorierte Server-Deaktivierungen | ✓ Good — Server-Replace eliminiert alle Cache-Divergenz-Bugs |
+| Lucide-React Icons | Konsistente SVG Line-Icons statt Emoji/Inline-SVGs | ✓ Good — einheitliches Look&Feel |
+| Entnahme KG zum EK | Kirchengemeinde entnimmt Waren zum EK für Eigenverbrauch | ✓ Good — type='withdrawal' in Sale |
+| Sale-Sync ohne Produkt-Upsert | SALE_COMPLETE überschrieb Produktdaten (category='') mit Defaults | ✓ Good — nur Stock-Delta, kein Upsert |
 | Admin online-only, Kasse offline | Offline-Admin erzeugte nur Cache-Konflikte ohne Nutzen | ✓ Good — saubere Trennung, kein Datenverlust |
 
 ## Evolution
@@ -110,4 +126,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v4.0 milestone complete*
+*Last updated: 2026-03-24 after v5.0 milestone started*

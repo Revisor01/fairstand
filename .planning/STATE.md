@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v4.0
-milestone_name: Datenqualität & Stabilität
-status: unknown
-stopped_at: Completed 17-datenverwaltung-sync-02-PLAN.md
-last_updated: "2026-03-24T16:19:35.639Z"
+milestone: v5.0
+milestone_name: Online-First Live Architecture
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-24T19:45:00.000Z"
 progress:
-  total_phases: 11
-  completed_phases: 10
-  total_plans: 17
-  completed_plans: 17
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -19,12 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 17 — Datenverwaltung & Sync
+**Current focus:** Milestone v5.0 — Online-First Live Architecture
 
 ## Current Position
 
-Phase: 17
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-24 — Milestone v5.0 started
 
 ## Performance Metrics
 
