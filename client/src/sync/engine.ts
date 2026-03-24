@@ -79,36 +79,33 @@ interface ServerProduct {
 }
 
 export async function downloadProducts(): Promise<number> {
-  const res = await fetch(`/api/products?shopId=${getShopId()}`);
+  const shopId = getShopId();
+  const res = await fetch(`/api/products?shopId=${shopId}`);
   if (!res.ok) throw new Error(`Download fehlgeschlagen: ${res.status}`);
   const serverProducts: ServerProduct[] = await res.json();
 
-  let upserted = 0;
-  for (const sp of serverProducts) {
-    const mapped: Product = {
-      id: sp.id,
-      shopId: sp.shopId,
-      articleNumber: sp.articleNumber,
-      name: sp.name,
-      category: sp.category,
-      purchasePrice: sp.purchasePrice,
-      salePrice: sp.salePrice,
-      vatRate: sp.vatRate,
-      stock: sp.stock,
-      minStock: sp.minStock,
-      active: Boolean(sp.active),
-      imageUrl: sp.imageUrl ?? undefined,
-      updatedAt: sp.updatedAt,
-    };
+  const mapped: Product[] = serverProducts.map(sp => ({
+    id: sp.id,
+    shopId: sp.shopId,
+    articleNumber: sp.articleNumber,
+    name: sp.name,
+    category: sp.category,
+    purchasePrice: sp.purchasePrice,
+    salePrice: sp.salePrice,
+    vatRate: sp.vatRate,
+    stock: sp.stock,
+    minStock: sp.minStock,
+    active: Boolean(sp.active),
+    imageUrl: sp.imageUrl ?? undefined,
+    updatedAt: sp.updatedAt,
+  }));
 
-    // LWW: Nur ueberschreiben wenn Server-Daten neuer
-    const existing = await db.products.get(mapped.id);
-    if (!existing || mapped.updatedAt > existing.updatedAt) {
-      await db.products.put(mapped);
-      upserted++;
-    }
-  }
-  return upserted;
+  await db.transaction('rw', db.products, async () => {
+    await db.products.where('shopId').equals(shopId).delete();
+    await db.products.bulkPut(mapped);
+  });
+
+  return mapped.length;
 }
 
 // Startup-Download wurde entfernt — App.tsx ruft downloadProducts() nach Login auf
