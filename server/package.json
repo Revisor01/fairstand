@@ -13,6 +13,7 @@
     "@fastify/multipart": "^9.4.0",
     "@fastify/schedule": "^6.0.0",
     "better-sqlite3": "^11",
+    "drizzle-kit": "^0.30",
     "drizzle-orm": "^0.40",
     "fastify": "^5.7",
     "nodemailer": "^8.0.3",
@@ -24,7 +25,6 @@
     "@types/better-sqlite3": "^7",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.11",
-    "drizzle-kit": "^0.30",
     "tsx": "^4",
     "typescript": "^5"
   }
