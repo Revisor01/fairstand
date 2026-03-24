@@ -24,6 +24,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE shop_id = ${shopId}
         AND created_at >= ${monthStart}
         AND created_at < ${monthEnd}
+        AND cancelled_at IS NULL
     `);
 
     // EK-Kosten (cost_cents) berechnet aus items JSON + products.purchase_price
@@ -39,6 +40,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
+        AND sales.cancelled_at IS NULL
     `);
 
     const topArticles = db.all(sql`
@@ -51,6 +53,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
+        AND sales.cancelled_at IS NULL
       GROUP BY json_extract(item.value, '$.productId')
       ORDER BY total_qty DESC
       LIMIT 5
