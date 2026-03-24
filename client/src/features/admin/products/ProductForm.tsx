@@ -4,6 +4,7 @@ import { ArrowLeft, ImagePlus, X as XIcon } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { downloadCategories } from '../../../sync/engine.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 interface ProductFormProps {
   product?: Product;
@@ -109,17 +110,21 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
         // Server-Sync bei Online-Status (fire-and-forget, Fehler nicht blockieren)
         if (navigator.onLine) {
           const productData = { ...product, ...updateData };
-          fetch('/api/products', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData),
-          }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+          getAuthHeaders().then(headers => {
+            fetch('/api/products', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(productData),
+            }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+          });
 
           if (pendingImageFile) {
             const formData = new FormData();
             formData.append('image', pendingImageFile);
+            const authHeaders = await getAuthHeaders();
             const imgRes = await fetch(`/api/products/${product.id}/image`, {
               method: 'POST',
+              headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
               body: formData,
             }).catch(() => null);
             if (imgRes?.ok) {
@@ -148,11 +153,12 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
         // Server-Sync bei Online-Status
         if (navigator.onLine) {
+          const authHeaders = await getAuthHeaders();
           if (pendingImageFile) {
             // Wenn Bild vorhanden: Server-POST awaiten damit wir die ID für den Bild-Upload haben
             const serverOk = await fetch('/api/products', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: authHeaders,
               body: JSON.stringify(productData),
             }).then(r => r.ok).catch(() => false);
 
@@ -161,6 +167,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
               formData.append('image', pendingImageFile);
               const imgRes = await fetch(`/api/products/${productData.id}/image`, {
                 method: 'POST',
+                headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
                 body: formData,
               }).catch(() => null);
               if (imgRes?.ok) {
@@ -172,7 +179,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
             // Kein Bild: fire-and-forget
             fetch('/api/products', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: authHeaders,
               body: JSON.stringify(productData),
             }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
           }

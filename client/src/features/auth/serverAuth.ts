@@ -55,3 +55,13 @@ export async function isSessionValid(): Promise<boolean> {
   if (!session) return false;
   return Date.now() - session.lastActivity < 120 * 60 * 1000;
 }
+
+// Auth-Header für API-Requests (Token aus gespeicherter Session)
+export async function getAuthHeaders(): Promise<Record<string, string>> {
+  const session = await getStoredSession();
+  if (!session?.token) return { 'Content-Type': 'application/json' };
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${session.token}`,
+  };
+}

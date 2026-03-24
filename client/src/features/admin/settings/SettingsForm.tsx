@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Mail, Send, Info, Banknote, Plus, X } from 'lucide-react';
 import { get, set } from 'idb-keyval';
 import { getShopId } from '../../../db/index.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 interface Setting {
   key: string;
@@ -25,16 +26,18 @@ export function SettingsForm() {
   const [newAmountStr, setNewAmountStr] = useState('');
 
   useEffect(() => {
-    fetch(`/api/settings?shopId=${getShopId()}`)
-      .then(r => r.json())
-      .then((rows: Setting[]) => {
-        for (const row of rows) {
-          if (row.key === 'report_email') setReportEmail(row.value);
-          if (row.key === 'report_monthly') setReportMonthly(row.value === 'true');
-          if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
-        }
-      })
-      .catch(() => {});
+    getAuthHeaders().then(headers =>
+      fetch(`/api/settings?shopId=${getShopId()}`, { headers })
+        .then(r => r.json())
+        .then((rows: Setting[]) => {
+          for (const row of rows) {
+            if (row.key === 'report_email') setReportEmail(row.value);
+            if (row.key === 'report_monthly') setReportMonthly(row.value === 'true');
+            if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
+          }
+        })
+        .catch(() => {})
+    );
 
     // Schnellbeträge lokal laden
     get<string>('quick_amounts').then(val => {
@@ -55,8 +58,8 @@ export function SettingsForm() {
     try {
       await fetch('/api/settings', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, value, shopId: getShopId() }),
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({ key, value }),
       });
       setTimeout(() => setSavedKey(null), 1500);
     } catch {

@@ -8,6 +8,7 @@ import { downloadProducts } from '../../../sync/engine.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 import { ProductStats } from './ProductStats.js';
+import { getAuthHeaders } from '../../auth/serverAuth.js';
 
 type ProductListView = 'list' | 'form' | 'stock' | 'stats';
 
@@ -49,7 +50,9 @@ export function ProductList() {
     });
     if (navigator.onLine) {
       const action = newActive ? 'activate' : 'deactivate';
-      fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH' }).catch(() => {});
+      getAuthHeaders().then(headers => {
+        fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH', headers }).catch(() => {});
+      });
     }
   }
 

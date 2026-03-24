@@ -3,10 +3,12 @@ import { sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
 
 export async function reportRoutes(fastify: FastifyInstance) {
-  // GET /reports/monthly?shopId=xxx&year=2026&month=3
+  // GET /reports/monthly?year=2026&month=3
   fastify.get('/reports/monthly', async (request, reply) => {
-    const { shopId, year, month } = request.query as { shopId: string; year: string; month: string };
-    if (!shopId || !year || !month) return reply.status(400).send({ error: 'shopId, year, month required' });
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { year, month } = request.query as { year: string; month: string };
+    if (!year || !month) return reply.status(400).send({ error: 'year, month required' });
 
     const y = Number(year);
     const m = Number(month);
@@ -77,10 +79,12 @@ export async function reportRoutes(fastify: FastifyInstance) {
     });
   });
 
-  // GET /reports/yearly?shopId=xxx&year=2026 — alle 12 Monate als Array
+  // GET /reports/yearly?year=2026 — alle 12 Monate als Array
   fastify.get('/reports/yearly', async (request, reply) => {
-    const { shopId, year } = request.query as { shopId: string; year: string };
-    if (!shopId || !year) return reply.status(400).send({ error: 'shopId, year required' });
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { year } = request.query as { year: string };
+    if (!year) return reply.status(400).send({ error: 'year required' });
 
     const y = Number(year);
     const yearStart = new Date(y, 0, 1).getTime();
@@ -138,11 +142,12 @@ export async function reportRoutes(fastify: FastifyInstance) {
     return reply.send({ year: y, months: mergedMonths });
   });
 
-  // GET /reports/product/:id/stats?shopId=xxx&months=3
+  // GET /reports/product/:id/stats?months=3
   fastify.get('/reports/product/:id/stats', async (request, reply) => {
     const { id } = request.params as { id: string };
-    const { shopId, months } = request.query as { shopId: string; months?: string };
-    if (!shopId) return reply.status(400).send({ error: 'shopId required' });
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { months } = request.query as { months?: string };
 
     const monthsBack = Math.min(Math.max(Number(months ?? '3'), 1), 24);
     const since = new Date();
