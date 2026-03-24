@@ -8,6 +8,8 @@ import { reportRoutes } from './routes/reports.js';
 import { settingsRoutes } from './routes/settings.js';
 import { importRoutes } from './routes/import.js';
 import { reportScheduler } from './scheduler/reportScheduler.js';
+import { authRoutes } from './routes/auth.js';
+import { ensureShopSeeded } from './db/seed.js';
 
 const fastify = Fastify({ logger: true });
 
@@ -21,8 +23,11 @@ await fastify.register(productRoutes, { prefix: '/api' });
 await fastify.register(reportRoutes, { prefix: '/api' });
 await fastify.register(settingsRoutes, { prefix: '/api' });
 await fastify.register(importRoutes, { prefix: '/api' });
+await fastify.register(authRoutes, { prefix: '/api' });
 await fastify.register(fastifySchedule);
 await fastify.register(reportScheduler);
+
+await ensureShopSeeded();
 
 const port = Number(process.env.PORT ?? 3000);
 await fastify.listen({ port, host: '0.0.0.0' });
