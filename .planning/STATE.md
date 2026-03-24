@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
 status: unknown
-stopped_at: Completed 10-ui-redesign 10-01-PLAN.md
-last_updated: "2026-03-24T11:30:43.073Z"
+stopped_at: Completed 10-ui-redesign 10-02-PLAN.md
+last_updated: "2026-03-24T11:33:15.148Z"
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -66,6 +66,7 @@ Plan: 2 of 2
 | Phase 08-bestandspruefung-verkaufshistorie P02 | 10 | 2 tasks | 5 files |
 | Phase 09-storno-rueckgabe P01 | 3 | 3 tasks | 6 files |
 | Phase 10-ui-redesign P01 | 12 | 2 tasks | 3 files |
+| Phase 10-ui-redesign P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,8 @@ Recent decisions affecting current work:
 - [Phase 09]: onSaleChanged als optionale Prop in SaleDetailModal — rueckwaertskompatibel
 - [Phase 10-ui-redesign]: PaymentFlow kein 2-Step-Flow mehr — Ein-Screen mit Live-Berechnungen
 - [Phase 10-ui-redesign]: getStoredSession()-Pattern fuer Shop-Name in Header — konsistent mit serverAuth
+- [Phase 10-ui-redesign]: Pill-Tabs in AdminScreen verwenden bg-sky-400 (aktiv) — konsistent mit Kategorie-Tabs in ArticleGrid
+- [Phase 10-ui-redesign]: lowStockCount-Badge im Pill-Button via gap-1 statt ml-1 — konsistenteres flex-Spacing
 
 ### Pending Todos
 
@@ -139,6 +142,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T11:30:43.071Z
-Stopped at: Completed 10-ui-redesign 10-01-PLAN.md
+Last session: 2026-03-24T11:33:15.145Z
+Stopped at: Completed 10-ui-redesign 10-02-PLAN.md
 Resume file: None

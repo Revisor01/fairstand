@@ -10,8 +10,8 @@
 - [x] **UI-01**: Kassendialog und Bezahlseite sind kompakt (wie der Abschlussdialog) — nicht fullscreen, alles auf einen Blick erfassbar
 - [x] **UI-02**: Bezahlseite zeigt Artikelliste + Gesamtsumme groß + Live-Berechnung von Wechselgeld/Spende beim Eingeben
 - [x] **UI-03**: Shop-Name wird in der Titelzeile oben angezeigt
-- [ ] **UI-04**: Gesamtes Layout luftiger, kompakter und stylischer — mehr Whitespace, weniger gedrängt
-- [ ] **UI-05**: Admin/Einstellungen übersichtlicher und kompakter gestaltet
+- [x] **UI-04**: Gesamtes Layout luftiger, kompakter und stylischer — mehr Whitespace, weniger gedrängt
+- [x] **UI-05**: Admin/Einstellungen übersichtlicher und kompakter gestaltet
 
 ### Produktbilder
 
@@ -51,8 +51,8 @@
 | UI-01 | Phase 10 | Complete |
 | UI-02 | Phase 10 | Complete |
 | UI-03 | Phase 10 | Complete |
-| UI-04 | Phase 10 | Pending |
-| UI-05 | Phase 10 | Pending |
+| UI-04 | Phase 10 | Complete |
+| UI-05 | Phase 10 | Complete |
 | IMG-01 | Phase 11 | Pending |
 | IMG-02 | Phase 11 | Pending |
 | IMG-03 | Phase 11 | Pending |
