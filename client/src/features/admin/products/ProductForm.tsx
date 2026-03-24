@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ImagePlus, X as XIcon } from 'lucide-react';
-import { db, getShopId } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
-import { downloadCategories } from '../../../sync/engine.js';
 import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { useCategories } from '../../../hooks/api/useCategories.js';
+import { useCreateProduct, useUpdateProduct } from '../../../hooks/api/useProducts.js';
 
 interface ProductFormProps {
   product?: Product;
@@ -55,19 +56,10 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
   );
   const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
 
-  const dbCategories = useLiveQuery(
-    () => db.categories.where('shopId').equals(getShopId()).sortBy('name'),
-    []
-  );
-
-  // Kategorien laden falls Tabelle leer ist (fire-and-forget)
-  useLiveQuery(async () => {
-    const count = await db.categories.where('shopId').equals(getShopId()).count();
-    if (count === 0 && navigator.onLine) {
-      downloadCategories().catch(() => {});
-    }
-    return count;
-  }, []);
+  const queryClient = useQueryClient();
+  const { data: dbCategories } = useCategories();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
 
   function handleChange(field: keyof FormValues, value: string) {
     setValues(prev => ({ ...prev, [field]: value }));
@@ -96,6 +88,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
       if (isEdit && product) {
         const updateData = {
+          ...product,
           articleNumber: values.articleNumber.trim(),
           name: values.name.trim(),
           category: values.category.trim(),
@@ -105,37 +98,25 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
           minStock,
           updatedAt,
         };
-        await db.products.update(product.id, updateData);
+        await updateProduct.mutateAsync(updateData);
 
-        // Server-Sync bei Online-Status (fire-and-forget, Fehler nicht blockieren)
-        if (navigator.onLine) {
-          const productData = { ...product, ...updateData };
-          getAuthHeaders().then(headers => {
-            fetch('/api/products', {
-              method: 'POST',
-              headers,
-              body: JSON.stringify(productData),
-            }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
-          });
-
-          if (pendingImageFile) {
-            const formData = new FormData();
-            formData.append('image', pendingImageFile);
-            const authHeaders = await getAuthHeaders();
-            const imgRes = await fetch(`/api/products/${product.id}/image`, {
-              method: 'POST',
-              headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
-              body: formData,
-            }).catch(() => null);
-            if (imgRes?.ok) {
-              const { imageUrl } = await imgRes.json() as { imageUrl: string };
-              await db.products.update(product.id, { imageUrl });
-            }
+        if (pendingImageFile) {
+          const authHeaders = await getAuthHeaders();
+          const formData = new FormData();
+          formData.append('image', pendingImageFile);
+          const imgRes = await fetch(`/api/products/${product.id}/image`, {
+            method: 'POST',
+            headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
+            body: formData,
+          }).catch(() => null);
+          if (imgRes?.ok) {
+            // Produkte erneut invalidieren damit imageUrl frisch geladen wird
+            queryClient.invalidateQueries({ queryKey: ['products', getShopId()] });
           }
         }
       } else {
         const stock = Math.max(0, parseInt(values.stock, 10) || 0);
-        const productData = {
+        const productData: Product = {
           id: crypto.randomUUID(),
           shopId: getShopId(),
           articleNumber: values.articleNumber.trim(),
@@ -149,39 +130,19 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
           active: true,
           updatedAt,
         };
-        await db.products.add(productData);
+        await createProduct.mutateAsync(productData);
 
-        // Server-Sync bei Online-Status
-        if (navigator.onLine) {
+        if (pendingImageFile) {
           const authHeaders = await getAuthHeaders();
-          if (pendingImageFile) {
-            // Wenn Bild vorhanden: Server-POST awaiten damit wir die ID für den Bild-Upload haben
-            const serverOk = await fetch('/api/products', {
-              method: 'POST',
-              headers: authHeaders,
-              body: JSON.stringify(productData),
-            }).then(r => r.ok).catch(() => false);
-
-            if (serverOk) {
-              const formData = new FormData();
-              formData.append('image', pendingImageFile);
-              const imgRes = await fetch(`/api/products/${productData.id}/image`, {
-                method: 'POST',
-                headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
-                body: formData,
-              }).catch(() => null);
-              if (imgRes?.ok) {
-                const { imageUrl } = await imgRes.json() as { imageUrl: string };
-                await db.products.update(productData.id, { imageUrl });
-              }
-            }
-          } else {
-            // Kein Bild: fire-and-forget
-            fetch('/api/products', {
-              method: 'POST',
-              headers: authHeaders,
-              body: JSON.stringify(productData),
-            }).catch(err => console.warn('Server-Sync fehlgeschlagen:', err));
+          const formData = new FormData();
+          formData.append('image', pendingImageFile);
+          const imgRes = await fetch(`/api/products/${productData.id}/image`, {
+            method: 'POST',
+            headers: { 'Authorization': authHeaders['Authorization'] ?? '' },
+            body: formData,
+          }).catch(() => null);
+          if (imgRes?.ok) {
+            queryClient.invalidateQueries({ queryKey: ['products', getShopId()] });
           }
         }
       }

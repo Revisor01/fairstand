@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
+import { useAdjustStock } from '../../../hooks/api/useProducts.js';
 
 interface StockAdjustModalProps {
   product: Product;
@@ -13,6 +13,8 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
   const [reason, setReason] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const adjustStock = useAdjustStock();
 
   const parsedDelta = parseInt(delta, 10);
   const isValidDelta = !isNaN(parsedDelta) && parsedDelta !== 0;
@@ -28,31 +30,11 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
 
     setSaving(true);
     try {
-      await db.transaction('rw', [db.products, db.outbox], async () => {
-        // Bestand per Delta-Modifikation aktualisieren
-        await db.products
-          .where('id')
-          .equals(product.id)
-          .modify((p: { stock: number; updatedAt: number }) => {
-            p.stock += parsedDelta;
-            p.updatedAt = Date.now();
-          });
-
-        // Outbox-Entry für Server-Sync (STOCK_ADJUST via Delta-Prinzip)
-        await db.outbox.add({
-          operation: 'STOCK_ADJUST',
-          payload: {
-            productId: product.id,
-            delta: parsedDelta,
-            reason: reason.trim() || undefined,
-            shopId: getShopId(),
-          },
-          shopId: getShopId(),
-          createdAt: Date.now(),
-          attempts: 0,
-        });
+      await adjustStock.mutateAsync({
+        productId: product.id,
+        delta: parsedDelta,
+        reason: reason.trim() || undefined,
       });
-
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Fehler beim Speichern.');
