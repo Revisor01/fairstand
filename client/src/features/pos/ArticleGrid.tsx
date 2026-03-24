@@ -107,19 +107,28 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
                   <span className="text-sky-700 font-semibold text-sm">
                     {formatEur(product.salePrice)}
                   </span>
-                  <span className={`text-xs font-medium ${
-                    product.stock <= 0
-                      ? 'text-rose-500'
-                      : product.minStock > 0 && product.stock <= product.minStock
-                        ? 'text-amber-600'
-                        : 'text-slate-400'
-                  }`}>
-                    {product.stock <= 0
-                      ? 'Ausverkauft'
-                      : product.minStock > 0 && product.stock <= product.minStock
-                        ? `Noch ${product.stock}`
-                        : `${product.stock} Stk.`
-                    }
+                  <span className="flex items-center gap-1">
+                    <span className={`text-[10px] leading-none ${
+                      product.stock === 0
+                        ? 'text-rose-500'
+                        : product.minStock > 0 && product.stock <= product.minStock
+                          ? 'text-amber-500'
+                          : 'text-emerald-500'
+                    }`}>●</span>
+                    <span className={`text-xs font-medium ${
+                      product.stock <= 0
+                        ? 'text-rose-500'
+                        : product.minStock > 0 && product.stock <= product.minStock
+                          ? 'text-amber-600'
+                          : 'text-slate-400'
+                    }`}>
+                      {product.stock <= 0
+                        ? 'Ausverkauft'
+                        : product.minStock > 0 && product.stock <= product.minStock
+                          ? `Noch ${product.stock}`
+                          : `${product.stock} Stk.`
+                      }
+                    </span>
                   </span>
                 </div>
               </button>
