@@ -25,7 +25,7 @@ const SaleSchema = z.object({
 });
 
 const OutboxEntrySchema = z.object({
-  operation: z.enum(['SALE_COMPLETE', 'STOCK_ADJUST']),
+  operation: z.enum(['SALE_COMPLETE', 'STOCK_ADJUST', 'SALE_CANCEL', 'ITEM_RETURN']),
   payload: z.unknown(),
   shopId: z.string(),
   createdAt: z.number().int(),
@@ -40,6 +40,21 @@ const StockAdjustSchema = z.object({
   delta: z.number().int(),
   reason: z.string().optional(),
   shopId: z.string(),
+});
+
+const SaleCancelSchema = z.object({
+  saleId: z.string(),
+  shopId: z.string(),
+  items: z.array(SaleItemSchema),
+  cancelledAt: z.number().int(),
+});
+
+const ItemReturnSchema = z.object({
+  saleId: z.string(),
+  shopId: z.string(),
+  productId: z.string(),
+  quantity: z.number().int().positive(),
+  returnedAt: z.number().int(),
 });
 
 export async function syncRoutes(fastify: FastifyInstance) {
@@ -137,6 +152,64 @@ export async function syncRoutes(fastify: FastifyInstance) {
               .set({ stock: sql`${products.stock} + ${adj.delta}`, updatedAt: sql`${Date.now()}` })
               .where(eq(products.id, adj.productId))
               .run();
+            tx.insert(outboxEvents).values({
+              shopId: entry.shopId,
+              operation: entry.operation,
+              payload: entry.payload,
+              processedAt: Date.now(),
+              createdAt: entry.createdAt,
+            }).run();
+          });
+          processed++;
+        }
+        if (entry.operation === 'SALE_CANCEL') {
+          const cancelResult = SaleCancelSchema.safeParse(entry.payload);
+          if (!cancelResult.success) {
+            errors.push({ index: i, message: 'Ungültiger SALE_CANCEL-Payload: ' + JSON.stringify(cancelResult.error.flatten()) });
+            continue;
+          }
+          const cancel = cancelResult.data;
+          db.transaction((tx) => {
+            // Sale als storniert markieren (idempotent via cancelledAt)
+            tx.update(sales)
+              .set({ cancelledAt: cancel.cancelledAt })
+              .where(eq(sales.id, cancel.saleId))
+              .run();
+
+            // Bestand für alle Artikel zurückbuchen (Delta +quantity)
+            for (const item of cancel.items) {
+              tx.update(products)
+                .set({ stock: sql`${products.stock} + ${item.quantity}` })
+                .where(eq(products.id, item.productId))
+                .run();
+            }
+
+            // OutboxEvent protokollieren
+            tx.insert(outboxEvents).values({
+              shopId: entry.shopId,
+              operation: entry.operation,
+              payload: entry.payload,
+              processedAt: Date.now(),
+              createdAt: entry.createdAt,
+            }).run();
+          });
+          processed++;
+        }
+        if (entry.operation === 'ITEM_RETURN') {
+          const returnResult = ItemReturnSchema.safeParse(entry.payload);
+          if (!returnResult.success) {
+            errors.push({ index: i, message: 'Ungültiger ITEM_RETURN-Payload: ' + JSON.stringify(returnResult.error.flatten()) });
+            continue;
+          }
+          const ret = returnResult.data;
+          db.transaction((tx) => {
+            // Bestand für zurückgegebenen Artikel zurückbuchen
+            tx.update(products)
+              .set({ stock: sql`${products.stock} + ${ret.quantity}` })
+              .where(eq(products.id, ret.productId))
+              .run();
+
+            // OutboxEvent protokollieren
             tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
