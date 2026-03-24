@@ -251,7 +251,12 @@ Plans:
   2. Eine Produktänderung (Preis, Name, Bestand) durch den Admin ist nach dem Speichern sofort in der Ansicht aktualisiert — kein Reload nötig
   3. Im Admin-Kontext (networkMode: 'online') zeigt TanStack Query offline einen Pending-Zustand statt veraltete Daten — keine irreführenden Cached-Werte
   4. Im POS-Kontext (networkMode: 'offlineFirst') arbeitet die Kasse auch ohne Netz mit dem letzten bekannten Produktstand
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
+- [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
+- [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
 
 ### Phase 20: WebSocket Live-Updates & Cleanup
 **Goal**: Änderungen an Produkten, Kategorien und Bestand sind auf allen verbundenen Geräten sofort sichtbar — kein Polling, kein manueller Nachladen-Button, kein Outbox-Umweg für Online-Verkäufe
@@ -262,7 +267,12 @@ Plans:
   2. Ein Verkauf im Online-Modus erscheint sofort auf dem Server — kein Outbox-Eintrag, keine Sync-Verzögerung
   3. Der manuelle Sync-Button ist aus der UI entfernt — kein sichtbares Sync-Konzept für Nutzerinnen im Online-Modus
   4. Dexie enthält nur noch POS-relevante Offline-Daten (Warenkorb, Offline-Sales) — keine redundante Produktkopie für den Admin
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
+- [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
+- [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
 
 ### Phase 21: Offline-Fallback & Dexie als Cache
 **Goal**: Die Kasse funktioniert nahtlos offline und online — beim Verlassen des WLANs schaltet sie automatisch auf Dexie-Cache um, beim Reconnect flusht sie die Outbox und holt sich den aktuellen Stand
@@ -272,7 +282,12 @@ Plans:
   1. Nach dem Einloggen kann das iPad in den Flugzeugmodus wechseln — Kasse zeigt weiterhin alle Artikel und lässt Verkäufe abschließen
   2. Offline getätigte Verkäufe erscheinen automatisch auf dem Server, sobald die Verbindung wiederhergestellt ist — keine Benutzerinteraktion nötig
   3. Die Umschaltung zwischen Online- und Offline-Modus ist für die Nutzerin unsichtbar — keine Fehlermeldungen, kein manuelles Eingreifen, nahtloser Übergang
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
+- [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
+- [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
 
 ## Progress
 
@@ -299,6 +314,6 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 19. TanStack Query Foundation | v5.0 | 0/? | Not started | - |
+| 19. TanStack Query Foundation | v5.0 | 0/3 | Not started | - |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
