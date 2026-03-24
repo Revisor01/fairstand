@@ -256,7 +256,7 @@ Plans:
 Plans:
 - [x] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
 - [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
-- [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
+- [x] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
 
 ### Phase 20: WebSocket Live-Updates & Cleanup
 **Goal**: Änderungen an Produkten, Kategorien und Bestand sind auf allen verbundenen Geräten sofort sichtbar — kein Polling, kein manueller Nachladen-Button, kein Outbox-Umweg für Online-Verkäufe
@@ -270,7 +270,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
+- [x] 19-01-PLAN.md — TQ Setup: @tanstack/react-query installieren, QueryClientProvider, useProducts + useCategories Hooks
 - [ ] 19-02-PLAN.md — Admin Migration: ProductList, ProductForm, StockAdjustModal, CategoryManager auf TQ
 - [ ] 19-03-PLAN.md — POS Migration: ArticleGrid mit networkMode offlineFirst
 
@@ -314,6 +314,6 @@ Phases execute in numeric order: 18 → 19 → 20 → 21
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
 | 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
 | 18. Quick Wins & Security | v5.0 | 3/3 | Complete    | 2026-03-24 |
-| 19. TanStack Query Foundation | v5.0 | 1/3 | In Progress|  |
+| 19. TanStack Query Foundation | v5.0 | 2/3 | In Progress|  |
 | 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |

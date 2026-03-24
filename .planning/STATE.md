@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 19-tanstack-query-foundation-01-PLAN.md
-last_updated: "2026-03-24T20:30:46.390Z"
+stopped_at: Completed 19-tanstack-query-foundation-03-PLAN.md
+last_updated: "2026-03-24T20:33:19.147Z"
 progress:
   total_phases: 15
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 ## Current Position
 
 Phase: 19 (tanstack-query-foundation) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -80,6 +80,7 @@ Plan: 2 of 3
 | Phase 18-quick-wins-security P01 | 31532258 | 2 tasks | 2 files |
 | Phase 18 P03 | 20 | 2 tasks | 16 files |
 | Phase 19 P01 | 128 | 2 tasks | 4 files |
+| Phase 19 P03 | 480 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -176,6 +177,7 @@ Recent decisions affecting current work:
 - [Phase 18]: shopId aus Session statt aus Query/Body — eliminiert Client-Ehrlichkeit als Sicherheitsannahme
 - [Phase 19]: AppInner-Komponente extrahiert damit QueryClientProvider als äußerster Wrapper um gesamte App-Logik liegt
 - [Phase 19]: Category.sortOrder und Category.createdAt in Mapping berücksichtigt — Interface hat mehr Felder als Plan-Dokumentation angab
+- [Phase 19]: useQuery direkt in ArticleGrid statt useProducts()-Hook: networkMode offlineFirst ist POS-spezifisch und muss am Query-Call gesetzt werden
 
 ### Pending Todos
 
@@ -188,6 +190,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:30:46.385Z
-Stopped at: Completed 19-tanstack-query-foundation-01-PLAN.md
+Last session: 2026-03-24T20:33:19.144Z
+Stopped at: Completed 19-tanstack-query-foundation-03-PLAN.md
 Resume file: None
