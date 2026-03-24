@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
-last_updated: "2026-03-24T19:45:00.000Z"
+last_updated: "2026-03-24T20:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,10 +23,14 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 18 (Quick Wins & Security) — not started
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-24 — Milestone v5.0 started
+Status: Roadmap defined, ready to plan Phase 18
+Last activity: 2026-03-24 — Roadmap v5.0 created
+
+```
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0/4 phases
+```
 
 ## Performance Metrics
 
@@ -162,6 +166,9 @@ Recent decisions affecting current work:
 - [Phase 17-datenverwaltung-sync]: PATCH /categories/:id Bulk-Update: alle Produkte mit altem Kategorienamen werden in gleicher Route aktualisiert
 - [Phase 17-datenverwaltung-sync]: URL.createObjectURL fuer Bild-Preview: sofortige Vorschau ohne Upload, pendingImageFile erst beim Speichern hochgeladen
 - [Phase 17-datenverwaltung-sync]: Sync-Badge statt Toast im POS-Header: persistentes Feedback solange Outbox Eintraege hat, kein Timeout noetig
+- [v5.0 Roadmap]: FIX + SEC zusammengefasst in Phase 18 — beide unabhängig von Architektur-Refactor, hoher Sicherheitswert bei niedrigem Risiko
+- [v5.0 Roadmap]: LIVE-01 + LIVE-02 + LIVE-06 in Phase 19 — TQ-Foundation muss stehen bevor WebSocket (Phase 20) Query-Invalidation nutzen kann
+- [v5.0 Roadmap]: OFFL-01-03 in Phase 21 nach LIVE komplett — Offline-Fallback testet den fertigen Stack, nicht die Übergangszustände
 
 ### Pending Todos
 
@@ -170,6 +177,7 @@ None yet.
 ### Blockers/Concerns
 
 - iOS/Safari-Pitfall: navigator.storage.persist() Verhalten auf iOS 17+ Home-Screen-PWA noch nicht auf physischem Gerät validiert
+- v5.0 Architektur-Risiko: TanStack Query + Dexie gleichzeitig als Cache-Schichten können zu Inkonsistenz führen — klare Trennlinie in Phase 19 festlegen (TQ für Reads, Dexie nur noch POS-Offline-Fallback)
 
 ## Session Continuity
 

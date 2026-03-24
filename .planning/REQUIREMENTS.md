@@ -58,28 +58,28 @@ Deferred — nicht in v5.0 Scope.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LIVE-01 | — | Pending |
-| LIVE-02 | — | Pending |
-| LIVE-03 | — | Pending |
-| LIVE-04 | — | Pending |
-| LIVE-05 | — | Pending |
-| LIVE-06 | — | Pending |
-| LIVE-07 | — | Pending |
-| OFFL-01 | — | Pending |
-| OFFL-02 | — | Pending |
-| OFFL-03 | — | Pending |
-| SEC-01 | — | Pending |
-| SEC-02 | — | Pending |
-| SEC-03 | — | Pending |
-| FIX-01 | — | Pending |
-| FIX-02 | — | Pending |
-| FIX-03 | — | Pending |
+| LIVE-01 | Phase 19 | Pending |
+| LIVE-02 | Phase 19 | Pending |
+| LIVE-03 | Phase 20 | Pending |
+| LIVE-04 | Phase 20 | Pending |
+| LIVE-05 | Phase 20 | Pending |
+| LIVE-06 | Phase 19 | Pending |
+| LIVE-07 | Phase 20 | Pending |
+| OFFL-01 | Phase 21 | Pending |
+| OFFL-02 | Phase 21 | Pending |
+| OFFL-03 | Phase 21 | Pending |
+| SEC-01 | Phase 18 | Pending |
+| SEC-02 | Phase 18 | Pending |
+| SEC-03 | Phase 18 | Pending |
+| FIX-01 | Phase 18 | Pending |
+| FIX-02 | Phase 18 | Pending |
+| FIX-03 | Phase 18 | Pending |
 
 **Coverage:**
 - v5.0 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16
+- Mapped to phases: 16
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after initial definition*
+*Last updated: 2026-03-24 after roadmap v5.0 created*

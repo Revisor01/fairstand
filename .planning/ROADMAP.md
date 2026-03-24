@@ -49,12 +49,22 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v4.0 Datenqualität & Stabilität
+<details>
+<summary>✅ v4.0 Datenqualität & Stabilität (Phases 14-17) — SHIPPED 2026-03-24</summary>
 
 - [x] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe (completed 2026-03-24)
 - [x] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt (completed 2026-03-24)
 - [x] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer (completed 2026-03-24)
 - [x] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster (completed 2026-03-24)
+
+</details>
+
+### 🚧 v5.0 Online-First Live Architecture
+
+- [ ] **Phase 18: Quick Wins & Security** - Scheduler-Storno-Filter, PDF-Timeout, PDF-Validierung, CORS, PIN-Rate-Limiting, ShopId-Validierung
+- [ ] **Phase 19: TanStack Query Foundation** - TQ installieren, alle Reads/Writes gegen Server-API, networkMode pro Kontext
+- [ ] **Phase 20: WebSocket Live-Updates & Cleanup** - @fastify/websocket, Server-Broadcasts, Query-Invalidation, Outbox-Online entfernen, Sync-Button weg
+- [ ] **Phase 21: Offline-Fallback & Dexie als Cache** - POS offline-tauglich mit TQ-Cache + Dexie-Fallback, Outbox offline, nahtloser Wechsel
 
 ## Phase Details
 
@@ -212,12 +222,57 @@ Plans:
 
 Plans:
 - [x] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
-- [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
+- [x] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
+
+### Phase 18: Quick Wins & Security
+**Goal**: Bekannte Bugs und Sicherheitslücken sind beseitigt bevor die Architektur angefasst wird — Scheduler-Emails zeigen korrekte Zahlen, PDF-Parser hängt sich nicht auf, CORS ist explizit, PIN ist brute-force-resistent und ShopId-Isolation ist server-seitig erzwungen
+**Depends on**: Phase 17
+**Requirements**: FIX-01, FIX-02, FIX-03, SEC-01, SEC-02, SEC-03
+**Success Criteria** (what must be TRUE):
+  1. Eine per Scheduler versendete Monats-Email enthält keine stornertierten Verkäufe in den Summen — Zahlen stimmen mit dem Admin-Report überein
+  2. Ein Upload einer absichtlich beschädigten oder hängenden PDF-Datei bricht nach spätestens 30 Sekunden mit einer Fehlermeldung ab — der Server bleibt responsiv
+  3. Eine Datei mit .pdf-Endung aber ohne korrekten PDF-Magic-Bytes wird beim Upload abgelehnt
+  4. Ein API-Request von einer nicht konfigurierten Origin wird vom Server mit CORS-Fehler abgelehnt — kein Wildcard-Default
+  5. Nach 5 falschen PIN-Versuchen innerhalb einer Minute gibt der Server 429 Too Many Requests zurück — weiteres Raten ist blockiert
+  6. Ein Versuch mit einem gültigen Token auf Daten einer anderen shopId zuzugreifen wird server-seitig mit 403 abgelehnt
+**Plans**: TBD
+
+### Phase 19: TanStack Query Foundation
+**Goal**: Alle Produkt- und Kategorie-Reads sowie alle CRUD-Writes laufen über TanStack Query direkt gegen den Server — Dexie ist nicht mehr primäre Datenquelle im Online-Modus
+**Depends on**: Phase 18
+**Requirements**: LIVE-01, LIVE-02, LIVE-06
+**Success Criteria** (what must be TRUE):
+  1. Produkte und Kategorien erscheinen im Admin ohne manuellen Sync-Aufruf — beim Öffnen eines Tabs werden sie automatisch vom Server geladen
+  2. Eine Produktänderung (Preis, Name, Bestand) durch den Admin ist nach dem Speichern sofort in der Ansicht aktualisiert — kein Reload nötig
+  3. Im Admin-Kontext (networkMode: 'online') zeigt TanStack Query offline einen Pending-Zustand statt veraltete Daten — keine irreführenden Cached-Werte
+  4. Im POS-Kontext (networkMode: 'offlineFirst') arbeitet die Kasse auch ohne Netz mit dem letzten bekannten Produktstand
+**Plans**: TBD
+
+### Phase 20: WebSocket Live-Updates & Cleanup
+**Goal**: Änderungen an Produkten, Kategorien und Bestand sind auf allen verbundenen Geräten sofort sichtbar — kein Polling, kein manueller Nachladen-Button, kein Outbox-Umweg für Online-Verkäufe
+**Depends on**: Phase 19
+**Requirements**: LIVE-03, LIVE-04, LIVE-05, LIVE-07
+**Success Criteria** (what must be TRUE):
+  1. Ändert der Admin einen Produktpreis, aktualisiert sich die Artikelkachel im POS auf einem anderen Gerät innerhalb von Sekunden — ohne Reload
+  2. Ein Verkauf im Online-Modus erscheint sofort auf dem Server — kein Outbox-Eintrag, keine Sync-Verzögerung
+  3. Der manuelle Sync-Button ist aus der UI entfernt — kein sichtbares Sync-Konzept für Nutzerinnen im Online-Modus
+  4. Dexie enthält nur noch POS-relevante Offline-Daten (Warenkorb, Offline-Sales) — keine redundante Produktkopie für den Admin
+**Plans**: TBD
+
+### Phase 21: Offline-Fallback & Dexie als Cache
+**Goal**: Die Kasse funktioniert nahtlos offline und online — beim Verlassen des WLANs schaltet sie automatisch auf Dexie-Cache um, beim Reconnect flusht sie die Outbox und holt sich den aktuellen Stand
+**Depends on**: Phase 20
+**Requirements**: OFFL-01, OFFL-02, OFFL-03
+**Success Criteria** (what must be TRUE):
+  1. Nach dem Einloggen kann das iPad in den Flugzeugmodus wechseln — Kasse zeigt weiterhin alle Artikel und lässt Verkäufe abschließen
+  2. Offline getätigte Verkäufe erscheinen automatisch auf dem Server, sobald die Verbindung wiederhergestellt ist — keine Benutzerinteraktion nötig
+  3. Die Umschaltung zwischen Online- und Offline-Modus ist für die Nutzerin unsichtbar — keine Fehlermeldungen, kein manuelles Eingreifen, nahtloser Übergang
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 14 → 15 → 16 → 17
+Phases execute in numeric order: 18 → 19 → 20 → 21
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -234,7 +289,11 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 11. Produktbilder & PDF-Parsing | v3.0 | 2/2 | Complete | 2026-03-24 |
 | 12. Bestandsampel & Umlaute | v3.0 | 1/1 | Complete | 2026-03-24 |
 | 13. GitHub-Dokumentation | v3.0 | 0/? | Complete | 2026-03-24 |
-| 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
-| 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete    | 2026-03-24 |
+| 14. Online-First Architektur | v4.0 | 1/1 | Complete | 2026-03-24 |
+| 15. Datenintegrität | v4.0 | 2/2 | Complete | 2026-03-24 |
+| 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete | 2026-03-24 |
+| 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete | 2026-03-24 |
+| 18. Quick Wins & Security | v5.0 | 0/? | Not started | - |
+| 19. TanStack Query Foundation | v5.0 | 0/? | Not started | - |
+| 20. WebSocket Live-Updates & Cleanup | v5.0 | 0/? | Not started | - |
+| 21. Offline-Fallback & Dexie als Cache | v5.0 | 0/? | Not started | - |
