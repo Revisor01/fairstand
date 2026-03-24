@@ -97,6 +97,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE shop_id = ${shopId}
         AND created_at >= ${yearStart}
         AND created_at < ${yearEnd}
+        AND cancelled_at IS NULL
       GROUP BY strftime('%m', datetime(created_at / 1000, 'unixepoch'))
       ORDER BY month
     `);
@@ -114,6 +115,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${yearStart}
         AND sales.created_at < ${yearEnd}
+        AND sales.cancelled_at IS NULL
       GROUP BY strftime('%m', datetime(sales.created_at / 1000, 'unixepoch'))
       ORDER BY month
     `);
@@ -161,6 +163,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE sales.shop_id = ${shopId}
         AND json_extract(item.value, '$.productId') = ${id}
         AND sales.created_at >= ${sinceTs}
+        AND sales.cancelled_at IS NULL
     `);
 
     const row = (result[0] as Record<string, unknown>) ?? {};
