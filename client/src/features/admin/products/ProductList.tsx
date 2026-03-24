@@ -100,6 +100,23 @@ export function ProductList() {
     setView('list');
   }
 
+  async function handleImageUpload(productId: string, file: File | undefined) {
+    if (!file || !navigator.onLine) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch(`/api/products/${productId}/image`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) return;
+      const { imageUrl } = await res.json() as { imageUrl: string };
+      await db.products.update(productId, { imageUrl });
+    } catch {
+      // Stilles Fail — kein Offline-Support für Bilder nötig
+    }
+  }
+
   if (view === 'form') {
     return <ProductForm product={selectedProduct} onClose={handleClose} />;
   }
@@ -184,6 +201,11 @@ export function ProductList() {
                   !product.active ? 'opacity-60' : ''
                 }`}
               >
+                {/* Vorschaubild */}
+                {product.imageUrl && (
+                  <img src={product.imageUrl} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                )}
+
                 {/* Produktinfo */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -214,6 +236,15 @@ export function ProductList() {
                   >
                     Bearbeiten
                   </button>
+                  <label className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors cursor-pointer flex items-center">
+                    Bild
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="sr-only"
+                      onChange={(e) => handleImageUpload(product.id, e.target.files?.[0])}
+                    />
+                  </label>
                   <button
                     onPointerDown={() => openStats(product)}
                     className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"

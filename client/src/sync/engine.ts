@@ -74,6 +74,7 @@ interface ServerProduct {
   stock: number;
   min_stock: number;
   active: boolean | number; // SQLite boolean kann 0/1 sein
+  image_url?: string | null;
   updated_at: number;
 }
 
@@ -96,6 +97,7 @@ export async function downloadProducts(): Promise<number> {
       stock: sp.stock,
       minStock: sp.min_stock,
       active: Boolean(sp.active),
+      imageUrl: sp.image_url ?? undefined,
       updatedAt: sp.updated_at,
     };
 
