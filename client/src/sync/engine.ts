@@ -1,5 +1,5 @@
-import { db, getShopId } from '../db/index.js';
-import type { OutboxEntry, Product, Category } from '../db/index.js';
+import { db } from '../db/index.js';
+import type { OutboxEntry } from '../db/index.js';
 import { getAuthHeaders } from '../features/auth/serverAuth.js';
 
 let flushing = false;
@@ -54,74 +54,8 @@ export async function flushOutbox(): Promise<void> {
       }
     }
 
-    // Download-Sync nach erfolgreichem Upload: aktuellste Daten holen
-    downloadProducts().catch(() => {}); // fire-and-forget
   } finally {
     flushing = false;
   }
 }
 
-// --- Download-Sync: Server → Client ---
-
-interface ServerProduct {
-  id: string;
-  shopId: string;
-  articleNumber: string;
-  name: string;
-  category: string;
-  purchasePrice: number;
-  salePrice: number;
-  vatRate: number;
-  stock: number;
-  minStock: number;
-  active: boolean | number;
-  imageUrl?: string | null;
-  updatedAt: number;
-}
-
-export async function downloadProducts(): Promise<number> {
-  const shopId = getShopId();
-  const res = await fetch(`/api/products?shopId=${shopId}`, {
-    headers: await getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error(`Download fehlgeschlagen: ${res.status}`);
-  const serverProducts: ServerProduct[] = await res.json();
-
-  const mapped: Product[] = serverProducts.map(sp => ({
-    id: sp.id,
-    shopId: sp.shopId,
-    articleNumber: sp.articleNumber,
-    name: sp.name,
-    category: sp.category,
-    purchasePrice: sp.purchasePrice,
-    salePrice: sp.salePrice,
-    vatRate: sp.vatRate,
-    stock: sp.stock,
-    minStock: sp.minStock,
-    active: Boolean(sp.active),
-    imageUrl: sp.imageUrl ?? undefined,
-    updatedAt: sp.updatedAt,
-  }));
-
-  await db.transaction('rw', db.products, async () => {
-    await db.products.where('shopId').equals(shopId).delete();
-    await db.products.bulkPut(mapped);
-  });
-
-  return mapped.length;
-}
-
-export async function downloadCategories(): Promise<void> {
-  const shopId = getShopId();
-  const res = await fetch(`/api/categories?shopId=${shopId}`, {
-    headers: await getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error(`Kategorie-Download fehlgeschlagen: ${res.status}`);
-  const serverCats = await res.json() as Category[];
-  await db.transaction('rw', db.categories, async () => {
-    await db.categories.where('shopId').equals(shopId).delete();
-    await db.categories.bulkPut(serverCats);
-  });
-}
-
-// Startup-Download wurde entfernt — App.tsx ruft downloadProducts() nach Login auf

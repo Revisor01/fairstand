@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Pencil, BarChart3, Package, Eye, EyeOff, RefreshCw, Plus } from 'lucide-react';
+import { Pencil, BarChart3, Package, Eye, EyeOff, Plus } from 'lucide-react';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
-import { downloadProducts } from '../../../sync/engine.js';
 import { useProducts, useToggleProductActive } from '../../../hooks/api/useProducts.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
@@ -14,8 +13,6 @@ export function ProductList() {
   const [view, setView] = useState<ProductListView>('list');
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
-  const [syncing, setSyncing] = useState(false);
-  const [syncResult, setSyncResult] = useState<string | null>(null);
 
   const { data: rawProducts, isLoading } = useProducts();
   const toggleActive = useToggleProductActive();
@@ -39,23 +36,6 @@ export function ProductList() {
 
   async function handleToggleActive(product: Product) {
     await toggleActive.mutateAsync({ productId: product.id, active: !product.active });
-  }
-
-  async function handleDownloadSync() {
-    if (!navigator.onLine) {
-      setSyncResult('Keine Internetverbindung');
-      return;
-    }
-    setSyncing(true);
-    setSyncResult(null);
-    try {
-      const count = await downloadProducts();
-      setSyncResult(`${count} Produkt${count !== 1 ? 'e' : ''} aktualisiert`);
-    } catch {
-      setSyncResult('Sync fehlgeschlagen');
-    } finally {
-      setSyncing(false);
-    }
   }
 
   function openNewForm() {
@@ -110,14 +90,6 @@ export function ProductList() {
         <h2 className="text-lg font-semibold text-sky-800">Produkte</h2>
         <div className="flex items-center gap-2">
           <button
-            onPointerDown={handleDownloadSync}
-            disabled={syncing}
-            className="bg-slate-100 active:bg-slate-300 text-slate-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-sm flex items-center gap-1.5 transition-colors disabled:opacity-50"
-          >
-            <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
-            Sync
-          </button>
-          <button
             onPointerDown={openNewForm}
             className="bg-sky-500 active:bg-sky-700 text-white font-semibold px-3 py-2 rounded-lg min-h-[44px] text-sm flex items-center gap-1.5 transition-colors"
           >
@@ -145,13 +117,6 @@ export function ProductList() {
           </button>
         ))}
       </div>
-
-      {/* Sync-Ergebnis */}
-      {syncResult && (
-        <div className="bg-sky-50 text-sky-700 text-sm px-4 py-2 rounded-lg">
-          {syncResult}
-        </div>
-      )}
 
       {/* Produktliste */}
       {filteredProducts.length === 0 ? (
