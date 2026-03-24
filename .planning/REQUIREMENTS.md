@@ -24,8 +24,8 @@
 ### Security & Hardening
 
 - [x] **SEC-01**: CORS erlaubt nur explizit konfigurierte Origins (kein Wildcard-Default)
-- [ ] **SEC-02**: PIN-Eingabe hat Server-seitiges Rate-Limiting (max. 5 Versuche pro Minute pro IP)
-- [ ] **SEC-03**: Server validiert shopId gegen die authentifizierte Session — kein Zugriff auf fremde Shop-Daten
+- [x] **SEC-02**: PIN-Eingabe hat Server-seitiges Rate-Limiting (max. 5 Versuche pro Minute pro IP)
+- [x] **SEC-03**: Server validiert shopId gegen die authentifizierte Session — kein Zugriff auf fremde Shop-Daten
 
 ### Bugfixes & Tech Debt
 
@@ -69,8 +69,8 @@ Deferred — nicht in v5.0 Scope.
 | OFFL-02 | Phase 21 | Pending |
 | OFFL-03 | Phase 21 | Pending |
 | SEC-01 | Phase 18 | Complete |
-| SEC-02 | Phase 18 | Pending |
-| SEC-03 | Phase 18 | Pending |
+| SEC-02 | Phase 18 | Complete |
+| SEC-03 | Phase 18 | Complete |
 | FIX-01 | Phase 18 | Complete |
 | FIX-02 | Phase 18 | Complete |
 | FIX-03 | Phase 18 | Complete |

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 18-quick-wins-security-01-PLAN.md
-last_updated: "2026-03-24T20:07:47.745Z"
+stopped_at: Completed 18-quick-wins-security-03-PLAN.md
+last_updated: "2026-03-24T20:12:20.263Z"
 progress:
   total_phases: 15
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -78,6 +78,7 @@ Plan: 3 of 3
 | Phase 17-datenverwaltung-sync P02 | 3 | 2 tasks | 5 files |
 | Phase 18-quick-wins-security P02 | 5 | 2 tasks | 2 files |
 | Phase 18-quick-wins-security P01 | 31532258 | 2 tasks | 2 files |
+| Phase 18 P03 | 20 | 2 tasks | 16 files |
 
 ## Accumulated Context
 
@@ -169,6 +170,9 @@ Recent decisions affecting current work:
 - [Phase 18-quick-wins-security]: _parsePdf() nicht exportiert, parseSuedNordKontorPdf() als Promise.race()-Wrapper mit PDF_PARSE_TIMEOUT_MS=30s
 - [Phase 18-quick-wins-security]: cancelled_at IS NULL als Pflicht-Filter auf allen sales-Queries im Scheduler
 - [Phase 18-quick-wins-security]: CORS_ORIGIN zwingend (fail-closed): fehlt die Var, startet der Server nicht
+- [Phase 18]: @fastify/rate-limit mit global:false — nur /api/auth/pin erhält Rate-Limiting
+- [Phase 18]: In-Memory Session Store (Map) — kein DB-Overhead, Client re-loggt nach Neustart
+- [Phase 18]: shopId aus Session statt aus Query/Body — eliminiert Client-Ehrlichkeit als Sicherheitsannahme
 
 ### Pending Todos
 
@@ -181,6 +185,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:07:47.742Z
-Stopped at: Completed 18-quick-wins-security-01-PLAN.md
+Last session: 2026-03-24T20:12:20.260Z
+Stopped at: Completed 18-quick-wins-security-03-PLAN.md
 Resume file: None
