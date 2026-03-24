@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { get, set } from 'idb-keyval';
-import { db, getShopId } from '../../../db/index.js';
+import { getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
-import { flushOutbox } from '../../../sync/engine.js';
 import { UploadZone } from './UploadZone.js';
 import { ReviewTable } from './ReviewTable.js';
 import type { MatchedRow } from './ReviewTable.js';
@@ -50,9 +48,13 @@ export function ImportScreen() {
   const [currentFilename, setCurrentFilename] = useState('');
 
   useEffect(() => {
-    get<ImportHistoryEntry[]>('import-history').then(history => {
-      if (history) setImportHistory(history);
-    });
+    const raw = localStorage.getItem('import-history');
+    if (raw) {
+      try {
+        const history = JSON.parse(raw) as ImportHistoryEntry[];
+        setImportHistory(history);
+      } catch { /* ignorieren */ }
+    }
   }, []);
 
   async function handleFileSelected(file: File) {
@@ -81,8 +83,10 @@ export function ImportScreen() {
       const data: ParseResponse = await res.json();
       setCurrentFilename(data.filename);
 
-      // Matching gegen Dexie-Produktdatenbank
-      const products = await db.products.where('shopId').equals(getShopId()).toArray();
+      // Matching gegen Server-Produktdatenbank
+      const productHeaders = await getAuthHeaders();
+      const productsRes = await fetch(`/api/products?shopId=${getShopId()}`, { headers: productHeaders });
+      const products: Product[] = productsRes.ok ? await productsRes.json() : [];
       const productIndex = new Map(
         products.map(p => [p.articleNumber.toLowerCase().trim(), p])
       );
@@ -125,6 +129,8 @@ export function ImportScreen() {
     try {
       const checkedRows = rows.filter(r => r.checked);
 
+      const headers = await getAuthHeaders();
+
       for (const row of checkedRows) {
         let productId: string;
 
@@ -143,58 +149,39 @@ export function ImportScreen() {
             active: true,
             updatedAt: Date.now(),
           };
-          await db.products.add(newProduct);
+          await fetch('/api/products', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(newProduct),
+          });
           productId = newProduct.id;
-
-          // Fire-and-forget Server-Sync fuer neues Produkt
-          if (navigator.onLine) {
-            getAuthHeaders().then(headers => {
-              fetch('/api/products', {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(newProduct),
-              }).catch(() => {});
-            });
-          }
         } else {
           productId = row.existingProductId!;
         }
 
-        // Bestandsbuchung via Outbox (STOCK_ADJUST mit positivem Delta)
-        await db.outbox.add({
-          operation: 'STOCK_ADJUST',
-          payload: {
+        // Bestandsbuchung direkt an Server
+        await fetch('/api/stock/adjust', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
             productId,
             delta: row.quantity,
             reason: 'Import Rechnung',
             shopId: getShopId(),
-          },
-          shopId: getShopId(),
-          createdAt: Date.now(),
-          attempts: 0,
+          }),
         });
-
-        // Lokalen Bestand direkt aktualisieren
-        await db.products
-          .where('id')
-          .equals(productId)
-          .modify((p: Product) => { p.stock += row.quantity; });
-      }
-
-      // Outbox flushen wenn online
-      if (navigator.onLine) {
-        await flushOutbox();
       }
 
       // Import-Historie aktualisieren
-      const history = (await get<ImportHistoryEntry[]>('import-history')) ?? [];
+      const rawHistory = localStorage.getItem('import-history');
+      const history: ImportHistoryEntry[] = rawHistory ? (() => { try { return JSON.parse(rawHistory); } catch { return []; } })() : [];
       history.unshift({
         date: Date.now(),
         filename: currentFilename,
         positionCount: checkedRows.length,
       });
       const trimmedHistory = history.slice(0, 50);
-      await set('import-history', trimmedHistory);
+      localStorage.setItem('import-history', JSON.stringify(trimmedHistory));
       setImportHistory(trimmedHistory);
 
       setSuccessMessage(`${checkedRows.length} Position${checkedRows.length === 1 ? '' : 'en'} gebucht.`);
