@@ -1,15 +1,16 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, getShopId } from '../db/index.js';
+import type { OutboxEntry } from '../db/schema.js';
 
 export type SyncStatus = 'synced' | 'pending' | 'failed';
 
 export function useSyncStatus(): SyncStatus {
   const outbox = useLiveQuery(
-    () => {
+    (): Promise<OutboxEntry[]> => {
       try {
         return db.outbox.where('shopId').equals(getShopId()).toArray();
       } catch {
-        return Promise.resolve([]);
+        return Promise.resolve([] as OutboxEntry[]);
       }
     },
     []
