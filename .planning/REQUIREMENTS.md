@@ -1,45 +1,73 @@
-# Requirements: Fairstand Kassensystem v1.1
+# Requirements: Fairstand Kassensystem v2.0
 
-**Defined:** 2026-03-23
-**Core Value:** v1.0 live auf iPad nutzbar machen — Tech Debt beheben und auf server.godsapp.de deployen.
+**Defined:** 2026-03-24
+**Core Value:** Server als Single Source of Truth mit Multi-Laden-Architektur — jedes Gerät sieht denselben Datenstand, Offline-Cache nur als Fallback.
 
-## v1.1 Requirements
+## v2.0 Requirements
 
-### Tech Debt (aus v1.0 Audit)
+### Sync & Architektur
 
-- [x] **TD-01**: LWW-Konfliktauflösung — sync.ts Produkt-Upsert von onConflictDoNothing() auf Timestamp-Vergleich umstellen
-- [x] **TD-02**: Produkt-Deaktivierung Server-Sync — handleToggleActive in ProductList.tsx muss PATCH /api/products/:id/deactivate aufrufen
-- [x] **TD-03**: Download-Sync Server→Client — Mechanismus zum Laden von Server-Produktdaten auf neuen/frischen Client
-- [x] **TD-04**: extra_donation_cents im MonthlyReport rendern — Überzahlungs-Spenden sichtbar machen
+- [ ] **SYNC-01**: Beim App-Start werden alle Produkte automatisch vom Server geladen (Server = Single Source of Truth)
+- [ ] **SYNC-02**: Verkäufe die offline getätigt werden, werden automatisch zum Server hochgesynct wenn Internet verfügbar
+- [ ] **SYNC-03**: Jedes Gerät sieht denselben Produktbestand — Bestandsänderungen durch Verkäufe sind sofort nach Sync auf allen Geräten sichtbar
+- [ ] **SYNC-04**: Lokale Dexie-DB dient nur als Offline-Cache — Seed-Daten nur als Fallback wenn Server nicht erreichbar UND lokale DB leer
 
-### Deployment & CI/CD
+### Multi-Laden
 
-- [ ] **DEP-04**: GitHub Repository erstellen und Code pushen
-- [ ] **DEP-05**: GitHub Actions Workflow — Docker Images für Client + Server bauen und zu GHCR pushen
-- [ ] **DEP-06**: Domain fairstand.godsapp.de auf KeyHelp anlegen (vHost + SSL via KeyHelp API)
-- [ ] **DEP-07**: Apache Custom Config für Traefik-Proxy (fairstand.godsapp.de → Traefik:8888 → Container)
-- [ ] **DEP-08**: Docker-Compose Stack auf Portainer deployen via Webhook
-- [ ] **DEP-09**: Portainer Webhook in GitHub Actions Secret eintragen für Auto-Deploy
+- [ ] **SHOP-01**: Laden-Konfiguration (Name, PIN, shopId) wird in der Server-Datenbank gespeichert, nicht hardcoded
+- [ ] **SHOP-02**: Beim App-Start wird ein 6-stelliger PIN abgefragt — der PIN identifiziert und öffnet den zugehörigen Laden
+- [ ] **SHOP-03**: Produkte gehören zu einem Laden — jeder Laden sieht nur seine eigenen Artikel
+- [ ] **SHOP-04**: Admin kann Läden anlegen und bearbeiten (Name, PIN)
+
+### Verkaufshistorie
+
+- [ ] **HIST-01**: Tagesübersicht zeigt Liste aller Verkäufe — anklickbar für Detailansicht (welche Artikel, Menge, Preis)
+- [ ] **HIST-02**: Pro Artikel: Verkaufsstatistik einsehbar (wie oft verkauft, Umsatz, Zeitraum) — um zu planen was sich lohnt
+
+### Storno & Rückgabe
+
+- [ ] **STOR-01**: Verkauf kann aus der Tagesübersicht storniert werden — Bestand wird zurückgebucht
+- [ ] **STOR-02**: Einzelne Artikel aus einem Verkauf können als Rückgabe verbucht werden
+
+### Bestandsprüfung
+
+- [ ] **BEST-01**: Artikel-Grid in der Kasse zeigt Preis groß und aktuellen Bestand klein
+- [ ] **BEST-02**: Wenn mehr Stück in den Warenkorb gelegt werden als im Bestand sind, wird das blockiert
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Produktbilder | v3.0 — erst Architektur richtig machen |
+| Bestandsampel (Farbindikator) | v3.0 |
+| PDF-Parsing verbessern | v3.0 |
+| Umlaute überall | v3.0 |
+| Redesign | v3.0 |
+| README + Lizenz | v3.0 |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TD-01 | Phase 5 | Complete |
-| TD-02 | Phase 5 | Complete |
-| TD-03 | Phase 5 | Complete |
-| TD-04 | Phase 5 | Complete |
-| DEP-04 | Phase 6 | Pending |
-| DEP-05 | Phase 6 | Pending |
-| DEP-06 | Phase 6 | Pending |
-| DEP-07 | Phase 6 | Pending |
-| DEP-08 | Phase 6 | Pending |
-| DEP-09 | Phase 6 | Pending |
+| SYNC-01 | TBD | Pending |
+| SYNC-02 | TBD | Pending |
+| SYNC-03 | TBD | Pending |
+| SYNC-04 | TBD | Pending |
+| SHOP-01 | TBD | Pending |
+| SHOP-02 | TBD | Pending |
+| SHOP-03 | TBD | Pending |
+| SHOP-04 | TBD | Pending |
+| HIST-01 | TBD | Pending |
+| HIST-02 | TBD | Pending |
+| STOR-01 | TBD | Pending |
+| STOR-02 | TBD | Pending |
+| BEST-01 | TBD | Pending |
+| BEST-02 | TBD | Pending |
 
 **Coverage:**
-- v1.1 requirements: 10 total
-- Mapped to phases: 10
-- Unmapped: 0
+- v2.0 requirements: 14 total
+- Mapped to phases: 0
+- Unmapped: 14
 
 ---
-*Requirements defined: 2026-03-23*
+*Requirements defined: 2026-03-24*
