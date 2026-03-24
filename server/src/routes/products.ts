@@ -46,7 +46,7 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.get('/products', async (request, reply) => {
     const session = (request as any).session as { shopId: string };
     const shopId = session.shopId;
-    const rows = db.select().from(products).where(eq(products.shopId, shopId)).all();
+    const rows = await db.select().from(products).where(eq(products.shopId, shopId));
     return reply.send(rows);
   });
 
@@ -60,7 +60,7 @@ export async function productRoutes(fastify: FastifyInstance) {
     if (p.shopId !== session.shopId) {
       return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
-    db.insert(products).values({
+    await db.insert(products).values({
       id: p.id,
       shopId: p.shopId,
       articleNumber: p.articleNumber,
@@ -89,7 +89,7 @@ export async function productRoutes(fastify: FastifyInstance) {
         imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
         updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
       },
-    }).run();
+    });
     reply.status(201).send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
   });
@@ -98,7 +98,7 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.patch('/products/:id/deactivate', async (request, reply) => {
     const { id } = request.params as { id: string };
     const session = (request as any).session as { shopId: string };
-    db.update(products).set({ active: false, updatedAt: Date.now() }).where(eq(products.id, id)).run();
+    await db.update(products).set({ active: false, updatedAt: Date.now() }).where(eq(products.id, id));
     reply.send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
   });
@@ -107,7 +107,7 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.patch('/products/:id/activate', async (request, reply) => {
     const { id } = request.params as { id: string };
     const session = (request as any).session as { shopId: string };
-    db.update(products).set({ active: true, updatedAt: Date.now() }).where(eq(products.id, id)).run();
+    await db.update(products).set({ active: true, updatedAt: Date.now() }).where(eq(products.id, id));
     reply.send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
   });
@@ -139,7 +139,7 @@ export async function productRoutes(fastify: FastifyInstance) {
     await writeFile(filepath, buffer);
 
     const imageUrl = `/api/images/${filename}`;
-    db.update(products).set({ imageUrl }).where(eq(products.id, id)).run();
+    await db.update(products).set({ imageUrl }).where(eq(products.id, id));
 
     return reply.send({ ok: true, imageUrl });
   });

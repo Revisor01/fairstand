@@ -28,7 +28,7 @@ export async function authRoutes(fastify: FastifyInstance) {
     const { pin } = result.data;
     const pinHash = await hashPin(pin);
 
-    const shop = db.select().from(shops).where(eq(shops.pin, pinHash)).get();
+    const [shop] = await db.select().from(shops).where(eq(shops.pin, pinHash));
     if (!shop) return reply.status(401).send({ error: 'Falscher PIN' });
 
     const token = crypto.randomUUID();
