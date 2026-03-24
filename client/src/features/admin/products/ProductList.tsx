@@ -221,9 +221,17 @@ export function ProductList() {
                   </div>
                   <div className="flex items-center gap-3 mt-1 text-sm">
                     <span className="text-sky-700 font-semibold">{formatEur(product.salePrice)}</span>
-                    <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-slate-600'}`}>
-                      Bestand: {product.stock}
-                      {isLowStock && ' ⚠'}
+                    <span className="flex items-center gap-1">
+                      <span className={`text-[10px] leading-none ${
+                        product.stock === 0
+                          ? 'text-rose-500'
+                          : product.minStock > 0 && product.stock <= product.minStock
+                            ? 'text-amber-500'
+                            : 'text-emerald-500'
+                      }`}>●</span>
+                      <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-slate-600'}`}>
+                        Bestand: {product.stock}
+                      </span>
                     </span>
                   </div>
                 </div>
