@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Polish, Bilder & Redesign
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
 last_updated: "2026-03-24T12:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,12 +19,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 09 — storno-rueckgabe
+**Current focus:** v3.0 — Phase 10 als nächstes (UI-Redesign)
 
 ## Current Position
 
-Phase: 09
+Phase: 10 (not started)
 Plan: Not started
+
+```
+v3.0 Progress: [ ][ ][ ][ ] 0/4 phases
+```
 
 ## Performance Metrics
 
@@ -133,11 +137,9 @@ None yet.
 ### Blockers/Concerns
 
 - iOS/Safari-Pitfall: navigator.storage.persist() Verhalten auf iOS 17+ Home-Screen-PWA noch nicht auf physischem Gerät validiert
-- v2.0 Phase 7: Bestehende lokale Dexie-Daten der Nutzerinnen müssen bei Architektur-Umbau migriert oder zurückgesetzt werden — Migration-Strategie klären
-- v2.0 Phase 7: PIN-Auth ersetzt bisherige lokale PIN-Auth (idb-keyval) — Backwards-Compatibility oder Hard-Reset beim ersten Start mit v2.0
 
 ## Session Continuity
 
-Last session: 2026-03-24T10:53:39.227Z
-Stopped at: Completed 09-storno-rueckgabe-01-PLAN.md
+Last session: 2026-03-24T12:00:00.000Z
+Stopped at: v3.0 Roadmap erstellt
 Resume file: None

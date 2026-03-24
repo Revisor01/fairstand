@@ -48,24 +48,24 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UI-01 | TBD | Pending |
-| UI-02 | TBD | Pending |
-| UI-03 | TBD | Pending |
-| UI-04 | TBD | Pending |
-| UI-05 | TBD | Pending |
-| IMG-01 | TBD | Pending |
-| IMG-02 | TBD | Pending |
-| IMG-03 | TBD | Pending |
-| PDF-01 | TBD | Pending |
-| AMP-01 | TBD | Pending |
-| TXT-01 | TBD | Pending |
-| GH-01 | TBD | Pending |
-| GH-02 | TBD | Pending |
+| UI-01 | Phase 10 | Pending |
+| UI-02 | Phase 10 | Pending |
+| UI-03 | Phase 10 | Pending |
+| UI-04 | Phase 10 | Pending |
+| UI-05 | Phase 10 | Pending |
+| IMG-01 | Phase 11 | Pending |
+| IMG-02 | Phase 11 | Pending |
+| IMG-03 | Phase 11 | Pending |
+| PDF-01 | Phase 11 | Pending |
+| AMP-01 | Phase 12 | Pending |
+| TXT-01 | Phase 12 | Pending |
+| GH-01 | Phase 13 | Pending |
+| GH-02 | Phase 13 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-24*

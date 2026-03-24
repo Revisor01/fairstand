@@ -4,7 +4,8 @@
 
 - ✅ **v1.0 Fairstand Kassensystem** — Phases 1-4 (shipped 2026-03-23)
 - ✅ **v1.1 Tech Debt & Deployment** — Phases 5-6 (shipped 2026-03-24)
-- 🚧 **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (active)
+- ✅ **v2.0 Server-Sync, Multi-Laden & Kernfunktionen** — Phases 7-9 (shipped 2026-03-24)
+- 🚧 **v3.0 Polish, Bilder & Redesign** — Phases 10-13 (active)
 
 ## Phases
 
@@ -28,11 +29,21 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v2.0 Server-Sync, Multi-Laden & Kernfunktionen
+<details>
+<summary>✅ v2.0 Server-Sync, Multi-Laden & Kernfunktionen (Phases 7-9) — SHIPPED 2026-03-24</summary>
 
-- [x] **Phase 7: Server-Sync & Multi-Laden** - Architektur-Umbau: Server wird Single Source of Truth, PIN-basierte Laden-Auswahl (completed 2026-03-24)
-- [ ] **Phase 8: Bestandsprüfung & Verkaufshistorie** - Kassen-UX mit Bestandsanzeige und Überverkauf-Blockierung, Tages- und Artikelstatistik
-- [ ] **Phase 9: Storno & Rückgabe** - Vollständige Transaktionskorrektur mit Bestandsrückverfolgung
+- [x] Phase 7: Server-Sync & Multi-Laden (3/3 plans) — completed 2026-03-24
+- [x] Phase 8: Bestandsprüfung & Verkaufshistorie (2/2 plans) — completed 2026-03-24
+- [x] Phase 9: Storno & Rückgabe (1/1 plans) — completed 2026-03-24
+
+</details>
+
+### 🚧 v3.0 Polish, Bilder & Redesign
+
+- [ ] **Phase 10: UI-Redesign** - Kassendialog kompakt, Bezahlseite mit Live-Berechnung, Shop-Name in Titelzeile, luftiges Layout, Admin übersichtlicher
+- [ ] **Phase 11: Produktbilder & PDF-Parsing** - Artikelkacheln mit Bildern, manuelle Bildzuweisung, verbessertes Rechnungs-Parsing
+- [ ] **Phase 12: Bestandsampel & Umlaute** - Farbindikator für Vorratsstand, konsequente Umlaute in der gesamten UI
+- [ ] **Phase 13: GitHub-Dokumentation** - README mit Setup-Anleitung, Open-Source-Lizenz für Weltläden
 
 ## Phase Details
 
@@ -80,10 +91,51 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — Schemas (Dexie v4 + Drizzle), Server-Handler (SALE_CANCEL + ITEM_RETURN), UI (Storno-Button + Rückgabe-Buttons + visuelle Markierung)
 
+### Phase 10: UI-Redesign
+**Goal**: Die Kasse fühlt sich luftig, übersichtlich und professionell an — Kassendialog, Bezahlseite und Admin sind auf einen Blick erfassbar
+**Depends on**: Phase 9
+**Requirements**: UI-01, UI-02, UI-03, UI-04, UI-05
+**Success Criteria** (what must be TRUE):
+  1. Kassendialog und Bezahlseite sind als kompakte Overlays dargestellt — nicht fullscreen, der Warenkorb bleibt im Blick
+  2. Die Bezahlseite zeigt Artikelliste, Gesamtsumme und berechnet Wechselgeld/Spende live während des Eingebens
+  3. Der Shop-Name ist in der Titelzeile oben sichtbar, ohne dass man dafür navigieren muss
+  4. Das Gesamtlayout hat mehr Whitespace — Elemente sind großzügig gesetzt, nichts wirkt gedrängt
+  5. Der Admin-Bereich ist kompakt und übersichtlich — alle Einstellungen ohne Scrollen findbar
+**Plans**: TBD
+
+### Phase 11: Produktbilder & PDF-Parsing
+**Goal**: Artikelkacheln zeigen Produktbilder und Rechnungen werden vollständig korrekt in Menge, Artikelnummer und Preis geparst
+**Depends on**: Phase 10
+**Requirements**: IMG-01, IMG-02, IMG-03, PDF-01
+**Success Criteria** (what must be TRUE):
+  1. Artikelkacheln zeigen ein Produktbild wenn eines hinterlegt ist — ohne Bild bleibt die Kachel wie bisher
+  2. In der Produktverwaltung kann einem Artikel ein Bild zugewiesen werden
+  3. Bilder können aus Etiketten-PDFs des Süd-Nord-Kontors extrahiert oder von der Kontor-Website übernommen werden
+  4. Beim Import einer Süd-Nord-Kontor-Rechnung erscheinen Menge, Artikelnummer und Preis in separaten Spalten — nicht mehr alles in der Beschreibung
+**Plans**: TBD
+
+### Phase 12: Bestandsampel & Umlaute
+**Goal**: Mitarbeiterinnen erkennen auf einen Blick den Vorratsstand und lesen die gesamte App in korrektem Deutsch
+**Depends on**: Phase 11
+**Requirements**: AMP-01, TXT-01
+**Success Criteria** (what must be TRUE):
+  1. Jeder Artikel in der Produktliste und im Kassen-Grid trägt einen farbigen Indikator — grün für ausreichend, gelb für niedrig, rot für kritisch
+  2. Kein Button, Label oder Hinweistext in der App enthält mehr ae/oe/ue/ss statt ä/ö/ü/ß
+**Plans**: TBD
+
+### Phase 13: GitHub-Dokumentation
+**Goal**: Das Projekt ist auf GitHub für andere Weltläden auffindbar, verständlich und nutzbar
+**Depends on**: Phase 12
+**Requirements**: GH-01, GH-02
+**Success Criteria** (what must be TRUE):
+  1. Das GitHub-Repository enthält eine README.md mit Projektbeschreibung und nachvollziehbarer Setup-Anleitung — ohne Screenshots
+  2. Eine Open-Source-Lizenz ist im Repository hinterlegt und die README enthält einen Kontakthinweis für Anfragen anderer Weltläden
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 7 → 8 → 9
+Phases execute in numeric order: 10 → 11 → 12 → 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -93,6 +145,10 @@ Phases execute in numeric order: 7 → 8 → 9
 | 4. Rechnungsimport | v1.0 | 2/2 | Complete | 2026-03-23 |
 | 5. Tech Debt Fixes | v1.1 | 2/2 | Complete | 2026-03-23 |
 | 6. GitHub & Deployment | v1.1 | 3/3 | Complete | 2026-03-24 |
-| 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete   | 2026-03-24 |
-| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 1/2 | In Progress|  |
-| 9. Storno & Rückgabe | v2.0 | 0/1 | Not started | - |
+| 7. Server-Sync & Multi-Laden | v2.0 | 3/3 | Complete | 2026-03-24 |
+| 8. Bestandsprüfung & Verkaufshistorie | v2.0 | 2/2 | Complete | 2026-03-24 |
+| 9. Storno & Rückgabe | v2.0 | 1/1 | Complete | 2026-03-24 |
+| 10. UI-Redesign | v3.0 | 0/? | Not started | - |
+| 11. Produktbilder & PDF-Parsing | v3.0 | 0/? | Not started | - |
+| 12. Bestandsampel & Umlaute | v3.0 | 0/? | Not started | - |
+| 13. GitHub-Dokumentation | v3.0 | 0/? | Not started | - |
