@@ -69,11 +69,22 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Keine aktiven Requirements — nächster Milestone noch nicht definiert)
+## Current Milestone: v7.0 Multi-Shop & UX
+
+**Goal:** Vollständige Multi-Shop-Verwaltung mit eigenem Sortiment pro Shop, plus responsive UX für alle Geräte (Browser, iPad, iPhone) mit flexiblem Warenkorb-Layout.
+
+**Target features:**
+- Master-Shop (St. Secundus) kann andere Shops anlegen, PIN vergeben, deaktivieren
+- Jeder Shop hat eigenes Sortiment (Produkte, Preise, Bestand) — kein geteiltes Sortiment
+- Jeder Shop verwaltet seine Produkte selbst nach PIN-Login
+- Berichte bleiben pro Shop (keine übergreifende Ansicht)
+- Responsive Layout für Browser, iPad, iPhone
+- Warenkorb als fixe Spalte (breite Screens) oder Swipe-In (schmale Screens)
+- Kategorien-Tab-Navigation verbessern
 
 ### Out of Scope
 
-- Native App (App Store) — PWA reicht (Apple Developer Account vorhanden, erst ab v7.0)
+- Native App (App Store) — PWA reicht, kein Bedarf aktuell
 - Anbindung an echte Zahlungsterminals (EC-Karte etc.) — reine Barzahlung
 - Automatische Nachbestellung beim Süd-Nord-Kontor — manuelle Bestellung reicht
 - Kundenverwaltung / Kundenkonten — Laufkundschaft vor der Kirche
@@ -140,4 +151,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-24 after v6.0 milestone shipped*
+*Last updated: 2026-03-25 after v7.0 milestone started*

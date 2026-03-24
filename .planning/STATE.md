@@ -1,30 +1,34 @@
 ---
 gsd_state_version: 1.0
-milestone: v6.0
-milestone_name: Pure Online
-status: unknown
-stopped_at: Completed 23-02-PLAN.md
-last_updated: "2026-03-24T23:03:42.478Z"
+milestone: v7.0
+milestone_name: Multi-Shop & UX
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-25T00:00:00.000Z"
 progress:
-  total_phases: 17
-  completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-24)
+See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 23 — Dexie-Entfernung & Online-Only
+**Current focus:** Milestone v7.0 — Multi-Shop & UX (defining requirements)
 
 ## Current Position
 
-Phase: 23
-Plan: Not started
+Phase: — (not started, defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-25 — Milestone v7.0 started
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -34,23 +38,7 @@ Plan: Not started
 - Average duration: —
 - Total execution time: 0 hours
 
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
-
 *Updated after each plan completion*
-| Phase 22-postgresql-migration P01 | 4 | 2 tasks | 9 files |
-| Phase 22-postgresql-migration P02 | 5 | 2 tasks | 7 files |
-| Phase 22-postgresql-migration P03 | 8 | 2 tasks | 3 files |
-| Phase 23-dexie-entfernung-online-only P01 | 2 | 2 tasks | 8 files |
-| Phase 23-dexie-entfernung-online-only P02 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -59,20 +47,11 @@ Plan: Not started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [v6.0 Roadmap]: PostgreSQL zuerst (Phase 22) — Server bleibt funktional, Client unverändert; Dexie-Entfernung danach (Phase 23)
-- [v6.0 Roadmap]: 2 Phasen bei coarse-Granularität — klare Boundary: Server heile, dann Client heile
-- [v5.0]: TanStack Query als primäre Datenschicht, Dexie nur noch Offline-Cache nach Phase 21
-- [v5.0]: WebSocket-Token via Query-Param (WebSocket-Upgrade-Requests erlauben keine custom Header)
-- [Phase 21]: flushOutbox() hat optionalen QueryClient-Parameter — engine.ts bleibt React-frei
-- [Phase 22-postgresql-migration]: pg Pool (max 20) + DATABASE_URL statt SQLite-Datei; sqlite-data Volume beibehalten für Plan 03 Datenmigration; better-sqlite3 noch nicht entfernt
-- [Phase 22-postgresql-migration]: db.execute(sql) für komplexe JSON-Abfragen statt Drizzle Query Builder — PostgreSQL jsonb-Syntax hat kein Drizzle-Äquivalent
-- [Phase 22-02]: await db.execute(sql).rows statt db.all() — node-postgres kennt kein .all()
-- [Phase 22-02]: const [row] = await db.select() mit Array-Destructuring statt .get() — idiomatisch fuer PG-Drizzle
-- [Phase 22-postgresql-migration]: Migrationsskript in server/scripts/ (standalone, kein Build-Teil) mit dynamischem better-sqlite3 Import und ON CONFLICT DO NOTHING Idempotenz
-- [Phase 23-dexie-entfernung-online-only]: Dexie-Typen direkt in db/index.ts definiert statt re-exportiert — schema.ts nicht mehr nötig
-- [Phase 23-dexie-entfernung-online-only]: useCart updateQuantity ohne Stock-Check — Validation bleibt bei addItem via checkStockBeforeAdd
-- [Phase 23-dexie-entfernung-online-only]: async-Signaturen in Auth-Funktionen beibehalten trotz synchronem localStorage — keine Breaking Changes fuer Aufrufer
-- [Phase 23-dexie-entfernung-online-only]: ImportScreen: Produkt-Matching und Bestandsbuchung via API statt Dexie (db entfernt nach Plan 01)
+- [v7.0]: Jeder Shop hat eigenes Sortiment — kein geteiltes Sortiment
+- [v7.0]: Master-Shop (St. Secundus) verwaltet Shops (anlegen, PIN, deaktivieren), aber nicht deren Produkte
+- [v7.0]: Jeder Shop verwaltet seine Produkte selbst nach PIN-Login
+- [v7.0]: Berichte bleiben pro Shop — keine übergreifende Ansicht
+- [v7.0]: Warenkorb flexibel: fixe Spalte (breit) oder Swipe-In (schmal)
 
 ### Pending Todos
 
@@ -80,11 +59,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- PG-04 (SQLite → PostgreSQL Migrationsskript): Datentransfer muss für Produktion sicher sein — bestehende Verkaufshistorie und Bestand darf nicht verloren gehen
-- Nach Dexie-Entfernung (Phase 23): idb-keyval wird aktuell für Session-Storage verwendet — muss durch alternatives Mechanism ersetzt werden (localStorage oder In-Memory)
+- Shop-Isolierung: Aktuell teilen sich alle Shops dieselben Produkte (shopId-Filter). Muss auf echtes Multi-Sortiment umgebaut werden — jeder Shop hat eigene Produkte in der DB.
+- Master-Rolle: Aktuell gibt es keine Rollenunterscheidung zwischen Shops. St. Secundus braucht ein Master-Flag oder ähnliches.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:50:47.709Z
-Stopped at: Completed 23-02-PLAN.md
+Last session: 2026-03-25T00:00:00.000Z
+Stopped at: Milestone v7.0 defining requirements
 Resume file: None
