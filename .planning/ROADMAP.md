@@ -237,4 +237,4 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete   | 2026-03-24 |
+| 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete    | 2026-03-24 |
