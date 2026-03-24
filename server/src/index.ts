@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import fastifySchedule from '@fastify/schedule';
 import { healthRoutes } from './routes/health.js';
 import { syncRoutes } from './routes/sync.js';
@@ -11,11 +12,51 @@ import { reportScheduler } from './scheduler/reportScheduler.js';
 import { authRoutes } from './routes/auth.js';
 import { categoryRoutes } from './routes/categories.js';
 import { ensureShopSeeded } from './db/seed.js';
+import { validateSession } from './lib/sessions.js';
 
 const fastify = Fastify({ logger: true });
 
+const corsOrigin = process.env.CORS_ORIGIN;
+if (!corsOrigin) {
+  throw new Error('CORS_ORIGIN env var ist nicht gesetzt. Setze CORS_ORIGIN=https://fairstand.godsapp.de (oder mehrere Origins kommasepariert).');
+}
+const allowedOrigins = corsOrigin.split(',').map(o => o.trim());
 await fastify.register(cors, {
-  origin: process.env.CORS_ORIGIN ?? '*',
+  origin: (origin, callback) => {
+    // Erlaubt Requests ohne Origin-Header (z.B. direkte Server-zu-Server-Calls, curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} ist nicht erlaubt`), false);
+    }
+  },
+});
+
+await fastify.register(rateLimit, {
+  global: false, // Nur auf explizit markierten Routen aktiv
+});
+
+// Auth-Middleware: alle /api/* Routen außer /api/auth/* und /api/health
+fastify.addHook('preHandler', async (request, reply) => {
+  const url = request.url;
+  // Öffentliche Endpoints: Auth (Login) + Health
+  if (url.startsWith('/api/auth/') || url.startsWith('/api/health')) {
+    return;
+  }
+
+  const authHeader = request.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return reply.status(401).send({ error: 'Authentifizierung erforderlich' });
+  }
+
+  const token = authHeader.slice(7); // "Bearer " entfernen
+  const session = validateSession(token);
+  if (!session) {
+    return reply.status(401).send({ error: 'Ungültiger oder abgelaufener Token' });
+  }
+
+  // Session an Request anhängen für shopId-Validierung in Routen
+  (request as any).session = session;
 });
 
 await fastify.register(healthRoutes, { prefix: '/api' });
