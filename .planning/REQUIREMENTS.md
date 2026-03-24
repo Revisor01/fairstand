@@ -28,7 +28,7 @@
 ### Datenverwaltung
 
 - [x] **VRW-01**: Zentrales Kategorie-Management — Kategorien als eigene Entität verwalten, nicht nur als Freitext pro Produkt
-- [ ] **VRW-02**: Produktbild-Upload verbessern — einfacherer Workflow für Bildzuweisung
+- [x] **VRW-02**: Produktbild-Upload verbessern — einfacherer Workflow für Bildzuweisung
 
 ### Validierung
 
@@ -36,7 +36,7 @@
 
 ### Sync
 
-- [ ] **SYN-01**: Sync-Robustheit verbessern — Fehlerbehandlung und Retry-Logik optimieren
+- [x] **SYN-01**: Sync-Robustheit verbessern — Fehlerbehandlung und Retry-Logik optimieren
 
 ## Out of Scope
 
@@ -61,8 +61,8 @@
 | UIX-01 | Phase 16 | Complete |
 | BST-01 | Phase 16 | Complete |
 | VRW-01 | Phase 17 | Complete |
-| VRW-02 | Phase 17 | Pending |
-| SYN-01 | Phase 17 | Pending |
+| VRW-02 | Phase 17 | Complete |
+| SYN-01 | Phase 17 | Complete |
 
 **Coverage:**
 - v4.0 requirements: 12 total

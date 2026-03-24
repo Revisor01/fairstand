@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Datenqualität & Stabilität
 status: unknown
-stopped_at: Completed 17-datenverwaltung-sync-01-PLAN.md
-last_updated: "2026-03-24T15:11:37.515Z"
+stopped_at: Completed 17-datenverwaltung-sync-02-PLAN.md
+last_updated: "2026-03-24T15:15:51.068Z"
 progress:
   total_phases: 11
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -75,6 +75,7 @@ Plan: 2 of 2
 | Phase 15-datenintegrit-t P02 | 2 | 3 tasks | 4 files |
 | Phase 16-ui-stabilit-t-bestand P01 | 5 | 2 tasks | 4 files |
 | Phase 17-datenverwaltung-sync P01 | 3 | 2 tasks | 9 files |
+| Phase 17-datenverwaltung-sync P02 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -157,6 +158,8 @@ Recent decisions affecting current work:
 - [Phase 17-datenverwaltung-sync]: Dexie v8 ohne .upgrade()-Handler: neue categories-Tabelle braucht kein Upgrade
 - [Phase 17-datenverwaltung-sync]: DELETE /api/categories/:id gibt 409 bei Produkt-Nutzung — korrekter HTTP-Konflikt-Statuscode
 - [Phase 17-datenverwaltung-sync]: PATCH /categories/:id Bulk-Update: alle Produkte mit altem Kategorienamen werden in gleicher Route aktualisiert
+- [Phase 17-datenverwaltung-sync]: URL.createObjectURL fuer Bild-Preview: sofortige Vorschau ohne Upload, pendingImageFile erst beim Speichern hochgeladen
+- [Phase 17-datenverwaltung-sync]: Sync-Badge statt Toast im POS-Header: persistentes Feedback solange Outbox Eintraege hat, kein Timeout noetig
 
 ### Pending Todos
 
@@ -168,6 +171,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T15:11:37.513Z
-Stopped at: Completed 17-datenverwaltung-sync-01-PLAN.md
+Last session: 2026-03-24T15:15:51.065Z
+Stopped at: Completed 17-datenverwaltung-sync-02-PLAN.md
 Resume file: None

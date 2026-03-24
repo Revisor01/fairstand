@@ -54,7 +54,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 14: Online-First Architektur** - LWW durch Server-Replace ersetzen, Admin offline deaktivieren, Offline nur für Verkauf/Storno/Rückgabe (completed 2026-03-24)
 - [x] **Phase 15: Datenintegrität** - Marge/EK korrekt, Storno aus Statistiken raus, Warenkorb überlebt Reload, ungültige Artikel erkannt (completed 2026-03-24)
 - [x] **Phase 16: UI-Stabilität & Bestand** - Scroll/Tap-Bug behoben, Bestandswarnungen klarer (completed 2026-03-24)
-- [ ] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster
+- [x] **Phase 17: Datenverwaltung & Sync** - Zentrales Kategorie-Management, Bildupload-Workflow verbessert, Sync robuster (completed 2026-03-24)
 
 ## Phase Details
 
@@ -156,7 +156,7 @@ Plans:
 
 Plans:
 - [x] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
-- [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
+- [x] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
 
 ### Phase 14: Online-First Architektur
 **Goal**: Server ist die einzige Wahrheit für Produktdaten — LWW-Sync durch komplettes Server-Replace ersetzen, Admin-Features offline deaktivieren, Offline-Modus nur für Verkauf/Storno/Rückgabe
@@ -211,7 +211,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
+- [x] 17-01-PLAN.md — Kategorie-Entität: Server-Schema + Drizzle-Migration + CRUD-Routen + Dexie v8 + downloadCategories + Dropdown in ProductForm
 - [ ] 17-02-PLAN.md — Bildupload in ProductForm + useSyncStatus-Hook + 30s-Retry + Sync-Badge in POS
 
 ## Progress
@@ -237,4 +237,4 @@ Phases execute in numeric order: 14 → 15 → 16 → 17
 | 14. Online-First Architektur | v4.0 | 1/1 | Complete    | 2026-03-24 |
 | 15. Datenintegrität | v4.0 | 2/2 | Complete    | 2026-03-24 |
 | 16. UI-Stabilität & Bestand | v4.0 | 1/1 | Complete    | 2026-03-24 |
-| 17. Datenverwaltung & Sync | v4.0 | 1/2 | In Progress|  |
+| 17. Datenverwaltung & Sync | v4.0 | 2/2 | Complete   | 2026-03-24 |
