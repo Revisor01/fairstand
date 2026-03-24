@@ -6,8 +6,9 @@ import { formatEur } from '../../pos/utils.js';
 import { downloadProducts } from '../../../sync/engine.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
+import { ProductStats } from './ProductStats.js';
 
-type ProductListView = 'list' | 'form' | 'stock';
+type ProductListView = 'list' | 'form' | 'stock' | 'stats';
 
 export function ProductList() {
   const [view, setView] = useState<ProductListView>('list');
@@ -89,6 +90,11 @@ export function ProductList() {
     setView('stock');
   }
 
+  function openStats(product: Product) {
+    setSelectedProduct(product);
+    setView('stats');
+  }
+
   function handleClose() {
     setSelectedProduct(undefined);
     setView('list');
@@ -100,6 +106,10 @@ export function ProductList() {
 
   if (view === 'stock' && selectedProduct) {
     return <StockAdjustModal product={selectedProduct} onClose={handleClose} />;
+  }
+
+  if (view === 'stats' && selectedProduct) {
+    return <ProductStats product={selectedProduct} onClose={handleClose} />;
   }
 
   if (!products) {
@@ -203,6 +213,12 @@ export function ProductList() {
                     className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
                   >
                     Bearbeiten
+                  </button>
+                  <button
+                    onPointerDown={() => openStats(product)}
+                    className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                  >
+                    Statistik
                   </button>
                   <button
                     onPointerDown={() => openStockAdjust(product)}

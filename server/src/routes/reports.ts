@@ -132,4 +132,44 @@ export async function reportRoutes(fastify: FastifyInstance) {
 
     return reply.send({ year: y, months: mergedMonths });
   });
+
+  // GET /reports/product/:id/stats?shopId=xxx&months=3
+  fastify.get('/reports/product/:id/stats', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { shopId, months } = request.query as { shopId: string; months?: string };
+    if (!shopId) return reply.status(400).send({ error: 'shopId required' });
+
+    const monthsBack = Math.min(Math.max(Number(months ?? '3'), 1), 24);
+    const since = new Date();
+    since.setMonth(since.getMonth() - monthsBack);
+    const sinceTs = since.getTime();
+
+    const result = db.all(sql`
+      SELECT
+        COUNT(DISTINCT sales.id) as sale_count,
+        COALESCE(SUM(CAST(json_extract(item.value, '$.quantity') AS INTEGER)), 0) as total_qty,
+        COALESCE(SUM(
+          CAST(json_extract(item.value, '$.quantity') AS INTEGER) *
+          CAST(json_extract(item.value, '$.salePrice') AS INTEGER)
+        ), 0) as revenue_cents,
+        MIN(sales.created_at) as first_sale_at,
+        MAX(sales.created_at) as last_sale_at
+      FROM sales, json_each(sales.items) as item
+      WHERE sales.shop_id = ${shopId}
+        AND json_extract(item.value, '$.productId') = ${id}
+        AND sales.created_at >= ${sinceTs}
+    `);
+
+    const row = (result[0] as Record<string, unknown>) ?? {};
+    return reply.send({
+      productId: id,
+      period_months: monthsBack,
+      since_ts: sinceTs,
+      sale_count: Number(row.sale_count ?? 0),
+      total_qty: Number(row.total_qty ?? 0),
+      revenue_cents: Number(row.revenue_cents ?? 0),
+      first_sale_at: row.first_sale_at ? Number(row.first_sale_at) : null,
+      last_sale_at: row.last_sale_at ? Number(row.last_sale_at) : null,
+    });
+  });
 }
