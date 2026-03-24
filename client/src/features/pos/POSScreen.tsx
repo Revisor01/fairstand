@@ -61,7 +61,8 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
           purchasePrice: 0,
           salePrice: saleItem.salePrice, // Snapshot-Preis beibehalten
           vatRate: 0,
-          stock: 0,
+          // stock auf saleItem.quantity setzen damit der neue Stock-Check beim Re-Befüllen nicht blockiert
+          stock: saleItem.quantity,
           active: true,
           minStock: 0,
           updatedAt: 0,

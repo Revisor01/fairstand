@@ -1,6 +1,23 @@
 import { useReducer } from 'react';
 import type { CartItem, Product } from '../../db/index.js';
 
+// --- AddItemResult ---
+
+export type AddItemResult = { added: true } | { added: false; reason: 'out_of_stock' };
+
+/**
+ * Prüft ob ein Produkt in den Warenkorb gelegt werden kann.
+ * Exportiert für Unit-Tests.
+ */
+export function checkStockBeforeAdd(product: Product, cartItems: CartItem[]): AddItemResult {
+  const existing = cartItems.find(i => i.productId === product.id);
+  const inCart = existing ? existing.quantity : 0;
+  if (product.stock <= 0 || inCart >= product.stock) {
+    return { added: false, reason: 'out_of_stock' };
+  }
+  return { added: true };
+}
+
 // --- Actions ---
 
 type CartAction =
@@ -72,8 +89,13 @@ export function useCart() {
 
   const total = state.items.reduce((sum, i) => sum + i.salePrice * i.quantity, 0);
 
-  function addItem(product: Product) {
+  function addItem(product: Product): AddItemResult {
+    const result = checkStockBeforeAdd(product, state.items);
+    if (!result.added) {
+      return result;
+    }
     dispatch({ type: 'ADD_ITEM', product });
+    return { added: true };
   }
 
   function removeItem(productId: string) {
