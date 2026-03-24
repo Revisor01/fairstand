@@ -18,8 +18,8 @@
 ### Offline-Fallback
 
 - [x] **OFFL-01**: POS funktioniert vollständig offline mit TanStack Query Offline-Cache + Dexie-Fallback
-- [ ] **OFFL-02**: Verkäufe/Entnahmen werden offline in die Outbox geschrieben und bei Reconnect automatisch geflusht
-- [ ] **OFFL-03**: Online/Offline-Wechsel wird nahtlos erkannt — Datenquelle schaltet automatisch um, ohne Benutzerinteraktion
+- [x] **OFFL-02**: Verkäufe/Entnahmen werden offline in die Outbox geschrieben und bei Reconnect automatisch geflusht
+- [x] **OFFL-03**: Online/Offline-Wechsel wird nahtlos erkannt — Datenquelle schaltet automatisch um, ohne Benutzerinteraktion
 
 ### Security & Hardening
 
@@ -66,8 +66,8 @@ Deferred — nicht in v5.0 Scope.
 | LIVE-06 | Phase 19 | Complete |
 | LIVE-07 | Phase 20 | Complete |
 | OFFL-01 | Phase 21 | Complete |
-| OFFL-02 | Phase 21 | Pending |
-| OFFL-03 | Phase 21 | Pending |
+| OFFL-02 | Phase 21 | Complete |
+| OFFL-03 | Phase 21 | Complete |
 | SEC-01 | Phase 18 | Complete |
 | SEC-02 | Phase 18 | Complete |
 | SEC-03 | Phase 18 | Complete |

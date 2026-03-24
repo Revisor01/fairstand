@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 21-01-PLAN.md
-last_updated: "2026-03-24T21:04:14.180Z"
+stopped_at: Completed 21-02-PLAN.md
+last_updated: "2026-03-24T21:05:07.880Z"
 progress:
   total_phases: 15
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -86,6 +86,7 @@ Plan: 2 of 2
 | Phase 20-websocket-live-updates-cleanup P01 | 15 | 2 tasks | 6 files |
 | Phase 20 P03 | 155 | 2 tasks | 5 files |
 | Phase 21 P01 | 5 | 2 tasks | 3 files |
+| Phase 21-offline-fallback-dexie-als-cache P02 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -194,6 +195,8 @@ Recent decisions affecting current work:
 - [Phase 20]: engine.ts auf reines flushOutbox() reduziert — Download-Sync vollständig via TQ + WebSocket-Invalidation
 - [Phase 20]: getShopId() in try/catch im onmessage-Handler — wirft wenn Shop nicht gesetzt, statt globalem Fehler
 - [Phase 21]: try/catch um gesamte queryFn statt separatem Fehler-Handler: deckt Netzwerkfehler und HTTP-Fehler ab, spezifischer Throw wenn Dexie-Cache leer
+- [Phase 21-offline-fallback-dexie-als-cache]: QueryClient als optionaler Parameter in flushOutbox: engine.ts bleibt React-frei, Rückwärtskompatibilität ohne Breaking Change
+- [Phase 21-offline-fallback-dexie-als-cache]: Offline-Indicator unter Shop-Namen: persistentes informatives Badge statt Toast, kein Error-State, verschwindet automatisch bei Reconnect
 
 ### Pending Todos
 
@@ -206,6 +209,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T21:04:14.178Z
-Stopped at: Completed 21-01-PLAN.md
+Last session: 2026-03-24T21:05:07.877Z
+Stopped at: Completed 21-02-PLAN.md
 Resume file: None
