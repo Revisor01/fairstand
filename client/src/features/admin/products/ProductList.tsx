@@ -123,36 +123,36 @@ export function ProductList() {
   return (
     <div className="flex flex-col gap-4">
       {/* Header mit Buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h2 className="text-lg font-semibold text-sky-800">Produkte</h2>
         <div className="flex items-center gap-2">
           <button
             onPointerDown={handleDownloadSync}
             disabled={syncing}
-            className="bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded-lg h-11 text-sm transition-colors disabled:opacity-50"
+            className="bg-slate-100 active:bg-slate-300 text-slate-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-sm transition-colors disabled:opacity-50"
           >
-            {syncing ? 'Laden...' : 'Daten laden'}
+            {syncing ? '...' : '↓ Sync'}
           </button>
           <button
             onPointerDown={openNewForm}
-            className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-semibold px-4 py-2 rounded-lg h-11 text-sm transition-colors"
+            className="bg-sky-500 active:bg-sky-700 text-white font-semibold px-3 py-2 rounded-lg min-h-[44px] text-sm transition-colors"
           >
-            + Neues Produkt
+            + Neu
           </button>
         </div>
       </div>
 
       {/* Kategorie-Filter */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
         {categories.map(cat => (
           <button
             key={cat}
             onPointerDown={() => setActiveCategory(cat)}
             className={`
-              px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap min-h-[44px] transition-colors
+              px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap min-h-[36px] transition-colors
               ${activeCategory === cat
                 ? 'bg-sky-500 text-white'
-                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+                : 'bg-sky-100 text-sky-700 active:bg-sky-200'
               }
             `}
           >
@@ -180,7 +180,7 @@ export function ProductList() {
             return (
               <div
                 key={product.id}
-                className={`bg-white rounded-xl shadow-sm p-4 flex items-center gap-3 ${
+                className={`bg-white rounded-xl shadow-sm p-3 flex items-center gap-3 ${
                   !product.active ? 'opacity-60' : ''
                 }`}
               >
@@ -192,17 +192,17 @@ export function ProductList() {
                 {/* Produktinfo */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-slate-800 truncate">{product.name}</span>
+                    <span className="font-semibold text-slate-800 text-sm leading-snug truncate">{product.name}</span>
                     {!product.active && (
                       <span className="text-xs bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">
                         Inaktiv
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-slate-500 mt-0.5">
-                    Art.-Nr. {product.articleNumber} · {product.category}
+                  <div className="text-xs text-slate-500 mt-0.5">
+                    {product.articleNumber} · {product.category}
                   </div>
-                  <div className="flex items-center gap-3 mt-1 text-sm">
+                  <div className="flex items-center gap-2 mt-0.5 text-xs">
                     <span className="text-sky-700 font-semibold">{formatEur(product.salePrice)}</span>
                     <span className="flex items-center gap-1">
                       <span className={`text-[10px] leading-none ${
@@ -213,41 +213,45 @@ export function ProductList() {
                             : 'text-emerald-500'
                       }`}>●</span>
                       <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-slate-600'}`}>
-                        Bestand: {product.stock}
+                        {product.stock}
                       </span>
                     </span>
                   </div>
                 </div>
 
                 {/* Aktionsbuttons */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onPointerDown={() => openEditForm(product)}
-                    className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                    title="Bearbeiten"
+                    className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-lg transition-colors"
                   >
-                    Bearbeiten
+                    ✏️
                   </button>
                   <button
                     onPointerDown={() => openStats(product)}
-                    className="bg-sky-100 hover:bg-sky-200 active:bg-sky-300 text-sky-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                    title="Statistik"
+                    className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-lg transition-colors"
                   >
-                    Statistik
+                    📊
                   </button>
                   <button
                     onPointerDown={() => openStockAdjust(product)}
-                    className="bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-700 font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors"
+                    title="Bestand"
+                    className="bg-amber-100 active:bg-amber-300 text-amber-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-lg transition-colors"
                   >
-                    Bestand
+                    📦
                   </button>
                   <button
                     onPointerDown={() => handleToggleActive(product)}
-                    className={`font-medium px-3 py-2 rounded-lg h-11 text-sm transition-colors ${
+                    title={product.active ? 'Deaktivieren' : 'Aktivieren'}
+                    className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-lg transition-colors ${
                       product.active
-                        ? 'bg-rose-100 hover:bg-rose-200 active:bg-rose-300 text-rose-700'
-                        : 'bg-green-100 hover:bg-green-200 active:bg-green-300 text-green-700'
+                        ? 'bg-rose-100 active:bg-rose-300 text-rose-700'
+                        : 'bg-green-100 active:bg-green-300 text-green-700'
                     }`}
                   >
-                    {product.active ? 'Deaktivieren' : 'Aktivieren'}
+                    {product.active ? '⏸️' : '▶️'}
                   </button>
                 </div>
               </div>

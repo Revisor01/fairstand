@@ -59,7 +59,7 @@ export function SettingsForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-lg">
+    <div className="flex flex-col gap-6">
       <h2 className="text-lg font-semibold text-sky-800">Einstellungen</h2>
 
       {/* E-Mail-Adresse */}
