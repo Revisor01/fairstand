@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Settings, Lock, RefreshCw } from 'lucide-react';
+import { ShoppingCart, Settings, Lock } from 'lucide-react';
 import type { Sale } from '../../db/index.js';
 import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
@@ -9,7 +9,6 @@ import { LowStockBanner } from './LowStockBanner.js';
 import { useCart } from './useCart.js';
 import { completeSale, completeWithdrawal } from './useSaleComplete.js';
 import { getStoredSession } from '../auth/serverAuth.js';
-import { useSyncStatus, resetFailedEntries } from '../../sync/useSyncStatus.js';
 
 type POSView = 'pos' | 'payment' | 'summary';
 
@@ -21,7 +20,6 @@ interface POSScreenProps {
 
 export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScreenProps) {
   const cart = useCart();
-  const syncStatus = useSyncStatus();
   const [view, setView] = useState<POSView>('pos');
   const [lastSale, setLastSale] = useState<Sale | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -154,30 +152,6 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Sync-Status-Badge */}
-          {syncStatus !== 'synced' && (
-            <button
-              onPointerDown={() => {
-                if (syncStatus === 'failed') {
-                  void resetFailedEntries();
-                }
-              }}
-              title={
-                syncStatus === 'failed'
-                  ? 'Sync fehlgeschlagen — antippen zum Wiederholen'
-                  : 'Synchronisierung läuft...'
-              }
-              className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-medium transition-colors min-h-[44px]"
-            >
-              <RefreshCw size={14} className={`${
-                syncStatus === 'failed' ? 'text-rose-300' : 'text-amber-300 animate-spin'
-              }`} />
-              <span className={syncStatus === 'failed' ? 'text-rose-200' : 'text-sky-100'}>
-                {syncStatus === 'failed' ? 'Fehler' : 'Sync'}
-              </span>
-            </button>
-          )}
-
           {/* Warenkorb-Button mit Badge */}
           <button
             onPointerDown={() => setIsCartOpen(true)}
