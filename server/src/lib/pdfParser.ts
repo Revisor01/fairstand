@@ -242,14 +242,14 @@ function parseInvoiceRowFromItems(
 }
 
 /**
- * Parsed alle Seiten einer Sued-Nord-Kontor-Rechnung.
- * Liefert ein Array mit allen erkannten Rechnungspositionen.
+ * Interne Parsing-Implementierung ohne Timeout-Schutz.
+ * Wird von parseSuedNordKontorPdf (dem oeffentlichen Export) mit Timeout gewrappt.
  *
  * Layout-Erkenntnis: Die Positionsnummer ("1.", "2.", ...) steht in einer eigenen
  * Zeile, direkt gefolgt von der Datenzeile (Menge, Artikelnummer, Bezeichnung, etc.).
  * Beide Rechnungsformate (mit und ohne Rabatt-Spalte) folgen diesem Muster.
  */
-export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
+async function _parsePdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   const uint8Array = new Uint8Array(buffer);
   const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
   const pdf = await loadingTask.promise;
@@ -318,4 +318,22 @@ export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvo
   }
 
   return allRows;
+}
+
+/**
+ * Parsed eine Sued-Nord-Kontor-Rechnung mit 30s Timeout-Schutz.
+ * Wirft einen Fehler wenn der Parse-Vorgang laenger als PDF_PARSE_TIMEOUT_MS dauert —
+ * schuetzt den Server vor indefinitem Blockieren durch beschaedigte oder adversarielle PDFs.
+ */
+export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
+  const PDF_PARSE_TIMEOUT_MS = 30_000;
+
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(
+      () => reject(new Error(`PDF-Parsing Timeout: Verarbeitung dauerte länger als ${PDF_PARSE_TIMEOUT_MS / 1000}s`)),
+      PDF_PARSE_TIMEOUT_MS,
+    )
+  );
+
+  return Promise.race([_parsePdf(buffer), timeoutPromise]);
 }
