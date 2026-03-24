@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import type { CartItem, Product } from '../../db/index.js';
-import type { AddItemResult } from './useCart.js';
 
 // We test the addItem logic in isolation.
 // Since useCart is a React hook (uses useReducer), we test the logic

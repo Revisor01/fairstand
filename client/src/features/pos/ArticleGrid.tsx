@@ -79,19 +79,40 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
             {filteredProducts.map((product: Product) => (
               <button
                 key={product.id}
-                onPointerDown={() => onAddToCart(product)}
-                className="
+                onPointerDown={() => { if (product.stock > 0) onAddToCart(product); }}
+                disabled={product.stock <= 0}
+                className={`
                   bg-white shadow-sm rounded-xl min-h-[80px] p-3
                   flex flex-col justify-between items-start
-                  active:bg-sky-50 transition-colors text-left
-                "
+                  transition-colors text-left
+                  ${product.stock <= 0
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'active:bg-sky-50'
+                  }
+                `}
               >
                 <span className="text-slate-800 font-medium text-sm leading-tight line-clamp-3">
                   {product.name}
                 </span>
-                <span className="text-sky-700 font-semibold text-sm mt-1">
-                  {formatEur(product.salePrice)}
-                </span>
+                <div className="flex items-baseline gap-2 mt-1 w-full justify-between">
+                  <span className="text-sky-700 font-semibold text-sm">
+                    {formatEur(product.salePrice)}
+                  </span>
+                  <span className={`text-xs font-medium ${
+                    product.stock <= 0
+                      ? 'text-rose-500'
+                      : product.minStock > 0 && product.stock <= product.minStock
+                        ? 'text-amber-600'
+                        : 'text-slate-400'
+                  }`}>
+                    {product.stock <= 0
+                      ? 'Ausverkauft'
+                      : product.minStock > 0 && product.stock <= product.minStock
+                        ? `Noch ${product.stock}`
+                        : `${product.stock} Stk.`
+                    }
+                  </span>
+                </div>
               </button>
             ))}
           </div>
