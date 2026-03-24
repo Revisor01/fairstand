@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v5.0
 milestone_name: Online-First Live Architecture
 status: unknown
-stopped_at: Completed 19-tanstack-query-foundation-02-PLAN.md
-last_updated: "2026-03-24T20:37:57.227Z"
+stopped_at: Completed 20-websocket-live-updates-cleanup-02-PLAN.md
+last_updated: "2026-03-24T20:49:46.703Z"
 progress:
   total_phases: 15
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 9
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird — auch ohne Internetverbindung.
-**Current focus:** Phase 19 — tanstack-query-foundation
+**Current focus:** Phase 20 — websocket-live-updates-cleanup
 
 ## Current Position
 
-Phase: 20
-Plan: Not started
+Phase: 20 (websocket-live-updates-cleanup) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Plan: Not started
 | Phase 19 P01 | 128 | 2 tasks | 4 files |
 | Phase 19 P03 | 480 | 1 tasks | 1 files |
 | Phase 19-tanstack-query-foundation P02 | 3 | 2 tasks | 4 files |
+| Phase 20 P02 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -181,6 +182,9 @@ Recent decisions affecting current work:
 - [Phase 19]: useQuery direkt in ArticleGrid statt useProducts()-Hook: networkMode offlineFirst ist POS-spezifisch und muss am Query-Call gesetzt werden
 - [Phase 19]: ProductForm retains getShopId()/getAuthHeaders() for image upload — file uploads use direct fetch not TQ
 - [Phase 19]: useQueryClient() explicit invalidation after image upload to reload imageUrl separate from updateProduct mutation
+- [Phase 20]: navigator.onLine-Branch in completeSale/completeWithdrawal: Online POST /api/sync direkt, Fehler/Offline → Outbox
+- [Phase 20]: db.outbox nicht mehr Teil der IDB-Transaktion — kein Timeout-Risiko bei async fetch()
+- [Phase 20]: Dexie Write-Through fire-and-forget (.catch(() => {})) in useProducts/useCategories — TQ-Query-Fehler werden nicht maskiert
 
 ### Pending Todos
 
@@ -193,6 +197,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T20:35:09.444Z
-Stopped at: Completed 19-tanstack-query-foundation-02-PLAN.md
+Last session: 2026-03-24T20:49:46.701Z
+Stopped at: Completed 20-websocket-live-updates-cleanup-02-PLAN.md
 Resume file: None
