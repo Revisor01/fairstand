@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import type { Sale } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
@@ -12,16 +13,7 @@ export function SaleSummary({ sale, onNext, onCorrect }: SaleSummaryProps) {
     <div className="flex flex-col items-center justify-center h-full px-6 py-8 bg-sky-50">
       {/* Erfolgs-Icon */}
       <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-6">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-emerald-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
+        <Check size={48} className="text-emerald-500" strokeWidth={2.5} />
       </div>
 
       <h2 className="text-2xl font-bold text-slate-800 mb-1">Verkauf abgeschlossen</h2>

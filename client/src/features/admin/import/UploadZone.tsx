@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { FileUp, WifiOff } from 'lucide-react';
 
 interface UploadZoneProps {
   onFileSelected: (file: File) => void;
@@ -11,9 +12,10 @@ export function UploadZone({ onFileSelected, uploading }: UploadZoneProps) {
 
   if (!navigator.onLine) {
     return (
-      <div className="bg-slate-50 rounded-xl p-8 text-center text-slate-500 mt-4">
+      <div className="bg-slate-50 rounded-xl p-8 text-center text-slate-500 mt-4 flex flex-col items-center gap-3">
+        <WifiOff size={32} className="text-slate-400" />
         <p className="text-lg font-medium">Import ist nur mit Internetverbindung moeglich.</p>
-        <p className="text-sm mt-1">Bitte stelle eine Internetverbindung her und versuche es erneut.</p>
+        <p className="text-sm">Bitte stelle eine Internetverbindung her und versuche es erneut.</p>
       </div>
     );
   }
@@ -77,6 +79,7 @@ export function UploadZone({ onFileSelected, uploading }: UploadZoneProps) {
           <p className="text-sky-600 font-semibold text-lg">PDF wird verarbeitet...</p>
         ) : (
           <>
+            <FileUp size={32} className="text-slate-400" />
             <p className="text-slate-500 text-center">
               PDF-Rechnung hier ablegen oder Datei auswaehlen
             </p>
@@ -84,7 +87,7 @@ export function UploadZone({ onFileSelected, uploading }: UploadZoneProps) {
               type="button"
               onPointerDown={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="bg-sky-500 hover:bg-sky-600 active:bg-sky-700 disabled:opacity-50 text-white font-semibold px-6 rounded-xl h-14 text-lg transition-colors"
+              className="bg-sky-500 active:bg-sky-700 disabled:opacity-50 text-white font-semibold px-6 rounded-xl h-14 text-lg transition-colors"
             >
               PDF auswaehlen
             </button>

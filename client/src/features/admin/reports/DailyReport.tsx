@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { ChevronRight } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import type { Sale } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
@@ -140,7 +141,7 @@ export function DailyReport() {
                     <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'text-red-300' : 'text-green-600'}`}>
                       {sale.donationCents > 0 ? formatEur(sale.donationCents) : '—'}
                     </td>
-                    <td className="px-4 py-3 text-slate-300 text-lg">›</td>
+                    <td className="px-4 py-3 text-slate-300"><ChevronRight size={18} /></td>
                   </tr>
                 ))}
             </tbody>

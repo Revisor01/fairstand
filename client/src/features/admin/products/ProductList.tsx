@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { Pencil, BarChart3, Package, Eye, EyeOff, RefreshCw, Plus } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
@@ -17,14 +18,10 @@ export function ProductList() {
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<string | null>(null);
 
-  // Alle Produkte des aktuellen Shops (auch inaktive), alphabetisch nach Name
   const products = useLiveQuery(
     () =>
       db.products
         .where('shopId')
-        // Sicherheitshinweis: getShopId() wirft wenn kein Shop gesetzt ist.
-        // ProductList wird nur gerendert wenn state === 'unlocked' (App.tsx),
-        // also ist shopId hier garantiert gesetzt. Kein try-catch nötig.
         .equals(getShopId())
         .toArray()
         .then(arr => arr.sort((a, b) => a.name.localeCompare(b.name, 'de'))),
@@ -46,12 +43,10 @@ export function ProductList() {
   async function handleToggleActive(product: Product) {
     const newActive = !product.active;
     const now = Date.now();
-    // Lokal in Dexie sofort aktualisieren (offline-faehig)
     await db.products.update(product.id, {
       active: newActive,
       updatedAt: now,
     });
-    // Fire-and-forget PATCH an Server wenn online
     if (navigator.onLine) {
       const action = newActive ? 'activate' : 'deactivate';
       fetch(`/api/products/${product.id}/${action}`, { method: 'PATCH' }).catch(() => {});
@@ -129,15 +124,17 @@ export function ProductList() {
           <button
             onPointerDown={handleDownloadSync}
             disabled={syncing}
-            className="bg-slate-100 active:bg-slate-300 text-slate-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-sm transition-colors disabled:opacity-50"
+            className="bg-slate-100 active:bg-slate-300 text-slate-700 font-medium px-3 py-2 rounded-lg min-h-[44px] text-sm flex items-center gap-1.5 transition-colors disabled:opacity-50"
           >
-            {syncing ? '...' : '↓ Sync'}
+            <RefreshCw size={16} className={syncing ? 'animate-spin' : ''} />
+            Sync
           </button>
           <button
             onPointerDown={openNewForm}
-            className="bg-sky-500 active:bg-sky-700 text-white font-semibold px-3 py-2 rounded-lg min-h-[44px] text-sm transition-colors"
+            className="bg-sky-500 active:bg-sky-700 text-white font-semibold px-3 py-2 rounded-lg min-h-[44px] text-sm flex items-center gap-1.5 transition-colors"
           >
-            + Neu
+            <Plus size={16} />
+            Neu
           </button>
         </div>
       </div>
@@ -226,21 +223,21 @@ export function ProductList() {
                     title="Bearbeiten"
                     className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    <Pencil size={18} />
                   </button>
                   <button
                     onPointerDown={() => openStats(product)}
                     title="Statistik"
                     className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                    <BarChart3 size={18} />
                   </button>
                   <button
                     onPointerDown={() => openStockAdjust(product)}
                     title="Bestand"
                     className="bg-amber-100 active:bg-amber-300 text-amber-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                    <Package size={18} />
                   </button>
                   <button
                     onPointerDown={() => handleToggleActive(product)}
@@ -251,10 +248,7 @@ export function ProductList() {
                         : 'bg-green-100 active:bg-green-300 text-green-700'
                     }`}
                   >
-                    {product.active
-                      ? <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-                      : <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-                    }
+                    {product.active ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>

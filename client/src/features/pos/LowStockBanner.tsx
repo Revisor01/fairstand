@@ -1,3 +1,4 @@
+import { AlertTriangle } from 'lucide-react';
 import { useLowStockProducts } from '../../hooks/useLowStockCount.js';
 
 export function LowStockBanner() {
@@ -7,7 +8,7 @@ export function LowStockBanner() {
 
   return (
     <div className="bg-amber-50 border-b-2 border-amber-400 px-4 py-3 text-amber-900 text-sm flex items-start gap-2">
-      <span className="text-amber-500 text-base shrink-0">⚠</span>
+      <AlertTriangle size={16} className="text-amber-500 shrink-0 mt-0.5" />
       <div>
         <span className="font-semibold">
           Mindestbestand unterschritten ({lowStockProducts.length}):

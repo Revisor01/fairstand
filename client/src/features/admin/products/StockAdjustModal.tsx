@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { db, getShopId } from '../../../db/index.js';
 import type { Product } from '../../../db/index.js';
 
@@ -66,9 +67,10 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
         <h2 className="text-lg font-semibold text-sky-800">Bestandskorrektur</h2>
         <button
           onPointerDown={onClose}
-          className="text-slate-500 hover:text-slate-700 text-sm px-3 py-2 rounded-lg h-11"
+          className="text-slate-500 active:text-slate-700 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg transition-colors"
+          aria-label="Abbrechen"
         >
-          Abbrechen
+          <ArrowLeft size={20} />
         </button>
       </div>
 
