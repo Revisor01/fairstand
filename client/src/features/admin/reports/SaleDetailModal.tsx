@@ -151,7 +151,7 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
                           disabled={!!sale.cancelledAt}
                           className="text-xs px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 disabled:opacity-40 disabled:cursor-not-allowed min-h-[32px] transition-colors"
                         >
-                          Zurück
+                          Storno
                         </button>
                       )}
                     </td>
