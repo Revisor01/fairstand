@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Send, Info, Banknote, Plus, X, LayoutPanelRight } from 'lucide-react';
+import { Mail, Send, Info, Banknote, Plus, X, LayoutPanelTop } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
 import { getAuthHeaders } from '../../auth/serverAuth.js';
 
@@ -120,7 +120,7 @@ export function SettingsForm() {
       {/* Warenkorb-Layout */}
       <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
         <h3 className="text-sm font-semibold text-sky-700 flex items-center gap-2">
-          <LayoutPanelRight size={16} />
+          <LayoutPanelTop size={16} />
           Warenkorb-Layout
         </h3>
 
