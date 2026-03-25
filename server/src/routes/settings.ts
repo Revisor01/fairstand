@@ -25,7 +25,7 @@ export async function settingsRoutes(fastify: FastifyInstance) {
     if (!result.success) return reply.status(400).send({ error: result.error.flatten() });
     const s = result.data;
     await db.insert(settings).values({ key: s.key, value: s.value, shopId: session.shopId }).onConflictDoUpdate({
-      target: settings.key,
+      target: [settings.key, settings.shopId],
       set: { value: s.value },
     });
     return reply.send({ ok: true });
