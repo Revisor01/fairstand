@@ -5,7 +5,7 @@ import { getShopId } from '../../../db/index.js';
 import type { Sale } from '../../../db/index.js';
 import { authFetch } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
-import { startOfDay, endOfDay, subDays, format } from 'date-fns';
+import { startOfDay, endOfDay, subDays, startOfMonth, format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { SaleDetailModal } from './SaleDetailModal.js';
 
@@ -17,18 +17,37 @@ function toDateInputValue(date: Date): string {
 }
 
 export function DailyReport() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  type RangeMode = 'today' | 'yesterday' | 'week' | 'month' | 'custom';
+  const [rangeMode, setRangeMode] = useState<RangeMode>('today');
+  const [customDate, setCustomDate] = useState<Date>(new Date());
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
-  const dayStart = useMemo(() => startOfDay(selectedDate).getTime(), [selectedDate]);
-  const dayEnd = useMemo(() => endOfDay(selectedDate).getTime(), [selectedDate]);
+  const { rangeStart, rangeEnd } = useMemo(() => {
+    const now = new Date();
+    switch (rangeMode) {
+      case 'today':
+        return { rangeStart: startOfDay(now).getTime(), rangeEnd: endOfDay(now).getTime() };
+      case 'yesterday': {
+        const y = subDays(now, 1);
+        return { rangeStart: startOfDay(y).getTime(), rangeEnd: endOfDay(y).getTime() };
+      }
+      case 'week':
+        return { rangeStart: startOfDay(subDays(now, 6)).getTime(), rangeEnd: endOfDay(now).getTime() };
+      case 'month':
+        return { rangeStart: startOfMonth(now).getTime(), rangeEnd: endOfDay(now).getTime() };
+      case 'custom':
+        return { rangeStart: startOfDay(customDate).getTime(), rangeEnd: endOfDay(customDate).getTime() };
+    }
+  }, [rangeMode, customDate]);
+
+  const isMultiDay = rangeMode === 'week' || rangeMode === 'month';
 
   const { data: sales = [] } = useQuery<Sale[]>({
-    queryKey: ['sales', getShopId(), dayStart, dayEnd],
+    queryKey: ['sales', getShopId(), rangeStart, rangeEnd],
     queryFn: async () => {
       const shopId = getShopId();
       const res = await authFetch(
-        `/api/sales?shopId=${shopId}&from=${dayStart}&to=${dayEnd}`
+        `/api/sales?shopId=${shopId}&from=${rangeStart}&to=${rangeEnd}`
       );
       if (!res.ok) throw new Error('Verkäufe konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
@@ -63,46 +82,65 @@ export function DailyReport() {
     };
   }, [sales]);
 
-  function goToday() {
-    setSelectedDate(new Date());
+  const dateLabel = useMemo(() => {
+    const now = new Date();
+    switch (rangeMode) {
+      case 'today':
+        return `Heute, ${format(now, 'd. MMMM yyyy', { locale: de })}`;
+      case 'yesterday':
+        return `Gestern, ${format(subDays(now, 1), 'd. MMMM yyyy', { locale: de })}`;
+      case 'week':
+        return 'Letzte 7 Tage';
+      case 'month':
+        return format(now, 'MMMM yyyy', { locale: de });
+      case 'custom':
+        return format(customDate, 'd. MMMM yyyy', { locale: de });
+    }
+  }, [rangeMode, customDate]);
+
+  function formatSaleTime(createdAt: number): string {
+    const d = new Date(createdAt);
+    if (isMultiDay) {
+      return format(d, 'dd.MM. HH:mm');
+    }
+    return format(d, 'HH:mm');
   }
 
-  function goYesterday() {
-    setSelectedDate(subDays(new Date(), 1));
-  }
-
-  const dateLabel = format(selectedDate, 'EEEE, d. MMMM yyyy', { locale: de });
-  const isToday = toDateInputValue(selectedDate) === toDateInputValue(new Date());
+  const btnClass = (mode: RangeMode) =>
+    `px-4 py-2 rounded-lg text-sm font-medium min-h-[44px] transition-colors ${
+      rangeMode === mode
+        ? 'bg-sky-500 text-white'
+        : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+    }`;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold text-sky-800">Tagesübersicht</h2>
-        <div className="flex items-center gap-2">
-          <button
-            onPointerDown={goToday}
-            className={`px-4 py-2 rounded-lg text-sm font-medium h-11 transition-colors ${
-              isToday
-                ? 'bg-sky-500 text-white'
-                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
-            }`}
-          >
+        <div className="flex items-center gap-2 flex-wrap">
+          <button onPointerDown={() => setRangeMode('today')} className={btnClass('today')}>
             Heute
           </button>
-          <button
-            onPointerDown={goYesterday}
-            className="bg-sky-100 hover:bg-sky-200 text-sky-700 px-4 py-2 rounded-lg text-sm font-medium h-11 transition-colors"
-          >
+          <button onPointerDown={() => setRangeMode('yesterday')} className={btnClass('yesterday')}>
             Gestern
+          </button>
+          <button onPointerDown={() => setRangeMode('week')} className={btnClass('week')}>
+            Woche
+          </button>
+          <button onPointerDown={() => setRangeMode('month')} className={btnClass('month')}>
+            Dieser Monat
           </button>
           <input
             type="date"
-            value={toDateInputValue(selectedDate)}
+            value={toDateInputValue(customDate)}
             onChange={e => {
               const d = new Date(e.target.value);
-              if (!isNaN(d.getTime())) setSelectedDate(d);
+              if (!isNaN(d.getTime())) {
+                setCustomDate(d);
+                setRangeMode('custom');
+              }
             }}
-            className="h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
+            className="min-h-[44px] border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
           />
         </div>
       </div>
@@ -137,7 +175,7 @@ export function DailyReport() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-sky-50 border-b border-sky-100">
-                <th className="text-left px-4 py-3 text-sky-700 font-semibold">Uhrzeit</th>
+                <th className="text-left px-4 py-3 text-sky-700 font-semibold">Datum</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-semibold">Summe</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-semibold">Spende</th>
                 <th></th>
@@ -158,7 +196,7 @@ export function DailyReport() {
                     onPointerDown={() => setSelectedSale(sale)}
                   >
                     <td className={`px-4 py-3 ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-600'}`}>
-                      {format(new Date(sale.createdAt), 'HH:mm')}
+                      {formatSaleTime(sale.createdAt)}
                       {sale.cancelledAt && <span className="ml-1 text-xs font-medium text-red-500">Storno</span>}
                       {!sale.cancelledAt && sale.type !== 'withdrawal' && <span className="ml-1 text-xs font-medium text-sky-500">Verkauf</span>}
                       {sale.type === 'withdrawal' && (
@@ -181,7 +219,7 @@ export function DailyReport() {
         </div>
       ) : (
         <div className="text-center py-12 text-slate-500 bg-white rounded-xl shadow-sm">
-          Keine Verkäufe an diesem Tag.
+          Keine Verkäufe im gewählten Zeitraum.
         </div>
       )}
 
