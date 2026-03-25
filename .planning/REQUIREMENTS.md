@@ -7,8 +7,8 @@
 
 ### Multi-Shop Administration
 
-- [ ] **SHOP-01**: Master-Shop (St. Secundus) kann neue Shops anlegen mit Name und PIN
-- [ ] **SHOP-02**: Master-Shop kann Shops deaktivieren (PIN funktioniert nicht mehr, kein Login möglich)
+- [x] **SHOP-01**: Master-Shop (St. Secundus) kann neue Shops anlegen mit Name und PIN
+- [x] **SHOP-02**: Master-Shop kann Shops deaktivieren (PIN funktioniert nicht mehr, kein Login möglich)
 - [ ] **SHOP-03**: Master-Shop hat ein is_master-Flag in der DB — nur Master sieht Shop-Verwaltung
 - [ ] **SHOP-04**: Jeder Shop hat ein eigenes, unabhängiges Sortiment (eigene Produkte, Preise, Bestand)
 
@@ -44,8 +44,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHOP-01 | Phase 24 | Pending |
-| SHOP-02 | Phase 24 | Pending |
+| SHOP-01 | Phase 24 | Complete |
+| SHOP-02 | Phase 24 | Complete |
 | SHOP-03 | Phase 24 | Pending |
 | SHOP-04 | Phase 25 | Pending |
 | SELF-01 | Phase 25 | Pending |
