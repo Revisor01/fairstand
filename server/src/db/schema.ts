@@ -51,6 +51,8 @@ export const shops = pgTable('shops', {
   name: text('name').notNull(),
   pin: text('pin').notNull(),
   createdAt: integer('created_at').notNull(),
+  isMaster: boolean('is_master').notNull().default(false),
+  active: boolean('active').notNull().default(true),
 });
 
 export const categories = pgTable('categories', {
