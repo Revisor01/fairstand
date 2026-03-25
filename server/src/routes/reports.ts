@@ -51,14 +51,15 @@ export async function reportRoutes(fastify: FastifyInstance) {
       SELECT
         item->>'name' as name,
         SUM((item->>'quantity')::integer) as total_qty,
-        SUM((item->>'quantity')::integer * (item->>'salePrice')::integer) as revenue_cents
+        SUM(CASE WHEN (sales.type IS NULL OR sales.type = 'sale') THEN (item->>'quantity')::integer ELSE 0 END) as sale_qty,
+        SUM(CASE WHEN sales.type = 'withdrawal' THEN (item->>'quantity')::integer ELSE 0 END) as withdrawal_qty,
+        SUM(CASE WHEN (sales.type IS NULL OR sales.type = 'sale') THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END) as revenue_cents
       FROM sales,
            jsonb_array_elements(sales.items) as item
       WHERE sales.shop_id = ${shopId}
         AND sales.created_at >= ${monthStart}
         AND sales.created_at < ${monthEnd}
         AND sales.cancelled_at IS NULL
-        AND (sales.type IS NULL OR sales.type = 'sale')
       GROUP BY item->>'productId', item->>'name'
       ORDER BY total_qty DESC
       LIMIT 5
