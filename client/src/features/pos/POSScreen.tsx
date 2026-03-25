@@ -192,6 +192,12 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
     );
   }
 
+  // Stock-aware quantity update wrapper
+  async function handleUpdateQuantity(productId: string, quantity: number) {
+    const product = products.find(p => p.id === productId);
+    return cart.updateQuantity(productId, quantity, product?.stock);
+  }
+
   // --- View: POS-Hauptansicht ---
   const cartItemCount = cart.items.reduce((sum, i) => sum + i.quantity, 0);
   const shouldShowSidebar = cartSidebarEnabled && isLargeScreen;
@@ -289,7 +295,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
             items={cart.items}
             total={cart.total}
             onClose={() => {}}
-            onUpdateQuantity={cart.updateQuantity}
+            onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={cart.removeItem}
             onCheckout={() => { setView('payment'); }}
             onWithdrawal={handleWithdrawal}
