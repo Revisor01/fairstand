@@ -10,11 +10,11 @@
 - [x] **SHOP-01**: Master-Shop (St. Secundus) kann neue Shops anlegen mit Name und PIN
 - [x] **SHOP-02**: Master-Shop kann Shops deaktivieren (PIN funktioniert nicht mehr, kein Login möglich)
 - [x] **SHOP-03**: Master-Shop hat ein is_master-Flag in der DB — nur Master sieht Shop-Verwaltung
-- [ ] **SHOP-04**: Jeder Shop hat ein eigenes, unabhängiges Sortiment (eigene Produkte, Preise, Bestand)
+- [x] **SHOP-04**: Jeder Shop hat ein eigenes, unabhängiges Sortiment (eigene Produkte, Preise, Bestand)
 
 ### Shop-Selbstverwaltung
 
-- [ ] **SELF-01**: Nach PIN-Login verwaltet jeder Shop seine eigenen Produkte (anlegen, bearbeiten, deaktivieren)
+- [x] **SELF-01**: Nach PIN-Login verwaltet jeder Shop seine eigenen Produkte (anlegen, bearbeiten, deaktivieren)
 - [x] **SELF-02**: Jeder Shop sieht nur seine eigenen Berichte (Tagesübersicht, Monatsberichte)
 - [x] **SELF-03**: PDF-Import erstellt Produkte im jeweiligen Shop-Sortiment
 
@@ -47,8 +47,8 @@
 | SHOP-01 | Phase 24 | Complete |
 | SHOP-02 | Phase 24 | Complete |
 | SHOP-03 | Phase 24 | Complete |
-| SHOP-04 | Phase 25 | Pending |
-| SELF-01 | Phase 25 | Pending |
+| SHOP-04 | Phase 25 | Complete |
+| SELF-01 | Phase 25 | Complete |
 | SELF-02 | Phase 25 | Complete |
 | SELF-03 | Phase 25 | Complete |
 | UX-01 | Phase 26 | Pending |
