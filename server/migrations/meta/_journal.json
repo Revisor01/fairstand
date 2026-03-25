@@ -1,6 +1,6 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
@@ -21,6 +21,20 @@
       "version": "6",
       "when": 1774383600000,
       "tag": "0002_add_sale_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1774383600001,
+      "tag": "0003_add_master_shop_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1774383600002,
+      "tag": "0004_settings_composite_unique",
       "breakpoints": true
     }
   ]

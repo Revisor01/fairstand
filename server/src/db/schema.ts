@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, serial, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, boolean, serial, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const products = pgTable('products', {
   id: text('id').primaryKey(),
@@ -31,10 +31,12 @@ export const sales = pgTable('sales', {
 });
 
 export const settings = pgTable('settings', {
-  key: text('key').primaryKey(),
+  key: text('key').notNull(),
   value: text('value').notNull(),
   shopId: text('shop_id').notNull(),
-});
+}, (table) => ({
+  pk: uniqueIndex('settings_key_shop_id_idx').on(table.key, table.shopId),
+}));
 
 export const outboxEvents = pgTable('outbox_events', {
   id: serial('id').primaryKey(),
