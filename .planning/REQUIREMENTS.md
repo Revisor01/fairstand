@@ -15,8 +15,8 @@
 ### Shop-Selbstverwaltung
 
 - [ ] **SELF-01**: Nach PIN-Login verwaltet jeder Shop seine eigenen Produkte (anlegen, bearbeiten, deaktivieren)
-- [ ] **SELF-02**: Jeder Shop sieht nur seine eigenen Berichte (Tagesübersicht, Monatsberichte)
-- [ ] **SELF-03**: PDF-Import erstellt Produkte im jeweiligen Shop-Sortiment
+- [x] **SELF-02**: Jeder Shop sieht nur seine eigenen Berichte (Tagesübersicht, Monatsberichte)
+- [x] **SELF-03**: PDF-Import erstellt Produkte im jeweiligen Shop-Sortiment
 
 ### Responsive UX
 
@@ -49,8 +49,8 @@
 | SHOP-03 | Phase 24 | Complete |
 | SHOP-04 | Phase 25 | Pending |
 | SELF-01 | Phase 25 | Pending |
-| SELF-02 | Phase 25 | Pending |
-| SELF-03 | Phase 25 | Pending |
+| SELF-02 | Phase 25 | Complete |
+| SELF-03 | Phase 25 | Complete |
 | UX-01 | Phase 26 | Pending |
 | UX-02 | Phase 26 | Pending |
 | UX-03 | Phase 26 | Pending |
