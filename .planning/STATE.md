@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: Multi-Shop & UX
 status: unknown
-stopped_at: Completed 26-01-PLAN.md
-last_updated: "2026-03-25T07:13:14.582Z"
+stopped_at: Completed 26-03-PLAN.md
+last_updated: "2026-03-25T07:13:19.332Z"
 progress:
   total_phases: 20
   completed_phases: 4
@@ -60,6 +60,7 @@ Recent decisions affecting current work:
 - [Phase 25]: Journal-Dialekt von sqlite auf postgresql aktualisiert und 0003/0004 nachregistriert
 - [Phase 26-responsive-ux]: scrollbar-hide via [&::-webkit-scrollbar]:hidden statt Plugin (Tailwind 4 native)
 - [Phase 26-responsive-ux]: Warenkorb-Layout-Sektion als erste Card in SettingsForm — kein Backend-Eingriff noetig, bestehender PUT /api/settings Endpoint unterstuetzt cart_sidebar_enabled direkt
+- [Phase 26-03]: Swipe-Gesten NUR im Slide-In Modus (sidebar=false) — Sidebar-Modus bekommt keine Swipe-Geste
 
 ### Pending Todos
 
@@ -72,7 +73,7 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-03-25T07:13:05.329Z
-Stopped at: Completed 26-01-PLAN.md
+Last session: 2026-03-25T07:13:19.330Z
+Stopped at: Completed 26-03-PLAN.md
 Resume file: None
 Next step: `/gsd:plan-phase 24`
