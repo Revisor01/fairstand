@@ -80,7 +80,6 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
       <div
         ref={tabsContainerRef}
         className="
-          sticky top-[68px] z-20
           flex gap-2 overflow-x-auto px-4 py-3
           bg-white border-b border-sky-100
           [&::-webkit-scrollbar]:hidden
