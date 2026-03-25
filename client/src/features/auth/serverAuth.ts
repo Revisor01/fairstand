@@ -66,3 +66,16 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
     'Authorization': `Bearer ${session.token}`,
   };
 }
+
+// Fetch-Wrapper der bei 401 automatisch zum Login zurückkehrt
+export async function authFetch(url: string, options?: RequestInit): Promise<Response> {
+  const headers = await getAuthHeaders();
+  const res = await fetch(url, { ...options, headers: { ...headers, ...options?.headers } });
+  if (res.status === 401) {
+    localStorage.removeItem('session');
+    window.location.reload();
+    // Nie erreicht, aber TypeScript braucht ein return
+    return res;
+  }
+  return res;
+}
