@@ -3,5 +3,5 @@ CREATE TABLE "categories" (
 	"shop_id" text NOT NULL,
 	"name" text NOT NULL,
 	"sort_order" integer DEFAULT 0 NOT NULL,
-	"created_at" integer NOT NULL
+	"created_at" bigint NOT NULL
 );
