@@ -85,7 +85,7 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 ### v7.0 Multi-Shop & UX
 
 - [x] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI (completed 2026-03-25)
-- [ ] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop
+- [x] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop (completed 2026-03-25)
 - [ ] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation
 
 ## Phase Details
@@ -369,7 +369,7 @@ Plans:
   4. Ein PDF-Import erstellt die neuen Produkte im Sortiment des eingeloggten Shops — nicht global
 **Plans**: 2 plans
 Plans:
-- [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
+- [x] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
 - [x] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
 
 ### Phase 26: Responsive UX
@@ -384,7 +384,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
-- [ ] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
+- [x] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
 
 ## Progress
 
@@ -417,5 +417,5 @@ Phases execute in numeric order: 24 → 25 → 26
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 25. Shop-Sortiment-Isolation | v7.0 | 1/2 | In Progress|  |
+| 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete   | 2026-03-25 |
 | 26. Responsive UX | v7.0 | 0/? | Not started | - |
