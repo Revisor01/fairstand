@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, serial, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, bigint, boolean, serial, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const products = pgTable('products', {
   id: text('id').primaryKey(),
@@ -13,7 +13,7 @@ export const products = pgTable('products', {
   minStock: integer('min_stock').notNull().default(0),
   active: boolean('active').notNull().default(true),
   imageUrl: text('image_url'),
-  updatedAt: integer('updated_at').notNull(),
+  updatedAt: bigint('updated_at', { mode: 'number' }).notNull(),
 });
 
 export const sales = pgTable('sales', {
@@ -25,9 +25,9 @@ export const sales = pgTable('sales', {
   changeCents: integer('change_cents').notNull(),
   donationCents: integer('donation_cents').notNull(),
   type: text('type'),
-  createdAt: integer('created_at').notNull(),
-  syncedAt: integer('synced_at'),
-  cancelledAt: integer('cancelled_at'),
+  createdAt: bigint('created_at', { mode: 'number' }).notNull(),
+  syncedAt: bigint('synced_at', { mode: 'number' }),
+  cancelledAt: bigint('cancelled_at', { mode: 'number' }),
 });
 
 export const settings = pgTable('settings', {
@@ -43,8 +43,8 @@ export const outboxEvents = pgTable('outbox_events', {
   shopId: text('shop_id').notNull(),
   operation: text('operation').notNull(),
   payload: jsonb('payload').notNull(),
-  processedAt: integer('processed_at'),
-  createdAt: integer('created_at').notNull(),
+  processedAt: bigint('processed_at', { mode: 'number' }),
+  createdAt: bigint('created_at', { mode: 'number' }).notNull(),
 });
 
 export const shops = pgTable('shops', {
@@ -52,7 +52,7 @@ export const shops = pgTable('shops', {
   shopId: text('shop_id').notNull().unique(),
   name: text('name').notNull(),
   pin: text('pin').notNull(),
-  createdAt: integer('created_at').notNull(),
+  createdAt: bigint('created_at', { mode: 'number' }).notNull(),
   isMaster: boolean('is_master').notNull().default(false),
   active: boolean('active').notNull().default(true),
 });
@@ -62,5 +62,5 @@ export const categories = pgTable('categories', {
   shopId: text('shop_id').notNull(),
   name: text('name').notNull(),
   sortOrder: integer('sort_order').notNull().default(0),
-  createdAt: integer('created_at').notNull(),
+  createdAt: bigint('created_at', { mode: 'number' }).notNull(),
 });
