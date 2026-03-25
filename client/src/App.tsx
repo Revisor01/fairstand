@@ -7,7 +7,6 @@ import { POSScreen } from './features/pos/POSScreen.js';
 import { AdminScreen } from './features/admin/AdminScreen.js';
 import { useLowStockCount } from './hooks/useLowStockCount.js';
 import { useWebSocket } from './hooks/useWebSocket.js';
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

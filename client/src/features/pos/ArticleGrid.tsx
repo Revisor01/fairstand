@@ -2,7 +2,7 @@ import { useMemo, useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
-import { getAuthHeaders } from '../auth/serverAuth.js';
+import { authFetch } from '../auth/serverAuth.js';
 import { ArticleCard } from './ArticleCard.js';
 
 interface ArticleGridProps {
@@ -18,9 +18,8 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products', getShopId()],
     queryFn: async () => {
-      const headers = await getAuthHeaders();
       const shopId = getShopId();
-      const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
+      const res = await authFetch(`/api/products?shopId=${shopId}`);
       if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
       return data.map(p => ({

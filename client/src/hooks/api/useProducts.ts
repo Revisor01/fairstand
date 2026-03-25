@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getShopId } from '../../db/index.js';
-import { getAuthHeaders } from '../../features/auth/serverAuth.js';
+import { getAuthHeaders, authFetch } from '../../features/auth/serverAuth.js';
 import type { Product } from '../../db/index.js';
 
 // Server liefert snake_case — camelCase-Mapping nötig
@@ -27,8 +27,7 @@ export function useProducts() {
   return useQuery<Product[]>({
     queryKey: ['products', shopId],
     queryFn: async () => {
-      const headers = await getAuthHeaders();
-      const res = await fetch(`/api/products?shopId=${shopId}`, { headers });
+      const res = await authFetch(`/api/products?shopId=${shopId}`);
       if (!res.ok) throw new Error('Produkte konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
       return data.map(mapServerProduct);

@@ -25,9 +25,11 @@ export const sales = pgTable('sales', {
   changeCents: integer('change_cents').notNull(),
   donationCents: integer('donation_cents').notNull(),
   type: text('type'),
+  withdrawalReason: text('withdrawal_reason'),
   createdAt: bigint('created_at', { mode: 'number' }).notNull(),
   syncedAt: bigint('synced_at', { mode: 'number' }),
   cancelledAt: bigint('cancelled_at', { mode: 'number' }),
+  returnedItems: jsonb('returned_items'),
 });
 
 export const settings = pgTable('settings', {
