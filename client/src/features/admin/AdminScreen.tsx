@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Package, BarChart3, Upload, Tags, Settings } from 'lucide-react';
+import { Package, BarChart3, Upload, Tags, Settings, Store } from 'lucide-react';
 import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
 import { MonthlyReport } from './reports/MonthlyReport.js';
 import { SettingsForm } from './settings/SettingsForm.js';
 import { CategoryManager } from './settings/CategoryManager.js';
 import { ImportScreen } from './import/ImportScreen.js';
+import { ShopsManager } from './shops/ShopsManager.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 import { getStoredSession } from '../auth/serverAuth.js';
 
-type AdminTab = 'products' | 'reports' | 'settings' | 'import' | 'categories';
+type AdminTab = 'products' | 'reports' | 'settings' | 'import' | 'categories' | 'shops';
 
 interface AdminScreenProps {
   onSwitchToPOS: () => void;
@@ -27,10 +28,16 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
   const [tab, setTab] = useState<AdminTab>('products');
   const lowStockCount = useLowStockCount();
   const [shopName, setShopName] = useState<string>('');
+  const [isMaster, setIsMaster] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    getStoredSession().then(s => { if (s) setShopName(s.shopName); });
+    getStoredSession().then(s => {
+      if (s) {
+        setShopName(s.shopName);
+        setIsMaster(s.isMaster ?? false);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -43,6 +50,10 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       window.removeEventListener('offline', onOffline);
     };
   }, []);
+
+  const visibleTabs = isMaster
+    ? [...tabs, { key: 'shops' as AdminTab, label: 'Shops', icon: Store }]
+    : tabs;
 
   return (
     <div className="min-h-screen bg-sky-50 flex flex-col">
@@ -63,7 +74,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
       {/* Tab-Navigation */}
       <nav className="bg-white border-b border-sky-100 px-3 py-2">
         <div className="flex gap-1.5 overflow-x-auto">
-          {tabs.map(({ key, label, icon: Icon }) => (
+          {visibleTabs.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onPointerDown={() => setTab(key)}
@@ -109,6 +120,7 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
             {tab === 'import' && <ImportScreen />}
             {tab === 'categories' && <CategoryManager />}
             {tab === 'settings' && <SettingsForm />}
+            {tab === 'shops' && <ShopsManager />}
           </>
         )}
       </main>
