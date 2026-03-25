@@ -410,6 +410,6 @@ Phases execute in numeric order: 24 → 25 → 26
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
-| 24. Master-Shop Administration | v7.0 | 2/2 | Complete   | 2026-03-25 |
+| 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
 | 25. Shop-Sortiment-Isolation | v7.0 | 0/? | Not started | - |
 | 26. Responsive UX | v7.0 | 0/? | Not started | - |
