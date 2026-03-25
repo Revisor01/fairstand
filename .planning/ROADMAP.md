@@ -84,7 +84,7 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 ### v7.0 Multi-Shop & UX
 
-- [ ] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI
+- [x] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI (completed 2026-03-25)
 - [ ] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop
 - [ ] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation
 
@@ -356,7 +356,7 @@ Plans:
 
 Plans:
 - [x] 24-01-PLAN.md — DB-Schema (is_master + active), Migration, Seed-Update, Auth active-Check + isMaster in Response
-- [ ] 24-02-PLAN.md — /api/shops Route (Master-only CRUD), ShopsManager.tsx, AdminScreen Shops-Tab, isMaster in Session
+- [x] 24-02-PLAN.md — /api/shops Route (Master-only CRUD), ShopsManager.tsx, AdminScreen Shops-Tab, isMaster in Session
 
 ### Phase 25: Shop-Sortiment-Isolation
 **Goal**: Jeder Shop hat ein vollständig unabhängiges Sortiment — Produkte, Preise und Bestand sind shop-spezifisch, Berichte und PDF-Imports bleiben pro Shop isoliert
@@ -410,6 +410,6 @@ Phases execute in numeric order: 24 → 25 → 26
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
-| 24. Master-Shop Administration | v7.0 | 1/2 | In Progress|  |
+| 24. Master-Shop Administration | v7.0 | 2/2 | Complete   | 2026-03-25 |
 | 25. Shop-Sortiment-Isolation | v7.0 | 0/? | Not started | - |
 | 26. Responsive UX | v7.0 | 0/? | Not started | - |
