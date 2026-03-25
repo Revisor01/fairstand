@@ -4,7 +4,7 @@ import { getShopId } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch } from '../../auth/serverAuth.js';
 
 interface ProductStatsProps {
   product: Product;
@@ -39,13 +39,11 @@ export function ProductStats({ product, onClose }: ProductStatsProps) {
     }
     setLoading(true);
     setError(null);
-    getAuthHeaders().then(headers =>
-      fetch(`/api/reports/product/${product.id}/stats?shopId=${getShopId()}&months=${months}`, { headers })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then((data: StatsData) => setStats(data))
-        .catch(() => setError('fetch_failed'))
-        .finally(() => setLoading(false))
-    );
+    authFetch(`/api/reports/product/${product.id}/stats?shopId=${getShopId()}&months=${months}`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then((data: StatsData) => setStats(data))
+      .catch(() => setError('fetch_failed'))
+      .finally(() => setLoading(false));
   }, [product.id, months]);
 
   return (

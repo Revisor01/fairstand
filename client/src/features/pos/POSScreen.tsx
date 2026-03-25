@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Settings, Lock, WifiOff } from 'lucide-react';
-import { getAuthHeaders } from '../auth/serverAuth.js';
+import { authFetch } from '../auth/serverAuth.js';
 import type { Sale } from '../../db/index.js';
 import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
@@ -51,15 +51,13 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   }, []);
 
   useEffect(() => {
-    getAuthHeaders().then(headers =>
-      fetch('/api/settings', { headers })
-        .then(r => r.json())
-        .then((rows: Array<{ key: string; value: string }>) => {
-          const setting = rows.find(r => r.key === 'cart_sidebar_enabled');
-          if (setting) setCartSidebarEnabled(setting.value === 'true');
-        })
-        .catch(() => {})
-    );
+    authFetch('/api/settings')
+      .then(r => r.json())
+      .then((rows: Array<{ key: string; value: string }>) => {
+        const setting = rows.find(r => r.key === 'cart_sidebar_enabled');
+        if (setting) setCartSidebarEnabled(setting.value === 'true');
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
