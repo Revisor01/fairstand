@@ -3,8 +3,8 @@ CREATE TABLE "outbox_events" (
 	"shop_id" text NOT NULL,
 	"operation" text NOT NULL,
 	"payload" jsonb NOT NULL,
-	"processed_at" integer,
-	"created_at" integer NOT NULL
+	"processed_at" bigint,
+	"created_at" bigint NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "products" (
@@ -20,7 +20,7 @@ CREATE TABLE "products" (
 	"min_stock" integer DEFAULT 0 NOT NULL,
 	"active" boolean DEFAULT true NOT NULL,
 	"image_url" text,
-	"updated_at" integer NOT NULL
+	"updated_at" bigint NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "sales" (
@@ -31,9 +31,9 @@ CREATE TABLE "sales" (
 	"paid_cents" integer NOT NULL,
 	"change_cents" integer NOT NULL,
 	"donation_cents" integer NOT NULL,
-	"created_at" integer NOT NULL,
-	"synced_at" integer,
-	"cancelled_at" integer
+	"created_at" bigint NOT NULL,
+	"synced_at" bigint,
+	"cancelled_at" bigint
 );
 --> statement-breakpoint
 CREATE TABLE "settings" (
@@ -47,7 +47,7 @@ CREATE TABLE "shops" (
 	"shop_id" text NOT NULL,
 	"name" text NOT NULL,
 	"pin" text NOT NULL,
-	"created_at" integer NOT NULL
+	"created_at" bigint NOT NULL
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX "shops_shop_id_unique" ON "shops" ("shop_id");
