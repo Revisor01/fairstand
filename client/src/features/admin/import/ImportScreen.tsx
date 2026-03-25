@@ -4,7 +4,7 @@ import type { Product } from '../../../db/index.js';
 import { UploadZone } from './UploadZone.js';
 import { ReviewTable } from './ReviewTable.js';
 import type { MatchedRow } from './ReviewTable.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch, getAuthHeaders } from '../../auth/serverAuth.js';
 
 interface ParsedInvoiceRow {
   lineNumber: number;
@@ -84,8 +84,7 @@ export function ImportScreen() {
       setCurrentFilename(data.filename);
 
       // Matching gegen Server-Produktdatenbank
-      const productHeaders = await getAuthHeaders();
-      const productsRes = await fetch('/api/products', { headers: productHeaders });
+      const productsRes = await authFetch('/api/products');
       const products: Product[] = productsRes.ok ? await productsRes.json() : [];
       const productIndex = new Map(
         products.map(p => [p.articleNumber.toLowerCase().trim(), p])
@@ -129,8 +128,6 @@ export function ImportScreen() {
     try {
       const checkedRows = rows.filter(r => r.checked);
 
-      const headers = await getAuthHeaders();
-
       for (const row of checkedRows) {
         let productId: string;
 
@@ -149,9 +146,8 @@ export function ImportScreen() {
             active: true,
             updatedAt: Date.now(),
           };
-          await fetch('/api/products', {
+          await authFetch('/api/products', {
             method: 'POST',
-            headers,
             body: JSON.stringify(newProduct),
           });
           productId = newProduct.id;
@@ -160,9 +156,8 @@ export function ImportScreen() {
         }
 
         // Bestandsbuchung direkt an Server
-        await fetch('/api/stock/adjust', {
+        await authFetch('/api/stock/adjust', {
           method: 'POST',
-          headers,
           body: JSON.stringify({
             productId,
             delta: row.quantity,

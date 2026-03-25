@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Mail, Send, Info, Banknote, Plus, X, LayoutPanelTop } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch } from '../../auth/serverAuth.js';
 
 interface Setting {
   key: string;
@@ -26,19 +26,17 @@ export function SettingsForm() {
   const [newAmountStr, setNewAmountStr] = useState('');
 
   useEffect(() => {
-    getAuthHeaders().then(headers =>
-      fetch(`/api/settings?shopId=${getShopId()}`, { headers })
-        .then(r => r.json())
-        .then((rows: Setting[]) => {
-          for (const row of rows) {
-            if (row.key === 'report_email') setReportEmail(row.value);
-            if (row.key === 'report_monthly') setReportMonthly(row.value === 'true');
-            if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
-            if (row.key === 'cart_sidebar_enabled') setCartSidebarEnabled(row.value === 'true');
-          }
-        })
-        .catch(() => {})
-    );
+    authFetch(`/api/settings?shopId=${getShopId()}`)
+      .then(r => r.json())
+      .then((rows: Setting[]) => {
+        for (const row of rows) {
+          if (row.key === 'report_email') setReportEmail(row.value);
+          if (row.key === 'report_monthly') setReportMonthly(row.value === 'true');
+          if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
+          if (row.key === 'cart_sidebar_enabled') setCartSidebarEnabled(row.value === 'true');
+        }
+      })
+      .catch(() => {});
 
     // Schnellbeträge lokal laden
     const val = localStorage.getItem('quick_amounts');
@@ -56,9 +54,8 @@ export function SettingsForm() {
     setSaving(true);
     setSavedKey(key);
     try {
-      await fetch('/api/settings', {
+      await authFetch('/api/settings', {
         method: 'PUT',
-        headers: await getAuthHeaders(),
         body: JSON.stringify({ key, value }),
       });
       setTimeout(() => setSavedKey(null), 1500);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch } from '../../auth/serverAuth.js';
 import { Plus, PowerOff, Power } from 'lucide-react';
 
 interface ShopItem {
@@ -27,8 +27,7 @@ export function ShopsManager() {
   const { data: shops = [], isLoading } = useQuery({
     queryKey: ['shops'],
     queryFn: async () => {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/shops', { headers });
+      const res = await authFetch('/api/shops');
       if (!res.ok) throw new Error('Fehler beim Laden der Shops');
       return res.json() as Promise<ShopItem[]>;
     },
@@ -36,10 +35,8 @@ export function ShopsManager() {
 
   const createMutation = useMutation({
     mutationFn: async (input: CreateShopInput) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/shops', {
+      const res = await authFetch('/api/shops', {
         method: 'POST',
-        headers,
         body: JSON.stringify(input),
       });
       if (!res.ok) {
@@ -59,10 +56,8 @@ export function ShopsManager() {
 
   const toggleMutation = useMutation({
     mutationFn: async ({ shopId, active }: { shopId: string; active: boolean }) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch(`/api/shops/${shopId}`, {
+      const res = await authFetch(`/api/shops/${shopId}`, {
         method: 'PATCH',
-        headers,
         body: JSON.stringify({ active }),
       });
       if (!res.ok) {
