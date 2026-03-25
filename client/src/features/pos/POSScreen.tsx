@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Settings, Lock, WifiOff } from 'lucide-react';
+import { getAuthHeaders } from '../auth/serverAuth.js';
 import type { Sale } from '../../db/index.js';
 import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
@@ -29,6 +30,10 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const [stockError, setStockError] = useState<string | null>(null);
   const [shopName, setShopName] = useState<string>('');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [cartSidebarEnabled, setCartSidebarEnabled] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(() =>
+    window.matchMedia('(min-width: 1024px)').matches
+  );
 
   useEffect(() => {
     getStoredSession().then(s => { if (s) setShopName(s.shopName); });
@@ -43,6 +48,25 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
+  }, []);
+
+  useEffect(() => {
+    getAuthHeaders().then(headers =>
+      fetch('/api/settings', { headers })
+        .then(r => r.json())
+        .then((rows: Array<{ key: string; value: string }>) => {
+          const setting = rows.find(r => r.key === 'cart_sidebar_enabled');
+          if (setting) setCartSidebarEnabled(setting.value === 'true');
+        })
+        .catch(() => {})
+    );
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = (e: MediaQueryListEvent) => setIsLargeScreen(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
   }, []);
 
   useEffect(() => {
@@ -170,6 +194,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
 
   // --- View: POS-Hauptansicht ---
   const cartItemCount = cart.items.reduce((sum, i) => sum + i.quantity, 0);
+  const shouldShowSidebar = cartSidebarEnabled && isLargeScreen;
 
   return (
     <div className="min-h-screen bg-sky-50 flex flex-col">
@@ -190,19 +215,21 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Warenkorb-Button mit Badge */}
-          <button
-            onPointerDown={() => setIsCartOpen(true)}
-            className="relative min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl active:bg-sky-500 transition-colors"
-            aria-label="Warenkorb öffnen"
-          >
-            <ShoppingCart size={26} />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-white text-sky-700 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
+          {/* Warenkorb-Button mit Badge — nur wenn kein Sidebar-Modus */}
+          {!shouldShowSidebar && (
+            <button
+              onPointerDown={() => setIsCartOpen(true)}
+              className="relative min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl active:bg-sky-500 transition-colors"
+              aria-label="Warenkorb öffnen"
+            >
+              <ShoppingCart size={26} />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-white text-sky-700 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* Verwaltung-Button */}
           {onSwitchToAdmin && (
@@ -238,34 +265,54 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
       )}
 
-      {/* Artikel-Grid */}
-      <div className="flex-1 overflow-hidden">
-        <ArticleGrid onAddToCart={product => {
-          const result = cart.addItem(product);
-          if (!result.added) {
-            setStockError(`"${product.name}" ist nicht mehr auf Lager.`);
-            setTimeout(() => setStockError(null), 2500);
-          } else {
-            setStockError(null);
-            setIsCartOpen(true);
-          }
-        }} />
+      {/* Inhalt-Bereich: flex-row auf lg+ wenn Sidebar aktiv */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Artikel-Grid */}
+        <div className="flex-1 overflow-hidden">
+          <ArticleGrid onAddToCart={product => {
+            const result = cart.addItem(product);
+            if (!result.added) {
+              setStockError(`"${product.name}" ist nicht mehr auf Lager.`);
+              setTimeout(() => setStockError(null), 2500);
+            } else {
+              setStockError(null);
+              if (!shouldShowSidebar) setIsCartOpen(true);
+            }
+          }} />
+        </div>
+
+        {/* Sidebar-Modus: statische Warenkorb-Spalte */}
+        {shouldShowSidebar && (
+          <CartPanel
+            sidebar={true}
+            isOpen={true}
+            items={cart.items}
+            total={cart.total}
+            onClose={() => {}}
+            onUpdateQuantity={cart.updateQuantity}
+            onRemoveItem={cart.removeItem}
+            onCheckout={() => { setView('payment'); }}
+            onWithdrawal={handleWithdrawal}
+          />
+        )}
       </div>
 
-      {/* Warenkorb Slide-In */}
-      <CartPanel
-        isOpen={isCartOpen}
-        items={cart.items}
-        total={cart.total}
-        onClose={() => setIsCartOpen(false)}
-        onUpdateQuantity={cart.updateQuantity}
-        onRemoveItem={cart.removeItem}
-        onCheckout={() => {
-          setIsCartOpen(false);
-          setView('payment');
-        }}
-        onWithdrawal={handleWithdrawal}
-      />
+      {/* Slide-In Modus: bestehendes Verhalten */}
+      {!shouldShowSidebar && (
+        <CartPanel
+          isOpen={isCartOpen}
+          items={cart.items}
+          total={cart.total}
+          onClose={() => setIsCartOpen(false)}
+          onUpdateQuantity={cart.updateQuantity}
+          onRemoveItem={cart.removeItem}
+          onCheckout={() => {
+            setIsCartOpen(false);
+            setView('payment');
+          }}
+          onWithdrawal={handleWithdrawal}
+        />
+      )}
     </div>
   );
 }
