@@ -86,7 +86,7 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 - [x] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI (completed 2026-03-25)
 - [x] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop (completed 2026-03-25)
-- [ ] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation
+- [x] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation (completed 2026-03-25)
 
 ## Phase Details
 
@@ -384,7 +384,7 @@ Plans:
 **Plans**: 4 plans
 Plans:
 - [x] 26-01-PLAN.md — Admin-Einstellung cart_sidebar_enabled in SettingsForm
-- [ ] 26-02-PLAN.md — POSScreen responsives Sidebar-Layout (lg+ Spalte vs. Slide-In)
+- [x] 26-02-PLAN.md — POSScreen responsives Sidebar-Layout (lg+ Spalte vs. Slide-In)
 - [x] 26-03-PLAN.md — CartPanel Swipe-to-Dismiss und Swipe-to-Open
 - [x] 26-04-PLAN.md — ArticleGrid sticky Kategorie-Tabs, Auto-Scroll, verbesserter Kontrast
 
@@ -420,4 +420,4 @@ Phases execute in numeric order: 24 → 25 → 26
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
 | 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 26. Responsive UX | v7.0 | 3/4 | In Progress|  |
+| 26. Responsive UX | v7.0 | 4/4 | Complete   | 2026-03-25 |
