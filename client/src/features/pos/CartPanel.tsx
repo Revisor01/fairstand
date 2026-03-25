@@ -3,11 +3,15 @@ import { X, Trash2, AlertCircle, HandHeart } from 'lucide-react';
 import type { CartItem } from '../../db/index.js';
 import { formatEur } from './utils.js';
 
+const SWIPE_DISMISS_THRESHOLD = 60; // px — Mindestdistanz für Dismiss
+
 interface CartPanelProps {
   isOpen: boolean;
+  sidebar?: boolean;
   items: CartItem[];
   total: number;
   onClose: () => void;
+  onOpen?: () => void;
   onUpdateQuantity: (productId: string, quantity: number) => Promise<{ blocked?: boolean; stock?: number }>;
   onRemoveItem: (productId: string) => void;
   onCheckout: () => void;
@@ -16,15 +20,49 @@ interface CartPanelProps {
 
 export function CartPanel({
   isOpen,
+  sidebar = false,
   items,
   total,
   onClose,
+  onOpen,
   onUpdateQuantity,
   onRemoveItem,
   onCheckout,
   onWithdrawal,
 }: CartPanelProps) {
   const [stockWarning, setStockWarning] = useState<string | null>(null);
+  const [swipeStartX, setSwipeStartX] = useState(0);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+
+  function handlePanelPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (!isOpen || sidebar) return;
+    setSwipeStartX(e.clientX);
+    setIsSwiping(true);
+    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+  }
+
+  function handlePanelPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (!isSwiping || !isOpen || sidebar) return;
+    const delta = e.clientX - swipeStartX;
+    // Nur Swipe nach rechts (delta > 0) für Dismiss erlauben
+    if (delta > 0) {
+      setSwipeOffset(Math.min(delta, 400));
+    }
+  }
+
+  function handlePanelPointerUp() {
+    if (swipeOffset > SWIPE_DISMISS_THRESHOLD) {
+      onClose();
+    }
+    setSwipeOffset(0);
+    setIsSwiping(false);
+  }
+
+  function handlePanelPointerCancel() {
+    setSwipeOffset(0);
+    setIsSwiping(false);
+  }
 
   async function handleUpdateQuantity(productId: string, quantity: number) {
     const result = await onUpdateQuantity(productId, quantity);
@@ -40,10 +78,34 @@ export function CartPanel({
   return (
     <>
       {/* Overlay */}
-      {isOpen && (
+      {isOpen && !sidebar && (
         <div
           className="fixed inset-0 bg-black/30 z-40"
           onPointerDown={onClose}
+        />
+      )}
+
+      {/* Swipe-to-Open Edge-Bereich (nur im Slide-In Modus wenn geschlossen) */}
+      {!isOpen && !sidebar && onOpen && (
+        <div
+          className="fixed inset-y-0 right-0 w-8 z-30"
+          onPointerDown={e => {
+            const startX = e.clientX;
+            const handleMove = (ev: PointerEvent) => {
+              if (startX - ev.clientX > SWIPE_DISMISS_THRESHOLD) {
+                onOpen();
+                window.removeEventListener('pointermove', handleMove);
+                window.removeEventListener('pointerup', handleClean);
+              }
+            };
+            const handleClean = () => {
+              window.removeEventListener('pointermove', handleMove);
+              window.removeEventListener('pointerup', handleClean);
+            };
+            window.addEventListener('pointermove', handleMove);
+            window.addEventListener('pointerup', handleClean);
+          }}
+          aria-hidden="true"
         />
       )}
 
@@ -52,9 +114,17 @@ export function CartPanel({
         className={`
           fixed inset-y-0 right-0 w-80 md:w-96 bg-white shadow-2xl z-50
           flex flex-col
-          transform transition-transform duration-300
+          ${isSwiping ? '' : 'transform transition-transform duration-300'}
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
+        style={isOpen && swipeOffset > 0
+          ? { transform: `translateX(${swipeOffset}px)` }
+          : undefined
+        }
+        onPointerDown={handlePanelPointerDown}
+        onPointerMove={handlePanelPointerMove}
+        onPointerUp={handlePanelPointerUp}
+        onPointerCancel={handlePanelPointerCancel}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-sky-100 shrink-0">
