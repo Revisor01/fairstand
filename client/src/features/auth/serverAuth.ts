@@ -4,6 +4,7 @@ export interface StoredSession {
   shopName: string;
   token: string;
   lastActivity: number; // Unix-Timestamp ms
+  isMaster: boolean;
 }
 
 // POST /api/auth/pin aufrufen und Session lokal speichern
@@ -15,12 +16,13 @@ export async function serverLogin(pin: string): Promise<StoredSession | null> {
       body: JSON.stringify({ pin }),
     });
     if (!res.ok) return null;
-    const data = await res.json() as { shopId: string; shopName: string; token: string };
+    const data = await res.json() as { shopId: string; shopName: string; token: string; isMaster: boolean };
     const session: StoredSession = {
       shopId: data.shopId,
       shopName: data.shopName,
       token: data.token,
       lastActivity: Date.now(),
+      isMaster: data.isMaster,
     };
     localStorage.setItem('session', JSON.stringify(session));
     return session;
