@@ -367,7 +367,10 @@ Plans:
   2. Eine Bestandsänderung oder Preisänderung in Shop A hat keine Auswirkung auf die Produktansicht in Shop B
   3. Der Tagesbericht und Monatsbericht zeigen ausschließlich Verkäufe des eingeloggten Shops — keine Daten anderer Shops erscheinen
   4. Ein PDF-Import erstellt die neuen Produkte im Sortiment des eingeloggten Shops — nicht global
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
+- [ ] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
 
 ### Phase 26: Responsive UX
 **Goal**: Die App passt sich an jedes Gerät an — auf dem Desktop und iPad im Querformat steht der Warenkorb als feste Spalte daneben, auf dem iPhone und iPad im Hochformat lässt er sich per Swipe einblenden, und die Kategorien-Navigation ist schnell und klar bedienbar
@@ -378,7 +381,10 @@ Plans:
   2. Auf dem iPhone und iPad Portrait ist der Warenkorb zunächst versteckt und erscheint als Panel von rechts wenn man darauf tippt oder wischt
   3. Die Kategorien-Navigation ermöglicht das schnelle Wechseln zwischen Kategorien mit einem einzelnen Tipp — der aktive Filter ist klar erkennbar
   4. Das Layout funktioniert auf allen drei Geräteklassen ohne horizontales Scrollen oder abgeschnittene Elemente
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
+- [ ] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
 
 ## Progress
 
