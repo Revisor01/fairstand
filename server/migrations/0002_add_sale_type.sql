@@ -1,1 +1,1 @@
-ALTER TABLE `sales` ADD COLUMN `type` text;
+ALTER TABLE "sales" ADD COLUMN "type" text;
