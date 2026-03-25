@@ -30,6 +30,7 @@ export async function authRoutes(fastify: FastifyInstance) {
 
     const [shop] = await db.select().from(shops).where(eq(shops.pin, pinHash));
     if (!shop) return reply.status(401).send({ error: 'Falscher PIN' });
+    if (!shop.active) return reply.status(403).send({ error: 'Dieser Shop ist deaktiviert' });
 
     const token = crypto.randomUUID();
     createSession(token, shop.shopId);
@@ -38,6 +39,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       shopId: shop.shopId,
       shopName: shop.name,
       token,
+      isMaster: shop.isMaster,
     });
   });
 }

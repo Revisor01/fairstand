@@ -401,9 +401,14 @@ const SEED_PRODUCTS: Array<{
 ];
 
 export async function ensureShopSeeded(): Promise<void> {
-  // Idempotent: Nichts tun wenn Shop bereits existiert
   const [existing] = await db.select().from(shops).where(eq(shops.shopId, SHOP_ID));
-  if (existing) return;
+  if (existing) {
+    // Sicherstellen dass is_master gesetzt ist (Migration für bestehende Instanzen)
+    if (!existing.isMaster) {
+      await db.update(shops).set({ isMaster: true }).where(eq(shops.shopId, SHOP_ID));
+    }
+    return;
+  }
 
   const pinHash = await hashPin(SHOP_PIN);
   const now = Date.now();
@@ -415,6 +420,7 @@ export async function ensureShopSeeded(): Promise<void> {
     name: SHOP_NAME,
     pin: pinHash,
     createdAt: now,
+    isMaster: true,
   });
 
   // Produkte anlegen (nur wenn noch keine existieren für diesen Shop)
