@@ -103,7 +103,10 @@ export function useCart() {
     dispatch({ type: 'REMOVE_ITEM', productId });
   }
 
-  async function updateQuantity(productId: string, quantity: number): Promise<{ blocked?: boolean; stock?: number }> {
+  async function updateQuantity(productId: string, quantity: number, stock?: number): Promise<{ blocked?: boolean; stock?: number }> {
+    if (stock !== undefined && quantity > stock) {
+      return { blocked: true, stock };
+    }
     dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
     return {};
   }
