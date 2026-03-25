@@ -44,7 +44,7 @@ await fastify.register(rateLimit, {
 fastify.addHook('preHandler', async (request, reply) => {
   const url = request.url;
   // Öffentliche Endpoints: Auth (Login) + Health
-  if (url.startsWith('/api/auth/') || url.startsWith('/api/health')) {
+  if (url.startsWith('/api/auth/') || url.startsWith('/api/health') || url.startsWith('/api/ws')) {
     return;
   }
 
