@@ -352,7 +352,11 @@ Plans:
   2. Aus dem Shops-Tab heraus kann ein neuer Shop mit Name und PIN angelegt werden — nach dem Anlegen ist der Shop sofort über den neuen PIN erreichbar
   3. Ein aktiver Shop kann deaktiviert werden — danach schlägt der Login mit dessen PIN fehl und die Mitarbeiterinnen des Shops sehen eine klare Fehlermeldung
   4. Die Master-Verwaltung zeigt eine Liste aller Shops mit Status (aktiv/inaktiv)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — DB-Schema (is_master + active), Migration, Seed-Update, Auth active-Check + isMaster in Response
+- [ ] 24-02-PLAN.md — /api/shops Route (Master-only CRUD), ShopsManager.tsx, AdminScreen Shops-Tab, isMaster in Session
 
 ### Phase 25: Shop-Sortiment-Isolation
 **Goal**: Jeder Shop hat ein vollständig unabhängiges Sortiment — Produkte, Preise und Bestand sind shop-spezifisch, Berichte und PDF-Imports bleiben pro Shop isoliert
