@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getShopId } from '../../db/index.js';
-import { getAuthHeaders, authFetch } from '../../features/auth/serverAuth.js';
+import { authFetch } from '../../features/auth/serverAuth.js';
 import type { Product } from '../../db/index.js';
 
 // Server liefert snake_case — camelCase-Mapping nötig
@@ -39,10 +39,8 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (productData: Product) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/products', {
+      const res = await authFetch('/api/products', {
         method: 'POST',
-        headers,
         body: JSON.stringify(productData),
       });
       if (!res.ok) throw new Error('Produkt konnte nicht gespeichert werden');
@@ -58,10 +56,8 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (productData: Product) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/products', {
+      const res = await authFetch('/api/products', {
         method: 'POST',
-        headers,
         body: JSON.stringify({ ...productData, updatedAt: Date.now() }),
       });
       if (!res.ok) throw new Error('Produkt konnte nicht aktualisiert werden');
@@ -77,11 +73,9 @@ export function useToggleProductActive() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ productId, active }: { productId: string; active: boolean }) => {
-      const headers = await getAuthHeaders();
       const action = active ? 'activate' : 'deactivate';
-      const res = await fetch(`/api/products/${productId}/${action}`, {
+      const res = await authFetch(`/api/products/${productId}/${action}`, {
         method: 'PATCH',
-        headers,
       });
       if (!res.ok) throw new Error('Status konnte nicht geändert werden');
       return { productId, active };
@@ -107,10 +101,8 @@ export function useAdjustStock() {
       reason?: string;
     }) => {
       const shopId = getShopId();
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/sync', {
+      const res = await authFetch('/api/sync', {
         method: 'POST',
-        headers,
         body: JSON.stringify({
           entries: [
             {

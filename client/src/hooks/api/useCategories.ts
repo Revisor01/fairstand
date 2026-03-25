@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getShopId } from '../../db/index.js';
-import { getAuthHeaders } from '../../features/auth/serverAuth.js';
+import { authFetch } from '../../features/auth/serverAuth.js';
 import type { Category } from '../../db/index.js';
 
 export function useCategories() {
@@ -8,8 +8,7 @@ export function useCategories() {
   return useQuery<Category[]>({
     queryKey: ['categories', shopId],
     queryFn: async () => {
-      const headers = await getAuthHeaders();
-      const res = await fetch(`/api/categories?shopId=${shopId}`, { headers });
+      const res = await authFetch(`/api/categories?shopId=${shopId}`);
       if (!res.ok) throw new Error('Kategorien konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];
       return data.map(c => ({
@@ -27,10 +26,8 @@ export function useCreateCategory() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (name: string) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch('/api/categories', {
+      const res = await authFetch('/api/categories', {
         method: 'POST',
-        headers,
         body: JSON.stringify({ name }),
       });
       if (!res.ok) throw new Error('Kategorie konnte nicht angelegt werden');
@@ -46,10 +43,8 @@ export function useRenameCategory() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch(`/api/categories/${id}`, {
+      const res = await authFetch(`/api/categories/${id}`, {
         method: 'PATCH',
-        headers,
         body: JSON.stringify({ name }),
       });
       if (!res.ok) throw new Error('Umbenennen fehlgeschlagen');
@@ -67,10 +62,8 @@ export function useDeleteCategory() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const headers = await getAuthHeaders();
-      const res = await fetch(`/api/categories/${id}`, {
+      const res = await authFetch(`/api/categories/${id}`, {
         method: 'DELETE',
-        headers,
       });
       if (res.status === 409) {
         const data = await res.json() as { error: string };

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
 import type { Sale } from '../../../db/index.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
 import { startOfDay, endOfDay, subDays, format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -27,10 +27,8 @@ export function DailyReport() {
     queryKey: ['sales', getShopId(), dayStart, dayEnd],
     queryFn: async () => {
       const shopId = getShopId();
-      const headers = await getAuthHeaders();
-      const res = await fetch(
-        `/api/sales?shopId=${shopId}&from=${dayStart}&to=${dayEnd}`,
-        { headers }
+      const res = await authFetch(
+        `/api/sales?shopId=${shopId}&from=${dayStart}&to=${dayEnd}`
       );
       if (!res.ok) throw new Error('Verkäufe konnten nicht geladen werden');
       const data = await res.json() as Record<string, unknown>[];

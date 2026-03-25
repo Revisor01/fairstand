@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import type { Sale } from '../../../db/index.js';
 import { getShopId } from '../../../db/index.js';
-import { getAuthHeaders } from '../../auth/serverAuth.js';
+import { authFetch } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
 
 interface SaleDetailModalProps {
@@ -18,10 +18,8 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
 
     const cancelledAt = Date.now();
 
-    const headers = await getAuthHeaders();
-    const res = await fetch('/api/sync', {
+    const res = await authFetch('/api/sync', {
       method: 'POST',
-      headers,
       body: JSON.stringify({
         entries: [{
           operation: 'SALE_CANCEL',
@@ -50,10 +48,8 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
   async function handleReturnItem(productId: string, quantity: number) {
     const returnedAt = Date.now();
 
-    const headers = await getAuthHeaders();
-    const res = await fetch('/api/sync', {
+    const res = await authFetch('/api/sync', {
       method: 'POST',
-      headers,
       body: JSON.stringify({
         entries: [{
           operation: 'ITEM_RETURN',

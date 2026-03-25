@@ -1,6 +1,6 @@
 import { getShopId } from '../../db/index.js';
 import type { CartItem, Sale, Product } from '../../db/index.js';
-import { getAuthHeaders } from '../auth/serverAuth.js';
+import { authFetch } from '../auth/serverAuth.js';
 
 /**
  * Schreibt einen Verkauf direkt an den Server.
@@ -36,10 +36,8 @@ export async function completeSale(
     createdAt: Date.now(),
   };
 
-  const headers = await getAuthHeaders();
-  const res = await fetch('/api/sync', {
+  const res = await authFetch('/api/sync', {
     method: 'POST',
-    headers,
     body: JSON.stringify({
       entries: [{ operation: 'SALE_COMPLETE', payload: sale, shopId: getShopId(), createdAt: Date.now(), attempts: 0 }],
     }),
@@ -81,10 +79,8 @@ export async function completeWithdrawal(
     createdAt: Date.now(),
   };
 
-  const headers = await getAuthHeaders();
-  const res = await fetch('/api/sync', {
+  const res = await authFetch('/api/sync', {
     method: 'POST',
-    headers,
     body: JSON.stringify({
       entries: [{ operation: 'SALE_COMPLETE', payload: sale, shopId: getShopId(), createdAt: Date.now(), attempts: 0 }],
     }),
