@@ -370,7 +370,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
-- [ ] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
+- [x] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
 
 ### Phase 26: Responsive UX
 **Goal**: Die App passt sich an jedes Gerät an — auf dem Desktop und iPad im Querformat steht der Warenkorb als feste Spalte daneben, auf dem iPhone und iPad im Hochformat lässt er sich per Swipe einblenden, und die Kategorien-Navigation ist schnell und klar bedienbar
@@ -417,5 +417,5 @@ Phases execute in numeric order: 24 → 25 → 26
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 25. Shop-Sortiment-Isolation | v7.0 | 0/? | Not started | - |
+| 25. Shop-Sortiment-Isolation | v7.0 | 1/2 | In Progress|  |
 | 26. Responsive UX | v7.0 | 0/? | Not started | - |

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: Multi-Shop & UX
 status: unknown
-stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-25T00:11:18.729Z"
+stopped_at: Completed 25-02-PLAN.md
+last_updated: "2026-03-25T00:28:25.725Z"
 progress:
   total_phases: 20
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 24 — Master-Shop Administration
+**Current focus:** Phase 25 — shop-sortiment-isolation
 
 ## Current Position
 
-Phase: 25
-Plan: Not started
+Phase: 25 (shop-sortiment-isolation) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [Phase 24]: Seed-Idempotenz: bestehende Shops werden auf isMaster geprueft und ggf. via UPDATE nachgepflegt
 - [Phase 24]: requireMaster prueft isMaster per DB-Lookup statt JWT-Claim — authoritative, kein stale-Token-Risiko
 - [Phase 24]: visibleTabs computed array pattern fuer bedingte Tabs statt inline JSX-Konditionale
+- [Phase 25-02]: SALE/SALE_CANCEL überspringen fremde Produkte still (continue), STOCK_ADJUST/ITEM_RETURN melden Fehler explizit
+- [Phase 25-02]: Kein shopId Query-Param im Produkt-Fetch — Server filtert ausschliesslich per session.shopId
 
 ### Pending Todos
 
@@ -66,7 +68,7 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-03-25T00:09:11.270Z
-Stopped at: Completed 24-02-PLAN.md
+Last session: 2026-03-25T00:28:25.722Z
+Stopped at: Completed 25-02-PLAN.md
 Resume file: None
 Next step: `/gsd:plan-phase 24`
