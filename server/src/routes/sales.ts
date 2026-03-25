@@ -1,6 +1,8 @@
 import type { FastifyInstance } from 'fastify';
-import { sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
+import { sales, products } from '../db/schema.js';
+import { broadcast } from './websocket.js';
 
 export async function salesRoutes(fastify: FastifyInstance) {
   // GET /sales?shopId=...&from=...&to=...
@@ -43,5 +45,45 @@ export async function salesRoutes(fastify: FastifyInstance) {
     `);
 
     return reply.send(result.rows);
+  });
+
+  // DELETE /sales/:id — permanently remove a sale and restock products
+  fastify.delete<{ Params: { id: string } }>('/sales/:id', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { id } = request.params;
+
+    // Look up the sale
+    const [sale] = await db.select().from(sales).where(eq(sales.id, id)).limit(1);
+
+    if (!sale || sale.shopId !== shopId) {
+      return reply.status(404).send({ error: 'Verkauf nicht gefunden' });
+    }
+
+    const saleItems = (sale.items ?? []) as Array<{ productId: string; quantity: number }>;
+    let stockAdjusted = false;
+
+    await db.transaction(async (tx) => {
+      // If sale is not cancelled, restock products
+      if (!sale.cancelledAt) {
+        for (const item of saleItems) {
+          const [prod] = await tx.select().from(products).where(eq(products.id, item.productId)).limit(1);
+          if (!prod || prod.shopId !== shopId) continue;
+          await tx.update(products)
+            .set({ stock: sql`${products.stock} + ${Number(item.quantity)}` })
+            .where(eq(products.id, item.productId));
+        }
+        stockAdjusted = true;
+      }
+
+      // Delete the sale
+      await tx.delete(sales).where(eq(sales.id, id));
+    });
+
+    if (stockAdjusted) {
+      broadcast({ type: 'products_changed', shopId });
+    }
+
+    return reply.send({ ok: true });
   });
 }

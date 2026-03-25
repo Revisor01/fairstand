@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { Trash2 } from 'lucide-react';
 import type { Sale } from '../../../db/index.js';
 import { getShopId } from '../../../db/index.js';
 import { authFetch } from '../../auth/serverAuth.js';
@@ -11,11 +13,13 @@ interface SaleDetailModalProps {
   onSaleChanged?: () => void; // Callback nach Storno/Rückgabe — DailyReport refresht
 }
 
-export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModalProps) {
-  async function handleCancelSale() {
-    const confirmed = window.confirm('Verkauf stornieren? Alle Artikel werden zurückgebucht.');
-    if (!confirmed) return;
+type ConfirmAction = 'cancel' | 'delete' | null;
 
+export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModalProps) {
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  async function handleCancelSale() {
     const cancelledAt = Date.now();
 
     const res = await authFetch('/api/sync', {
@@ -37,7 +41,21 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
     });
 
     if (!res.ok) {
-      window.alert('Storno fehlgeschlagen. Bitte Internetverbindung prüfen.');
+      setAlertMessage('Storno fehlgeschlagen. Bitte Internetverbindung prüfen.');
+      return;
+    }
+
+    onSaleChanged?.();
+    onClose();
+  }
+
+  async function handleDeleteSale() {
+    const res = await authFetch(`/api/sales/${sale.id}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      setAlertMessage('Löschen fehlgeschlagen. Bitte Internetverbindung prüfen.');
       return;
     }
 
@@ -68,12 +86,22 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
     });
 
     if (!res.ok) {
-      window.alert('Rückgabe fehlgeschlagen. Bitte Internetverbindung prüfen.');
+      setAlertMessage('Rückgabe fehlgeschlagen. Bitte Internetverbindung prüfen.');
       return;
     }
 
     onSaleChanged?.();
     // Modal bleibt offen für weitere Rückgaben
+  }
+
+  function onConfirmAction() {
+    if (confirmAction === 'cancel') {
+      setConfirmAction(null);
+      handleCancelSale();
+    } else if (confirmAction === 'delete') {
+      setConfirmAction(null);
+      handleDeleteSale();
+    }
   }
 
   return (
@@ -162,7 +190,7 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
           </table>
         </div>
 
-        {/* Footer: Summen + Storno-Button */}
+        {/* Footer: Summen + Buttons */}
         <div className="border-t border-slate-100 px-5 py-4 flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between text-sm text-slate-600">
@@ -176,16 +204,82 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
               </div>
             )}
           </div>
-          {!sale.cancelledAt && (
+          <div className="flex gap-2">
+            {!sale.cancelledAt && (
+              <button
+                onPointerDown={() => setConfirmAction('cancel')}
+                className="flex-1 py-3 rounded-xl bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 active:bg-red-200 transition-colors min-h-[44px]"
+              >
+                Verkauf stornieren
+              </button>
+            )}
             <button
-              onPointerDown={handleCancelSale}
-              className="w-full py-3 rounded-xl bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 active:bg-red-200 transition-colors min-h-[44px]"
+              onPointerDown={() => setConfirmAction('delete')}
+              className="py-3 px-4 rounded-xl bg-red-600 text-white font-medium text-sm hover:bg-red-700 active:bg-red-800 transition-colors min-h-[44px] flex items-center gap-2"
             >
-              Verkauf stornieren
+              <Trash2 size={16} />
+              Löschen
             </button>
-          )}
+          </div>
         </div>
       </div>
+
+      {/* Bestätigungsmodal */}
+      {confirmAction && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
+          onPointerDown={() => setConfirmAction(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4"
+            onPointerDown={e => e.stopPropagation()}
+          >
+            <h4 className="font-semibold text-slate-800 text-lg">
+              {confirmAction === 'cancel' ? 'Verkauf stornieren?' : 'Verkauf endgültig löschen?'}
+            </h4>
+            <p className="text-sm text-slate-600">
+              {confirmAction === 'cancel'
+                ? 'Alle Artikel werden zurückgebucht. Diese Aktion kann nicht rückgängig gemacht werden.'
+                : 'Der Verkauf wird unwiderruflich aus der Datenbank entfernt und alle Artikel zurückgebucht.'}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onPointerDown={() => setConfirmAction(null)}
+                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium text-sm hover:bg-slate-200 active:bg-slate-300 transition-colors min-h-[44px]"
+              >
+                Abbrechen
+              </button>
+              <button
+                onPointerDown={onConfirmAction}
+                className="flex-1 py-3 rounded-xl bg-red-600 text-white font-medium text-sm hover:bg-red-700 active:bg-red-800 transition-colors min-h-[44px]"
+              >
+                Bestätigen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Alert-Modal (ersetzt window.alert) */}
+      {alertMessage && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4"
+          onPointerDown={() => setAlertMessage(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4"
+            onPointerDown={e => e.stopPropagation()}
+          >
+            <p className="text-sm text-slate-700">{alertMessage}</p>
+            <button
+              onPointerDown={() => setAlertMessage(null)}
+              className="w-full py-3 rounded-xl bg-sky-500 text-white font-medium text-sm hover:bg-sky-600 active:bg-sky-700 transition-colors min-h-[44px]"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
