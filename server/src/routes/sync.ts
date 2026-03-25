@@ -111,6 +111,11 @@ export async function syncRoutes(fastify: FastifyInstance) {
             // Felder mit Defaults überschreiben. Produkte werden über POST /api/products
             // angelegt/aktualisiert, nicht über Sales.
             for (const item of sale.items) {
+              const [prod] = await tx.select().from(products).where(eq(products.id, item.productId)).limit(1);
+              if (!prod || prod.shopId !== entry.shopId) {
+                // Produkt gehört nicht zu diesem Shop — Stock-Delta überspringen (kein Cross-Shop-Update)
+                continue;
+              }
               await tx.update(products)
                 .set({ stock: sql`${products.stock} - ${item.quantity}` })
                 .where(eq(products.id, item.productId));
@@ -137,6 +142,12 @@ export async function syncRoutes(fastify: FastifyInstance) {
           }
           const adj = adjustResult.data;
           await db.transaction(async (tx) => {
+            // Ownership-Check: Produkt muss zu diesem Shop gehören
+            const [adjustProd] = await tx.select().from(products).where(eq(products.id, adj.productId)).limit(1);
+            if (!adjustProd || adjustProd.shopId !== entry.shopId) {
+              errors.push({ index: i, message: 'Produkt gehört nicht zu diesem Shop' });
+              return;
+            }
             await tx.update(products)
               .set({ stock: sql`${products.stock} + ${adj.delta}`, updatedAt: sql`${Date.now()}` })
               .where(eq(products.id, adj.productId));
@@ -166,6 +177,10 @@ export async function syncRoutes(fastify: FastifyInstance) {
 
             // Bestand für alle Artikel zurückbuchen (Delta +quantity)
             for (const item of cancel.items) {
+              const [cancelProd] = await tx.select().from(products).where(eq(products.id, item.productId)).limit(1);
+              if (!cancelProd || cancelProd.shopId !== entry.shopId) {
+                continue;  // Produkt gehört nicht zu diesem Shop — überspringen
+              }
               await tx.update(products)
                 .set({ stock: sql`${products.stock} + ${item.quantity}` })
                 .where(eq(products.id, item.productId));
@@ -190,6 +205,12 @@ export async function syncRoutes(fastify: FastifyInstance) {
           }
           const ret = returnResult.data;
           await db.transaction(async (tx) => {
+            // Ownership-Check: Produkt muss zu diesem Shop gehören
+            const [returnProd] = await tx.select().from(products).where(eq(products.id, ret.productId)).limit(1);
+            if (!returnProd || returnProd.shopId !== entry.shopId) {
+              errors.push({ index: i, message: 'Produkt gehört nicht zu diesem Shop' });
+              return;
+            }
             // Bestand für zurückgegebenen Artikel zurückbuchen
             await tx.update(products)
               .set({ stock: sql`${products.stock} + ${ret.quantity}` })
