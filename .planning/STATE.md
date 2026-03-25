@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v7.0
 milestone_name: Multi-Shop & UX
 status: unknown
-stopped_at: Completed 25-01-PLAN.md
-last_updated: "2026-03-25T00:29:34.325Z"
+stopped_at: Completed 26-01-PLAN.md
+last_updated: "2026-03-25T07:13:05.332Z"
 progress:
   total_phases: 20
   completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 25 — shop-sortiment-isolation
+**Current focus:** Phase 26 — responsive-ux
 
 ## Current Position
 
-Phase: 25 (shop-sortiment-isolation) — EXECUTING
-Plan: 2 of 2
+Phase: 26 (responsive-ux) — EXECUTING
+Plan: 3 of 4
 
 ## Performance Metrics
 
@@ -58,6 +58,8 @@ Recent decisions affecting current work:
 - [Phase 25-02]: Kein shopId Query-Param im Produkt-Fetch — Server filtert ausschliesslich per session.shopId
 - [Phase 25]: Settings-PK auf Composite Unique Index (key, shopId) umgestellt — erlaubt mehreren Shops denselben Setting-Key unabhaengig zu verwenden
 - [Phase 25]: Journal-Dialekt von sqlite auf postgresql aktualisiert und 0003/0004 nachregistriert
+- [Phase 26-responsive-ux]: scrollbar-hide via [&::-webkit-scrollbar]:hidden statt Plugin (Tailwind 4 native)
+- [Phase 26-responsive-ux]: Warenkorb-Layout-Sektion als erste Card in SettingsForm — kein Backend-Eingriff noetig, bestehender PUT /api/settings Endpoint unterstuetzt cart_sidebar_enabled direkt
 
 ### Pending Todos
 
@@ -70,7 +72,7 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-03-25T00:29:34.308Z
-Stopped at: Completed 25-01-PLAN.md
+Last session: 2026-03-25T07:13:05.329Z
+Stopped at: Completed 26-01-PLAN.md
 Resume file: None
 Next step: `/gsd:plan-phase 24`
