@@ -13,6 +13,7 @@ import { reportScheduler } from './scheduler/reportScheduler.js';
 import { authRoutes } from './routes/auth.js';
 import { categoryRoutes } from './routes/categories.js';
 import { salesRoutes } from './routes/sales.js';
+import { shopsRoutes } from './routes/shops.js';
 import { ensureShopSeeded } from './db/seed.js';
 import { validateSession } from './lib/sessions.js';
 import { pool } from './db/index.js';
@@ -74,6 +75,7 @@ await fastify.register(importRoutes, { prefix: '/api' });
 await fastify.register(authRoutes, { prefix: '/api' });
 await fastify.register(categoryRoutes, { prefix: '/api' });
 await fastify.register(salesRoutes, { prefix: '/api' });
+await fastify.register(shopsRoutes, { prefix: '/api' });
 await fastify.register(fastifySchedule);
 await fastify.register(reportScheduler);
 
