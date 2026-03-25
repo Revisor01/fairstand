@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
@@ -55,6 +55,17 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
     return products.filter((p: Product) => p.category === activeCategory);
   }, [products, activeCategory]);
 
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    activeTabRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    });
+  }, [activeCategory]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full text-slate-500">
@@ -66,16 +77,26 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Kategorie-Tabs */}
-      <div className="flex gap-1 overflow-x-auto px-4 pt-3 pb-2 bg-white border-b border-sky-100 shrink-0">
+      <div
+        ref={tabsContainerRef}
+        className="
+          sticky top-[68px] z-20
+          flex gap-2 overflow-x-auto px-4 py-3
+          bg-white border-b border-sky-100
+          [&::-webkit-scrollbar]:hidden
+          shrink-0
+        "
+      >
         {categories.map((cat: string) => (
           <button
             key={cat}
+            ref={activeCategory === cat ? activeTabRef : null}
             onPointerDown={() => setActiveCategory(cat)}
             className={`
               px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap min-h-[44px] transition-colors
               ${activeCategory === cat
-                ? 'bg-sky-400 text-white'
-                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+                ? 'bg-sky-500 text-white shadow-md font-semibold'
+                : 'bg-sky-50 text-sky-600 hover:bg-sky-100'
               }
             `}
           >
