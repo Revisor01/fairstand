@@ -203,7 +203,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const shouldShowSidebar = cartSidebarEnabled && isLargeScreen;
 
   return (
-    <div className="min-h-screen bg-sky-50 flex flex-col">
+    <div className="h-screen bg-sky-50 flex flex-col overflow-hidden">
       {/* Mindestbestand-Warnung */}
       <LowStockBanner />
 
