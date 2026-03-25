@@ -85,7 +85,7 @@ export function ImportScreen() {
 
       // Matching gegen Server-Produktdatenbank
       const productHeaders = await getAuthHeaders();
-      const productsRes = await fetch(`/api/products?shopId=${getShopId()}`, { headers: productHeaders });
+      const productsRes = await fetch('/api/products', { headers: productHeaders });
       const products: Product[] = productsRes.ok ? await productsRes.json() : [];
       const productIndex = new Map(
         products.map(p => [p.articleNumber.toLowerCase().trim(), p])
