@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
 import type { Sale } from '../../../db/index.js';
@@ -21,6 +21,7 @@ export function DailyReport() {
   const [rangeMode, setRangeMode] = useState<RangeMode>('today');
   const [customDate, setCustomDate] = useState<Date>(new Date());
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const queryClient = useQueryClient();
 
   const { rangeStart, rangeEnd } = useMemo(() => {
     const now = new Date();
@@ -227,7 +228,10 @@ export function DailyReport() {
         <SaleDetailModal
           sale={selectedSale}
           onClose={() => setSelectedSale(null)}
-          onSaleChanged={() => setSelectedSale(null)}
+          onSaleChanged={() => {
+            setSelectedSale(null);
+            queryClient.invalidateQueries({ queryKey: ['sales'] });
+          }}
         />
       )}
     </div>

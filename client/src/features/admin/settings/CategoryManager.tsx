@@ -4,6 +4,9 @@ import { useCategories, useCreateCategory, useRenameCategory, useDeleteCategory 
 
 export function CategoryManager() {
   const [newCatName, setNewCatName] = useState('');
+  const [renameTarget, setRenameTarget] = useState<{ id: string; name: string } | null>(null);
+  const [renameValue, setRenameValue] = useState('');
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const { data: categories, isLoading } = useCategories();
   const createCategory = useCreateCategory();
@@ -17,17 +20,28 @@ export function CategoryManager() {
       await createCategory.mutateAsync(name);
       setNewCatName('');
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Fehler beim Anlegen');
+      setAlertMessage(err instanceof Error ? err.message : 'Fehler beim Anlegen');
     }
   }
 
-  async function handleRename(id: string, oldName: string) {
-    const newName = window.prompt('Neuer Name:', oldName);
-    if (!newName || !newName.trim() || newName.trim() === oldName) return;
+  function openRenameModal(id: string, oldName: string) {
+    setRenameTarget({ id, name: oldName });
+    setRenameValue(oldName);
+  }
+
+  async function handleRenameConfirm() {
+    if (!renameTarget) return;
+    const newName = renameValue.trim();
+    if (!newName || newName === renameTarget.name) {
+      setRenameTarget(null);
+      return;
+    }
     try {
-      await renameCategory.mutateAsync({ id, name: newName.trim() });
+      await renameCategory.mutateAsync({ id: renameTarget.id, name: newName });
+      setRenameTarget(null);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Fehler beim Umbenennen');
+      setAlertMessage(err instanceof Error ? err.message : 'Fehler beim Umbenennen');
+      setRenameTarget(null);
     }
   }
 
@@ -35,7 +49,7 @@ export function CategoryManager() {
     try {
       await deleteCategory.mutateAsync(id);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Fehler beim Löschen');
+      setAlertMessage(err instanceof Error ? err.message : 'Fehler beim Löschen');
     }
   }
 
@@ -54,7 +68,7 @@ export function CategoryManager() {
             <div key={cat.id} className="flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3">
               <span className="text-slate-800 font-medium text-base leading-snug flex-1 min-w-0 truncate">{cat.name}</span>
               <button
-                onPointerDown={() => handleRename(cat.id, cat.name)}
+                onPointerDown={() => openRenameModal(cat.id, cat.name)}
                 title="Umbenennen"
                 className="bg-sky-100 active:bg-sky-300 text-sky-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors shrink-0"
               >
@@ -90,6 +104,65 @@ export function CategoryManager() {
           <Plus size={20} />
         </button>
       </div>
+
+      {/* Umbenennen-Modal */}
+      {renameTarget && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+          onPointerDown={() => setRenameTarget(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4"
+            onPointerDown={e => e.stopPropagation()}
+          >
+            <h4 className="font-semibold text-slate-800 text-lg">Kategorie umbenennen</h4>
+            <input
+              type="text"
+              value={renameValue}
+              onChange={e => setRenameValue(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleRenameConfirm()}
+              autoFocus
+              className="min-h-[44px] border border-slate-200 rounded-xl px-3 text-base focus:outline-none focus:border-sky-400"
+              placeholder="Neuer Name"
+            />
+            <div className="flex gap-3">
+              <button
+                onPointerDown={() => setRenameTarget(null)}
+                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium text-sm hover:bg-slate-200 active:bg-slate-300 transition-colors min-h-[44px]"
+              >
+                Abbrechen
+              </button>
+              <button
+                onPointerDown={handleRenameConfirm}
+                className="flex-1 py-3 rounded-xl bg-sky-500 text-white font-medium text-sm hover:bg-sky-600 active:bg-sky-700 transition-colors min-h-[44px]"
+              >
+                Bestätigen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Alert-Modal (ersetzt window.alert) */}
+      {alertMessage && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onPointerDown={() => setAlertMessage(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4"
+            onPointerDown={e => e.stopPropagation()}
+          >
+            <p className="text-sm text-slate-700">{alertMessage}</p>
+            <button
+              onPointerDown={() => setAlertMessage(null)}
+              className="w-full py-3 rounded-xl bg-sky-500 text-white font-medium text-sm hover:bg-sky-600 active:bg-sky-700 transition-colors min-h-[44px]"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
