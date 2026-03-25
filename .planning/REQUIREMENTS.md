@@ -20,7 +20,7 @@
 
 ### Responsive UX
 
-- [ ] **UX-01**: Layout ist auf iPad (Landscape + Portrait), iPhone und Desktop-Browser optimiert
+- [x] **UX-01**: Layout ist auf iPad (Landscape + Portrait), iPhone und Desktop-Browser optimiert
 - [ ] **UX-02**: Warenkorb als fixe Spalte auf breiten Screens (iPad Landscape, Desktop)
 - [ ] **UX-03**: Warenkorb als Swipe-In Panel auf schmalen Screens (iPhone, iPad Portrait)
 - [x] **UX-04**: Kategorien-Navigation verbessert (aktuelle Tab-Leiste ist nicht ideal)
@@ -51,7 +51,7 @@
 | SELF-01 | Phase 25 | Complete |
 | SELF-02 | Phase 25 | Complete |
 | SELF-03 | Phase 25 | Complete |
-| UX-01 | Phase 26 | Pending |
+| UX-01 | Phase 26 | Complete |
 | UX-02 | Phase 26 | Pending |
 | UX-03 | Phase 26 | Pending |
 | UX-04 | Phase 26 | Complete |
