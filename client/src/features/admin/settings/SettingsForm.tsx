@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Send, Info, Banknote, Plus, X } from 'lucide-react';
+import { Mail, Send, Info, Banknote, Plus, X, LayoutPanelRight } from 'lucide-react';
 import { getShopId } from '../../../db/index.js';
 import { getAuthHeaders } from '../../auth/serverAuth.js';
 
@@ -19,6 +19,7 @@ export function SettingsForm() {
   const [reportEmail, setReportEmail] = useState('');
   const [reportMonthly, setReportMonthly] = useState(false);
   const [reportYearly, setReportYearly] = useState(false);
+  const [cartSidebarEnabled, setCartSidebarEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedKey, setSavedKey] = useState<string | null>(null);
   const [quickAmounts, setQuickAmounts] = useState<number[]>(DEFAULT_QUICK_AMOUNTS);
@@ -33,6 +34,7 @@ export function SettingsForm() {
             if (row.key === 'report_email') setReportEmail(row.value);
             if (row.key === 'report_monthly') setReportMonthly(row.value === 'true');
             if (row.key === 'report_yearly') setReportYearly(row.value === 'true');
+            if (row.key === 'cart_sidebar_enabled') setCartSidebarEnabled(row.value === 'true');
           }
         })
         .catch(() => {})
@@ -81,6 +83,11 @@ export function SettingsForm() {
     saveSetting('report_yearly', checked ? 'true' : 'false');
   }
 
+  function handleCartSidebarChange(checked: boolean) {
+    setCartSidebarEnabled(checked);
+    saveSetting('cart_sidebar_enabled', checked ? 'true' : 'false');
+  }
+
   async function saveQuickAmounts(amounts: number[]) {
     const sorted = [...amounts].sort((a, b) => a - b);
     setQuickAmounts(sorted);
@@ -109,6 +116,35 @@ export function SettingsForm() {
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-lg font-semibold text-sky-800">Einstellungen</h2>
+
+      {/* Warenkorb-Layout */}
+      <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
+        <h3 className="text-sm font-semibold text-sky-700 flex items-center gap-2">
+          <LayoutPanelRight size={16} />
+          Warenkorb-Layout
+        </h3>
+
+        <label className="flex items-center gap-3 cursor-pointer min-h-[44px]">
+          <input
+            type="checkbox"
+            checked={cartSidebarEnabled}
+            onChange={e => handleCartSidebarChange(e.target.checked)}
+            className="w-6 h-6 accent-sky-500"
+          />
+          <span className="text-sm text-slate-700">
+            Warenkorb als feste Spalte auf breiten Screens anzeigen
+          </span>
+        </label>
+
+        <p className="text-xs text-slate-500">
+          Auf iPad im Querformat (ab 1024px Breite) wird der Warenkorb als feste rechte Spalte angezeigt.
+          Auf iPhone und iPad im Hochformat bleibt das Slide-In Panel aktiv.
+        </p>
+
+        {savedKey === 'cart_sidebar_enabled' && !saving && (
+          <span className="text-xs text-green-600">Gespeichert</span>
+        )}
+      </div>
 
       {/* Schnellbeträge */}
       <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col gap-4">
