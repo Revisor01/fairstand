@@ -22,6 +22,8 @@ interface MonthlySummary {
 interface TopArticle {
   name: string;
   total_qty: number;
+  sale_qty: number;
+  withdrawal_qty: number;
   revenue_cents: number;
 }
 
@@ -173,7 +175,9 @@ export function MonthlyReport() {
                 <thead>
                   <tr className="bg-sky-50">
                     <th className="text-left px-4 py-3 text-sky-700 font-semibold">Artikel</th>
-                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Menge</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Gesamt</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Verkauf</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Entnahme</th>
                     <th className="text-right px-4 py-3 text-sky-700 font-semibold">Umsatz</th>
                   </tr>
                 </thead>
@@ -181,8 +185,10 @@ export function MonthlyReport() {
                   {topArticles.map((a, i) => (
                     <tr key={i} className="border-t border-slate-50">
                       <td className="px-4 py-3 text-slate-700">{a.name}</td>
-                      <td className="px-4 py-3 text-right text-slate-600">{a.total_qty}</td>
-                      <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(a.revenue_cents)}</td>
+                      <td className="px-4 py-3 text-right text-slate-800 font-medium">{Number(a.total_qty)}</td>
+                      <td className="px-4 py-3 text-right text-sky-600">{Number(a.sale_qty)}</td>
+                      <td className="px-4 py-3 text-right text-amber-600">{Number(a.withdrawal_qty) > 0 ? Number(a.withdrawal_qty) : '—'}</td>
+                      <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(Number(a.revenue_cents))}</td>
                     </tr>
                   ))}
                 </tbody>

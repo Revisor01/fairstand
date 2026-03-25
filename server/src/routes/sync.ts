@@ -23,6 +23,7 @@ const SaleSchema = z.object({
   changeCents: z.number().int(),
   donationCents: z.number().int(),
   type: z.enum(['sale', 'withdrawal']).optional(),
+  withdrawalReason: z.string().optional(),
   createdAt: z.number().int(),
   syncedAt: z.number().int().optional(),
 });
@@ -101,6 +102,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
               changeCents: sale.changeCents,
               donationCents: sale.donationCents,
               type: sale.type ?? null,
+              withdrawalReason: sale.withdrawalReason ?? null,
               createdAt: sale.createdAt,
               syncedAt: Date.now(),
             }).onConflictDoNothing();
