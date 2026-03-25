@@ -381,10 +381,12 @@ Plans:
   2. Auf dem iPhone und iPad Portrait ist der Warenkorb zunächst versteckt und erscheint als Panel von rechts wenn man darauf tippt oder wischt
   3. Die Kategorien-Navigation ermöglicht das schnelle Wechseln zwischen Kategorien mit einem einzelnen Tipp — der aktive Filter ist klar erkennbar
   4. Das Layout funktioniert auf allen drei Geräteklassen ohne horizontales Scrollen oder abgeschnittene Elemente
-**Plans**: 2 plans
+**Plans**: 4 plans
 Plans:
-- [ ] 25-01-PLAN.md — products.ts PATCH-Hardening + settings Composite Key
-- [x] 25-02-PLAN.md — sync.ts Stock-Delta shopId-Validierung + ImportScreen Bereinigung
+- [ ] 26-01-PLAN.md — Admin-Einstellung cart_sidebar_enabled in SettingsForm
+- [ ] 26-02-PLAN.md — POSScreen responsives Sidebar-Layout (lg+ Spalte vs. Slide-In)
+- [ ] 26-03-PLAN.md — CartPanel Swipe-to-Dismiss und Swipe-to-Open
+- [ ] 26-04-PLAN.md — ArticleGrid sticky Kategorie-Tabs, Auto-Scroll, verbesserter Kontrast
 
 ## Progress
 
@@ -417,5 +419,5 @@ Phases execute in numeric order: 24 → 25 → 26
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete   | 2026-03-25 |
+| 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete    | 2026-03-25 |
 | 26. Responsive UX | v7.0 | 0/? | Not started | - |
