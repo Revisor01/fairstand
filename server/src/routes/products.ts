@@ -98,6 +98,13 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.patch('/products/:id/deactivate', async (request, reply) => {
     const { id } = request.params as { id: string };
     const session = (request as any).session as { shopId: string };
+
+    const [product] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!product) return reply.status(404).send({ error: 'Produkt nicht gefunden' });
+    if (product.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert' });
+    }
+
     await db.update(products).set({ active: false, updatedAt: Date.now() }).where(eq(products.id, id));
     reply.send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
@@ -107,6 +114,13 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.patch('/products/:id/activate', async (request, reply) => {
     const { id } = request.params as { id: string };
     const session = (request as any).session as { shopId: string };
+
+    const [product] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!product) return reply.status(404).send({ error: 'Produkt nicht gefunden' });
+    if (product.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert' });
+    }
+
     await db.update(products).set({ active: true, updatedAt: Date.now() }).where(eq(products.id, id));
     reply.send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
@@ -115,6 +129,14 @@ export async function productRoutes(fastify: FastifyInstance) {
   // POST /products/:id/image — Produktbild hochladen
   fastify.post('/products/:id/image', async (request, reply) => {
     const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
+
+    // Ownership-Check vor Dateiverarbeitung
+    const [product] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!product) return reply.status(404).send({ error: 'Produkt nicht gefunden' });
+    if (product.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert' });
+    }
 
     let file: Awaited<ReturnType<typeof request.file>> | null = null;
     try {
