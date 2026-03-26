@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface PinScreenProps {
   mode: 'setup' | 'unlock';
@@ -53,6 +53,22 @@ export function PinScreen({ mode, onSetup, onUnlock }: PinScreenProps) {
       }
     }
   };
+
+  // Tastatur-Support
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key >= '0' && e.key <= '9') {
+      handleDigit(e.key);
+    } else if (e.key === 'Backspace') {
+      handleDelete();
+    } else if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  }, [currentPin]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   const title =
     mode === 'setup'
