@@ -69,18 +69,15 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-## Current Milestone: v7.0 Multi-Shop & UX
+## Current Milestone: v8.0 Inventur, Preis-History & Rechnungsexport
 
-**Goal:** Vollständige Multi-Shop-Verwaltung mit eigenem Sortiment pro Shop, plus responsive UX für alle Geräte (Browser, iPad, iPhone) mit flexiblem Warenkorb-Layout.
+**Goal:** Lückenlose Nachverfolgbarkeit von Beständen, EK/VK-Preisänderungen und Verkaufsdaten — plus Inventur-Übersicht und Rechnungsexport für den Kirchenkreis.
 
 **Target features:**
-- Master-Shop (St. Secundus) kann andere Shops anlegen, PIN vergeben, deaktivieren
-- Jeder Shop hat eigenes Sortiment (Produkte, Preise, Bestand) — kein geteiltes Sortiment
-- Jeder Shop verwaltet seine Produkte selbst nach PIN-Login
-- Berichte bleiben pro Shop (keine übergreifende Ansicht)
-- Responsive Layout für Browser, iPad, iPhone
-- Warenkorb als fixe Spalte (breite Screens) oder Swipe-In (schmale Screens)
-- Kategorien-Tab-Navigation verbessern
+- Inventur-Übersicht im Jahresbericht: Pro Artikel aktueller Bestand, Menge verkauft, VK-Umsatz, EK-Kosten (inkl. verschiedene EKs über's Jahr aus Sale-Snapshots)
+- EK/VK-Preis-History per Artikel: Preisänderungen in eigener DB-Tabelle, alte Preise nachverfolgbar, Artikelnummer bleibt gleich
+- Bestandsverlauf per Artikel: History wann wie viel verkauft/nachgebucht wurde
+- Rechnungsexport: CSV/PDF-Export aus Verkaufshistorie (im Bezahlvorgang oder nachträglich)
 
 ### Out of Scope
 
@@ -103,15 +100,17 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v6.0 shipped)
+### Current State (v7.0 shipped)
 
 - Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer
-- 23 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0), alle shipped
+- 26 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD (GitHub Actions → Portainer Webhook)
 - Online-Only: TanStack Query als einzige Datenschicht, WebSocket für Live-Updates, keine lokale DB
 - PostgreSQL in Docker-Compose mit persistentem Volume, alle Routes async/await
 - Keine Dexie.js, keine IndexedDB, kein Outbox-Pattern — alles direkt Server-seitig
 - Session-Auth mit In-Memory Store, shopId-Validierung, Rate-Limiting, CORS fail-closed
+- Multi-Shop: Master-Shop verwaltet andere Shops, jeder Shop hat eigenes Sortiment
+- Responsive UX: Warenkorb als fixe Spalte oder Swipe-In je nach Screenbreite
 
 ## Constraints
 
@@ -151,4 +150,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-03-25 after v7.0 milestone started*
+*Last updated: 2026-04-01 after v8.0 milestone started*
