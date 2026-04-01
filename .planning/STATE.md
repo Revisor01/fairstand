@@ -4,7 +4,7 @@ milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
 status: verifying
 stopped_at: Completed 29-02-PLAN.md (Frontend Download-Buttons)
-last_updated: "2026-04-01T22:20:35.545Z"
+last_updated: "2026-04-01T22:24:14.822Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23

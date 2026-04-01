@@ -67,17 +67,19 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Online-Only: Offline-Overlay bei fehlendem Internet — v6.0
 - ✓ Service Worker nur noch App-Shell-Caching — v6.0
 
+- ✓ Inventur-Übersicht im Jahresbericht mit pro Artikel: Bestand, Menge verkauft, VK-Umsatz, EK-Kosten — v8.0
+- ✓ EK-Aufschlüsselung bei verschiedenen EKs über's Jahr (aus Sale-Item-Snapshots) — v8.0
+- ✓ Bestandswert-Summe (Menge × aktueller EK) für Jahresabschluss — v8.0
+- ✓ Stock-Movement-Journal pro Artikel (Verkauf, Nachbuchung, Korrektur, Rückgabe) — v8.0
+- ✓ Automatisches EK/VK-Preis-History-Tracking (price_histories-Tabelle) — v8.0
+- ✓ Preis-History-Ansicht pro Artikel in Produktverwaltung — v8.0
+- ✓ Verkaufshistorie CSV-Export (Semikolon + UTF-8 BOM, Excel-kompatibel) — v8.0
+- ✓ Inventur CSV + PDF Export (Kirchenkreis-Jahresabschluss) — v8.0
+- ✓ PDF-Einzelbeleg pro Verkauf — v8.0
+
 ### Active
 
-## Current Milestone: v8.0 Inventur, Preis-History & Rechnungsexport
-
-**Goal:** Lückenlose Nachverfolgbarkeit von Beständen, EK/VK-Preisänderungen und Verkaufsdaten — plus Inventur-Übersicht und Rechnungsexport für den Kirchenkreis.
-
-**Target features:**
-- Inventur-Übersicht im Jahresbericht: Pro Artikel aktueller Bestand, Menge verkauft, VK-Umsatz, EK-Kosten (inkl. verschiedene EKs über's Jahr aus Sale-Snapshots)
-- EK/VK-Preis-History per Artikel: Preisänderungen in eigener DB-Tabelle, alte Preise nachverfolgbar, Artikelnummer bleibt gleich
-- Bestandsverlauf per Artikel: History wann wie viel verkauft/nachgebucht wurde
-- Rechnungsexport: CSV/PDF-Export aus Verkaufshistorie (im Bezahlvorgang oder nachträglich)
+(Nächster Milestone noch nicht definiert)
 
 ### Out of Scope
 
@@ -100,17 +102,18 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v7.0 shipped)
+### Current State (v8.0 shipped)
 
-- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer
-- 26 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0), alle shipped
+- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer, pdfkit, csv-stringify
+- 29 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0 + 3 v8.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD (GitHub Actions → Portainer Webhook)
 - Online-Only: TanStack Query als einzige Datenschicht, WebSocket für Live-Updates, keine lokale DB
 - PostgreSQL in Docker-Compose mit persistentem Volume, alle Routes async/await
-- Keine Dexie.js, keine IndexedDB, kein Outbox-Pattern — alles direkt Server-seitig
 - Session-Auth mit In-Memory Store, shopId-Validierung, Rate-Limiting, CORS fail-closed
 - Multi-Shop: Master-Shop verwaltet andere Shops, jeder Shop hat eigenes Sortiment
 - Responsive UX: Warenkorb als fixe Spalte oder Swipe-In je nach Screenbreite
+- Inventur & Preis-History: Automatisches EK/VK-Tracking, Stock-Movement-Journal, Inventur-Übersicht im Jahresbericht
+- Export: CSV + PDF für Inventur (Kirchenkreis), Verkaufshistorie-CSV, Einzelbeleg-PDF
 
 ## Constraints
 
@@ -144,10 +147,14 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Dexie komplett entfernt | Cache-Layer verursachte mehr Bugs als Nutzen, Kirche hat Mobilnetz | ✓ Good — 795 LOC weniger, keine Cache-Divergenz |
 | Online-Only statt Offline-First | Mobilnetz-Abdeckung in der Kirche macht Offline überflüssig | ✓ Good — drastisch vereinfachte Architektur |
 | idb-keyval → localStorage | IndexedDB-Overhead für kleine Key-Values unnötig | ✓ Good — synchroner Zugriff, eine Dependency weniger |
+| App-Layer statt DB-Trigger für Preis-History | Trigger schwerer zu debuggen, App-Layer flexibler | ✓ Good — Logging in products.ts/sync.ts, atomar per Transaction |
+| Sale-Item-Snapshots für Inventur-Auswertung | EK/VK bereits im JSONB gespeichert, kein neues Logging nötig | ✓ Good — historisch korrekte Auswertung ohne Zusatzaufwand |
+| Server-side PDF/CSV statt Client-side | Unabhängig vom Browser, kein Memory-Limit | ✓ Good — pdfkit + csv-stringify, Streaming via Fastify Reply |
+| Semikolon + UTF-8 BOM für CSV | Excel öffnet Umlaute sonst falsch | ✓ Good — Excel-kompatibel mit deutschen Sonderzeichen |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-04-01 after v8.0 milestone started*
+*Last updated: 2026-04-02 after v8.0 milestone shipped*
