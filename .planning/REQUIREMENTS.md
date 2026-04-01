@@ -46,21 +46,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INV-01 | — | Pending |
-| INV-02 | — | Pending |
-| INV-03 | — | Pending |
-| INV-04 | — | Pending |
-| PRICE-01 | — | Pending |
-| PRICE-02 | — | Pending |
-| PRICE-03 | — | Pending |
-| EXP-01 | — | Pending |
-| EXP-02 | — | Pending |
-| EXP-03 | — | Pending |
+| INV-01 | Phase 28 | Pending |
+| INV-02 | Phase 28 | Pending |
+| INV-03 | Phase 28 | Pending |
+| INV-04 | Phase 27 | Pending |
+| PRICE-01 | Phase 27 | Pending |
+| PRICE-02 | Phase 28 | Pending |
+| PRICE-03 | Phase 28 | Pending |
+| EXP-01 | Phase 29 | Pending |
+| EXP-02 | Phase 29 | Pending |
+| EXP-03 | Phase 29 | Pending |
 
 **Coverage:**
 - v8.0 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10
+- Mapped to phases: 10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-01*

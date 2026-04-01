@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: "Inventur, Preis-History & Rechnungsexport"
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
 last_updated: "2026-04-01T12:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Defining requirements for v8.0
+**Current focus:** Phase 27 — Preis-History & Bestandsverlauf
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 27 (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-01 — Milestone v8.0 started
+Status: Roadmap defined, ready for phase planning
+Last activity: 2026-04-01 — Roadmap v8.0 created (Phases 27-29)
 
 ## Performance Metrics
 
@@ -51,6 +51,9 @@ Recent decisions affecting current work:
 - [v8.0]: Anforderungen kommen vom Kirchenkreis (Kevin Lembke) — Inventur, Preis-History, Rechnungsexport
 - [v8.0]: Sale-Items speichern bereits EK/VK-Snapshot — Inventur-Auswertung großteils aus vorhandenen Daten ableitbar
 - [v8.0]: Artikelnummer bleibt bei Preisänderungen gleich — nur EK/VK ändert sich
+- [v8.0]: PRICE-01 (automatisches Logging) ist Fundament für Phase 28 und 29 — muss zuerst gebaut werden
+- [v8.0]: CSV-Export mit Semikolon-Trennzeichen und UTF-8-BOM für Excel-Kompatibilität (Umlaute)
+- [v8.0]: Neue DB-Tabellen: price_history, stock_movements — Drizzle-Migration in Phase 27
 
 ### Pending Todos
 
@@ -63,6 +66,6 @@ None
 ## Session Continuity
 
 Last session: 2026-04-01
-Stopped at: Milestone v8.0 started, defining requirements
+Stopped at: Roadmap v8.0 created (Phases 27-29)
 Resume file: None
-Next step: Define requirements, then roadmap
+Next step: /gsd:plan-phase 27
