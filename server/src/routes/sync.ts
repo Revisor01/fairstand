@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { sales, products, outboxEvents } from '../db/schema.js';
+import { sales, products, outboxEvents, stockMovements } from '../db/schema.js';
 import { broadcast } from './websocket.js';
 
 const SaleItemSchema = z.object({
@@ -121,6 +121,15 @@ export async function syncRoutes(fastify: FastifyInstance) {
               await tx.update(products)
                 .set({ stock: sql`${products.stock} - ${item.quantity}` })
                 .where(eq(products.id, item.productId));
+              // Stock-Movement protokollieren
+              await tx.insert(stockMovements).values({
+                shopId: entry.shopId,
+                productId: item.productId,
+                type: 'sale',
+                quantity: -item.quantity, // negativ = Ausgang
+                referenceSaleId: sale.id,
+                movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
+              });
             }
 
             // 3. OutboxEvent auf dem Server protokollieren
@@ -153,6 +162,15 @@ export async function syncRoutes(fastify: FastifyInstance) {
             await tx.update(products)
               .set({ stock: sql`${products.stock} + ${adj.delta}`, updatedAt: sql`${Date.now()}` })
               .where(eq(products.id, adj.productId));
+            // Stock-Movement protokollieren
+            await tx.insert(stockMovements).values({
+              shopId: entry.shopId,
+              productId: adj.productId,
+              type: 'adjustment',
+              quantity: adj.delta, // positiv oder negativ je nach Korrektur
+              reason: adj.reason ?? null,
+              movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
+            });
             await tx.insert(outboxEvents).values({
               shopId: entry.shopId,
               operation: entry.operation,
@@ -186,6 +204,15 @@ export async function syncRoutes(fastify: FastifyInstance) {
               await tx.update(products)
                 .set({ stock: sql`${products.stock} + ${item.quantity}` })
                 .where(eq(products.id, item.productId));
+              // Stock-Movement protokollieren
+              await tx.insert(stockMovements).values({
+                shopId: entry.shopId,
+                productId: item.productId,
+                type: 'return',
+                quantity: item.quantity, // positiv = Eingang (Restock nach Storno)
+                referenceSaleId: cancel.saleId,
+                movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
+              });
             }
 
             // OutboxEvent protokollieren
@@ -217,6 +244,15 @@ export async function syncRoutes(fastify: FastifyInstance) {
             await tx.update(products)
               .set({ stock: sql`${products.stock} + ${ret.quantity}` })
               .where(eq(products.id, ret.productId));
+            // Stock-Movement protokollieren
+            await tx.insert(stockMovements).values({
+              shopId: entry.shopId,
+              productId: ret.productId,
+              type: 'return',
+              quantity: ret.quantity, // positiv = Eingang
+              referenceSaleId: ret.saleId,
+              movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
+            });
 
             // OutboxEvent protokollieren
             await tx.insert(outboxEvents).values({
