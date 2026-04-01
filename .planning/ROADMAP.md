@@ -407,7 +407,12 @@ Plans:
   2. Nach einem Verkauf, einer Stornierung, einer Nachbuchung oder Bestandskorrektur enthält stock_movements einen Eintrag mit Typ, Menge, Zeitstempel und Referenz auf den auslösenden Vorgang
   3. Pro Artikel kann eine chronologische Liste aller Bestandsbewegungen abgerufen werden — Eintrag für Eintrag mit Zeitstempel und Bewegungsgrund
   4. Das Logging läuft vollständig serverseitig — kein Clientcode muss sich darum kümmern
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — Drizzle-Schema: priceHistories + stockMovements Tabellen + Migrations generieren
+- [ ] 27-02-PLAN.md — Logging in products.ts (Preis-History) und sales.ts (Hard-Delete Restock)
+- [ ] 27-03-PLAN.md — Logging in sync.ts (alle 4 Operationen) + GET-Endpoints priceHistory.ts
 
 ### Phase 28: Inventur-Übersicht & Preis-Auswertung
 **Goal**: Der Jahresbericht zeigt pro Artikel eine vollständige Inventur-Übersicht mit Bestand, Umsatz, EK-Kosten und Preisänderungen — alle Zahlen stimmen, auch wenn EK im Laufe des Jahres gestiegen ist
