@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
-status: executing
-stopped_at: Completed 29-01-PLAN.md (CSV + PDF Export-Endpoints)
-last_updated: "2026-04-01T22:14:47.539Z"
+status: verifying
+stopped_at: Completed 29-02-PLAN.md (Frontend Download-Buttons)
+last_updated: "2026-04-01T22:18:03.970Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 21
-  completed_plans: 20
+  completed_plans: 21
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 
 Phase: 29 (export) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-01
 
 ## Performance Metrics
@@ -65,6 +65,7 @@ Recent decisions affecting current work:
 - [Phase 28]: Monatsselektor in MonthlyReport versteckt sich im Inventur-Tab
 - [Phase 29-export]: CSV-Streaming via csv-stringify direkt in Fastify reply statt Buffer-Accumulation
 - [Phase 29-export]: doc.end() muss vor reply.send(doc) aufgerufen werden (PDFKit-Pitfall)
+- [Phase 29-export]: fetch+blob inline pattern ohne separate Helper-Datei in Download-Buttons
 
 ### Pending Todos
 
@@ -76,7 +77,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-01T22:14:47.537Z
-Stopped at: Completed 29-01-PLAN.md (CSV + PDF Export-Endpoints)
+Last session: 2026-04-01T22:18:03.968Z
+Stopped at: Completed 29-02-PLAN.md (Frontend Download-Buttons)
 Resume file: None
 Next step: /gsd:plan-phase 27

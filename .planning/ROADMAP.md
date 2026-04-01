@@ -96,7 +96,7 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 - [x] **Phase 27: Preis-History & Bestandsverlauf** - DB-Schema price_history + stock_movements, automatisches Logging bei Preisänderungen und Bestandsbewegungen (completed 2026-04-01)
 - [x] **Phase 28: Inventur-Übersicht & Preis-Auswertung** - Jahresbericht-Erweiterung mit Inventur pro Artikel, EK-Aufschlüsselung, Bestandswert-Summe, Preis-History-Ansicht (completed 2026-04-01)
-- [ ] **Phase 29: Export** - CSV-Download für Verkaufshistorie und Inventur, PDF-Einzelbelege
+- [x] **Phase 29: Export** - CSV-Download für Verkaufshistorie und Inventur, PDF-Einzelbelege (completed 2026-04-01)
 
 ## Phase Details
 
@@ -442,7 +442,7 @@ Plans:
 
 Plans:
 - [x] 29-01-PLAN.md — Backend: CSV + PDF Export-Endpoints (pdfkit + csv-stringify) (EXP-01, EXP-02, EXP-03)
-- [ ] 29-02-PLAN.md — Frontend: Download-Buttons in DailyReport, MonthlyReport, SaleDetailModal (EXP-01, EXP-02, EXP-03)
+- [x] 29-02-PLAN.md — Frontend: Download-Buttons in DailyReport, MonthlyReport, SaleDetailModal (EXP-01, EXP-02, EXP-03)
 
 ## Progress
 
@@ -479,4 +479,4 @@ Phases execute in numeric order: 27 → 28 → 29
 | 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
 | 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 2/2 | Complete    | 2026-04-01 |
-| 29. Export | v8.0 | 1/2 | In Progress|  |
+| 29. Export | v8.0 | 2/2 | Complete   | 2026-04-01 |
