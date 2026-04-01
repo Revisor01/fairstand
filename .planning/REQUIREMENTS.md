@@ -7,16 +7,16 @@
 
 ### Inventur & Bestandsauswertung
 
-- [ ] **INV-01**: User kann im Jahresbericht eine Inventur-Übersicht sehen mit pro Artikel: aktueller Bestand, verkaufte Menge, VK-Umsatz, EK-Kosten
-- [ ] **INV-02**: User kann bei Artikeln mit verschiedenen EK-Preisen über's Jahr sehen, wie viel zu welchem EK verkauft wurde
-- [ ] **INV-03**: User sieht im Jahresbericht eine Bestandswert-Summe (Gesamtwert aller Waren = Menge × aktueller EK)
+- [x] **INV-01**: User kann im Jahresbericht eine Inventur-Übersicht sehen mit pro Artikel: aktueller Bestand, verkaufte Menge, VK-Umsatz, EK-Kosten
+- [x] **INV-02**: User kann bei Artikeln mit verschiedenen EK-Preisen über's Jahr sehen, wie viel zu welchem EK verkauft wurde
+- [x] **INV-03**: User sieht im Jahresbericht eine Bestandswert-Summe (Gesamtwert aller Waren = Menge × aktueller EK)
 - [x] **INV-04**: User kann pro Artikel ein Stock-Movement-Journal einsehen (Verkauf, Nachbuchung, Korrektur, Rückgabe mit Zeitstempel)
 
 ### Preis-History
 
 - [x] **PRICE-01**: Jede EK/VK-Änderung an einem Artikel wird automatisch in einer price_history-Tabelle geloggt
 - [ ] **PRICE-02**: User kann pro Artikel in der Produktverwaltung eine History der Preisänderungen einsehen (Zeitstrahl mit altem/neuem Preis)
-- [ ] **PRICE-03**: Jahresbericht zeigt bei Preisänderungen die Aufschlüsselung: X Stück zu EK1, Y Stück zu EK2
+- [x] **PRICE-03**: Jahresbericht zeigt bei Preisänderungen die Aufschlüsselung: X Stück zu EK1, Y Stück zu EK2
 
 ### Export
 
@@ -46,13 +46,13 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INV-01 | Phase 28 | Pending |
-| INV-02 | Phase 28 | Pending |
-| INV-03 | Phase 28 | Pending |
+| INV-01 | Phase 28 | Complete |
+| INV-02 | Phase 28 | Complete |
+| INV-03 | Phase 28 | Complete |
 | INV-04 | Phase 27 | Complete |
 | PRICE-01 | Phase 27 | Complete |
 | PRICE-02 | Phase 28 | Pending |
-| PRICE-03 | Phase 28 | Pending |
+| PRICE-03 | Phase 28 | Complete |
 | EXP-01 | Phase 29 | Pending |
 | EXP-02 | Phase 29 | Pending |
 | EXP-03 | Phase 29 | Pending |

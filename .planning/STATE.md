@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
 status: executing
-stopped_at: Completed 27-02-PLAN.md (Audit-Logging Preis-History + Stock-Movements)
-last_updated: "2026-04-01T16:38:22.981Z"
+stopped_at: Completed 28-01-PLAN.md (GET /api/reports/inventory Endpoint)
+last_updated: "2026-04-01T21:47:23.398Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
   completed_phases: 6
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 19
+  completed_plans: 18
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 27 — preis-history-bestandsverlauf
+**Current focus:** Phase 28 — inventur-uebersicht-preis-auswertung
 
 ## Current Position
 
-Phase: 28
-Plan: Not started
+Phase: 28 (inventur-uebersicht-preis-auswertung) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
 Last activity: 2026-04-01
 
@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - [Phase 27]: referenceSaleId in stock_movements nullable text ohne Drizzle-Relation — FK nur zur Nachverfolgbarkeit (Phase 27-01)
 - [Phase 27]: Preis-Logging nur bei existierenden Produkten — neues Produkt hat keinen alten Preis
 - [Phase 27]: referenceSaleId in stock_movements zeigt auf gelöschten Sale — Audit-Trail bleibt erhalten nach Hard-Delete
+- [Phase 28]: Three-query inventory pattern: aggregate per article, total stock value, EK breakdown in batch — avoids N+1 and keeps SQL readable
+- [Phase 28]: COALESCE purchasePrice snapshot ensures historical EK accuracy even when product price changed after sale
 
 ### Pending Todos
 
@@ -70,7 +72,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-01T16:35:46.973Z
-Stopped at: Completed 27-02-PLAN.md (Audit-Logging Preis-History + Stock-Movements)
+Last session: 2026-04-01T21:47:18.748Z
+Stopped at: Completed 28-01-PLAN.md (GET /api/reports/inventory Endpoint)
 Resume file: None
 Next step: /gsd:plan-phase 27

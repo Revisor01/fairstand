@@ -426,7 +426,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Backend: GET /api/reports/inventory Endpoint mit EK-Aufschlüsselung (INV-01, INV-02, INV-03, PRICE-03)
+- [x] 28-01-PLAN.md — Backend: GET /api/reports/inventory Endpoint mit EK-Aufschlüsselung (INV-01, INV-02, INV-03, PRICE-03)
 - [ ] 28-02-PLAN.md — Frontend: Inventur-Tab in MonthlyReport + Preis-History-Tab in ProductStats (INV-01, INV-02, INV-03, PRICE-02)
 **UI hint**: yes
 
@@ -478,5 +478,5 @@ Phases execute in numeric order: 27 → 28 → 29
 | 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete | 2026-03-25 |
 | 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
 | 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
-| 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 0/? | Not started | - |
+| 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 1/2 | In Progress|  |
 | 29. Export | v8.0 | 0/? | Not started | - |
