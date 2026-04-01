@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
-status: executing
-stopped_at: Completed 28-01-PLAN.md (GET /api/reports/inventory Endpoint)
-last_updated: "2026-04-01T21:47:23.398Z"
+status: verifying
+stopped_at: Completed 28-02-PLAN.md (Inventur-Tab + Preis-History-Tab)
+last_updated: "2026-04-01T21:51:44.166Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 19
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 
 Phase: 28 (inventur-uebersicht-preis-auswertung) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-01
 
 ## Performance Metrics
@@ -61,6 +61,8 @@ Recent decisions affecting current work:
 - [Phase 27]: referenceSaleId in stock_movements zeigt auf gelöschten Sale — Audit-Trail bleibt erhalten nach Hard-Delete
 - [Phase 28]: Three-query inventory pattern: aggregate per article, total stock value, EK breakdown in batch — avoids N+1 and keeps SQL readable
 - [Phase 28]: COALESCE purchasePrice snapshot ensures historical EK accuracy even when product price changed after sale
+- [Phase 28]: Zeitraum-Auswahl in ProductStats nur im Stats-Tab sichtbar (irrelevant fuer Price-History)
+- [Phase 28]: Monatsselektor in MonthlyReport versteckt sich im Inventur-Tab
 
 ### Pending Todos
 
@@ -72,7 +74,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-01T21:47:18.748Z
-Stopped at: Completed 28-01-PLAN.md (GET /api/reports/inventory Endpoint)
+Last session: 2026-04-01T21:51:44.163Z
+Stopped at: Completed 28-02-PLAN.md (Inventur-Tab + Preis-History-Tab)
 Resume file: None
 Next step: /gsd:plan-phase 27
