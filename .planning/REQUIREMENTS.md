@@ -15,7 +15,7 @@
 ### Preis-History
 
 - [x] **PRICE-01**: Jede EK/VK-Änderung an einem Artikel wird automatisch in einer price_history-Tabelle geloggt
-- [ ] **PRICE-02**: User kann pro Artikel in der Produktverwaltung eine History der Preisänderungen einsehen (Zeitstrahl mit altem/neuem Preis)
+- [x] **PRICE-02**: User kann pro Artikel in der Produktverwaltung eine History der Preisänderungen einsehen (Zeitstrahl mit altem/neuem Preis)
 - [x] **PRICE-03**: Jahresbericht zeigt bei Preisänderungen die Aufschlüsselung: X Stück zu EK1, Y Stück zu EK2
 
 ### Export
@@ -51,7 +51,7 @@
 | INV-03 | Phase 28 | Complete |
 | INV-04 | Phase 27 | Complete |
 | PRICE-01 | Phase 27 | Complete |
-| PRICE-02 | Phase 28 | Pending |
+| PRICE-02 | Phase 28 | Complete |
 | PRICE-03 | Phase 28 | Complete |
 | EXP-01 | Phase 29 | Pending |
 | EXP-02 | Phase 29 | Pending |
