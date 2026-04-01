@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
+import { stringify } from 'csv-stringify';
 
 export async function reportRoutes(fastify: FastifyInstance) {
   // GET /reports/monthly?year=2026&month=3
@@ -250,6 +251,211 @@ export async function reportRoutes(fastify: FastifyInstance) {
       items,
       total_stock_value_cents: Number(stockValueRow.total_stock_value_cents ?? 0),
     });
+  });
+
+  // GET /reports/sales-csv?from=...&to=... — Verkaufshistorie als CSV (EXP-01)
+  fastify.get('/reports/sales-csv', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { from, to } = request.query as { from?: string; to?: string };
+    if (!from || !to) return reply.status(400).send({ error: 'from and to (Unix-ms) required' });
+
+    const fromTs = Number(from);
+    const toTs = Number(to);
+    if (isNaN(fromTs) || isNaN(toTs)) return reply.status(400).send({ error: 'from and to must be numbers' });
+
+    const salesResult = await db.execute(sql`
+      SELECT id, items, total_cents, paid_cents, change_cents, donation_cents, created_at
+      FROM sales
+      WHERE shop_id = ${shopId}
+        AND created_at >= ${fromTs}
+        AND created_at <= ${toTs}
+        AND cancelled_at IS NULL
+        AND (type IS NULL OR type = 'sale')
+      ORDER BY created_at ASC
+    `);
+
+    const rows = salesResult.rows as Array<Record<string, unknown>>;
+    const today = new Date().toISOString().slice(0, 10);
+
+    reply.header('Content-Type', 'text/csv; charset=utf-8');
+    reply.header('Content-Disposition', `attachment; filename="verkaufshistorie-${today}.csv"`);
+
+    const stringifier = stringify({
+      delimiter: ';',
+      bom: true,
+      quoted: true,
+      header: true,
+      columns: ['Datum', 'Uhrzeit', 'Artikel', 'Menge', 'VK (EUR)', 'EK (EUR)', 'Summe Artikel (EUR)', 'Gesamtsumme (EUR)', 'Bezahlt (EUR)', 'Wechselgeld (EUR)', 'Spende (EUR)'],
+    });
+
+    stringifier.on('error', (_err) => {
+      reply.status(500).send({ error: 'CSV generation failed' });
+    });
+
+    for (const sale of rows) {
+      const items = (sale.items ?? []) as Array<{ name: string; quantity: number; salePrice: number; purchasePrice?: number }>;
+      const createdAt = Number(sale.created_at);
+      const dateStr = new Date(createdAt).toLocaleDateString('de-DE');
+      const timeStr = new Date(createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      const totalCents = Number(sale.total_cents);
+      const paidCents = Number(sale.paid_cents);
+      const changeCents = Number(sale.change_cents);
+      const donationCents = Number(sale.donation_cents);
+
+      items.forEach((item, idx) => {
+        const isFirst = idx === 0;
+        stringifier.write({
+          'Datum': dateStr,
+          'Uhrzeit': timeStr,
+          'Artikel': item.name,
+          'Menge': item.quantity,
+          'VK (EUR)': (item.salePrice / 100).toFixed(2),
+          'EK (EUR)': ((item.purchasePrice ?? 0) / 100).toFixed(2),
+          'Summe Artikel (EUR)': (item.salePrice * item.quantity / 100).toFixed(2),
+          'Gesamtsumme (EUR)': isFirst ? (totalCents / 100).toFixed(2) : '',
+          'Bezahlt (EUR)': isFirst ? (paidCents / 100).toFixed(2) : '',
+          'Wechselgeld (EUR)': isFirst ? (changeCents / 100).toFixed(2) : '',
+          'Spende (EUR)': isFirst ? (donationCents / 100).toFixed(2) : '',
+        });
+      });
+    }
+
+    stringifier.end();
+    return reply.send(stringifier);
+  });
+
+  // GET /reports/inventory-csv?year=... — Inventur als CSV (EXP-02)
+  fastify.get('/reports/inventory-csv', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { year } = request.query as { year?: string };
+    if (!year) return reply.status(400).send({ error: 'year required' });
+
+    const y = Number(year);
+    const yearStart = new Date(y, 0, 1).getTime();
+    const yearEnd = new Date(y + 1, 0, 1).getTime();
+
+    const inventoryResult = await db.execute(sql`
+      SELECT
+        p.id,
+        p.article_number,
+        p.name,
+        p.stock as current_stock,
+        p.purchase_price as current_ek_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer ELSE 0 END
+        ), 0) as sold_qty,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
+        ), 0) as revenue_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer *
+               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+          ELSE 0 END
+        ), 0) as cost_cents
+      FROM products p
+      LEFT JOIN sales ON sales.shop_id = p.shop_id
+                      AND sales.created_at >= ${yearStart}
+                      AND sales.created_at < ${yearEnd}
+                      AND sales.cancelled_at IS NULL
+      LEFT JOIN jsonb_array_elements(sales.items) as item
+        ON item->>'productId' = p.id
+      WHERE p.shop_id = ${shopId}
+        AND p.active = true
+      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
+      ORDER BY p.name
+    `);
+
+    const stockValueResult = await db.execute(sql`
+      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
+      FROM products
+      WHERE shop_id = ${shopId} AND active = true
+    `);
+
+    const ekBreakdownResult = await db.execute(sql`
+      SELECT
+        item->>'productId' as product_id,
+        COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
+        SUM((item->>'quantity')::integer) as qty
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      JOIN products p ON p.id = item->>'productId'
+      WHERE sales.shop_id = ${shopId}
+        AND sales.created_at >= ${yearStart}
+        AND sales.created_at < ${yearEnd}
+        AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
+      GROUP BY item->>'productId', COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+      ORDER BY product_id, ek_cents DESC
+    `);
+
+    const ekMap = new Map<string, Array<{ ek_cents: number; qty: number }>>();
+    for (const row of ekBreakdownResult.rows as Record<string, unknown>[]) {
+      const productId = String(row.product_id);
+      if (!ekMap.has(productId)) ekMap.set(productId, []);
+      ekMap.get(productId)!.push({ ek_cents: Number(row.ek_cents), qty: Number(row.qty) });
+    }
+
+    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
+      id: String(row.id),
+      article_number: String(row.article_number),
+      name: String(row.name),
+      current_stock: Number(row.current_stock),
+      current_ek_cents: Number(row.current_ek_cents),
+      sold_qty: Number(row.sold_qty),
+      revenue_cents: Number(row.revenue_cents),
+      cost_cents: Number(row.cost_cents),
+      ek_breakdown: ekMap.get(String(row.id)) ?? [],
+    }));
+
+    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
+    const totalStockValueCents = Number(stockValueRow.total_stock_value_cents ?? 0);
+
+    reply.header('Content-Type', 'text/csv; charset=utf-8');
+    reply.header('Content-Disposition', `attachment; filename="inventur-${year}-${shopId}.csv"`);
+
+    const stringifier = stringify({
+      delimiter: ';',
+      bom: true,
+      quoted: true,
+      header: true,
+      columns: ['Artikelname', 'Artikelnummer', 'Bestand', 'Verkauft', 'VK-Umsatz (EUR)', 'EK-Kosten (EUR)', 'Bestandswert (EUR)'],
+    });
+
+    stringifier.on('error', (_err) => {
+      reply.status(500).send({ error: 'CSV generation failed' });
+    });
+
+    for (const item of items) {
+      const currentEkCents = item.ek_breakdown[0]?.ek_cents ?? 0;
+      stringifier.write({
+        'Artikelname': item.name,
+        'Artikelnummer': item.article_number,
+        'Bestand': item.current_stock,
+        'Verkauft': item.sold_qty,
+        'VK-Umsatz (EUR)': (item.revenue_cents / 100).toFixed(2),
+        'EK-Kosten (EUR)': (item.cost_cents / 100).toFixed(2),
+        'Bestandswert (EUR)': (item.current_stock * currentEkCents / 100).toFixed(2),
+      });
+    }
+
+    // Summenzeile
+    stringifier.write({
+      'Artikelname': '',
+      'Artikelnummer': '',
+      'Bestand': '',
+      'Verkauft': '',
+      'VK-Umsatz (EUR)': '',
+      'EK-Kosten (EUR)': 'GESAMT:',
+      'Bestandswert (EUR)': (totalStockValueCents / 100).toFixed(2),
+    });
+
+    stringifier.end();
+    return reply.send(stringifier);
   });
 
   // GET /reports/product/:id/stats?months=3
