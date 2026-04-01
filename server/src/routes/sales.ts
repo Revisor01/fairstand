@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { sales, products, stockMovements } from '../db/schema.js';
+import { sales, products, stockMovements, shops } from '../db/schema.js';
 import { broadcast } from './websocket.js';
+import PDFDocument from 'pdfkit';
 
 export async function salesRoutes(fastify: FastifyInstance) {
   // GET /sales?shopId=...&from=...&to=...
@@ -95,5 +96,100 @@ export async function salesRoutes(fastify: FastifyInstance) {
     }
 
     return reply.send({ ok: true });
+  });
+
+  // GET /sales/:id/receipt-pdf — Einzelbeleg als PDF (EXP-03)
+  fastify.get<{ Params: { id: string } }>('/sales/:id/receipt-pdf', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { id } = request.params;
+
+    const [sale] = await db.select().from(sales).where(eq(sales.id, id)).limit(1);
+    if (!sale || sale.shopId !== shopId) {
+      return reply.status(404).send({ error: 'Verkauf nicht gefunden' });
+    }
+
+    const [shop] = await db.select().from(shops).where(eq(shops.shopId, shopId)).limit(1);
+    const shopName = shop?.name ?? shopId;
+
+    const saleItems = (sale.items ?? []) as Array<{ name: string; quantity: number; salePrice: number; purchasePrice?: number }>;
+
+    const doc = new PDFDocument({ margin: 50 });
+
+    reply.header('Content-Type', 'application/pdf');
+    reply.header('Content-Disposition', `attachment; filename="beleg-${sale.id.slice(0, 8)}-${new Date().toISOString().slice(0, 10)}.pdf"`);
+
+    // Header
+    doc.fontSize(18).font('Helvetica-Bold').fillColor('black').text(shopName, 50, 50);
+    doc.fontSize(9).font('Helvetica').fillColor('#64748b').text('Ev.-Luth. Kirchengemeinde St. Secundus Hennstedt', 50, 75);
+    doc.fillColor('black').moveTo(50, 100).lineTo(545, 100).stroke();
+
+    // Titel
+    doc.fontSize(13).font('Helvetica-Bold').text('VERKAUFSBELEG', 50, 115);
+
+    // Datum + Belegnummer
+    const createdAt = Number(sale.createdAt);
+    const dateStr = new Date(createdAt).toLocaleDateString('de-DE');
+    const timeStr = new Date(createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    doc.fontSize(10).font('Helvetica').text(`${dateStr} ${timeStr}  ·  Beleg: ${sale.id.slice(0, 8).toUpperCase()}`, 50, 135);
+
+    // Tabellenheader Artikel
+    doc.moveTo(50, 160).lineTo(545, 160).stroke();
+    doc.fontSize(9).font('Helvetica-Bold');
+    doc.text('Artikel', 50, 165, { width: 280 });
+    doc.text('Menge', 330, 165, { width: 60, align: 'center' });
+    doc.text('Preis', 440, 165, { width: 100, align: 'right' });
+    doc.moveTo(50, 180).lineTo(545, 180).stroke();
+
+    // Items
+    let y = 185;
+    doc.fontSize(10).font('Helvetica').fillColor('black');
+    for (const item of saleItems) {
+      if (y > 700) {
+        doc.addPage();
+        y = 50;
+      }
+      doc.text(item.name, 50, y, { width: 280 });
+      doc.text(String(item.quantity), 330, y, { width: 60, align: 'center' });
+      doc.text(`${(item.salePrice * item.quantity / 100).toFixed(2)} EUR`, 440, y, { width: 100, align: 'right' });
+      y += 20;
+    }
+
+    // Summen-Block
+    doc.moveTo(50, y + 5).lineTo(545, y + 5).stroke();
+    y += 15;
+
+    const labelX = 340;
+    const valueX = 440;
+    const valueWidth = 100;
+
+    doc.font('Helvetica-Bold').fontSize(11);
+    doc.text('Summe:', labelX, y, { width: 95 });
+    doc.text(`${(Number(sale.totalCents) / 100).toFixed(2)} EUR`, valueX, y, { width: valueWidth, align: 'right' });
+    y += 20;
+
+    doc.font('Helvetica').fontSize(10);
+    doc.text('Bezahlt:', labelX, y, { width: 95 });
+    doc.text(`${(Number(sale.paidCents) / 100).toFixed(2)} EUR`, valueX, y, { width: valueWidth, align: 'right' });
+    y += 18;
+
+    if (Number(sale.changeCents) > 0) {
+      doc.text('Wechselgeld:', labelX, y, { width: 95 });
+      doc.text(`${(Number(sale.changeCents) / 100).toFixed(2)} EUR`, valueX, y, { width: valueWidth, align: 'right' });
+      y += 18;
+    }
+
+    if (Number(sale.donationCents) > 0) {
+      doc.fillColor('#059669').text('Spende:', labelX, y, { width: 95 });
+      doc.text(`${(Number(sale.donationCents) / 100).toFixed(2)} EUR`, valueX, y, { width: valueWidth, align: 'right' });
+      doc.fillColor('black');
+      y += 18;
+    }
+
+    // Footer
+    doc.fontSize(8).fillColor('#94a3b8').font('Helvetica').text('Fairstand Kassensystem · Automatisch generiert', 50, y + 30);
+
+    doc.end();
+    return reply.send(doc);
   });
 }
