@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { sales, products } from '../db/schema.js';
+import { sales, products, stockMovements } from '../db/schema.js';
 import { broadcast } from './websocket.js';
 
 export async function salesRoutes(fastify: FastifyInstance) {
@@ -72,6 +72,16 @@ export async function salesRoutes(fastify: FastifyInstance) {
           await tx.update(products)
             .set({ stock: sql`${products.stock} + ${Number(item.quantity)}` })
             .where(eq(products.id, item.productId));
+          // Stock-Movement für Hard-Delete-Restock protokollieren
+          await tx.insert(stockMovements).values({
+            shopId,
+            productId: item.productId,
+            type: 'hard_delete',
+            quantity: Number(item.quantity), // positiv = Eingang (Restock)
+            referenceSaleId: id,
+            reason: 'Hard-Delete: Verkauf vollständig gelöscht',
+            movedAt: Date.now(),
+          });
         }
         stockAdjusted = true;
       }

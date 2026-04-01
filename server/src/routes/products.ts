@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { products } from '../db/schema.js';
+import { products, priceHistories } from '../db/schema.js';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { extname } from 'node:path';
 import { broadcast } from './websocket.js';
@@ -60,35 +60,68 @@ export async function productRoutes(fastify: FastifyInstance) {
     if (p.shopId !== session.shopId) {
       return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
-    await db.insert(products).values({
-      id: p.id,
-      shopId: p.shopId,
-      articleNumber: p.articleNumber,
-      name: p.name,
-      category: p.category,
-      purchasePrice: p.purchasePrice,
-      salePrice: p.salePrice,
-      vatRate: p.vatRate,
-      stock: p.stock,
-      minStock: p.minStock,
-      active: p.active,
-      imageUrl: p.imageUrl ?? null,
-      updatedAt: p.updatedAt,
-    }).onConflictDoUpdate({
-      target: products.id,
-      set: {
-        articleNumber: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.article_number ELSE ${products.articleNumber} END`,
-        name: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.name ELSE ${products.name} END`,
-        category: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.category ELSE ${products.category} END`,
-        purchasePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.purchase_price ELSE ${products.purchasePrice} END`,
-        salePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.sale_price ELSE ${products.salePrice} END`,
-        vatRate: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.vat_rate ELSE ${products.vatRate} END`,
-        stock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.stock ELSE ${products.stock} END`,
-        minStock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.min_stock ELSE ${products.minStock} END`,
-        active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
-        imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
-        updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
-      },
+    await db.transaction(async (tx) => {
+      // Bestehenden Preis lesen für Logging (vor dem Upsert)
+      const [existing] = await tx.select({
+        purchasePrice: products.purchasePrice,
+        salePrice: products.salePrice,
+      }).from(products).where(eq(products.id, p.id)).limit(1);
+
+      // Preis-History Logging — nur wenn Produkt existiert UND Preis sich ändert
+      if (existing) {
+        if (existing.purchasePrice !== p.purchasePrice) {
+          await tx.insert(priceHistories).values({
+            shopId: p.shopId,
+            productId: p.id,
+            field: 'purchase_price',
+            oldValue: existing.purchasePrice,
+            newValue: p.purchasePrice,
+            changedAt: Date.now(),
+          });
+        }
+        if (existing.salePrice !== p.salePrice) {
+          await tx.insert(priceHistories).values({
+            shopId: p.shopId,
+            productId: p.id,
+            field: 'sale_price',
+            oldValue: existing.salePrice,
+            newValue: p.salePrice,
+            changedAt: Date.now(),
+          });
+        }
+      }
+
+      // LWW-Upsert — unverändert
+      await tx.insert(products).values({
+        id: p.id,
+        shopId: p.shopId,
+        articleNumber: p.articleNumber,
+        name: p.name,
+        category: p.category,
+        purchasePrice: p.purchasePrice,
+        salePrice: p.salePrice,
+        vatRate: p.vatRate,
+        stock: p.stock,
+        minStock: p.minStock,
+        active: p.active,
+        imageUrl: p.imageUrl ?? null,
+        updatedAt: p.updatedAt,
+      }).onConflictDoUpdate({
+        target: products.id,
+        set: {
+          articleNumber: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.article_number ELSE ${products.articleNumber} END`,
+          name: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.name ELSE ${products.name} END`,
+          category: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.category ELSE ${products.category} END`,
+          purchasePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.purchase_price ELSE ${products.purchasePrice} END`,
+          salePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.sale_price ELSE ${products.salePrice} END`,
+          vatRate: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.vat_rate ELSE ${products.vatRate} END`,
+          stock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.stock ELSE ${products.stock} END`,
+          minStock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.min_stock ELSE ${products.minStock} END`,
+          active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
+          imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
+          updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
+        },
+      });
     });
     reply.status(201).send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
