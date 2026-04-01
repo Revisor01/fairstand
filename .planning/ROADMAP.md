@@ -9,7 +9,8 @@
 - ✅ **v4.0 Datenqualität & Stabilität** — Phases 14-17 (shipped 2026-03-24)
 - ✅ **v5.0 Online-First Live Architecture** — Phases 18-21 (shipped 2026-03-24)
 - ✅ **v6.0 Pure Online** — Phases 22-23 (shipped 2026-03-24)
-- 🔄 **v7.0 Multi-Shop & UX** — Phases 24-26 (in progress)
+- ✅ **v7.0 Multi-Shop & UX** — Phases 24-26 (shipped 2026-03-25)
+- 🔄 **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (in progress)
 
 ## Phases
 
@@ -82,11 +83,20 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 </details>
 
-### v7.0 Multi-Shop & UX
+<details>
+<summary>✅ v7.0 Multi-Shop & UX (Phases 24-26) — SHIPPED 2026-03-25</summary>
 
 - [x] **Phase 24: Master-Shop Administration** - is_master-Flag, Shop anlegen/deaktivieren über Master-UI (completed 2026-03-25)
 - [x] **Phase 25: Shop-Sortiment-Isolation** - Jeder Shop hat eigene Produkte, Berichte und PDF-Import pro Shop (completed 2026-03-25)
 - [x] **Phase 26: Responsive UX** - Layout für alle Geräte, Warenkorb als Spalte oder Swipe-In, verbesserte Kategorien-Navigation (completed 2026-03-25)
+
+</details>
+
+### v8.0 Inventur, Preis-History & Rechnungsexport
+
+- [ ] **Phase 27: Preis-History & Bestandsverlauf** - DB-Schema price_history + stock_movements, automatisches Logging bei Preisänderungen und Bestandsbewegungen
+- [ ] **Phase 28: Inventur-Übersicht & Preis-Auswertung** - Jahresbericht-Erweiterung mit Inventur pro Artikel, EK-Aufschlüsselung, Bestandswert-Summe, Preis-History-Ansicht
+- [ ] **Phase 29: Export** - CSV-Download für Verkaufshistorie und Inventur, PDF-Einzelbelege
 
 ## Phase Details
 
@@ -388,10 +398,43 @@ Plans:
 - [x] 26-03-PLAN.md — CartPanel Swipe-to-Dismiss und Swipe-to-Open
 - [x] 26-04-PLAN.md — ArticleGrid sticky Kategorie-Tabs, Auto-Scroll, verbesserter Kontrast
 
+### Phase 27: Preis-History & Bestandsverlauf
+**Goal**: Jede EK/VK-Änderung und jede Bestandsbewegung wird lückenlos in der Datenbank protokolliert — das Fundament für alle Auswertungen in Phase 28
+**Depends on**: Phase 26
+**Requirements**: PRICE-01, INV-04
+**Success Criteria** (what must be TRUE):
+  1. Nach einer Preisänderung an einem Artikel enthält die price_history-Tabelle einen neuen Eintrag mit Artikel-ID, altem Preis, neuem Preis und Zeitstempel — ohne manuellen Eingriff
+  2. Nach einem Verkauf, einer Stornierung, einer Nachbuchung oder Bestandskorrektur enthält stock_movements einen Eintrag mit Typ, Menge, Zeitstempel und Referenz auf den auslösenden Vorgang
+  3. Pro Artikel kann eine chronologische Liste aller Bestandsbewegungen abgerufen werden — Eintrag für Eintrag mit Zeitstempel und Bewegungsgrund
+  4. Das Logging läuft vollständig serverseitig — kein Clientcode muss sich darum kümmern
+**Plans**: TBD
+
+### Phase 28: Inventur-Übersicht & Preis-Auswertung
+**Goal**: Der Jahresbericht zeigt pro Artikel eine vollständige Inventur-Übersicht mit Bestand, Umsatz, EK-Kosten und Preisänderungen — alle Zahlen stimmen, auch wenn EK im Laufe des Jahres gestiegen ist
+**Depends on**: Phase 27
+**Requirements**: INV-01, INV-02, INV-03, PRICE-02, PRICE-03
+**Success Criteria** (what must be TRUE):
+  1. Im Jahresbericht gibt es eine Inventur-Tabelle: pro Artikel sind aktueller Bestand, verkaufte Gesamtmenge, VK-Umsatz und EK-Kosten auf einen Blick sichtbar
+  2. Wenn ein Artikel im Laufe des Jahres zwei verschiedene EK-Preise hatte, zeigt die Inventur-Aufschlüsselung "X Stück zu EK1 = Betrag, Y Stück zu EK2 = Betrag" — korrekt abgeleitet aus den Sale-Item-Snapshots
+  3. Eine Bestandswert-Summe am Ende der Inventur-Tabelle zeigt den Gesamtwert aller Waren (Menge × aktueller EK) als einzelne Zahl
+  4. Pro Artikel in der Produktverwaltung gibt es eine History-Ansicht mit Zeitstrahl: wann hat sich EK oder VK geändert, von welchem auf welchen Wert
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 29: Export
+**Goal**: Verkaufshistorie, Inventur und Einzelbelege können als Datei heruntergeladen werden — CSV für Tabellenkalkulationen, PDF für Einzelbelege
+**Depends on**: Phase 28
+**Requirements**: EXP-01, EXP-02, EXP-03
+**Success Criteria** (what must be TRUE):
+  1. Aus der Verkaufshistorie kann eine CSV-Datei heruntergeladen werden, die sich in Excel und Numbers ohne Zeichensatzfehler öffnen lässt (korrekte Umlaute, Semikolon-Trennzeichen)
+  2. Die Inventur-Tabelle aus dem Jahresbericht kann als separate CSV-Datei exportiert werden — alle Spalten aus der Ansicht sind enthalten
+  3. Zu einem einzelnen abgeschlossenen Verkauf lässt sich ein PDF-Beleg generieren und herunterladen — mit Artikel, Menge, Preis, Datum und Shop-Name
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 24 → 25 → 26
+Phases execute in numeric order: 27 → 28 → 29
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -418,6 +461,9 @@ Phases execute in numeric order: 24 → 25 → 26
 | 21. Offline-Fallback & Dexie als Cache | v5.0 | 2/2 | Complete | 2026-03-24 |
 | 22. PostgreSQL-Migration | v6.0 | 3/3 | Complete | 2026-03-24 |
 | 23. Dexie-Entfernung & Online-Only | v6.0 | 3/3 | Complete | 2026-03-24 |
-| 24. Master-Shop Administration | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete    | 2026-03-25 |
-| 26. Responsive UX | v7.0 | 4/4 | Complete   | 2026-03-25 |
+| 24. Master-Shop Administration | v7.0 | 2/2 | Complete | 2026-03-25 |
+| 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete | 2026-03-25 |
+| 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
+| 27. Preis-History & Bestandsverlauf | v8.0 | 0/? | Not started | - |
+| 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 0/? | Not started | - |
+| 29. Export | v8.0 | 0/? | Not started | - |
