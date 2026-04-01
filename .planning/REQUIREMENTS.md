@@ -1,66 +1,66 @@
-# Requirements: Fairstand Kassensystem v7.0
+# Requirements: Fairstand Kassensystem v8.0
 
-**Defined:** 2026-03-25
+**Defined:** 2026-04-01
 **Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
 
-## v7.0 Requirements
+## v8.0 Requirements
 
-### Multi-Shop Administration
+### Inventur & Bestandsauswertung
 
-- [x] **SHOP-01**: Master-Shop (St. Secundus) kann neue Shops anlegen mit Name und PIN
-- [x] **SHOP-02**: Master-Shop kann Shops deaktivieren (PIN funktioniert nicht mehr, kein Login möglich)
-- [x] **SHOP-03**: Master-Shop hat ein is_master-Flag in der DB — nur Master sieht Shop-Verwaltung
-- [x] **SHOP-04**: Jeder Shop hat ein eigenes, unabhängiges Sortiment (eigene Produkte, Preise, Bestand)
+- [ ] **INV-01**: User kann im Jahresbericht eine Inventur-Übersicht sehen mit pro Artikel: aktueller Bestand, verkaufte Menge, VK-Umsatz, EK-Kosten
+- [ ] **INV-02**: User kann bei Artikeln mit verschiedenen EK-Preisen über's Jahr sehen, wie viel zu welchem EK verkauft wurde
+- [ ] **INV-03**: User sieht im Jahresbericht eine Bestandswert-Summe (Gesamtwert aller Waren = Menge × aktueller EK)
+- [ ] **INV-04**: User kann pro Artikel ein Stock-Movement-Journal einsehen (Verkauf, Nachbuchung, Korrektur, Rückgabe mit Zeitstempel)
 
-### Shop-Selbstverwaltung
+### Preis-History
 
-- [x] **SELF-01**: Nach PIN-Login verwaltet jeder Shop seine eigenen Produkte (anlegen, bearbeiten, deaktivieren)
-- [x] **SELF-02**: Jeder Shop sieht nur seine eigenen Berichte (Tagesübersicht, Monatsberichte)
-- [x] **SELF-03**: PDF-Import erstellt Produkte im jeweiligen Shop-Sortiment
+- [ ] **PRICE-01**: Jede EK/VK-Änderung an einem Artikel wird automatisch in einer price_history-Tabelle geloggt
+- [ ] **PRICE-02**: User kann pro Artikel in der Produktverwaltung eine History der Preisänderungen einsehen (Zeitstrahl mit altem/neuem Preis)
+- [ ] **PRICE-03**: Jahresbericht zeigt bei Preisänderungen die Aufschlüsselung: X Stück zu EK1, Y Stück zu EK2
 
-### Responsive UX
+### Export
 
-- [x] **UX-01**: Layout ist auf iPad (Landscape + Portrait), iPhone und Desktop-Browser optimiert
-- [x] **UX-02**: Warenkorb als fixe Spalte auf breiten Screens (iPad Landscape, Desktop)
-- [x] **UX-03**: Warenkorb als Swipe-In Panel auf schmalen Screens (iPhone, iPad Portrait)
-- [x] **UX-04**: Kategorien-Navigation verbessert (aktuelle Tab-Leiste ist nicht ideal)
+- [ ] **EXP-01**: User kann Verkaufshistorie als CSV downloaden (Excel-kompatibel mit korrekten Umlauten)
+- [ ] **EXP-02**: User kann Inventur-Übersicht als CSV downloaden
+- [ ] **EXP-03**: User kann einzelne Verkäufe nachträglich als PDF-Beleg exportieren
 
 ## Future Requirements
 
-- **NATIVE-01**: Native iOS App via App Store (Apple Developer Account vorhanden)
-- **SCALE-01**: Report-Scheduler iteriert über alle Shops
 - **CROSS-01**: Master-Admin sieht übergreifende Berichte über alle Shops
+- **SCALE-01**: Report-Scheduler iteriert über alle Shops
+- **NATIVE-01**: Native iOS App via App Store (Apple Developer Account vorhanden)
+- **ABC-01**: ABC-Klassifizierung für Artikel (Top-Seller identifizieren)
+- **XLSX-01**: Excel-Export (XLSX statt CSV) für komplexere Auswertungen
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Geteiltes Sortiment | Explizit ausgeschlossen — jeder Shop hat eigenes Sortiment |
+| DATEV-Export | Erstmal nur interne Übersicht, kein Buchhaltungs-Anbindung |
+| Automatische Nachbestellung | Manuelle Bestellung beim Süd-Nord-Kontor reicht |
+| Excel (XLSX) Export | CSV reicht für v8.0, XLSX ggf. in v9.0 |
+| Echtzeit-Inventur mit Scanner | Kein Barcode-Scanner vorhanden |
 | Übergreifende Berichte | Erst in späterem Milestone (CROSS-01) |
-| Native App | PWA reicht aktuell |
-| Master verwaltet Shop-Produkte | Jeder Shop verwaltet selbst |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHOP-01 | Phase 24 | Complete |
-| SHOP-02 | Phase 24 | Complete |
-| SHOP-03 | Phase 24 | Complete |
-| SHOP-04 | Phase 25 | Complete |
-| SELF-01 | Phase 25 | Complete |
-| SELF-02 | Phase 25 | Complete |
-| SELF-03 | Phase 25 | Complete |
-| UX-01 | Phase 26 | Complete |
-| UX-02 | Phase 26 | Complete |
-| UX-03 | Phase 26 | Complete |
-| UX-04 | Phase 26 | Complete |
+| INV-01 | — | Pending |
+| INV-02 | — | Pending |
+| INV-03 | — | Pending |
+| INV-04 | — | Pending |
+| PRICE-01 | — | Pending |
+| PRICE-02 | — | Pending |
+| PRICE-03 | — | Pending |
+| EXP-01 | — | Pending |
+| EXP-02 | — | Pending |
+| EXP-03 | — | Pending |
 
 **Coverage:**
-- v7.0 requirements: 11 total
-- Mapped to phases: 11
-- Unmapped: 0
+- v8.0 requirements: 10 total
+- Mapped to phases: 0
+- Unmapped: 10
 
 ---
-*Requirements defined: 2026-03-25*
-*Traceability updated: 2026-03-25 (roadmap created)*
+*Requirements defined: 2026-04-01*
