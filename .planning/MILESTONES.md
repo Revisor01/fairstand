@@ -1,5 +1,34 @@
 # Milestones
 
+## v8.0 Inventur, Preis-History & Rechnungsexport (Shipped: 2026-04-01)
+
+**Phases completed:** 8 phases, 21 plans, 36 tasks
+
+**Key accomplishments:**
+
+- postgres:16-alpine in docker-compose mit Health Check, pg Pool in Drizzle, alle 6 Tabellen von sqliteTable auf pgTable migriert, TypeScript-Build clean
+- Alle synchronen better-sqlite3-Aufrufe (.run()/.get()/.all()) in 7 Server-Dateien auf async/await + node-postgres umgestellt, SQLite-JSON-Funktionen durch PostgreSQL-Äquivalente ersetzt, TypeScript-Build fehlerfrei
+- Standalone SQLite→PostgreSQL Migrationsskript mit idempotenten INSERT...ON CONFLICT DO NOTHING Queries für alle 5 Tabellen; better-sqlite3 vollständig aus server/package.json entfernt (PG-05)
+- One-liner:
+- idb-keyval komplett aus 5 Dateien entfernt — Session, PIN, Import-Historie und Schnellbetraege nutzen jetzt synchrones localStorage
+- PostgreSQL-Schema um is_master/active erweitert, Migration 0003 erstellt, Seed setzt St. Secundus als Master, Auth-Route blockiert deaktivierte Shops mit 403 und gibt isMaster in der Response zurück.
+- Master-only /api/shops CRUD with ShopsManager UI, isMaster session field, and conditional Shops tab in AdminScreen
+- One-liner:
+- shopId-Ownership-Check vor allen vier Stock-Delta-Operationen in sync.ts und Entfernung des inkonsistenten Query-Params im ImportScreen
+- Admin-Einstellung 'Warenkorb-Layout' in SettingsForm als Checkbox-Toggle mit Speicherung via PUT /api/settings key='cart_sidebar_enabled'
+- One-liner:
+- Native iOS-Gestenführung im CartPanel: Swipe-to-Dismiss (>= 60px nach rechts schließt Panel) und Swipe-to-Open (Edge-Swipe vom rechten Rand) via Pointer Events ohne externe Library
+- Kategorie-Pill-Leiste in ArticleGrid sticky gemacht mit Auto-Scroll (scrollIntoView) und staerkerem Kontrast (sky-500 + shadow-md fuer aktiv, sky-50 fuer inaktiv)
+- Drizzle-Schema um zwei Audit-Tabellen erweitert (price_histories, stock_movements) und PostgreSQL-Migration 0005 generiert — Fundament fuer Preisaenderungs-Logging und Bestandsverlauf
+- Preis-History und Restock-Audit: POST /products loggt EK/VK-Änderungen in price_histories, DELETE /sales/:id loggt Hard-Delete-Restock in stock_movements — jeweils atomar per db.transaction
+- sync.ts um stockMovements-Logging für alle 4 Sync-Operationen ergänzt und neue priceHistory.ts Route mit GET-Endpoints für Preisänderungs- und Bestandsverlaufs-Journal erstellt
+- Backend-Endpoint GET /api/reports/inventory mit EK-Snapshot-basierter Jahresauswertung pro Artikel inkl. EK-Aufschlüsselung bei Preisänderungen
+- One-liner:
+- Vier Export-Endpoints mit pdfkit + csv-stringify: Verkaufshistorie-CSV, Inventur-CSV mit Summenzeile, Inventur-PDF für Kirchenkreis-Jahresabschluss, Einzelverkauf-Beleg-PDF
+- One-liner:
+
+---
+
 ## v6.0 Pure Online (Shipped: 2026-03-24)
 
 **Phases completed:** 2 phases, 6 plans, 10 tasks
