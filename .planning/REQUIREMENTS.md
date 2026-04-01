@@ -20,9 +20,9 @@
 
 ### Export
 
-- [ ] **EXP-01**: User kann Verkaufshistorie als CSV downloaden (Excel-kompatibel mit korrekten Umlauten)
-- [ ] **EXP-02**: User kann Inventur-Übersicht als CSV downloaden
-- [ ] **EXP-03**: User kann einzelne Verkäufe nachträglich als PDF-Beleg exportieren
+- [x] **EXP-01**: User kann Verkaufshistorie als CSV downloaden (Excel-kompatibel mit korrekten Umlauten)
+- [x] **EXP-02**: User kann Inventur-Übersicht als CSV downloaden
+- [x] **EXP-03**: User kann einzelne Verkäufe nachträglich als PDF-Beleg exportieren
 
 ## Future Requirements
 
@@ -53,9 +53,9 @@
 | PRICE-01 | Phase 27 | Complete |
 | PRICE-02 | Phase 28 | Complete |
 | PRICE-03 | Phase 28 | Complete |
-| EXP-01 | Phase 29 | Pending |
-| EXP-02 | Phase 29 | Pending |
-| EXP-03 | Phase 29 | Pending |
+| EXP-01 | Phase 29 | Complete |
+| EXP-02 | Phase 29 | Complete |
+| EXP-03 | Phase 29 | Complete |
 
 **Coverage:**
 - v8.0 requirements: 10 total

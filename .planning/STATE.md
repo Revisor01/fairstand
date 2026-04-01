@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
-status: verifying
-stopped_at: Completed 28-02-PLAN.md (Inventur-Tab + Preis-History-Tab)
-last_updated: "2026-04-01T21:54:19.356Z"
+status: executing
+stopped_at: Completed 29-01-PLAN.md (CSV + PDF Export-Endpoints)
+last_updated: "2026-04-01T22:14:47.539Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
   completed_phases: 7
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 21
+  completed_plans: 20
 ---
 
 # Project State
@@ -20,13 +20,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 28 — inventur-uebersicht-preis-auswertung
+**Current focus:** Phase 29 — export
 
 ## Current Position
 
-Phase: 29
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 29 (export) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-04-01
 
 ## Performance Metrics
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 28]: COALESCE purchasePrice snapshot ensures historical EK accuracy even when product price changed after sale
 - [Phase 28]: Zeitraum-Auswahl in ProductStats nur im Stats-Tab sichtbar (irrelevant fuer Price-History)
 - [Phase 28]: Monatsselektor in MonthlyReport versteckt sich im Inventur-Tab
+- [Phase 29-export]: CSV-Streaming via csv-stringify direkt in Fastify reply statt Buffer-Accumulation
+- [Phase 29-export]: doc.end() muss vor reply.send(doc) aufgerufen werden (PDFKit-Pitfall)
 
 ### Pending Todos
 
@@ -74,7 +76,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-01T21:51:44.163Z
-Stopped at: Completed 28-02-PLAN.md (Inventur-Tab + Preis-History-Tab)
+Last session: 2026-04-01T22:14:47.537Z
+Stopped at: Completed 29-01-PLAN.md (CSV + PDF Export-Endpoints)
 Resume file: None
 Next step: /gsd:plan-phase 27
