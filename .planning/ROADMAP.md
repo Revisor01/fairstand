@@ -94,7 +94,7 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 
 ### v8.0 Inventur, Preis-History & Rechnungsexport
 
-- [ ] **Phase 27: Preis-History & Bestandsverlauf** - DB-Schema price_history + stock_movements, automatisches Logging bei Preisänderungen und Bestandsbewegungen
+- [x] **Phase 27: Preis-History & Bestandsverlauf** - DB-Schema price_history + stock_movements, automatisches Logging bei Preisänderungen und Bestandsbewegungen (completed 2026-04-01)
 - [ ] **Phase 28: Inventur-Übersicht & Preis-Auswertung** - Jahresbericht-Erweiterung mit Inventur pro Artikel, EK-Aufschlüsselung, Bestandswert-Summe, Preis-History-Ansicht
 - [ ] **Phase 29: Export** - CSV-Download für Verkaufshistorie und Inventur, PDF-Einzelbelege
 
@@ -469,6 +469,6 @@ Phases execute in numeric order: 27 → 28 → 29
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete | 2026-03-25 |
 | 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete | 2026-03-25 |
 | 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
-| 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | In Progress|  |
+| 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 0/? | Not started | - |
 | 29. Export | v8.0 | 0/? | Not started | - |
