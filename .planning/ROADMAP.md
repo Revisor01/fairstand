@@ -441,8 +441,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [x] 28-01-PLAN.md — Backend: GET /api/reports/inventory Endpoint mit EK-Aufschlüsselung (INV-01, INV-02, INV-03, PRICE-03)
-- [ ] 28-02-PLAN.md — Frontend: Inventur-Tab in MonthlyReport + Preis-History-Tab in ProductStats (INV-01, INV-02, INV-03, PRICE-02)
+- [ ] 29-01-PLAN.md — Backend: CSV + PDF Export-Endpoints (pdfkit + csv-stringify) (EXP-01, EXP-02, EXP-03)
+- [ ] 29-02-PLAN.md — Frontend: Download-Buttons in DailyReport, MonthlyReport, SaleDetailModal (EXP-01, EXP-02, EXP-03)
 
 ## Progress
 
