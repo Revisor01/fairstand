@@ -4,13 +4,13 @@ milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
 status: executing
 stopped_at: Completed 27-02-PLAN.md (Audit-Logging Preis-History + Stock-Movements)
-last_updated: "2026-04-01T16:35:46.976Z"
+last_updated: "2026-04-01T16:38:22.981Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 
 ## Current Position
 
-Phase: 27 (preis-history-bestandsverlauf) — EXECUTING
-Plan: 3 of 3
+Phase: 28
+Plan: Not started
 Status: Ready to execute
 Last activity: 2026-04-01
 
