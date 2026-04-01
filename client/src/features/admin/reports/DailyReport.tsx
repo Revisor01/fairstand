@@ -21,6 +21,7 @@ export function DailyReport() {
   const [rangeMode, setRangeMode] = useState<RangeMode>('today');
   const [customDate, setCustomDate] = useState<Date>(new Date());
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [downloadingCsv, setDownloadingCsv] = useState(false);
   const queryClient = useQueryClient();
 
   const { rangeStart, rangeEnd } = useMemo(() => {
@@ -99,6 +100,26 @@ export function DailyReport() {
     }
   }, [rangeMode, customDate]);
 
+  async function handleCsvDownload() {
+    setDownloadingCsv(true);
+    try {
+      const res = await authFetch(`/api/reports/sales-csv?from=${rangeStart}&to=${rangeEnd}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const date = new Date().toISOString().slice(0, 10);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `verkaufshistorie-${date}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert('CSV-Download fehlgeschlagen. Bitte erneut versuchen.');
+      console.error('CSV download error:', err);
+    } finally {
+      setDownloadingCsv(false);
+    }
+  }
+
   function formatSaleTime(createdAt: number): string {
     const d = new Date(createdAt);
     if (isMultiDay) {
@@ -143,6 +164,18 @@ export function DailyReport() {
             }}
             className="min-h-[44px] border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
           />
+          <button
+            onClick={handleCsvDownload}
+            disabled={downloadingCsv || sales.length === 0}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {downloadingCsv ? (
+              <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+            ) : (
+              <span>↓</span>
+            )}
+            CSV
+          </button>
         </div>
       </div>
 
