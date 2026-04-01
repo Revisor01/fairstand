@@ -89,6 +89,8 @@ export function MonthlyReport() {
   const [inventoryData, setInventoryData] = useState<InventoryResponse | null>(null);
   const [loadingInventory, setLoadingInventory] = useState(false);
   const [expandedProducts, setExpandedProducts] = useState<Set<string>>(new Set());
+  const [downloadingInventurCsv, setDownloadingInventurCsv] = useState(false);
+  const [downloadingInventurPdf, setDownloadingInventurPdf] = useState(false);
 
   const yearOptions = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
@@ -132,6 +134,44 @@ export function MonthlyReport() {
       .catch(() => setInventoryData(null))
       .finally(() => setLoadingInventory(false));
   }, [year, activeTab]);
+
+  async function handleInventurCsvDownload() {
+    setDownloadingInventurCsv(true);
+    try {
+      const res = await authFetch(`/api/reports/inventory-csv?year=${year}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `inventur-${year}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert('CSV-Download fehlgeschlagen. Bitte erneut versuchen.');
+      console.error('Inventur CSV error:', err);
+    } finally {
+      setDownloadingInventurCsv(false);
+    }
+  }
+
+  async function handleInventurPdfDownload() {
+    setDownloadingInventurPdf(true);
+    try {
+      const res = await authFetch(`/api/reports/inventory-pdf?year=${year}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `inventur-${year}.pdf`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert('PDF-Download fehlgeschlagen. Bitte erneut versuchen.');
+      console.error('Inventur PDF error:', err);
+    } finally {
+      setDownloadingInventurPdf(false);
+    }
+  }
 
   if (!navigator.onLine) {
     return (
@@ -286,6 +326,30 @@ export function MonthlyReport() {
           {!loadingInventory && !inventoryData && (
             <div className="bg-slate-50 rounded-xl p-6 text-center text-slate-500">
               Keine Daten für {year}.
+            </div>
+          )}
+          {!loadingInventory && inventoryData && (
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={handleInventurCsvDownload}
+                disabled={downloadingInventurCsv}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {downloadingInventurCsv ? (
+                  <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                ) : <span>↓</span>}
+                Inventur CSV
+              </button>
+              <button
+                onClick={handleInventurPdfDownload}
+                disabled={downloadingInventurPdf}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {downloadingInventurPdf ? (
+                  <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                ) : <span>↓</span>}
+                Inventur PDF
+              </button>
             </div>
           )}
           {!loadingInventory && inventoryData && (

@@ -18,6 +18,7 @@ type ConfirmAction = 'cancel' | 'delete' | null;
 export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModalProps) {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   async function handleCancelSale() {
     const cancelledAt = Date.now();
@@ -92,6 +93,26 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
 
     onSaleChanged?.();
     // Modal bleibt offen für weitere Rückgaben
+  }
+
+  async function handleReceiptPdfDownload() {
+    setDownloadingPdf(true);
+    try {
+      const res = await authFetch(`/api/sales/${sale.id}/receipt-pdf`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const date = new Date().toISOString().slice(0, 10);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `beleg-${sale.id.slice(0, 8).toUpperCase()}-${date}.pdf`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert('PDF-Download fehlgeschlagen. Bitte erneut versuchen.');
+      console.error('Receipt PDF error:', err);
+    } finally {
+      setDownloadingPdf(false);
+    }
   }
 
   function onConfirmAction() {
@@ -221,6 +242,18 @@ export function SaleDetailModal({ sale, onClose, onSaleChanged }: SaleDetailModa
               Löschen
             </button>
           </div>
+          {!sale.cancelledAt && (
+            <button
+              onClick={handleReceiptPdfDownload}
+              disabled={downloadingPdf}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-slate-600 text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {downloadingPdf ? (
+                <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+              ) : <span>↓</span>}
+              PDF-Beleg
+            </button>
+          )}
         </div>
       </div>
 
