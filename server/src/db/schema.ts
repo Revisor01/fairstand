@@ -66,3 +66,24 @@ export const categories = pgTable('categories', {
   sortOrder: integer('sort_order').notNull().default(0),
   createdAt: bigint('created_at', { mode: 'number' }).notNull(),
 });
+
+export const priceHistories = pgTable('price_histories', {
+  id: serial('id').primaryKey(),
+  shopId: text('shop_id').notNull(),
+  productId: text('product_id').notNull(),
+  field: text('field').notNull(), // 'purchase_price' | 'sale_price'
+  oldValue: integer('old_value').notNull(),
+  newValue: integer('new_value').notNull(),
+  changedAt: bigint('changed_at', { mode: 'number' }).notNull(),
+});
+
+export const stockMovements = pgTable('stock_movements', {
+  id: serial('id').primaryKey(),
+  shopId: text('shop_id').notNull(),
+  productId: text('product_id').notNull(),
+  type: text('type').notNull(), // 'sale' | 'adjustment' | 'correction' | 'return' | 'hard_delete'
+  quantity: integer('quantity').notNull(), // negativ = Ausgang, positiv = Eingang
+  referenceSaleId: text('reference_sale_id'), // FK auf sales.id, nullable
+  reason: text('reason'), // für STOCK_ADJUST, hard_delete etc., nullable
+  movedAt: bigint('moved_at', { mode: 'number' }).notNull(),
+});
