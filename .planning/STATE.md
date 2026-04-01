@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v8.0
 milestone_name: Inventur, Preis-History & Rechnungsexport
 status: executing
-stopped_at: Completed 27-01-PLAN.md (Schema-Erweiterung priceHistories + stockMovements)
-last_updated: "2026-04-01T16:33:17.240Z"
+stopped_at: Completed 27-02-PLAN.md (Audit-Logging Preis-History + Stock-Movements)
+last_updated: "2026-04-01T16:35:46.976Z"
 last_activity: 2026-04-01
 progress:
   total_phases: 23
   completed_phases: 5
   total_plans: 17
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 ## Current Position
 
 Phase: 27 (preis-history-bestandsverlauf) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-01
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [v8.0]: Neue DB-Tabellen: price_history, stock_movements — Drizzle-Migration in Phase 27
 - [Phase 27]: Migration manuell geschrieben: drizzle-kit generate fehlte wegen legacy SQLite-Snapshots in postgresql-Projekt (Phase 27-01)
 - [Phase 27]: referenceSaleId in stock_movements nullable text ohne Drizzle-Relation — FK nur zur Nachverfolgbarkeit (Phase 27-01)
+- [Phase 27]: Preis-Logging nur bei existierenden Produkten — neues Produkt hat keinen alten Preis
+- [Phase 27]: referenceSaleId in stock_movements zeigt auf gelöschten Sale — Audit-Trail bleibt erhalten nach Hard-Delete
 
 ### Pending Todos
 
@@ -68,7 +70,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-01T16:33:17.238Z
-Stopped at: Completed 27-01-PLAN.md (Schema-Erweiterung priceHistories + stockMovements)
+Last session: 2026-04-01T16:35:46.973Z
+Stopped at: Completed 27-02-PLAN.md (Audit-Logging Preis-History + Stock-Movements)
 Resume file: None
 Next step: /gsd:plan-phase 27
