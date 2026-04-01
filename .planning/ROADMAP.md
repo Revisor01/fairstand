@@ -410,7 +410,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 27-01-PLAN.md — Drizzle-Schema: priceHistories + stockMovements Tabellen + Migrations generieren
+- [x] 27-01-PLAN.md — Drizzle-Schema: priceHistories + stockMovements Tabellen + Migrations generieren
 - [ ] 27-02-PLAN.md — Logging in products.ts (Preis-History) und sales.ts (Hard-Delete Restock)
 - [ ] 27-03-PLAN.md — Logging in sync.ts (alle 4 Operationen) + GET-Endpoints priceHistory.ts
 
@@ -469,6 +469,6 @@ Phases execute in numeric order: 27 → 28 → 29
 | 24. Master-Shop Administration | v7.0 | 2/2 | Complete | 2026-03-25 |
 | 25. Shop-Sortiment-Isolation | v7.0 | 2/2 | Complete | 2026-03-25 |
 | 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
-| 27. Preis-History & Bestandsverlauf | v8.0 | 0/? | Not started | - |
+| 27. Preis-History & Bestandsverlauf | v8.0 | 1/3 | In Progress|  |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 0/? | Not started | - |
 | 29. Export | v8.0 | 0/? | Not started | - |
