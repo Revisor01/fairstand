@@ -423,7 +423,11 @@ Plans:
   2. Wenn ein Artikel im Laufe des Jahres zwei verschiedene EK-Preise hatte, zeigt die Inventur-Aufschlüsselung "X Stück zu EK1 = Betrag, Y Stück zu EK2 = Betrag" — korrekt abgeleitet aus den Sale-Item-Snapshots
   3. Eine Bestandswert-Summe am Ende der Inventur-Tabelle zeigt den Gesamtwert aller Waren (Menge × aktueller EK) als einzelne Zahl
   4. Pro Artikel in der Produktverwaltung gibt es eine History-Ansicht mit Zeitstrahl: wann hat sich EK oder VK geändert, von welchem auf welchen Wert
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Backend: GET /api/reports/inventory Endpoint mit EK-Aufschlüsselung (INV-01, INV-02, INV-03, PRICE-03)
+- [ ] 28-02-PLAN.md — Frontend: Inventur-Tab in MonthlyReport + Preis-History-Tab in ProductStats (INV-01, INV-02, INV-03, PRICE-02)
 **UI hint**: yes
 
 ### Phase 29: Export
@@ -434,7 +438,11 @@ Plans:
   1. Aus der Verkaufshistorie kann eine CSV-Datei heruntergeladen werden, die sich in Excel und Numbers ohne Zeichensatzfehler öffnen lässt (korrekte Umlaute, Semikolon-Trennzeichen)
   2. Die Inventur-Tabelle aus dem Jahresbericht kann als separate CSV-Datei exportiert werden — alle Spalten aus der Ansicht sind enthalten
   3. Zu einem einzelnen abgeschlossenen Verkauf lässt sich ein PDF-Beleg generieren und herunterladen — mit Artikel, Menge, Preis, Datum und Shop-Name
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Backend: GET /api/reports/inventory Endpoint mit EK-Aufschlüsselung (INV-01, INV-02, INV-03, PRICE-03)
+- [ ] 28-02-PLAN.md — Frontend: Inventur-Tab in MonthlyReport + Preis-History-Tab in ProductStats (INV-01, INV-02, INV-03, PRICE-02)
 
 ## Progress
 
