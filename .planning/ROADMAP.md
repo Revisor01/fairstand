@@ -479,4 +479,4 @@ Phases execute in numeric order: 27 → 28 → 29
 | 26. Responsive UX | v7.0 | 4/4 | Complete | 2026-03-25 |
 | 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 2/2 | Complete    | 2026-04-01 |
-| 29. Export | v8.0 | 2/2 | Complete   | 2026-04-01 |
+| 29. Export | v8.0 | 2/2 | Complete    | 2026-04-01 |
