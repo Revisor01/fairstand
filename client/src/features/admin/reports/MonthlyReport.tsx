@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { getShopId } from '../../../db/index.js';
@@ -52,6 +52,29 @@ interface MonthData {
   spenden: number;
 }
 
+interface EkBreakdownEntry {
+  ek_cents: number;
+  qty: number;
+}
+
+interface InventoryItem {
+  id: string;
+  article_number: string;
+  name: string;
+  current_stock: number;
+  current_ek_cents: number;
+  sold_qty: number;
+  revenue_cents: number;
+  cost_cents: number;
+  ek_breakdown: EkBreakdownEntry[];
+}
+
+interface InventoryResponse {
+  year: number;
+  items: InventoryItem[];
+  total_stock_value_cents: number;
+}
+
 export function MonthlyReport() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
@@ -62,6 +85,10 @@ export function MonthlyReport() {
   const [yearlyData, setYearlyData] = useState<MonthData[]>([]);
   const [loadingMonthly, setLoadingMonthly] = useState(false);
   const [loadingYearly, setLoadingYearly] = useState(false);
+  const [activeTab, setActiveTab] = useState<'monat' | 'jahr' | 'inventur'>('monat');
+  const [inventoryData, setInventoryData] = useState<InventoryResponse | null>(null);
+  const [loadingInventory, setLoadingInventory] = useState(false);
+  const [expandedProducts, setExpandedProducts] = useState<Set<string>>(new Set());
 
   const yearOptions = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
@@ -95,6 +122,17 @@ export function MonthlyReport() {
       .finally(() => setLoadingYearly(false));
   }, [year]);
 
+  useEffect(() => {
+    if (activeTab !== 'inventur' || !navigator.onLine) return;
+    setLoadingInventory(true);
+    setInventoryData(null);
+    authFetch(`/api/reports/inventory?year=${year}`)
+      .then(r => r.json())
+      .then((data: InventoryResponse) => setInventoryData(data))
+      .catch(() => setInventoryData(null))
+      .finally(() => setLoadingInventory(false));
+  }, [year, activeTab]);
+
   if (!navigator.onLine) {
     return (
       <div className="bg-slate-50 rounded-xl p-6 text-center text-slate-500 mt-4">
@@ -121,94 +159,221 @@ export function MonthlyReport() {
               <option key={y} value={y}>{y}</option>
             ))}
           </select>
-          <select
-            value={month}
-            onChange={e => setMonth(Number(e.target.value))}
-            className="h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400 bg-white"
-          >
-            {monthNames.map((name, i) => (
-              <option key={i + 1} value={i + 1}>{name}</option>
-            ))}
-          </select>
+          {activeTab !== 'inventur' && (
+            <select
+              value={month}
+              onChange={e => setMonth(Number(e.target.value))}
+              className="h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400 bg-white"
+            >
+              {monthNames.map((name, i) => (
+                <option key={i + 1} value={i + 1}>{name}</option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
-      {/* Monats-Zusammenfassung */}
-      {loadingMonthly ? (
-        <p className="text-slate-500 text-sm">Laden...</p>
-      ) : summary ? (
-        <>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-3xl font-bold text-slate-800">{summary.sale_count}</span>
-              <span className="text-xs text-slate-500 text-center">Verkäufe</span>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-xl font-bold text-sky-500">{formatEur(summary.total_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">Gesamtumsatz</span>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-xl font-bold text-slate-500">{formatEur(summary.cost_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">EK-Kosten</span>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-xl font-bold text-emerald-500">{formatEur(summary.margin_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">Marge</span>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-xl font-bold text-green-500">{formatEur(summary.donation_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">Spenden</span>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
-              <span className="text-xl font-bold text-amber-500">{formatEur(summary.extra_donation_cents)}</span>
-              <span className="text-xs text-slate-500 text-center">Überzahlung</span>
-            </div>
-          </div>
+      {/* Tab-Navigation */}
+      <div className="flex border-b border-sky-100">
+        {([
+          { key: 'monat', label: 'Monat' },
+          { key: 'jahr', label: 'Jahr' },
+          { key: 'inventur', label: 'Inventur' },
+        ] as const).map(tab => (
+          <button
+            key={tab.key}
+            onPointerDown={() => setActiveTab(tab.key)}
+            className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab.key
+                ? 'border-sky-500 text-sky-700'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          {/* Top-5-Artikel */}
-          {topArticles.length > 0 && (
+      {/* Monat-Tab */}
+      {activeTab === 'monat' && (
+        <>
+          {loadingMonthly ? (
+            <p className="text-slate-500 text-sm">Laden...</p>
+          ) : summary ? (
+            <>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-3xl font-bold text-slate-800">{summary.sale_count}</span>
+                  <span className="text-xs text-slate-500 text-center">Verkäufe</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-xl font-bold text-sky-500">{formatEur(summary.total_cents)}</span>
+                  <span className="text-xs text-slate-500 text-center">Gesamtumsatz</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-xl font-bold text-slate-500">{formatEur(summary.cost_cents)}</span>
+                  <span className="text-xs text-slate-500 text-center">EK-Kosten</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-xl font-bold text-emerald-500">{formatEur(summary.margin_cents)}</span>
+                  <span className="text-xs text-slate-500 text-center">Marge</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-xl font-bold text-green-500">{formatEur(summary.donation_cents)}</span>
+                  <span className="text-xs text-slate-500 text-center">Spenden</span>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col items-center gap-1">
+                  <span className="text-xl font-bold text-amber-500">{formatEur(summary.extra_donation_cents)}</span>
+                  <span className="text-xs text-slate-500 text-center">Überzahlung</span>
+                </div>
+              </div>
+
+              {/* Top-5-Artikel */}
+              {topArticles.length > 0 && (
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <h3 className="text-sm font-semibold text-sky-700 px-4 py-3 border-b border-sky-50">
+                    Top 5 Artikel
+                  </h3>
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-sky-50">
+                        <th className="text-left px-4 py-3 text-sky-700 font-semibold">Artikel</th>
+                        <th className="text-right px-4 py-3 text-sky-700 font-semibold">Gesamt</th>
+                        <th className="text-right px-4 py-3 text-sky-700 font-semibold">Verkauf</th>
+                        <th className="text-right px-4 py-3 text-sky-700 font-semibold">Entnahme</th>
+                        <th className="text-right px-4 py-3 text-sky-700 font-semibold">Umsatz</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topArticles.map((a, i) => (
+                        <tr key={i} className="border-t border-slate-50">
+                          <td className="px-4 py-3 text-slate-700">{a.name}</td>
+                          <td className="px-4 py-3 text-right text-slate-800 font-medium">{Number(a.total_qty)}</td>
+                          <td className="px-4 py-3 text-right text-sky-600">{Number(a.sale_qty)}</td>
+                          <td className="px-4 py-3 text-right text-amber-600">{Number(a.withdrawal_qty) > 0 ? Number(a.withdrawal_qty) : '—'}</td>
+                          <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(Number(a.revenue_cents))}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-slate-500 text-sm">Keine Daten für diesen Monat.</p>
+          )}
+        </>
+      )}
+
+      {/* Jahr-Tab */}
+      {activeTab === 'jahr' && (
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <h3 className="text-sm font-semibold text-sky-700 mb-4">Jahresverlauf {year}</h3>
+          {loadingYearly ? (
+            <p className="text-slate-500 text-sm">Laden...</p>
+          ) : (
+            <ReportChart data={yearlyData} />
+          )}
+        </div>
+      )}
+
+      {/* Inventur-Tab */}
+      {activeTab === 'inventur' && (
+        <div className="flex flex-col gap-4">
+          {loadingInventory && (
+            <div className="text-center py-12 text-slate-500">Laden...</div>
+          )}
+          {!loadingInventory && !inventoryData && (
+            <div className="bg-slate-50 rounded-xl p-6 text-center text-slate-500">
+              Keine Daten für {year}.
+            </div>
+          )}
+          {!loadingInventory && inventoryData && (
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <h3 className="text-sm font-semibold text-sky-700 px-4 py-3 border-b border-sky-50">
-                Top 5 Artikel
-              </h3>
-              <table className="w-full text-sm border-collapse">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-sky-50">
-                    <th className="text-left px-4 py-3 text-sky-700 font-semibold">Artikel</th>
-                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Gesamt</th>
-                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Verkauf</th>
-                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Entnahme</th>
-                    <th className="text-right px-4 py-3 text-sky-700 font-semibold">Umsatz</th>
+                    <th className="text-left px-4 py-3 text-sky-700 font-medium">Artikel</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-medium">Bestand</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-medium">Verkauft</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-medium">VK-Umsatz</th>
+                    <th className="text-right px-4 py-3 text-sky-700 font-medium">EK-Kosten</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {topArticles.map((a, i) => (
-                    <tr key={i} className="border-t border-slate-50">
-                      <td className="px-4 py-3 text-slate-700">{a.name}</td>
-                      <td className="px-4 py-3 text-right text-slate-800 font-medium">{Number(a.total_qty)}</td>
-                      <td className="px-4 py-3 text-right text-sky-600">{Number(a.sale_qty)}</td>
-                      <td className="px-4 py-3 text-right text-amber-600">{Number(a.withdrawal_qty) > 0 ? Number(a.withdrawal_qty) : '—'}</td>
-                      <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(Number(a.revenue_cents))}</td>
-                    </tr>
-                  ))}
+                  {inventoryData.items.map(item => {
+                    const isExpanded = expandedProducts.has(item.id);
+                    const hasVariants = item.ek_breakdown.length > 1;
+                    return (
+                      <React.Fragment key={item.id}>
+                        <tr className="border-t border-slate-100 hover:bg-sky-50/50">
+                          <td className="px-4 py-3 text-slate-800">
+                            <div className="flex items-center gap-1">
+                              {hasVariants && (
+                                <button
+                                  onPointerDown={() => {
+                                    setExpandedProducts(prev => {
+                                      const next = new Set(prev);
+                                      if (isExpanded) next.delete(item.id);
+                                      else next.add(item.id);
+                                      return next;
+                                    });
+                                  }}
+                                  className="text-sky-500 text-xs w-4 shrink-0"
+                                  aria-label={isExpanded ? 'Zuklappen' : 'Aufklappen'}
+                                >
+                                  {isExpanded ? '▼' : '▶'}
+                                </button>
+                              )}
+                              <span>{item.name}</span>
+                              {hasVariants && (
+                                <span className="text-xs text-slate-400 ml-1">({item.ek_breakdown.length}×EK)</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-right text-slate-700">{item.current_stock}</td>
+                          <td className="px-4 py-3 text-right text-slate-700">{item.sold_qty}</td>
+                          <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(item.revenue_cents)}</td>
+                          <td className="px-4 py-3 text-right text-slate-700">{formatEur(item.cost_cents)}</td>
+                        </tr>
+                        {isExpanded && hasVariants && item.ek_breakdown.map((entry, idx) => (
+                          <tr key={idx} className="bg-sky-50/70 border-t border-sky-100">
+                            <td className="pl-10 pr-4 py-2 text-xs text-slate-500" colSpan={2}>
+                              EK {formatEur(entry.ek_cents)}: {entry.qty} Stück
+                            </td>
+                            <td className="px-4 py-2 text-right text-xs text-slate-500">{entry.qty}</td>
+                            <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * item.current_ek_cents)}</td>
+                            <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * entry.ek_cents)}</td>
+                          </tr>
+                        ))}
+                      </React.Fragment>
+                    );
+                  })}
+                  {/* Summenzeile */}
+                  <tr className="border-t-2 border-slate-300 bg-slate-50">
+                    <td className="px-4 py-3 font-bold text-slate-800">Bestandswert-Summe</td>
+                    <td className="px-4 py-3 text-right font-bold text-slate-700">
+                      {inventoryData.items.reduce((s, i) => s + i.current_stock, 0)} Stück
+                    </td>
+                    <td className="px-4 py-3 text-right font-bold text-slate-700">
+                      {inventoryData.items.reduce((s, i) => s + i.sold_qty, 0)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-bold text-slate-800">
+                      {formatEur(inventoryData.items.reduce((s, i) => s + i.revenue_cents, 0))}
+                    </td>
+                    <td className="px-4 py-3 text-right font-bold text-emerald-700">
+                      {formatEur(inventoryData.total_stock_value_cents)}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
+              <p className="px-4 py-2 text-xs text-slate-400 border-t border-slate-100">
+                * Bestandswert basiert auf aktuellem EK (Annäherung — kein FIFO-Verbrauch)
+              </p>
             </div>
           )}
-        </>
-      ) : (
-        <p className="text-slate-500 text-sm">Keine Daten für diesen Monat.</p>
+        </div>
       )}
-
-      {/* Jahresverlauf-Chart */}
-      <div className="bg-white rounded-xl shadow-sm p-4">
-        <h3 className="text-sm font-semibold text-sky-700 mb-4">Jahresverlauf {year}</h3>
-        {loadingYearly ? (
-          <p className="text-slate-500 text-sm">Laden...</p>
-        ) : (
-          <ReportChart data={yearlyData} />
-        )}
-      </div>
     </div>
   );
 }
