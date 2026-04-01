@@ -149,6 +149,109 @@ export async function reportRoutes(fastify: FastifyInstance) {
     return reply.send({ year: y, months: mergedMonths });
   });
 
+  // GET /reports/inventory?year=2026 — Inventur-Übersicht pro Artikel
+  fastify.get('/reports/inventory', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { year } = request.query as { year: string };
+    if (!year) return reply.status(400).send({ error: 'year required' });
+
+    const y = Number(year);
+    const yearStart = new Date(y, 0, 1).getTime();
+    const yearEnd = new Date(y + 1, 0, 1).getTime();
+
+    // Query 1 — Inventur pro Artikel (alle aktiven Produkte, LEFT JOIN auf Verkäufe)
+    const inventoryResult = await db.execute(sql`
+      SELECT
+        p.id,
+        p.article_number,
+        p.name,
+        p.stock as current_stock,
+        p.purchase_price as current_ek_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer ELSE 0 END
+        ), 0) as sold_qty,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
+        ), 0) as revenue_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer *
+               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+          ELSE 0 END
+        ), 0) as cost_cents
+      FROM products p
+      LEFT JOIN sales ON sales.shop_id = p.shop_id
+                      AND sales.created_at >= ${yearStart}
+                      AND sales.created_at < ${yearEnd}
+                      AND sales.cancelled_at IS NULL
+      LEFT JOIN jsonb_array_elements(sales.items) as item
+        ON item->>'productId' = p.id
+      WHERE p.shop_id = ${shopId}
+        AND p.active = true
+      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
+      ORDER BY p.name
+    `);
+
+    // Query 2 — Bestandswert-Summe
+    const stockValueResult = await db.execute(sql`
+      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
+      FROM products
+      WHERE shop_id = ${shopId} AND active = true
+    `);
+
+    // Query 3 — EK-Aufschlüsselung pro Artikel (alle Artikel auf einmal, kein N+1)
+    const ekBreakdownResult = await db.execute(sql`
+      SELECT
+        item->>'productId' as product_id,
+        COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
+        SUM((item->>'quantity')::integer) as qty
+      FROM sales,
+           jsonb_array_elements(sales.items) as item
+      JOIN products p ON p.id = item->>'productId'
+      WHERE sales.shop_id = ${shopId}
+        AND sales.created_at >= ${yearStart}
+        AND sales.created_at < ${yearEnd}
+        AND sales.cancelled_at IS NULL
+        AND (sales.type IS NULL OR sales.type = 'sale')
+      GROUP BY item->>'productId', COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+      ORDER BY product_id, ek_cents DESC
+    `);
+
+    // EK-Aufschlüsselung in Map umwandeln
+    const ekMap = new Map<string, Array<{ ek_cents: number; qty: number }>>();
+    for (const row of ekBreakdownResult.rows as Record<string, unknown>[]) {
+      const productId = String(row.product_id);
+      if (!ekMap.has(productId)) ekMap.set(productId, []);
+      ekMap.get(productId)!.push({
+        ek_cents: Number(row.ek_cents),
+        qty: Number(row.qty),
+      });
+    }
+
+    // Items zusammenbauen
+    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
+      id: String(row.id),
+      article_number: String(row.article_number),
+      name: String(row.name),
+      current_stock: Number(row.current_stock),
+      current_ek_cents: Number(row.current_ek_cents),
+      sold_qty: Number(row.sold_qty),
+      revenue_cents: Number(row.revenue_cents),
+      cost_cents: Number(row.cost_cents),
+      ek_breakdown: ekMap.get(String(row.id)) ?? [],
+    }));
+
+    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
+    return reply.send({
+      year: y,
+      items,
+      total_stock_value_cents: Number(stockValueRow.total_stock_value_cents ?? 0),
+    });
+  });
+
   // GET /reports/product/:id/stats?months=3
   fastify.get('/reports/product/:id/stats', async (request, reply) => {
     const { id } = request.params as { id: string };
