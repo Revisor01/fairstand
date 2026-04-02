@@ -231,6 +231,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         (item->>'quantity')::integer as qty,
         (item->>'salePrice')::integer as vk_cents,
         COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
+        (item->>'purchasePrice') IS NOT NULL as has_ek_snapshot,
         sales.created_at,
         CASE WHEN sales.type = 'withdrawal' THEN 'withdrawal' ELSE 'sale' END as sale_type
       FROM sales,
@@ -365,12 +366,16 @@ export async function reportRoutes(fastify: FastifyInstance) {
         const createdAt = Number(row.created_at);
         const qty = Number(row.qty);
         const vk = Number(row.vk_cents);
-        const ek = Number(row.ek_cents);
+        const hasEkSnapshot = row.has_ek_snapshot === true;
+        const snapshotEk = Number(row.ek_cents);
         const saleType = String(row.sale_type);
 
         // Finde passende Periode
         const period = periods.find(p => createdAt >= p.from && createdAt < p.to);
         if (!period) continue;
+
+        // EK: Sale-Snapshot wenn vorhanden, sonst EK der Periode (korrekt für Altdaten vor Phase 27)
+        const ek = hasEkSnapshot ? snapshotEk : period.ek_cents;
 
         if (saleType === 'withdrawal') {
           period.withdrawn_qty += qty;
