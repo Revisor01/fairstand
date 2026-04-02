@@ -99,10 +99,11 @@ export async function salesRoutes(fastify: FastifyInstance) {
   });
 
   // GET /sales/:id/receipt-pdf — Einzelbeleg als PDF (EXP-03)
-  fastify.get<{ Params: { id: string } }>('/sales/:id/receipt-pdf', async (request, reply) => {
+  fastify.get<{ Params: { id: string }; Querystring: { hideDonation?: string } }>('/sales/:id/receipt-pdf', async (request, reply) => {
     const session = (request as any).session as { shopId: string };
     const shopId = session.shopId;
     const { id } = request.params;
+    const hideDonation = request.query.hideDonation === 'true';
 
     const [sale] = await db.select().from(sales).where(eq(sales.id, id)).limit(1);
     if (!sale || sale.shopId !== shopId) {
@@ -179,7 +180,7 @@ export async function salesRoutes(fastify: FastifyInstance) {
       y += 18;
     }
 
-    if (Number(sale.donationCents) > 0) {
+    if (Number(sale.donationCents) > 0 && !hideDonation) {
       doc.fillColor('#059669').text('Spende:', labelX, y, { width: 95 });
       doc.text(`${(Number(sale.donationCents) / 100).toFixed(2)} EUR`, valueX, y, { width: valueWidth, align: 'right' });
       doc.fillColor('black');

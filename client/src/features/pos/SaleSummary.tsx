@@ -1,6 +1,7 @@
-import { Check, HandHeart } from 'lucide-react';
+import { Check, HandHeart, FileDown } from 'lucide-react';
 import type { Sale } from '../../db/index.js';
 import { formatEur } from './utils.js';
+import { getAuthHeaders } from '../auth/serverAuth.js';
 
 interface SaleSummaryProps {
   sale: Sale;
@@ -10,6 +11,21 @@ interface SaleSummaryProps {
 
 export function SaleSummary({ sale, onNext, onCorrect }: SaleSummaryProps) {
   const isWithdrawal = sale.type === 'withdrawal';
+  const hasDonation = sale.donationCents > 0;
+
+  async function handleDownloadReceipt(hideDonation: boolean) {
+    const headers = await getAuthHeaders();
+    const query = hideDonation ? '?hideDonation=true' : '';
+    const res = await fetch(`/api/sales/${sale.id}/receipt-pdf${query}`, { headers });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `beleg-${sale.id.slice(0, 8)}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 py-8 bg-sky-50">
@@ -88,6 +104,35 @@ export function SaleSummary({ sale, onNext, onCorrect }: SaleSummaryProps) {
         >
           {isWithdrawal ? 'Fertig' : 'Nächster Kunde'}
         </button>
+
+        {!isWithdrawal && (
+          <div className={`flex gap-2 ${hasDonation ? '' : 'flex-col'}`}>
+            <button
+              onPointerDown={() => handleDownloadReceipt(false)}
+              className="
+                flex-1 h-12 rounded-xl text-sm font-medium flex items-center justify-center gap-2
+                border-2 border-sky-200 text-sky-700
+                active:bg-sky-50 transition-colors
+              "
+            >
+              <FileDown size={18} />
+              Beleg {hasDonation ? '(mit Spende)' : 'herunterladen'}
+            </button>
+            {hasDonation && (
+              <button
+                onPointerDown={() => handleDownloadReceipt(true)}
+                className="
+                  flex-1 h-12 rounded-xl text-sm font-medium flex items-center justify-center gap-2
+                  border-2 border-sky-200 text-sky-700
+                  active:bg-sky-50 transition-colors
+                "
+              >
+                <FileDown size={18} />
+                Beleg (ohne Spende)
+              </button>
+            )}
+          </div>
+        )}
 
         <button
           onPointerDown={onCorrect}
