@@ -22,15 +22,21 @@ export function ProductList() {
     [rawProducts]
   );
 
+  const outOfStockCount = useMemo(() => {
+    if (!products) return 0;
+    return products.filter(p => p.stock <= 0).length;
+  }, [products]);
+
   const categories = useMemo((): string[] => {
     if (!products) return [];
     const unique = [...new Set(products.map(p => p.category))].sort();
-    return ['Alle', ...unique];
-  }, [products]);
+    return ['Alle', ...(outOfStockCount > 0 ? ['Ausverkauft'] : []), ...unique];
+  }, [products, outOfStockCount]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     if (activeCategory === 'Alle') return products;
+    if (activeCategory === 'Ausverkauft') return products.filter(p => p.stock <= 0);
     return products.filter(p => p.category === activeCategory);
   }, [products, activeCategory]);
 
@@ -107,13 +113,24 @@ export function ProductList() {
             onPointerDown={() => setActiveCategory(cat)}
             className={`
               px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap min-h-[36px] transition-colors
-              ${activeCategory === cat
-                ? 'bg-sky-500 text-white'
-                : 'bg-sky-100 text-sky-700 active:bg-sky-200'
+              ${cat === 'Ausverkauft'
+                ? activeCategory === cat
+                  ? 'bg-rose-500 text-white font-semibold'
+                  : 'bg-rose-50 text-rose-600 active:bg-rose-100'
+                : activeCategory === cat
+                  ? 'bg-sky-500 text-white'
+                  : 'bg-sky-100 text-sky-700 active:bg-sky-200'
               }
             `}
           >
             {cat}
+            {cat === 'Ausverkauft' && (
+              <span className={`ml-1 inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-bold ${
+                activeCategory === cat ? 'bg-white/30 text-white' : 'bg-rose-500 text-white'
+              }`}>
+                {outOfStockCount}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -121,7 +138,7 @@ export function ProductList() {
       {/* Produktliste */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12 text-slate-500">
-          {activeCategory === 'Alle' ? 'Noch keine Produkte angelegt.' : 'Keine Produkte in dieser Kategorie.'}
+          {activeCategory === 'Alle' ? 'Noch keine Produkte angelegt.' : activeCategory === 'Ausverkauft' ? 'Keine ausverkauften Produkte.' : 'Keine Produkte in dieser Kategorie.'}
         </div>
       ) : (
         <div className="flex flex-col gap-2">
