@@ -69,11 +69,11 @@ export function ArticleCard({ product, onAddToCart }: ArticleCardProps) {
       <span className="text-slate-800 font-medium text-sm leading-tight line-clamp-3">
         {product.name}
       </span>
-      <div className="flex items-baseline gap-2 mt-1 w-full justify-between">
-        <span className="text-sky-700 font-semibold text-sm">
+      <div className="flex items-baseline gap-2 mt-1 w-full justify-between min-w-0">
+        <span className="text-sky-700 font-semibold text-sm truncate">
           {formatEur(product.salePrice)}
         </span>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1 shrink-0 whitespace-nowrap">
           <span className={`text-xs leading-none ${
             product.stock === 0
               ? 'text-rose-500'
