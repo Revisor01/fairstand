@@ -7,9 +7,9 @@
 
 ### Verwaltung
 
-- [ ] **ADMIN-01**: User kann Inventur-Übersicht als eigenen Tab im Admin-Bereich aufrufen (nicht im Jahresbericht)
+- [x] **ADMIN-01**: User kann Inventur-Übersicht als eigenen Tab im Admin-Bereich aufrufen (nicht im Jahresbericht)
 - [x] **ADMIN-02**: User kann einen Artikel dauerhaft löschen (nicht nur deaktivieren)
-- [ ] **ADMIN-03**: Der Button "Bestandskorrektur" heißt "Bestand anpassen"
+- [x] **ADMIN-03**: Der Button "Bestandskorrektur" heißt "Bestand anpassen"
 
 ### Verkaufshistorie
 
@@ -41,9 +41,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ADMIN-01 | Phase 30 | Pending |
+| ADMIN-01 | Phase 30 | Complete |
 | ADMIN-02 | Phase 30 | Complete |
-| ADMIN-03 | Phase 30 | Pending |
+| ADMIN-03 | Phase 30 | Complete |
 | HIST-01 | Phase 31 | Pending |
 | HIST-02 | Phase 31 | Pending |
 | AUTH-01 | Phase 32 | Pending |

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: UX-Polish & Verwaltung
-status: executing
-stopped_at: Completed 30-admin-verwaltung Plan 01 — DELETE endpoint + Unique-Constraint
-last_updated: "2026-04-02T09:07:01.081Z"
+status: verifying
+stopped_at: "Completed 30-admin-verwaltung Plan 02 — Frontend: InventurTab, Löschen, Bestand anpassen"
+last_updated: "2026-04-02T09:12:22.742Z"
 last_activity: 2026-04-02
 progress:
   total_phases: 26
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 23
-  completed_plans: 22
+  completed_plans: 23
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-02)
 
 Phase: 30 (Admin-Verwaltung) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-02
 
 ## Performance Metrics
@@ -50,6 +50,8 @@ Last activity: 2026-04-02
 - [v9.0 Roadmap]: AUTH-01 eigene Phase, da querschnittlich (authFetch in mehreren Dateien)
 - [Phase 30-01]: Migration muss in server/migrations/ (drizzle-kit) erstellt werden, nicht in server/src/db/migrations/ (altes System)
 - [Phase 30-01]: jsonb @> Containment-Operator für Verkaufshistorie-Check in PostgreSQL
+- [Phase 30-02]: Jahr-State für Inventur in AdminScreen verwaltet (nicht in InventurTab) — konsistent mit anderen Filtern
+- [Phase 30-02]: 409-Fehler bei Artikel-Löschen erscheint im Bestätigungsdialog statt separatem Toast
 
 ### Pending Todos
 
@@ -61,7 +63,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-02T09:07:01.074Z
-Stopped at: Completed 30-admin-verwaltung Plan 01 — DELETE endpoint + Unique-Constraint
+Last session: 2026-04-02T09:12:22.733Z
+Stopped at: Completed 30-admin-verwaltung Plan 02 — Frontend: InventurTab, Löschen, Bestand anpassen
 Resume file: None
 Next step: `/gsd:plan-phase 30`
