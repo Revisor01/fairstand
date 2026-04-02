@@ -467,8 +467,11 @@ Plans:
   1. Im Admin-Bereich gibt es einen eigenen "Inventur"-Tab, der die Inventur-Übersicht zeigt — nicht mehr im Jahresbericht vergraben
   2. In der Produktverwaltung kann ein Artikel dauerhaft gelöscht werden — nach einer Bestätigungsabfrage verschwindet er vollständig aus der Datenbank
   3. Der Button zur Bestandsanpassung heißt "Bestand anpassen" statt "Bestandskorrektur"
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — Backend: DELETE-Endpoint + Unique-Constraint-Migration
+- [ ] 30-02-PLAN.md — Frontend: InventurTab extrahieren + Löschen-UI + Umbenennung
 
 ### Phase 31: Tagesübersicht-UX
 **Goal**: Die Tagesübersicht zeigt auf einen Blick welche Transaktionen Spenden enthielten und ermöglicht eine freie Datumsauswahl per Kalender
