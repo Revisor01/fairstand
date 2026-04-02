@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { authFetch } from '../../auth/serverAuth.js';
 import { formatEur } from '../../pos/utils.js';
 
-interface EkBreakdownEntry {
+interface PricePeriod {
   ek_cents: number;
-  qty: number;
-  type: string; // 'sale' | 'withdrawal'
+  vk_cents: number;
+  from: number;
+  to: number;
+  sold_qty: number;
+  withdrawn_qty: number;
+  revenue_cents: number;
+  cost_cents: number;
+  withdrawal_cost_cents: number;
 }
 
 interface InventoryItem {
@@ -19,7 +25,7 @@ interface InventoryItem {
   revenue_cents: number;
   cost_cents: number;
   withdrawal_cost_cents: number;
-  ek_breakdown: EkBreakdownEntry[];
+  price_periods: PricePeriod[];
 }
 
 interface InventoryResponse {
@@ -138,15 +144,13 @@ export function InventurTab({ year }: InventurTabProps) {
             <tbody>
               {inventoryData.items.map(item => {
                 const isExpanded = expandedProducts.has(item.id);
-                const hasBreakdown = item.ek_breakdown.length > 1;
-                const saleBreakdown = item.ek_breakdown.filter(e => e.type === 'sale');
-                const withdrawalBreakdown = item.ek_breakdown.filter(e => e.type === 'withdrawal');
+                const hasPeriods = item.price_periods.length > 1;
                 return (
                   <React.Fragment key={item.id}>
                     <tr className="border-t border-slate-100 hover:bg-sky-50/50">
                       <td className="px-4 py-3 text-slate-800">
                         <div className="flex items-center gap-1">
-                          {hasBreakdown && (
+                          {hasPeriods && (
                             <button
                               onPointerDown={() => {
                                 setExpandedProducts(prev => {
@@ -163,9 +167,9 @@ export function InventurTab({ year }: InventurTabProps) {
                             </button>
                           )}
                           <span>{item.name}</span>
-                          {hasBreakdown && (
+                          {hasPeriods && (
                             <span className="text-xs text-slate-400 ml-1">
-                              ({new Set(item.ek_breakdown.map(e => e.ek_cents)).size}×EK)
+                              ({item.price_periods.length} Preisperioden)
                             </span>
                           )}
                         </div>
@@ -176,32 +180,41 @@ export function InventurTab({ year }: InventurTabProps) {
                       <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(item.revenue_cents)}</td>
                       <td className="px-4 py-3 text-right text-slate-700">{formatEur(item.cost_cents + item.withdrawal_cost_cents)}</td>
                     </tr>
-                    {isExpanded && hasBreakdown && (
-                      <>
-                        {saleBreakdown.map((entry, idx) => (
-                          <tr key={`s-${idx}`} className="bg-sky-50/70 border-t border-sky-100">
-                            <td className="pl-10 pr-4 py-2 text-xs text-slate-500" colSpan={2}>
-                              Verkauf · EK {formatEur(entry.ek_cents)}
+                    {isExpanded && hasPeriods && item.price_periods.map((period, idx) => {
+                      const periodYearEnd = new Date(year + 1, 0, 1).getTime();
+                      const fromStr = new Date(period.from).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                      const toStr = period.to >= periodYearEnd
+                        ? 'heute'
+                        : new Date(period.to).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                      return (
+                        <React.Fragment key={idx}>
+                          <tr className="bg-slate-50 border-t border-slate-200">
+                            <td className="pl-10 pr-4 py-2 text-xs text-slate-600 font-medium" colSpan={6}>
+                              EK {formatEur(period.ek_cents)} / VK {formatEur(period.vk_cents)}
+                              <span className="text-slate-400 ml-2">({fromStr}–{toStr})</span>
                             </td>
-                            <td className="px-4 py-2 text-right text-xs text-slate-500">{entry.qty}</td>
-                            <td className="px-4 py-2" />
-                            <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * entry.ek_cents)}</td>
-                            <td className="px-4 py-2" />
                           </tr>
-                        ))}
-                        {withdrawalBreakdown.map((entry, idx) => (
-                          <tr key={`w-${idx}`} className="bg-amber-50/70 border-t border-amber-100">
-                            <td className="pl-10 pr-4 py-2 text-xs text-amber-600" colSpan={2}>
-                              Entnahme · EK {formatEur(entry.ek_cents)}
-                            </td>
-                            <td className="px-4 py-2" />
-                            <td className="px-4 py-2 text-right text-xs text-amber-600">{entry.qty}</td>
-                            <td className="px-4 py-2" />
-                            <td className="px-4 py-2 text-right text-xs text-amber-600">{formatEur(entry.qty * entry.ek_cents)}</td>
-                          </tr>
-                        ))}
-                      </>
-                    )}
+                          {period.sold_qty > 0 && (
+                            <tr className="bg-sky-50/50 border-t border-sky-100">
+                              <td className="pl-14 pr-4 py-1.5 text-xs text-slate-500" colSpan={2}>Verkauf</td>
+                              <td className="px-4 py-1.5 text-right text-xs text-slate-600">{period.sold_qty}</td>
+                              <td className="px-4 py-1.5" />
+                              <td className="px-4 py-1.5 text-right text-xs text-slate-600">{formatEur(period.revenue_cents)}</td>
+                              <td className="px-4 py-1.5 text-right text-xs text-slate-500">{formatEur(period.cost_cents)}</td>
+                            </tr>
+                          )}
+                          {period.withdrawn_qty > 0 && (
+                            <tr className="bg-amber-50/50 border-t border-amber-100">
+                              <td className="pl-14 pr-4 py-1.5 text-xs text-amber-600" colSpan={2}>Entnahme</td>
+                              <td className="px-4 py-1.5" />
+                              <td className="px-4 py-1.5 text-right text-xs text-amber-600">{period.withdrawn_qty}</td>
+                              <td className="px-4 py-1.5" />
+                              <td className="px-4 py-1.5 text-right text-xs text-amber-600">{formatEur(period.withdrawal_cost_cents)}</td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                   </React.Fragment>
                 );
               })}
