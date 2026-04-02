@@ -106,23 +106,23 @@ export function SaleSummary({ sale, onNext, onCorrect }: SaleSummaryProps) {
         </button>
 
         {!isWithdrawal && (
-          <div className={`flex gap-2 ${hasDonation ? '' : 'flex-col'}`}>
+          <div className={`flex gap-2`}>
             <button
               onPointerDown={() => handleDownloadReceipt(false)}
               className="
-                flex-1 h-12 rounded-xl text-sm font-medium flex items-center justify-center gap-2
+                flex-1 h-12 rounded-xl text-base font-medium flex items-center justify-center gap-2
                 border-2 border-sky-200 text-sky-700
                 active:bg-sky-50 transition-colors
               "
             >
               <FileDown size={18} />
-              Beleg {hasDonation ? '(mit Spende)' : 'herunterladen'}
+              {hasDonation ? 'Beleg (mit Spende)' : 'Beleg'}
             </button>
             {hasDonation && (
               <button
                 onPointerDown={() => handleDownloadReceipt(true)}
                 className="
-                  flex-1 h-12 rounded-xl text-sm font-medium flex items-center justify-center gap-2
+                  flex-1 h-12 rounded-xl text-base font-medium flex items-center justify-center gap-2
                   border-2 border-sky-200 text-sky-700
                   active:bg-sky-50 transition-colors
                 "
