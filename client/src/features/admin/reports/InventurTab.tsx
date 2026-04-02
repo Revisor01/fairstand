@@ -140,6 +140,7 @@ export function InventurTab({ year }: InventurTabProps) {
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">VK-Umsatz</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">Entnahme (EK)</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">EK-Kosten</th>
+                <th className="text-right px-4 py-3 text-sky-700 font-medium">Bestandswert</th>
               </tr>
             </thead>
             <tbody>
@@ -178,9 +179,10 @@ export function InventurTab({ year }: InventurTabProps) {
                       <td className="px-4 py-3 text-right text-slate-700">{item.current_stock}</td>
                       <td className="px-4 py-3 text-right text-slate-700">{item.sold_qty || '—'}</td>
                       <td className="px-4 py-3 text-right text-amber-700">{item.withdrawn_qty || '—'}</td>
-                      <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(item.revenue_cents)}</td>
+                      <td className="px-4 py-3 text-right font-medium text-slate-800">{item.revenue_cents ? formatEur(item.revenue_cents) : '—'}</td>
                       <td className="px-4 py-3 text-right text-amber-700">{item.withdrawal_cost_cents ? formatEur(item.withdrawal_cost_cents) : '—'}</td>
-                      <td className="px-4 py-3 text-right text-slate-700">{formatEur(item.cost_cents + item.withdrawal_cost_cents || item.current_stock * item.current_ek_cents)}</td>
+                      <td className="px-4 py-3 text-right text-slate-700">{(item.cost_cents + item.withdrawal_cost_cents) ? formatEur(item.cost_cents + item.withdrawal_cost_cents) : '—'}</td>
+                      <td className="px-4 py-3 text-right text-emerald-700">{formatEur(item.current_stock * item.current_ek_cents)}</td>
                     </tr>
                     {isExpanded && hasPeriods && item.price_periods.map((period, idx) => {
                       const periodYearEnd = new Date(year + 1, 0, 1).getTime();
@@ -191,7 +193,7 @@ export function InventurTab({ year }: InventurTabProps) {
                       return (
                         <React.Fragment key={idx}>
                           <tr className="bg-slate-50 border-t border-slate-200">
-                            <td className="pl-10 pr-4 py-2 text-xs text-slate-600 font-medium" colSpan={7}>
+                            <td className="pl-10 pr-4 py-2 text-xs text-slate-600 font-medium" colSpan={8}>
                               EK {formatEur(period.ek_cents)} / VK {formatEur(period.vk_cents)}
                               <span className="text-slate-400 ml-2">({fromStr}–{toStr})</span>
                             </td>
@@ -242,6 +244,9 @@ export function InventurTab({ year }: InventurTabProps) {
                 </td>
                 <td className="px-4 py-3 text-right font-bold text-slate-700">
                   {formatEur(inventoryData.items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0))}
+                </td>
+                <td className="px-4 py-3 text-right font-bold text-emerald-700">
+                  {formatEur(inventoryData.total_stock_value_cents)}
                 </td>
               </tr>
             </tbody>
