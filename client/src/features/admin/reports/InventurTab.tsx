@@ -5,6 +5,7 @@ import { formatEur } from '../../pos/utils.js';
 interface EkBreakdownEntry {
   ek_cents: number;
   qty: number;
+  type: string; // 'sale' | 'withdrawal'
 }
 
 interface InventoryItem {
@@ -14,8 +15,10 @@ interface InventoryItem {
   current_stock: number;
   current_ek_cents: number;
   sold_qty: number;
+  withdrawn_qty: number;
   revenue_cents: number;
   cost_cents: number;
+  withdrawal_cost_cents: number;
   ek_breakdown: EkBreakdownEntry[];
 }
 
@@ -127,6 +130,7 @@ export function InventurTab({ year }: InventurTabProps) {
                 <th className="text-left px-4 py-3 text-sky-700 font-medium">Artikel</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">Bestand</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">Verkauft</th>
+                <th className="text-right px-4 py-3 text-sky-700 font-medium">Entnahme</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">VK-Umsatz</th>
                 <th className="text-right px-4 py-3 text-sky-700 font-medium">EK-Kosten</th>
               </tr>
@@ -134,13 +138,15 @@ export function InventurTab({ year }: InventurTabProps) {
             <tbody>
               {inventoryData.items.map(item => {
                 const isExpanded = expandedProducts.has(item.id);
-                const hasVariants = item.ek_breakdown.length > 1;
+                const hasBreakdown = item.ek_breakdown.length > 1;
+                const saleBreakdown = item.ek_breakdown.filter(e => e.type === 'sale');
+                const withdrawalBreakdown = item.ek_breakdown.filter(e => e.type === 'withdrawal');
                 return (
                   <React.Fragment key={item.id}>
                     <tr className="border-t border-slate-100 hover:bg-sky-50/50">
                       <td className="px-4 py-3 text-slate-800">
                         <div className="flex items-center gap-1">
-                          {hasVariants && (
+                          {hasBreakdown && (
                             <button
                               onPointerDown={() => {
                                 setExpandedProducts(prev => {
@@ -157,37 +163,59 @@ export function InventurTab({ year }: InventurTabProps) {
                             </button>
                           )}
                           <span>{item.name}</span>
-                          {hasVariants && (
-                            <span className="text-xs text-slate-400 ml-1">({item.ek_breakdown.length}×EK)</span>
+                          {hasBreakdown && (
+                            <span className="text-xs text-slate-400 ml-1">
+                              ({new Set(item.ek_breakdown.map(e => e.ek_cents)).size}×EK)
+                            </span>
                           )}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-right text-slate-700">{item.current_stock}</td>
-                      <td className="px-4 py-3 text-right text-slate-700">{item.sold_qty}</td>
+                      <td className="px-4 py-3 text-right text-slate-700">{item.sold_qty || '—'}</td>
+                      <td className="px-4 py-3 text-right text-amber-700">{item.withdrawn_qty || '—'}</td>
                       <td className="px-4 py-3 text-right font-medium text-slate-800">{formatEur(item.revenue_cents)}</td>
-                      <td className="px-4 py-3 text-right text-slate-700">{formatEur(item.cost_cents)}</td>
+                      <td className="px-4 py-3 text-right text-slate-700">{formatEur(item.cost_cents + item.withdrawal_cost_cents)}</td>
                     </tr>
-                    {isExpanded && hasVariants && item.ek_breakdown.map((entry, idx) => (
-                      <tr key={idx} className="bg-sky-50/70 border-t border-sky-100">
-                        <td className="pl-10 pr-4 py-2 text-xs text-slate-500" colSpan={2}>
-                          EK {formatEur(entry.ek_cents)}: {entry.qty} Stück
-                        </td>
-                        <td className="px-4 py-2 text-right text-xs text-slate-500">{entry.qty}</td>
-                        <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * item.current_ek_cents)}</td>
-                        <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * entry.ek_cents)}</td>
-                      </tr>
-                    ))}
+                    {isExpanded && hasBreakdown && (
+                      <>
+                        {saleBreakdown.map((entry, idx) => (
+                          <tr key={`s-${idx}`} className="bg-sky-50/70 border-t border-sky-100">
+                            <td className="pl-10 pr-4 py-2 text-xs text-slate-500" colSpan={2}>
+                              Verkauf · EK {formatEur(entry.ek_cents)}
+                            </td>
+                            <td className="px-4 py-2 text-right text-xs text-slate-500">{entry.qty}</td>
+                            <td className="px-4 py-2" />
+                            <td className="px-4 py-2 text-right text-xs text-slate-500">{formatEur(entry.qty * entry.ek_cents)}</td>
+                            <td className="px-4 py-2" />
+                          </tr>
+                        ))}
+                        {withdrawalBreakdown.map((entry, idx) => (
+                          <tr key={`w-${idx}`} className="bg-amber-50/70 border-t border-amber-100">
+                            <td className="pl-10 pr-4 py-2 text-xs text-amber-600" colSpan={2}>
+                              Entnahme · EK {formatEur(entry.ek_cents)}
+                            </td>
+                            <td className="px-4 py-2" />
+                            <td className="px-4 py-2 text-right text-xs text-amber-600">{entry.qty}</td>
+                            <td className="px-4 py-2" />
+                            <td className="px-4 py-2 text-right text-xs text-amber-600">{formatEur(entry.qty * entry.ek_cents)}</td>
+                          </tr>
+                        ))}
+                      </>
+                    )}
                   </React.Fragment>
                 );
               })}
               {/* Summenzeile */}
               <tr className="border-t-2 border-slate-300 bg-slate-50">
-                <td className="px-4 py-3 font-bold text-slate-800">Bestandswert-Summe</td>
+                <td className="px-4 py-3 font-bold text-slate-800">Summe</td>
                 <td className="px-4 py-3 text-right font-bold text-slate-700">
-                  {inventoryData.items.reduce((s, i) => s + i.current_stock, 0)} Stück
+                  {inventoryData.items.reduce((s, i) => s + i.current_stock, 0)}
                 </td>
                 <td className="px-4 py-3 text-right font-bold text-slate-700">
                   {inventoryData.items.reduce((s, i) => s + i.sold_qty, 0)}
+                </td>
+                <td className="px-4 py-3 text-right font-bold text-amber-700">
+                  {inventoryData.items.reduce((s, i) => s + i.withdrawn_qty, 0)}
                 </td>
                 <td className="px-4 py-3 text-right font-bold text-slate-800">
                   {formatEur(inventoryData.items.reduce((s, i) => s + i.revenue_cents, 0))}

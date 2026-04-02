@@ -162,7 +162,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
     const yearStart = new Date(y, 0, 1).getTime();
     const yearEnd = new Date(y + 1, 0, 1).getTime();
 
-    // Query 1 — Inventur pro Artikel (alle aktiven Produkte, LEFT JOIN auf Verkäufe)
+    // Query 1 — Inventur pro Artikel (alle aktiven Produkte, LEFT JOIN auf Verkäufe + Entnahmen)
     const inventoryResult = await db.execute(sql`
       SELECT
         p.id,
@@ -175,6 +175,10 @@ export async function reportRoutes(fastify: FastifyInstance) {
           THEN (item->>'quantity')::integer ELSE 0 END
         ), 0) as sold_qty,
         COALESCE(SUM(
+          CASE WHEN sales.type = 'withdrawal'
+          THEN (item->>'quantity')::integer ELSE 0 END
+        ), 0) as withdrawn_qty,
+        COALESCE(SUM(
           CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
           THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
         ), 0) as revenue_cents,
@@ -183,7 +187,13 @@ export async function reportRoutes(fastify: FastifyInstance) {
           THEN (item->>'quantity')::integer *
                COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
           ELSE 0 END
-        ), 0) as cost_cents
+        ), 0) as cost_cents,
+        COALESCE(SUM(
+          CASE WHEN sales.type = 'withdrawal'
+          THEN (item->>'quantity')::integer *
+               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+          ELSE 0 END
+        ), 0) as withdrawal_cost_cents
       FROM products p
       LEFT JOIN sales ON sales.shop_id = p.shop_id
                       AND sales.created_at >= ${yearStart}
@@ -204,11 +214,12 @@ export async function reportRoutes(fastify: FastifyInstance) {
       WHERE shop_id = ${shopId} AND active = true
     `);
 
-    // Query 3 — EK-Aufschlüsselung pro Artikel (alle Artikel auf einmal, kein N+1)
+    // Query 3 — EK-Aufschlüsselung pro Artikel (Verkäufe + Entnahmen getrennt, kein N+1)
     const ekBreakdownResult = await db.execute(sql`
       SELECT
         item->>'productId' as product_id,
         COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
+        CASE WHEN sales.type = 'withdrawal' THEN 'withdrawal' ELSE 'sale' END as sale_type,
         SUM((item->>'quantity')::integer) as qty
       FROM sales,
            jsonb_array_elements(sales.items) as item
@@ -217,19 +228,20 @@ export async function reportRoutes(fastify: FastifyInstance) {
         AND sales.created_at >= ${yearStart}
         AND sales.created_at < ${yearEnd}
         AND sales.cancelled_at IS NULL
-        AND (sales.type IS NULL OR sales.type = 'sale')
-      GROUP BY item->>'productId', COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-      ORDER BY product_id, ek_cents DESC
+      GROUP BY item->>'productId', COALESCE((item->>'purchasePrice')::integer, p.purchase_price),
+               CASE WHEN sales.type = 'withdrawal' THEN 'withdrawal' ELSE 'sale' END
+      ORDER BY product_id, sale_type, ek_cents DESC
     `);
 
     // EK-Aufschlüsselung in Map umwandeln
-    const ekMap = new Map<string, Array<{ ek_cents: number; qty: number }>>();
+    const ekMap = new Map<string, Array<{ ek_cents: number; qty: number; type: string }>>();
     for (const row of ekBreakdownResult.rows as Record<string, unknown>[]) {
       const productId = String(row.product_id);
       if (!ekMap.has(productId)) ekMap.set(productId, []);
       ekMap.get(productId)!.push({
         ek_cents: Number(row.ek_cents),
         qty: Number(row.qty),
+        type: String(row.sale_type),
       });
     }
 
@@ -241,8 +253,10 @@ export async function reportRoutes(fastify: FastifyInstance) {
       current_stock: Number(row.current_stock),
       current_ek_cents: Number(row.current_ek_cents),
       sold_qty: Number(row.sold_qty),
+      withdrawn_qty: Number(row.withdrawn_qty),
       revenue_cents: Number(row.revenue_cents),
       cost_cents: Number(row.cost_cents),
+      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
       ek_breakdown: ekMap.get(String(row.id)) ?? [],
     }));
 
