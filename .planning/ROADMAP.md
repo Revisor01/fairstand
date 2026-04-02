@@ -11,6 +11,7 @@
 - ✅ **v6.0 Pure Online** — Phases 22-23 (shipped 2026-03-24)
 - ✅ **v7.0 Multi-Shop & UX** — Phases 24-26 (shipped 2026-03-25)
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
+- 🚧 **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (in progress)
 
 ## Phases
 
@@ -100,6 +101,15 @@ Full details: `.planning/milestones/v6.0-ROADMAP.md`
 - [x] **Phase 29: Export** - CSV-Download für Verkaufshistorie und Inventur, PDF-Einzelbelege (completed 2026-04-01)
 
 Full details: `.planning/milestones/v8.0-ROADMAP.md`
+
+</details>
+
+<details>
+<summary>🚧 v9.0 UX-Polish & Verwaltung (Phases 30-32) — IN PROGRESS</summary>
+
+- [ ] **Phase 30: Admin-Verwaltung** - Inventur als eigener Tab, Artikel löschen, Button umbenennen
+- [ ] **Phase 31: Tagesübersicht-UX** - Spenden visuell markieren, Kalender-Datepicker
+- [ ] **Phase 32: Auto-Logout** - Automatischer Redirect auf PIN-Login bei abgelaufenem Token
 
 </details>
 
@@ -449,10 +459,40 @@ Plans:
 - [x] 29-01-PLAN.md — Backend: CSV + PDF Export-Endpoints (pdfkit + csv-stringify) (EXP-01, EXP-02, EXP-03)
 - [x] 29-02-PLAN.md — Frontend: Download-Buttons in DailyReport, MonthlyReport, SaleDetailModal (EXP-01, EXP-02, EXP-03)
 
+### Phase 30: Admin-Verwaltung
+**Goal**: Die Produktverwaltung ist vollständig — Artikel können dauerhaft gelöscht werden, die Inventur ist direkt zugänglich, und Beschriftungen sind eindeutig
+**Depends on**: Phase 29
+**Requirements**: ADMIN-01, ADMIN-02, ADMIN-03
+**Success Criteria** (what must be TRUE):
+  1. Im Admin-Bereich gibt es einen eigenen "Inventur"-Tab, der die Inventur-Übersicht zeigt — nicht mehr im Jahresbericht vergraben
+  2. In der Produktverwaltung kann ein Artikel dauerhaft gelöscht werden — nach einer Bestätigungsabfrage verschwindet er vollständig aus der Datenbank
+  3. Der Button zur Bestandsanpassung heißt "Bestand anpassen" statt "Bestandskorrektur"
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 31: Tagesübersicht-UX
+**Goal**: Die Tagesübersicht zeigt auf einen Blick welche Transaktionen Spenden enthielten und ermöglicht eine freie Datumsauswahl per Kalender
+**Depends on**: Phase 30
+**Requirements**: HIST-01, HIST-02
+**Success Criteria** (what must be TRUE):
+  1. Verkäufe in der Tagesübersicht, bei denen ein Spendenbetrag erfasst wurde, sind visuell deutlich markiert — der Spendenbetrag ist hervorgehoben
+  2. Der Benutzer kann über einen Kalender-Datepicker ein beliebiges Datum auswählen — die Preset-Buttons (Heute, Gestern etc.) sind nicht mehr der einzige Weg
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 32: Auto-Logout
+**Goal**: Ein abgelaufener Session-Token führt zu einem sauberen Redirect auf den PIN-Login — kein verwirrender 401-Fehler
+**Depends on**: Phase 31
+**Requirements**: AUTH-01
+**Success Criteria** (what must be TRUE):
+  1. Wenn eine API-Anfrage mit einem abgelaufenen Token eine 401-Antwort erhält, wird der Benutzer automatisch auf die PIN-Eingabe weitergeleitet — ohne Fehlermeldung oder White Screen
+  2. Nach dem automatischen Redirect ist der Warenkorb leer und der Benutzer kann sich erneut einloggen
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 27 → 28 → 29
+Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -485,3 +525,6 @@ Phases execute in numeric order: 27 → 28 → 29
 | 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 2/2 | Complete    | 2026-04-01 |
 | 29. Export | v8.0 | 2/2 | Complete    | 2026-04-01 |
+| 30. Admin-Verwaltung | v9.0 | 0/? | Not started | - |
+| 31. Tagesübersicht-UX | v9.0 | 0/? | Not started | - |
+| 32. Auto-Logout | v9.0 | 0/? | Not started | - |
