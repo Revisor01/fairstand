@@ -70,6 +70,10 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
 // Fetch-Wrapper der bei 401 automatisch zum Login zurückkehrt
 export async function authFetch(url: string, options?: RequestInit): Promise<Response> {
   const headers = await getAuthHeaders();
+  // Remove Content-Type for requests without body (e.g. DELETE, GET) to avoid Fastify FST_ERR_CTP_EMPTY_JSON_BODY
+  if (!options?.body) {
+    delete headers['Content-Type'];
+  }
   const res = await fetch(url, { ...options, headers: { ...headers, ...options?.headers } });
   if (res.status === 401) {
     localStorage.removeItem('session');
