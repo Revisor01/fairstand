@@ -244,6 +244,41 @@ export function InventurTab({ year }: InventurTabProps) {
           </p>
         </div>
       )}
+      {!loadingInventory && inventoryData && inventoryData.items.length > 0 && (() => {
+        const totalRevenue = inventoryData.items.reduce((s, i) => s + i.revenue_cents, 0);
+        const totalWithdrawalCost = inventoryData.items.reduce((s, i) => s + i.withdrawal_cost_cents, 0);
+        const totalCost = inventoryData.items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0);
+        const balance = totalRevenue + totalWithdrawalCost - totalCost;
+        return (
+          <div className="bg-white rounded-xl shadow-sm p-6 space-y-3">
+            <h3 className="text-base font-semibold text-slate-800">Bilanz {inventoryData.year}</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-slate-600">Einnahmen aus Verkauf (VK)</span>
+                <span className="font-medium text-slate-800">{formatEur(totalRevenue)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Einnahmen aus Entnahme (EK)</span>
+                <span className="font-medium text-amber-700">{formatEur(totalWithdrawalCost)}</span>
+              </div>
+              <div className="border-t border-slate-100 pt-2 flex justify-between">
+                <span className="text-slate-600 font-medium">Gesamteinnahmen</span>
+                <span className="font-bold text-slate-800">{formatEur(totalRevenue + totalWithdrawalCost)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Gesamt EK-Kosten</span>
+                <span className="font-medium text-slate-700">− {formatEur(totalCost)}</span>
+              </div>
+              <div className="border-t-2 border-slate-300 pt-2 flex justify-between">
+                <span className="text-slate-800 font-bold">Marge</span>
+                <span className={`font-bold text-lg ${balance >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                  {formatEur(balance)}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
