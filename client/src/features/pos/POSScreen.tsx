@@ -206,6 +206,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
 
   // --- View: POS-Hauptansicht ---
   const cartItemCount = cart.items.reduce((sum, i) => sum + i.quantity, 0);
+  const cartQuantities = Object.fromEntries(cart.items.map(i => [i.productId, i.quantity]));
   const shouldShowSidebar = cartSidebarEnabled && isLargeScreen;
 
   return (
@@ -281,12 +282,15 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
       <div className="flex flex-1 overflow-hidden">
         {/* Artikel-Grid */}
         <div className="flex-1 overflow-hidden">
-          <ArticleGrid onAddToCart={product => {
-            const result = cart.addItem(product);
-            if (result.added) {
-              if (!shouldShowSidebar) setIsCartOpen(true);
-            }
-          }} />
+          <ArticleGrid
+            cartQuantities={cartQuantities}
+            onAddToCart={product => {
+              const result = cart.addItem(product);
+              if (result.added) {
+                if (!shouldShowSidebar) setIsCartOpen(true);
+              }
+            }}
+          />
         </div>
 
         {/* Sidebar-Modus: statische Warenkorb-Spalte */}

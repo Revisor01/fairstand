@@ -7,9 +7,10 @@ import { ArticleCard } from './ArticleCard.js';
 
 interface ArticleGridProps {
   onAddToCart: (product: Product) => void;
+  cartQuantities?: Record<string, number>;
 }
 
-export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
+export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
 
   // TQ mit networkMode 'offlineFirst' — im Online-Modus lädt vom Server,
@@ -115,6 +116,7 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
               <ArticleCard
                 key={product.id}
                 product={product}
+                inCart={cartQuantities[product.id] ?? 0}
                 onAddToCart={onAddToCart}
               />
             ))}
