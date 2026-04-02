@@ -46,7 +46,7 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-sky-800">Bestandskorrektur</h2>
+        <h2 className="text-lg font-semibold text-sky-800">Bestand anpassen</h2>
         <button
           onPointerDown={onClose}
           className="text-slate-500 active:text-slate-700 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg transition-colors"
@@ -117,7 +117,7 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
         disabled={saving || !isValidDelta}
         className="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 disabled:opacity-50 text-white font-semibold px-4 py-3 rounded-xl h-14 text-lg transition-colors"
       >
-        {saving ? 'Speichern...' : 'Bestand korrigieren'}
+        {saving ? 'Speichern...' : 'Bestand anpassen'}
       </button>
     </div>
   );

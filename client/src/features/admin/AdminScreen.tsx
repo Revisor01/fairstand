@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Package, BarChart3, Upload, Tags, Settings, Store } from 'lucide-react';
+import { Package, BarChart3, Upload, Tags, Settings, Store, ClipboardList } from 'lucide-react';
 import { ProductList } from './products/ProductList.js';
 import { DailyReport } from './reports/DailyReport.js';
 import { MonthlyReport } from './reports/MonthlyReport.js';
+import { InventurTab } from './reports/InventurTab.js';
 import { SettingsForm } from './settings/SettingsForm.js';
 import { CategoryManager } from './settings/CategoryManager.js';
 import { ImportScreen } from './import/ImportScreen.js';
@@ -10,7 +11,7 @@ import { ShopsManager } from './shops/ShopsManager.js';
 import { useLowStockCount } from '../../hooks/useLowStockCount.js';
 import { getStoredSession } from '../auth/serverAuth.js';
 
-type AdminTab = 'products' | 'reports' | 'settings' | 'import' | 'categories' | 'shops';
+type AdminTab = 'products' | 'reports' | 'inventur' | 'settings' | 'import' | 'categories' | 'shops';
 
 interface AdminScreenProps {
   onSwitchToPOS: () => void;
@@ -19,6 +20,7 @@ interface AdminScreenProps {
 const tabs: { key: AdminTab; label: string; icon: typeof Package }[] = [
   { key: 'products', label: 'Produkte', icon: Package },
   { key: 'reports', label: 'Berichte', icon: BarChart3 },
+  { key: 'inventur', label: 'Inventur', icon: ClipboardList },
   { key: 'import', label: 'Import', icon: Upload },
   { key: 'categories', label: 'Kategorien', icon: Tags },
   { key: 'settings', label: 'Einstellungen', icon: Settings },
@@ -30,6 +32,9 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
   const [shopName, setShopName] = useState<string>('');
   const [isMaster, setIsMaster] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const currentYear = new Date().getFullYear();
+  const [inventurYear, setInventurYear] = useState(currentYear);
+  const yearOptions = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
 
   useEffect(() => {
     getStoredSession().then(s => {
@@ -116,6 +121,23 @@ export function AdminScreen({ onSwitchToPOS }: AdminScreenProps) {
                 <hr className="my-6 border-slate-200" />
                 <MonthlyReport />
               </>
+            )}
+            {tab === 'inventur' && (
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <h2 className="text-lg font-semibold text-sky-800">Inventur</h2>
+                  <select
+                    value={inventurYear}
+                    onChange={e => setInventurYear(Number(e.target.value))}
+                    className="h-11 border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400 bg-white"
+                  >
+                    {yearOptions.map(y => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+                <InventurTab year={inventurYear} />
+              </div>
             )}
             {tab === 'import' && <ImportScreen />}
             {tab === 'categories' && <CategoryManager />}

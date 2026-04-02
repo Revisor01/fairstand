@@ -86,6 +86,25 @@ export function useToggleProductActive() {
   });
 }
 
+export function useDeleteProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (productId: string) => {
+      const res = await authFetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+      });
+      if (res.status === 409) {
+        const data = await res.json() as { error: string };
+        throw new Error(data.error ?? 'Artikel kann nicht gelöscht werden.');
+      }
+      if (!res.ok) throw new Error('Artikel konnte nicht gelöscht werden.');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products', getShopId()] });
+    },
+  });
+}
+
 // STOCK_ADJUST: direkt via POST /api/sync mit STOCK_ADJUST OutboxEntry
 // (Server-Route sync.ts verarbeitet STOCK_ADJUST per Delta)
 export function useAdjustStock() {
