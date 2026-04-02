@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, and } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { products, priceHistories } from '../db/schema.js';
+import { products, priceHistories, sales, stockMovements } from '../db/schema.js';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { extname } from 'node:path';
 import { broadcast } from './websocket.js';
@@ -60,69 +60,77 @@ export async function productRoutes(fastify: FastifyInstance) {
     if (p.shopId !== session.shopId) {
       return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
-    await db.transaction(async (tx) => {
-      // Bestehenden Preis lesen für Logging (vor dem Upsert)
-      const [existing] = await tx.select({
-        purchasePrice: products.purchasePrice,
-        salePrice: products.salePrice,
-      }).from(products).where(eq(products.id, p.id)).limit(1);
+    try {
+      await db.transaction(async (tx) => {
+        // Bestehenden Preis lesen für Logging (vor dem Upsert)
+        const [existing] = await tx.select({
+          purchasePrice: products.purchasePrice,
+          salePrice: products.salePrice,
+        }).from(products).where(eq(products.id, p.id)).limit(1);
 
-      // Preis-History Logging — nur wenn Produkt existiert UND Preis sich ändert
-      if (existing) {
-        if (existing.purchasePrice !== p.purchasePrice) {
-          await tx.insert(priceHistories).values({
-            shopId: p.shopId,
-            productId: p.id,
-            field: 'purchase_price',
-            oldValue: existing.purchasePrice,
-            newValue: p.purchasePrice,
-            changedAt: Date.now(),
-          });
+        // Preis-History Logging — nur wenn Produkt existiert UND Preis sich ändert
+        if (existing) {
+          if (existing.purchasePrice !== p.purchasePrice) {
+            await tx.insert(priceHistories).values({
+              shopId: p.shopId,
+              productId: p.id,
+              field: 'purchase_price',
+              oldValue: existing.purchasePrice,
+              newValue: p.purchasePrice,
+              changedAt: Date.now(),
+            });
+          }
+          if (existing.salePrice !== p.salePrice) {
+            await tx.insert(priceHistories).values({
+              shopId: p.shopId,
+              productId: p.id,
+              field: 'sale_price',
+              oldValue: existing.salePrice,
+              newValue: p.salePrice,
+              changedAt: Date.now(),
+            });
+          }
         }
-        if (existing.salePrice !== p.salePrice) {
-          await tx.insert(priceHistories).values({
-            shopId: p.shopId,
-            productId: p.id,
-            field: 'sale_price',
-            oldValue: existing.salePrice,
-            newValue: p.salePrice,
-            changedAt: Date.now(),
-          });
-        }
-      }
 
-      // LWW-Upsert — unverändert
-      await tx.insert(products).values({
-        id: p.id,
-        shopId: p.shopId,
-        articleNumber: p.articleNumber,
-        name: p.name,
-        category: p.category,
-        purchasePrice: p.purchasePrice,
-        salePrice: p.salePrice,
-        vatRate: p.vatRate,
-        stock: p.stock,
-        minStock: p.minStock,
-        active: p.active,
-        imageUrl: p.imageUrl ?? null,
-        updatedAt: p.updatedAt,
-      }).onConflictDoUpdate({
-        target: products.id,
-        set: {
-          articleNumber: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.article_number ELSE ${products.articleNumber} END`,
-          name: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.name ELSE ${products.name} END`,
-          category: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.category ELSE ${products.category} END`,
-          purchasePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.purchase_price ELSE ${products.purchasePrice} END`,
-          salePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.sale_price ELSE ${products.salePrice} END`,
-          vatRate: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.vat_rate ELSE ${products.vatRate} END`,
-          stock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.stock ELSE ${products.stock} END`,
-          minStock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.min_stock ELSE ${products.minStock} END`,
-          active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
-          imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
-          updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
-        },
+        // LWW-Upsert — unverändert
+        await tx.insert(products).values({
+          id: p.id,
+          shopId: p.shopId,
+          articleNumber: p.articleNumber,
+          name: p.name,
+          category: p.category,
+          purchasePrice: p.purchasePrice,
+          salePrice: p.salePrice,
+          vatRate: p.vatRate,
+          stock: p.stock,
+          minStock: p.minStock,
+          active: p.active,
+          imageUrl: p.imageUrl ?? null,
+          updatedAt: p.updatedAt,
+        }).onConflictDoUpdate({
+          target: products.id,
+          set: {
+            articleNumber: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.article_number ELSE ${products.articleNumber} END`,
+            name: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.name ELSE ${products.name} END`,
+            category: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.category ELSE ${products.category} END`,
+            purchasePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.purchase_price ELSE ${products.purchasePrice} END`,
+            salePrice: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.sale_price ELSE ${products.salePrice} END`,
+            vatRate: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.vat_rate ELSE ${products.vatRate} END`,
+            stock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.stock ELSE ${products.stock} END`,
+            minStock: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.min_stock ELSE ${products.minStock} END`,
+            active: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.active ELSE ${products.active} END`,
+            imageUrl: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.image_url ELSE ${products.imageUrl} END`,
+            updatedAt: sql`CASE WHEN excluded.updated_at > ${products.updatedAt} THEN excluded.updated_at ELSE ${products.updatedAt} END`,
+          },
+        });
       });
-    });
+    } catch (err: unknown) {
+      // PostgreSQL unique-Verletzung: code 23505
+      if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === '23505') {
+        return reply.status(409).send({ error: 'Artikelnummer bereits vorhanden — bitte eine andere Artikelnummer wählen.' });
+      }
+      throw err;
+    }
     reply.status(201).send({ ok: true });
     broadcast({ type: 'products_changed', shopId: session.shopId });
   });
@@ -197,6 +205,48 @@ export async function productRoutes(fastify: FastifyInstance) {
     await db.update(products).set({ imageUrl }).where(eq(products.id, id));
 
     return reply.send({ ok: true, imageUrl });
+  });
+
+  // DELETE /products/:id — Hartes Löschen (nur ohne Verkaufshistorie möglich)
+  fastify.delete('/products/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const session = (request as any).session as { shopId: string };
+
+    // Ownership-Check
+    const [product] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!product) return reply.status(404).send({ error: 'Produkt nicht gefunden' });
+    if (product.shopId !== session.shopId) {
+      return reply.status(403).send({ error: 'Zugriff verweigert' });
+    }
+
+    // Verkaufshistorie-Check: Artikel darf keine Verkäufe haben (items ist jsonb Array)
+    // Prüfung: sales mit shopId des Shops, die diesen Artikel in items enthalten
+    const salesWithProduct = await db
+      .select({ id: sales.id })
+      .from(sales)
+      .where(
+        and(
+          eq(sales.shopId, session.shopId),
+          sql`${sales.items}::jsonb @> ${JSON.stringify([{ productId: id }])}::jsonb`
+        )
+      )
+      .limit(1);
+
+    if (salesWithProduct.length > 0) {
+      return reply.status(409).send({
+        error: 'Artikel kann nicht gelöscht werden — es existieren Verkäufe mit diesem Artikel. Bitte deaktivieren statt löschen.'
+      });
+    }
+
+    // Hard-Delete aus DB + zugehörige price_histories und stock_movements löschen
+    await db.transaction(async (tx) => {
+      await tx.delete(priceHistories).where(eq(priceHistories.productId, id));
+      await tx.delete(stockMovements).where(eq(stockMovements.productId, id));
+      await tx.delete(products).where(eq(products.id, id));
+    });
+
+    reply.send({ ok: true });
+    broadcast({ type: 'products_changed', shopId: session.shopId });
   });
 
   // GET /api/images/:filename — Produktbild ausliefern
