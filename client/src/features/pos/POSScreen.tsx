@@ -27,7 +27,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
   const [lastSale, setLastSale] = useState<Sale | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [stockError, setStockError] = useState<string | null>(null);
+  const stockMap = Object.fromEntries(products.map(p => [p.id, p.stock]));
   const [shopName, setShopName] = useState<string>('');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [cartSidebarEnabled, setCartSidebarEnabled] = useState(false);
@@ -69,13 +69,15 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  const [invalidItemsMsg, setInvalidItemsMsg] = useState<string | null>(null);
+
   useEffect(() => {
     if (cart.invalidItems.length > 0) {
-      setStockError(
+      setInvalidItemsMsg(
         `Artikel nicht mehr verfügbar und aus Warenkorb entfernt: ${cart.invalidItems.join(', ')}`
       );
       cart.clearInvalidItems();
-      const t = setTimeout(() => setStockError(null), 4000);
+      const t = setTimeout(() => setInvalidItemsMsg(null), 4000);
       return () => clearTimeout(t);
     }
   }, [cart.invalidItems]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -268,10 +270,10 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
       </header>
 
-      {/* Stock-Fehler Toast */}
-      {stockError && (
-        <div className="mx-4 mt-2 px-4 py-3 bg-rose-50 text-rose-700 text-sm rounded-xl shadow-sm">
-          {stockError}
+      {/* Ungültige Artikel Hinweis */}
+      {invalidItemsMsg && (
+        <div className="mx-4 mt-2 px-4 py-3 bg-amber-50 text-amber-700 text-sm rounded-xl">
+          {invalidItemsMsg}
         </div>
       )}
 
@@ -281,11 +283,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         <div className="flex-1 overflow-hidden">
           <ArticleGrid onAddToCart={product => {
             const result = cart.addItem(product);
-            if (!result.added) {
-              setStockError(`"${product.name}" ist nicht mehr auf Lager.`);
-              setTimeout(() => setStockError(null), 2500);
-            } else {
-              setStockError(null);
+            if (result.added) {
               if (!shouldShowSidebar) setIsCartOpen(true);
             }
           }} />
@@ -298,6 +296,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
             isOpen={true}
             items={cart.items}
             total={cart.total}
+            stockMap={stockMap}
             onClose={() => {}}
             onUpdateQuantity={handleUpdateQuantity}
             onRemoveItem={cart.removeItem}
@@ -313,8 +312,9 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
           isOpen={isCartOpen}
           items={cart.items}
           total={cart.total}
+          stockMap={stockMap}
           onClose={() => setIsCartOpen(false)}
-          onUpdateQuantity={cart.updateQuantity}
+          onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={cart.removeItem}
           onCheckout={() => {
             setIsCartOpen(false);

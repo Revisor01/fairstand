@@ -10,6 +10,7 @@ interface CartPanelProps {
   sidebar?: boolean;
   items: CartItem[];
   total: number;
+  stockMap?: Record<string, number>;
   onClose: () => void;
   onOpen?: () => void;
   onUpdateQuantity: (productId: string, quantity: number) => Promise<{ blocked?: boolean; stock?: number }>;
@@ -23,6 +24,7 @@ export function CartPanel({
   sidebar = false,
   items,
   total,
+  stockMap = {},
   onClose,
   onOpen,
   onUpdateQuantity,
@@ -30,7 +32,6 @@ export function CartPanel({
   onCheckout,
   onWithdrawal,
 }: CartPanelProps) {
-  const [stockWarning, setStockWarning] = useState<string | null>(null);
   const [swipeStartX, setSwipeStartX] = useState(0);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -64,28 +65,9 @@ export function CartPanel({
     setIsSwiping(false);
   }
 
-  async function handleUpdateQuantity(productId: string, quantity: number) {
-    const result = await onUpdateQuantity(productId, quantity);
-    if (result.blocked) {
-      const item = items.find(i => i.productId === productId);
-      setStockWarning(`"${item?.name}" — max. ${result.stock} auf Lager`);
-      setTimeout(() => setStockWarning(null), 2500);
-    } else {
-      setStockWarning(null);
-    }
-  }
-
   // Gemeinsamer Panel-Inhalt (Warenkorb-Liste + Footer)
   const panelContent = (
     <>
-      {/* Stock-Warnung */}
-      {stockWarning && (
-        <div className="mx-4 mt-2 px-3 py-2 bg-amber-50 text-amber-700 text-sm rounded-lg flex items-center gap-2">
-          <AlertCircle size={16} className="shrink-0" />
-          {stockWarning}
-        </div>
-      )}
-
       {/* Artikel-Liste */}
       <div className="flex-1 overflow-y-auto px-4 py-2">
         {items.length === 0 ? (
@@ -98,7 +80,8 @@ export function CartPanel({
               <CartItemRow
                 key={item.productId}
                 item={item}
-                onUpdateQuantity={handleUpdateQuantity}
+                stock={stockMap[item.productId]}
+                onUpdateQuantity={onUpdateQuantity}
                 onRemove={onRemoveItem}
               />
             ))}
@@ -231,12 +214,14 @@ export function CartPanel({
 
 interface CartItemRowProps {
   item: CartItem;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
+  stock?: number;
+  onUpdateQuantity: (productId: string, quantity: number) => Promise<{ blocked?: boolean; stock?: number }>;
   onRemove: (productId: string) => void;
 }
 
-function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
+function CartItemRow({ item, stock, onUpdateQuantity, onRemove }: CartItemRowProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const atLimit = stock !== undefined && item.quantity >= stock;
 
   return (
     <li className="flex flex-col gap-1 py-2 border-b border-sky-50">
@@ -279,8 +264,13 @@ function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
           />
 
           <button
-            onPointerDown={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-            className="h-9 w-9 flex items-center justify-center bg-sky-100 rounded-full text-sky-700 font-bold text-lg active:bg-sky-200"
+            onPointerDown={() => { if (!atLimit) onUpdateQuantity(item.productId, item.quantity + 1); }}
+            disabled={atLimit}
+            className={`h-9 w-9 flex items-center justify-center rounded-full font-bold text-lg ${
+              atLimit
+                ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                : 'bg-sky-100 text-sky-700 active:bg-sky-200'
+            }`}
             aria-label="Menge erhöhen"
           >
             +
@@ -291,6 +281,13 @@ function CartItemRow({ item, onUpdateQuantity, onRemove }: CartItemRowProps) {
           {formatEur(item.salePrice * item.quantity)}
         </span>
       </div>
+
+      {atLimit && (
+        <p className="text-amber-600 text-xs flex items-center gap-1 mt-0.5">
+          <AlertCircle size={12} className="shrink-0" />
+          Max. Bestand: {stock}
+        </p>
+      )}
     </li>
   );
 }
