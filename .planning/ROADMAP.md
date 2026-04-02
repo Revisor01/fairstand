@@ -470,7 +470,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 30-01-PLAN.md — Backend: DELETE-Endpoint + Unique-Constraint-Migration
+- [x] 30-01-PLAN.md — Backend: DELETE-Endpoint + Unique-Constraint-Migration
 - [ ] 30-02-PLAN.md — Frontend: InventurTab extrahieren + Löschen-UI + Umbenennung
 
 ### Phase 31: Tagesübersicht-UX
@@ -528,6 +528,6 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
 | 27. Preis-History & Bestandsverlauf | v8.0 | 2/3 | Complete    | 2026-04-01 |
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 2/2 | Complete    | 2026-04-01 |
 | 29. Export | v8.0 | 2/2 | Complete    | 2026-04-01 |
-| 30. Admin-Verwaltung | v9.0 | 0/? | Not started | - |
+| 30. Admin-Verwaltung | v9.0 | 1/2 | In Progress|  |
 | 31. Tagesübersicht-UX | v9.0 | 0/? | Not started | - |
 | 32. Auto-Logout | v9.0 | 0/? | Not started | - |
