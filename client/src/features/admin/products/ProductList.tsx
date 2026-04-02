@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Pencil, BarChart3, Package, Eye, EyeOff, Plus } from 'lucide-react';
+import { Pencil, BarChart3, Package, Eye, EyeOff, Plus, Trash2 } from 'lucide-react';
 import type { Product } from '../../../db/index.js';
 import { formatEur } from '../../pos/utils.js';
-import { useProducts, useToggleProductActive } from '../../../hooks/api/useProducts.js';
+import { useProducts, useToggleProductActive, useDeleteProduct } from '../../../hooks/api/useProducts.js';
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 import { ProductStats } from './ProductStats.js';
@@ -16,6 +16,10 @@ export function ProductList() {
 
   const { data: rawProducts, isLoading } = useProducts();
   const toggleActive = useToggleProductActive();
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const deleteProduct = useDeleteProduct();
 
   const products = useMemo(
     () => rawProducts ? [...rawProducts].sort((a, b) => a.name.localeCompare(b.name, 'de')) : undefined,
@@ -42,6 +46,20 @@ export function ProductList() {
 
   async function handleToggleActive(product: Product) {
     await toggleActive.mutateAsync({ productId: product.id, active: !product.active });
+  }
+
+  async function handleDeleteConfirm() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteProduct.mutateAsync(deleteTarget.id);
+      setDeleteTarget(null);
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Fehler beim Löschen.');
+    } finally {
+      setDeleting(false);
+    }
   }
 
   function openNewForm() {
@@ -220,10 +238,53 @@ export function ProductList() {
                   >
                     {product.active ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
+                  <button
+                    onPointerDown={() => { setDeleteTarget(product); setDeleteError(null); }}
+                    title="Löschen"
+                    className="bg-red-100 active:bg-red-300 text-red-700 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full flex flex-col gap-4">
+            <h3 className="text-lg font-bold text-slate-800">Artikel löschen?</h3>
+            <p className="text-sm text-slate-600">
+              <span className="font-semibold">{deleteTarget.name}</span> wird unwiderruflich gelöscht.
+              Dieser Vorgang kann nicht rückgängig gemacht werden.
+            </p>
+            <p className="text-xs text-slate-400">
+              Artikel mit Verkaufshistorie können nicht gelöscht werden.
+            </p>
+            {deleteError && (
+              <div className="bg-rose-50 text-rose-700 px-4 py-3 rounded-xl text-sm">
+                {deleteError}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                onPointerDown={() => { setDeleteTarget(null); setDeleteError(null); }}
+                disabled={deleting}
+                className="flex-1 bg-slate-100 active:bg-slate-200 text-slate-700 font-semibold py-3 rounded-xl min-h-[48px] transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                onPointerDown={handleDeleteConfirm}
+                disabled={deleting}
+                className="flex-1 bg-red-500 active:bg-red-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl min-h-[48px] transition-colors"
+              >
+                {deleting ? 'Löschen...' : 'Unwiderruflich löschen'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
