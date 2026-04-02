@@ -41,17 +41,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ADMIN-01 | — | Pending |
-| ADMIN-02 | — | Pending |
-| ADMIN-03 | — | Pending |
-| HIST-01 | — | Pending |
-| HIST-02 | — | Pending |
-| AUTH-01 | — | Pending |
+| ADMIN-01 | Phase 30 | Pending |
+| ADMIN-02 | Phase 30 | Pending |
+| ADMIN-03 | Phase 30 | Pending |
+| HIST-01 | Phase 31 | Pending |
+| HIST-02 | Phase 31 | Pending |
+| AUTH-01 | Phase 32 | Pending |
 
 **Coverage:**
 - v9.0 requirements: 6 total
-- Mapped to phases: 0
-- Unmapped: 6
+- Mapped to phases: 6
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-02*
