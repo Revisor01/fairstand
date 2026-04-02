@@ -14,7 +14,9 @@ export const products = pgTable('products', {
   active: boolean('active').notNull().default(true),
   imageUrl: text('image_url'),
   updatedAt: bigint('updated_at', { mode: 'number' }).notNull(),
-});
+}, (table) => ({
+  articleNumberShopIdx: uniqueIndex('products_article_number_shop_id_idx').on(table.articleNumber, table.shopId),
+}));
 
 export const sales = pgTable('sales', {
   id: text('id').primaryKey(),
