@@ -79,7 +79,17 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-(Nächster Milestone noch nicht definiert)
+## Current Milestone: v9.0 UX-Polish & Verwaltung
+
+**Goal:** Verwaltungsfunktionen verbessern und UX-Irritationen beseitigen — Inventur eigenständig, Artikel löschbar, klarere Bezeichnungen, Spenden sichtbar, automatischer Logout, Kalender-Datumsauswahl.
+
+**Target features:**
+- Inventur als eigener Admin-Bereich (raus aus Jahresbericht, eigener Tab)
+- Artikel löschen können (nicht nur deaktivieren)
+- "Bestandskorrektur" umbenennen zu "Bestand anpassen"
+- Spenden in Verkaufshistorie markieren
+- Auto-Logout bei abgelaufenem Token (statt 401-Fehler)
+- Datumsauswahl per Kalender in der Tagesübersicht (statt Buttons)
 
 ### Out of Scope
 
@@ -157,4 +167,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-04-02 after v8.0 milestone shipped*
+*Last updated: 2026-04-02 after v9.0 milestone started*
