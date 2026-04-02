@@ -41,16 +41,22 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
     staleTime: 60_000, // POS: 1 Minute — etwas länger als Admin, da POS stabiler ist
   });
 
+  const outOfStockCount = useMemo(() => {
+    if (!products) return 0;
+    return products.filter((p: Product) => p.stock <= 0).length;
+  }, [products]);
+
   // Alphabetisch sortierte unique Kategorien aus den geladenen Produkten
   const categories = useMemo((): string[] => {
     if (!products) return [];
     const unique = [...new Set(products.map((p: Product) => p.category))].sort();
-    return ['Alle', ...unique];
-  }, [products]);
+    return ['Alle', ...(outOfStockCount > 0 ? ['Ausverkauft'] : []), ...unique];
+  }, [products, outOfStockCount]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     if (activeCategory === 'Alle') return products;
+    if (activeCategory === 'Ausverkauft') return products.filter((p: Product) => p.stock <= 0);
     return products.filter((p: Product) => p.category === activeCategory);
   }, [products, activeCategory]);
 
@@ -92,13 +98,24 @@ export function ArticleGrid({ onAddToCart }: ArticleGridProps) {
             onPointerDown={() => setActiveCategory(cat)}
             className={`
               px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap min-h-[44px] transition-colors
-              ${activeCategory === cat
-                ? 'bg-sky-500 text-white shadow-md font-semibold'
-                : 'bg-sky-50 text-sky-600 hover:bg-sky-100'
+              ${cat === 'Ausverkauft'
+                ? activeCategory === cat
+                  ? 'bg-rose-500 text-white shadow-md font-semibold'
+                  : 'bg-rose-50 text-rose-600 hover:bg-rose-100'
+                : activeCategory === cat
+                  ? 'bg-sky-500 text-white shadow-md font-semibold'
+                  : 'bg-sky-50 text-sky-600 hover:bg-sky-100'
               }
             `}
           >
             {cat}
+            {cat === 'Ausverkauft' && (
+              <span className={`ml-1.5 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold ${
+                activeCategory === cat ? 'bg-white/30 text-white' : 'bg-rose-500 text-white'
+              }`}>
+                {outOfStockCount}
+              </span>
+            )}
           </button>
         ))}
       </div>
