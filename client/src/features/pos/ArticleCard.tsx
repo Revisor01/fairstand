@@ -17,15 +17,17 @@ export function shouldTriggerTap(
 
 interface ArticleCardProps {
   product: Product;
+  inCart?: number;
   onAddToCart: (product: Product) => void;
 }
 
-export function ArticleCard({ product, onAddToCart }: ArticleCardProps) {
+export function ArticleCard({ product, inCart = 0, onAddToCart }: ArticleCardProps) {
   // useRef statt useState — kein Re-Render beim Pointer-Down (per D-UIX-01)
   const startPos = useRef<{ x: number; y: number } | null>(null);
 
-  const isOutOfStock = product.stock <= 0;
-  const isLowStock = product.minStock > 0 && product.stock <= product.minStock;
+  const available = product.stock - inCart;
+  const isOutOfStock = available <= 0;
+  const isLowStock = !isOutOfStock && product.minStock > 0 && product.stock <= product.minStock;
 
   const cardClassName = [
     'bg-white shadow-sm rounded-xl min-h-[80px] p-4',
@@ -48,7 +50,7 @@ export function ArticleCard({ product, onAddToCart }: ArticleCardProps) {
       onPointerUp={(e) => {
         const start = startPos.current;
         startPos.current = null;
-        if (start && shouldTriggerTap(start, { x: e.clientX, y: e.clientY }, product.stock)) {
+        if (start && shouldTriggerTap(start, { x: e.clientX, y: e.clientY }, available)) {
           onAddToCart(product);
         }
       }}
@@ -75,24 +77,24 @@ export function ArticleCard({ product, onAddToCart }: ArticleCardProps) {
         </span>
         <span className="flex items-center gap-1 shrink-0 whitespace-nowrap">
           <span className={`text-xs leading-none ${
-            product.stock === 0
+            available <= 0
               ? 'text-rose-500'
-              : product.minStock > 0 && product.stock <= product.minStock
+              : isLowStock
                 ? 'text-amber-500'
                 : 'text-emerald-500'
           }`}>●</span>
           <span className={`text-xs font-medium ${
-            product.stock <= 0
+            available <= 0
               ? 'text-rose-500'
-              : product.minStock > 0 && product.stock <= product.minStock
+              : isLowStock
                 ? 'text-amber-600'
                 : 'text-slate-400'
           }`}>
-            {product.stock <= 0
-              ? 'Ausverkauft'
-              : product.minStock > 0 && product.stock <= product.minStock
-                ? `Noch ${product.stock}`
-                : `${product.stock} Stk.`
+            {available <= 0
+              ? product.stock <= 0 ? 'Ausverkauft' : 'Im Warenkorb'
+              : isLowStock
+                ? `Noch ${available}`
+                : `${available} Stk.`
             }
           </span>
         </span>
