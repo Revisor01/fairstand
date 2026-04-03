@@ -1,5 +1,18 @@
 # Milestones
 
+## v10.0 Bilder, Export & Analyse (Shipped: 2026-04-03)
+
+**Phases completed:** 4 phases, 3 plans
+
+**Key accomplishments:**
+
+- XLSX-Export (Excel) für Inventur und Verkaufshistorie via SheetJS
+- Lagerdauer-Analyse mit "Nie verkauft"/"Ladenhüter"-Badges und Kategorie-Filter in Produktliste
+- EK-Preiswarnung beim PDF-Import — amber Warnzeile zeigt alten vs. neuen EK
+- Produktbilder-Phase übersprungen (bereits in v3.0 implementiert)
+
+---
+
 ## v9.0 UX-Polish & Verwaltung (Shipped: 2026-04-03)
 
 **Phases completed:** 3 phases, 4 plans, 6 tasks
