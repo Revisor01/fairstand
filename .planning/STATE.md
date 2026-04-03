@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: UX-Polish & Verwaltung
 status: verifying
-stopped_at: "Completed 30-admin-verwaltung Plan 02 — Frontend: InventurTab, Löschen, Bestand anpassen"
-last_updated: "2026-04-02T09:14:48.937Z"
-last_activity: 2026-04-02
+stopped_at: Completed 31-tagesuebersicht-ux Plan 01 — Spendenmarkierung + Datepicker aktiver Zustand
+last_updated: "2026-04-03T15:14:32.608Z"
+last_activity: 2026-04-03
 progress:
   total_phases: 26
-  completed_phases: 9
-  total_plans: 23
-  completed_plans: 23
+  completed_phases: 10
+  total_plans: 24
+  completed_plans: 24
 ---
 
 # Project State
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-02)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 30 — Admin-Verwaltung
+**Current focus:** Phase 31 — Tagesübersicht-UX
 
 ## Current Position
 
-Phase: 31
-Plan: Not started
+Phase: 31 (Tagesübersicht-UX) — EXECUTING
+Plan: 1 of 1
 Status: Phase complete — ready for verification
-Last activity: 2026-04-02
+Last activity: 2026-04-03
 
 ## Performance Metrics
 
@@ -52,6 +52,8 @@ Last activity: 2026-04-02
 - [Phase 30-01]: jsonb @> Containment-Operator für Verkaufshistorie-Check in PostgreSQL
 - [Phase 30-02]: Jahr-State für Inventur in AdminScreen verwaltet (nicht in InventurTab) — konsistent mit anderen Filtern
 - [Phase 30-02]: 409-Fehler bei Artikel-Löschen erscheint im Bestätigungsdialog statt separatem Toast
+- [Phase 31]: Prioritaetskaskade cancelledAt > donationCents > 0 > default: stornierte Zeilen bleiben immer rot
+- [Phase 31]: color-scheme:dark Tailwind Arbitrary Property fuer Safari/iOS Kalender-Icon im aktiven Datepicker
 
 ### Pending Todos
 
@@ -63,7 +65,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-02T09:12:22.733Z
-Stopped at: Completed 30-admin-verwaltung Plan 02 — Frontend: InventurTab, Löschen, Bestand anpassen
+Last session: 2026-04-03T15:14:32.605Z
+Stopped at: Completed 31-tagesuebersicht-ux Plan 01 — Spendenmarkierung + Datepicker aktiver Zustand
 Resume file: None
 Next step: `/gsd:plan-phase 30`
