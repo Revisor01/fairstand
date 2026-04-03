@@ -1,5 +1,20 @@
 # Milestones
 
+## v9.0 UX-Polish & Verwaltung (Shipped: 2026-04-03)
+
+**Phases completed:** 3 phases, 4 plans, 6 tasks
+
+**Key accomplishments:**
+
+- Inventur als eigener Admin-Tab mit Preisperioden-Aufschlüsselung, Entnahmen-Spalte und Bilanz-Sektion (Gesamteinnahmen, EK-Kosten, Marge)
+- Artikel dauerhaft löschbar (nur ohne Verkaufshistorie), Artikelnummern-Unique-Constraint pro Shop
+- Spendenmarkierung in Tagesübersicht (grün), nativer Kalender-Datepicker mit aktivem Zustand
+- Auto-Logout via CustomEvent statt Page-Reload bei Token-Expiration
+- Live verfügbarer Bestand im Artikelgrid (abzüglich Warenkorb), Plus-Button disabled bei Limit
+- Beleg-Download nach Bezahlung (mit/ohne Spende), PWA autoUpdate für sofortige Deployments
+
+---
+
 ## v8.0 Inventur, Preis-History & Rechnungsexport (Shipped: 2026-04-01)
 
 **Phases completed:** 8 phases, 21 plans, 36 tasks

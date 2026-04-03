@@ -11,7 +11,7 @@
 - ✅ **v6.0 Pure Online** — Phases 22-23 (shipped 2026-03-24)
 - ✅ **v7.0 Multi-Shop & UX** — Phases 24-26 (shipped 2026-03-25)
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
-- 🚧 **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (in progress)
+- ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
 
 ## Phases
 
@@ -105,11 +105,13 @@ Full details: `.planning/milestones/v8.0-ROADMAP.md`
 </details>
 
 <details>
-<summary>🚧 v9.0 UX-Polish & Verwaltung (Phases 30-32) — IN PROGRESS</summary>
+<summary>✅ v9.0 UX-Polish & Verwaltung (Phases 30-32) — SHIPPED 2026-04-03</summary>
 
-- [ ] **Phase 30: Admin-Verwaltung** - Inventur als eigener Tab, Artikel löschen, Button umbenennen
-- [ ] **Phase 31: Tagesübersicht-UX** - Spenden visuell markieren, Kalender-Datepicker
-- [ ] **Phase 32: Auto-Logout** - Automatischer Redirect auf PIN-Login bei abgelaufenem Token
+- [x] **Phase 30: Admin-Verwaltung** - Inventur als eigener Tab, Artikel löschen, Button umbenennen (completed 2026-04-02)
+- [x] **Phase 31: Tagesübersicht-UX** - Spenden visuell markieren, Kalender-Datepicker (completed 2026-04-03)
+- [x] **Phase 32: Auto-Logout** - Automatischer Redirect auf PIN-Login bei abgelaufenem Token (completed 2026-04-03)
+
+Full details: `.planning/milestones/v9.0-ROADMAP.md`
 
 </details>
 
