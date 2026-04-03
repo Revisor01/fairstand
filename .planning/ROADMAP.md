@@ -480,8 +480,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Verkäufe in der Tagesübersicht, bei denen ein Spendenbetrag erfasst wurde, sind visuell deutlich markiert — der Spendenbetrag ist hervorgehoben
   2. Der Benutzer kann über einen Kalender-Datepicker ein beliebiges Datum auswählen — die Preset-Buttons (Heute, Gestern etc.) sind nicht mehr der einzige Weg
-**Plans**: TBD
+**Plans**: 1 plan
 **UI hint**: yes
+
+Plans:
+- [ ] 31-01-PLAN.md — DailyReport.tsx: Spendenmarkierung + Datepicker-Aktivzustand (HIST-01, HIST-02)
 
 ### Phase 32: Auto-Logout
 **Goal**: Ein abgelaufener Session-Token führt zu einem sauberen Redirect auf den PIN-Login — kein verwirrender 401-Fehler
