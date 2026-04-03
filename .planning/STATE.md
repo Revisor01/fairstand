@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v9.0
-milestone_name: UX-Polish & Verwaltung
-status: verifying
-stopped_at: Completed 32-auto-logout Plan 01 — Auto-Logout via CustomEvent
+milestone: v10.0
+milestone_name: "Bilder, Export & Analyse"
+status: roadmap_ready
+stopped_at: null
 last_updated: "2026-04-03T15:23:24.888Z"
 last_activity: 2026-04-03
 progress:

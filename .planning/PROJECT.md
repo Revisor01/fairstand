@@ -79,17 +79,15 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-## Current Milestone: v9.0 UX-Polish & Verwaltung
+## Current Milestone: v10.0 Bilder, Export & Analyse
 
-**Goal:** Verwaltungsfunktionen verbessern und UX-Irritationen beseitigen — Inventur eigenständig, Artikel löschbar, klarere Bezeichnungen, Spenden sichtbar, automatischer Logout, Kalender-Datumsauswahl.
+**Goal:** Produktbilder im Kassengrid, Excel-Export, Lagerdauer-Analyse und Preiswarnung beim Import
 
 **Target features:**
-- Inventur als eigener Admin-Bereich (raus aus Jahresbericht, eigener Tab)
-- Artikel löschen können (nicht nur deaktivieren)
-- "Bestandskorrektur" umbenennen zu "Bestand anpassen"
-- Spenden in Verkaufshistorie markieren
-- Auto-Logout bei abgelaufenem Token (statt 401-Fehler)
-- Datumsauswahl per Kalender in der Tagesübersicht (statt Buttons)
+- Produktbilder in Artikelkacheln im POS-Grid anzeigen
+- XLSX-Export für Inventur und Verkaufshistorie (statt nur CSV)
+- Lagerdauer-Analyse: Ladenhüter identifizieren die lange nicht verkauft wurden
+- Preiswarnung beim PDF-Import wenn sich der EK geändert hat
 
 ### Out of Scope
 
