@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v9.0
 milestone_name: UX-Polish & Verwaltung
 status: verifying
-stopped_at: Completed 31-tagesuebersicht-ux Plan 01 — Spendenmarkierung + Datepicker aktiver Zustand
-last_updated: "2026-04-03T15:16:32.831Z"
+stopped_at: Completed 32-auto-logout Plan 01 — Auto-Logout via CustomEvent
+last_updated: "2026-04-03T15:21:21.380Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 26
-  completed_phases: 10
-  total_plans: 24
-  completed_plans: 24
+  completed_phases: 11
+  total_plans: 25
+  completed_plans: 25
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-02)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 31 — Tagesübersicht-UX
+**Current focus:** Phase 32 — Auto-Logout
 
 ## Current Position
 
-Phase: 32
-Plan: Not started
+Phase: 32 (Auto-Logout) — EXECUTING
+Plan: 1 of 1
 Status: Phase complete — ready for verification
 Last activity: 2026-04-03
 
@@ -54,6 +54,7 @@ Last activity: 2026-04-03
 - [Phase 30-02]: 409-Fehler bei Artikel-Löschen erscheint im Bestätigungsdialog statt separatem Toast
 - [Phase 31]: Prioritaetskaskade cancelledAt > donationCents > 0 > default: stornierte Zeilen bleiben immer rot
 - [Phase 31]: color-scheme:dark Tailwind Arbitrary Property fuer Safari/iOS Kalender-Icon im aktiven Datepicker
+- [Phase 32]: CustomEvent 'auth:logout' als Bruecke zwischen authFetch und useAuth — kein Page-Reload mehr bei Token-Expiration
 
 ### Pending Todos
 
@@ -65,7 +66,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:14:32.605Z
-Stopped at: Completed 31-tagesuebersicht-ux Plan 01 — Spendenmarkierung + Datepicker aktiver Zustand
+Last session: 2026-04-03T15:21:21.374Z
+Stopped at: Completed 32-auto-logout Plan 01 — Auto-Logout via CustomEvent
 Resume file: None
 Next step: `/gsd:plan-phase 30`

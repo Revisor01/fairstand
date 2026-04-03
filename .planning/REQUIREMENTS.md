@@ -18,7 +18,7 @@
 
 ### Auth
 
-- [ ] **AUTH-01**: Bei abgelaufenem Token wird automatisch auf den PIN-Login weitergeleitet (statt 401-Fehler)
+- [x] **AUTH-01**: Bei abgelaufenem Token wird automatisch auf den PIN-Login weitergeleitet (statt 401-Fehler)
 
 ## Future Requirements
 
@@ -46,7 +46,7 @@
 | ADMIN-03 | Phase 30 | Complete |
 | HIST-01 | Phase 31 | Complete |
 | HIST-02 | Phase 31 | Complete |
-| AUTH-01 | Phase 32 | Pending |
+| AUTH-01 | Phase 32 | Complete |
 
 **Coverage:**
 - v9.0 requirements: 6 total
