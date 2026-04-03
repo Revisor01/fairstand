@@ -162,7 +162,11 @@ export function DailyReport() {
                 setRangeMode('custom');
               }
             }}
-            className="min-h-[44px] border border-slate-200 rounded-lg px-3 text-sm focus:outline-none focus:border-sky-400"
+            className={`min-h-[44px] rounded-lg px-3 text-sm focus:outline-none transition-colors ${
+              rangeMode === 'custom'
+                ? 'bg-sky-500 text-white border border-sky-500 [color-scheme:dark]'
+                : 'border border-slate-200 focus:border-sky-400'
+            }`}
           />
           <button
             onClick={handleCsvDownload}
