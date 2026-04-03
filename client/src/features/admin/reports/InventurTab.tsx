@@ -45,6 +45,7 @@ export function InventurTab({ year }: InventurTabProps) {
   const [expandedProducts, setExpandedProducts] = useState<Set<string>>(new Set());
   const [downloadingInventurCsv, setDownloadingInventurCsv] = useState(false);
   const [downloadingInventurPdf, setDownloadingInventurPdf] = useState(false);
+  const [downloadingInventurXlsx, setDownloadingInventurXlsx] = useState(false);
 
   useEffect(() => {
     if (!navigator.onLine) return;
@@ -95,6 +96,25 @@ export function InventurTab({ year }: InventurTabProps) {
     }
   }
 
+  async function handleInventurXlsxDownload() {
+    setDownloadingInventurXlsx(true);
+    try {
+      const res = await authFetch(`/api/reports/inventory-xlsx?year=${year}`);
+      if (!res.ok) throw new Error(`${res.status}`);
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `inventur-${year}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert('Excel-Download fehlgeschlagen. Bitte erneut versuchen.');
+      console.error('Inventur XLSX error:', err);
+    } finally {
+      setDownloadingInventurXlsx(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {loadingInventory && (
@@ -126,6 +146,16 @@ export function InventurTab({ year }: InventurTabProps) {
               <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
             ) : <span>↓</span>}
             Inventur PDF
+          </button>
+          <button
+            onClick={handleInventurXlsxDownload}
+            disabled={downloadingInventurXlsx}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-green-700 text-white hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {downloadingInventurXlsx ? (
+              <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+            ) : <span>↓</span>}
+            Inventur Excel
           </button>
         </div>
       )}
