@@ -38,12 +38,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IMG-01 | TBD | Pending |
-| EXP-04 | TBD | Pending |
-| EXP-05 | TBD | Pending |
-| ANA-01 | TBD | Pending |
-| ANA-02 | TBD | Pending |
-| IMP-01 | TBD | Pending |
+| IMG-01 | Phase 33 | Pending |
+| EXP-04 | Phase 34 | Pending |
+| EXP-05 | Phase 34 | Pending |
+| ANA-01 | Phase 35 | Pending |
+| ANA-02 | Phase 35 | Pending |
+| IMP-01 | Phase 36 | Pending |
 
 ---
 *Requirements defined: 2026-04-03*
