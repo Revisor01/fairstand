@@ -530,7 +530,10 @@ Plans:
   1. Im Admin-Bereich gibt es neben dem CSV-Download-Button für die Inventur einen weiteren Button "Als Excel herunterladen" — die resultierende .xlsx-Datei öffnet sich in Excel und Numbers ohne Fehler
   2. Ebenso gibt es für die Verkaufshistorie einen Excel-Export-Button — alle Spalten aus der Ansicht sind in der XLSX-Datei enthalten
   3. Deutsche Sonderzeichen (Umlaute) erscheinen in der Excel-Datei korrekt — kein Zeichensatz-Problem
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 34-01-PLAN.md — xlsx installieren + Server-Endpoints (inventory-xlsx, sales-xlsx) + Frontend-Buttons
 
 ### Phase 35: Lagerdauer-Analyse
 **Goal**: Für jeden Artikel ist sichtbar wann er zuletzt verkauft wurde und Ladenhüter (>3 Monate nicht verkauft) sind auf einen Blick erkennbar
