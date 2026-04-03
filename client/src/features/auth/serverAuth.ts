@@ -77,8 +77,7 @@ export async function authFetch(url: string, options?: RequestInit): Promise<Res
   const res = await fetch(url, { ...options, headers: { ...headers, ...options?.headers } });
   if (res.status === 401) {
     localStorage.removeItem('session');
-    window.location.reload();
-    // Nie erreicht, aber TypeScript braucht ein return
+    window.dispatchEvent(new CustomEvent('auth:logout'));
     return res;
   }
   return res;
