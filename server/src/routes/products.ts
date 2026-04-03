@@ -42,12 +42,37 @@ export async function productRoutes(fastify: FastifyInstance) {
   // Bilder-Verzeichnis sicherstellen
   await mkdir(IMAGES_DIR, { recursive: true });
 
-  // GET /products — alle Produkte des authentifizierten Shops
+  // GET /products — alle Produkte des authentifizierten Shops (inkl. last_sale_at)
   fastify.get('/products', async (request, reply) => {
     const session = (request as any).session as { shopId: string };
     const shopId = session.shopId;
-    const rows = await db.select().from(products).where(eq(products.shopId, shopId));
-    return reply.send(rows);
+    const rows = await db.execute(sql`
+      SELECT
+        p.id,
+        p.shop_id,
+        p.article_number,
+        p.name,
+        p.category,
+        p.purchase_price,
+        p.sale_price,
+        p.vat_rate,
+        p.stock,
+        p.min_stock,
+        p.active,
+        p.image_url,
+        p.updated_at,
+        MAX(CASE WHEN s.cancelled_at IS NULL THEN s.created_at ELSE NULL END) AS last_sale_at
+      FROM products p
+      LEFT JOIN LATERAL (
+        SELECT s2.created_at, s2.cancelled_at
+        FROM sales s2
+        WHERE s2.shop_id = p.shop_id
+          AND s2.items::jsonb @> json_build_array(json_build_object('productId', p.id))::jsonb
+      ) s ON true
+      WHERE p.shop_id = ${shopId}
+      GROUP BY p.id
+    `);
+    return reply.send(rows.rows);
   });
 
   // POST /products — Produkt anlegen (LWW-Upsert)
