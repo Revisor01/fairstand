@@ -96,6 +96,7 @@ export function ImportScreen() {
           ...row,
           status: match ? 'known' : 'new',
           existingProductId: match?.id,
+          storedPurchasePriceCents: match?.purchasePrice,
           checked: true,
         };
       });
