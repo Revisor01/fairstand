@@ -394,20 +394,33 @@ export async function reportRoutes(fastify: FastifyInstance) {
       }
     }
 
-    // Items zusammenbauen
-    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
-      id: String(row.id),
-      article_number: String(row.article_number),
-      name: String(row.name),
-      current_stock: Number(row.current_stock),
-      current_ek_cents: Number(row.current_ek_cents),
-      sold_qty: Number(row.sold_qty),
-      withdrawn_qty: Number(row.withdrawn_qty),
-      revenue_cents: Number(row.revenue_cents),
-      cost_cents: Number(row.cost_cents),
-      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
-      price_periods: periodsMap.get(String(row.id)) ?? [],
-    }));
+    // Items zusammenbauen — EK-Kosten aus Preisperioden bevorzugen
+    // Preisperioden verwenden den historischen EK (korrekt), die Hauptquery fällt
+    // bei fehlendem purchasePrice auf den aktuellen EK zurück (falsch für Altdaten).
+    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => {
+      const pid = String(row.id);
+      const periods = periodsMap.get(pid) ?? [];
+      const hasPeriods = periods.length > 0;
+      return {
+        id: pid,
+        article_number: String(row.article_number),
+        name: String(row.name),
+        current_stock: Number(row.current_stock),
+        current_ek_cents: Number(row.current_ek_cents),
+        sold_qty: Number(row.sold_qty),
+        withdrawn_qty: Number(row.withdrawn_qty),
+        revenue_cents: hasPeriods
+          ? periods.reduce((s, p) => s + p.revenue_cents, 0)
+          : Number(row.revenue_cents),
+        cost_cents: hasPeriods
+          ? periods.reduce((s, p) => s + p.cost_cents, 0)
+          : Number(row.cost_cents),
+        withdrawal_cost_cents: hasPeriods
+          ? periods.reduce((s, p) => s + p.withdrawal_cost_cents, 0)
+          : Number(row.withdrawal_cost_cents),
+        price_periods: periods,
+      };
+    });
 
     const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
     return reply.send({
