@@ -9,6 +9,7 @@ export interface MatchedRow {
   parseWarning?: string;
   status: 'known' | 'new';
   existingProductId?: string;
+  storedPurchasePriceCents?: number;  // gespeicherter EK des gematchten Produkts (nur bei status='known')
   checked: boolean;
 }
 
@@ -149,6 +150,21 @@ export function ReviewTable({ rows, onRowChange, onToggleCheck, onToggleAll }: R
                 <tr key={`warning-${index}`} className="bg-amber-50">
                   <td colSpan={9} className="px-4 py-2 text-amber-700 text-xs">
                     Hinweis: {row.parseWarning}
+                  </td>
+                </tr>
+              )}
+              {row.status === 'known' &&
+                row.storedPurchasePriceCents !== undefined &&
+                row.storedPurchasePriceCents !== row.purchasePriceCents && (
+                <tr key={`ekwarn-${index}`} className="bg-amber-50">
+                  <td colSpan={9} className="px-4 py-2 text-amber-700 text-xs flex items-center gap-1.5">
+                    <span>⚠️</span>
+                    <span>
+                      EK geändert: bisher{' '}
+                      <strong>{toEurStr(row.storedPurchasePriceCents)} €</strong>
+                      {' '}→ neu{' '}
+                      <strong>{toEurStr(row.purchasePriceCents)} €</strong>
+                    </span>
                   </td>
                 </tr>
               )}
