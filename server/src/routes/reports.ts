@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { stringify } from 'csv-stringify';
 import PDFDocument from 'pdfkit';
+import * as XLSX from 'xlsx';
 
 export async function reportRoutes(fastify: FastifyInstance) {
   // GET /reports/monthly?year=2026&month=3
@@ -664,6 +665,190 @@ export async function reportRoutes(fastify: FastifyInstance) {
 
     stringifier.end();
     return reply.send(stringifier);
+  });
+
+  // GET /reports/inventory-xlsx?year=... — Inventur als Excel (EXP-04)
+  fastify.get('/reports/inventory-xlsx', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { year } = request.query as { year?: string };
+    if (!year) return reply.status(400).send({ error: 'year required' });
+
+    const y = Number(year);
+    const yearStart = new Date(y, 0, 1).getTime();
+    const yearEnd = new Date(y + 1, 0, 1).getTime();
+
+    const inventoryResult = await db.execute(sql`
+      SELECT
+        p.id,
+        p.article_number,
+        p.name,
+        p.stock as current_stock,
+        p.purchase_price as current_ek_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer ELSE 0 END
+        ), 0) as sold_qty,
+        COALESCE(SUM(
+          CASE WHEN sales.type = 'withdrawal'
+          THEN (item->>'quantity')::integer ELSE 0 END
+        ), 0) as withdrawn_qty,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
+        ), 0) as revenue_cents,
+        COALESCE(SUM(
+          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+          THEN (item->>'quantity')::integer *
+               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+          ELSE 0 END
+        ), 0) as cost_cents,
+        COALESCE(SUM(
+          CASE WHEN sales.type = 'withdrawal'
+          THEN (item->>'quantity')::integer *
+               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+          ELSE 0 END
+        ), 0) as withdrawal_cost_cents
+      FROM products p
+      LEFT JOIN sales ON sales.shop_id = p.shop_id
+                      AND sales.created_at >= ${yearStart}
+                      AND sales.created_at < ${yearEnd}
+                      AND sales.cancelled_at IS NULL
+      LEFT JOIN jsonb_array_elements(sales.items) as item
+        ON item->>'productId' = p.id
+      WHERE p.shop_id = ${shopId}
+        AND p.active = true
+      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
+      ORDER BY p.name
+    `);
+
+    const stockValueResult = await db.execute(sql`
+      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
+      FROM products
+      WHERE shop_id = ${shopId} AND active = true
+    `);
+
+    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
+      name: String(row.name),
+      article_number: String(row.article_number),
+      current_stock: Number(row.current_stock),
+      current_ek_cents: Number(row.current_ek_cents),
+      sold_qty: Number(row.sold_qty),
+      withdrawn_qty: Number(row.withdrawn_qty),
+      revenue_cents: Number(row.revenue_cents),
+      cost_cents: Number(row.cost_cents),
+      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
+    }));
+
+    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
+    const totalStockValueCents = Number(stockValueRow.total_stock_value_cents ?? 0);
+    const totalRevenue = items.reduce((s, i) => s + i.revenue_cents, 0);
+    const totalWithdrawalCost = items.reduce((s, i) => s + i.withdrawal_cost_cents, 0);
+    const totalCost = items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0);
+    const margin = totalRevenue + totalWithdrawalCost - totalCost;
+
+    const wsData: (string | number)[][] = [
+      ['Artikelname', 'Artikelnummer', 'Bestand', 'Verkauft', 'Entnahme', 'VK-Umsatz (EUR)', 'Entnahme EK (EUR)', 'EK-Kosten (EUR)', 'Bestandswert (EUR)'],
+    ];
+
+    for (const item of items) {
+      wsData.push([
+        item.name,
+        item.article_number,
+        item.current_stock,
+        item.sold_qty,
+        item.withdrawn_qty,
+        Number((item.revenue_cents / 100).toFixed(2)),
+        Number((item.withdrawal_cost_cents / 100).toFixed(2)),
+        Number(((item.cost_cents + item.withdrawal_cost_cents) / 100).toFixed(2)),
+        Number((item.current_stock * item.current_ek_cents / 100).toFixed(2)),
+      ]);
+    }
+
+    wsData.push(['', '', '', '', '', '', '', '', '']);
+    wsData.push(['BILANZ', '', '', '', '', '', '', '', '']);
+    wsData.push(['Einnahmen aus Verkauf (VK)', '', '', '', '', Number((totalRevenue / 100).toFixed(2)), '', '', '']);
+    wsData.push(['Einnahmen aus Entnahme (EK)', '', '', '', '', '', Number((totalWithdrawalCost / 100).toFixed(2)), '', '']);
+    wsData.push(['Gesamt EK-Kosten', '', '', '', '', '', '', Number((totalCost / 100).toFixed(2)), '']);
+    wsData.push(['Marge', '', '', '', '', Number((margin / 100).toFixed(2)), '', '', Number((totalStockValueCents / 100).toFixed(2))]);
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `Inventur ${year}`);
+
+    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    reply.header('Content-Disposition', `attachment; filename="inventur-${year}.xlsx"`);
+    return reply.send(buf);
+  });
+
+  // GET /reports/sales-xlsx?from=...&to=... — Verkaufshistorie als Excel (EXP-05)
+  fastify.get('/reports/sales-xlsx', async (request, reply) => {
+    const session = (request as any).session as { shopId: string };
+    const shopId = session.shopId;
+    const { from, to } = request.query as { from?: string; to?: string };
+    if (!from || !to) return reply.status(400).send({ error: 'from and to (Unix-ms) required' });
+
+    const fromTs = Number(from);
+    const toTs = Number(to);
+    if (isNaN(fromTs) || isNaN(toTs)) return reply.status(400).send({ error: 'from and to must be numbers' });
+
+    const salesResult = await db.execute(sql`
+      SELECT id, items, total_cents, paid_cents, change_cents, donation_cents, created_at
+      FROM sales
+      WHERE shop_id = ${shopId}
+        AND created_at >= ${fromTs}
+        AND created_at <= ${toTs}
+        AND cancelled_at IS NULL
+        AND (type IS NULL OR type = 'sale')
+      ORDER BY created_at ASC
+    `);
+
+    const rows = salesResult.rows as Array<Record<string, unknown>>;
+    const today = new Date().toISOString().slice(0, 10);
+
+    const wsData: (string | number)[][] = [
+      ['Datum', 'Uhrzeit', 'Artikel', 'Menge', 'VK (EUR)', 'EK (EUR)', 'Summe Artikel (EUR)', 'Gesamtsumme (EUR)', 'Bezahlt (EUR)', 'Wechselgeld (EUR)', 'Spende (EUR)'],
+    ];
+
+    for (const sale of rows) {
+      const saleItems = (sale.items ?? []) as Array<{ name: string; quantity: number; salePrice: number; purchasePrice?: number }>;
+      const createdAt = Number(sale.created_at);
+      const dateStr = new Date(createdAt).toLocaleDateString('de-DE');
+      const timeStr = new Date(createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      const totalCents = Number(sale.total_cents);
+      const paidCents = Number(sale.paid_cents);
+      const changeCents = Number(sale.change_cents);
+      const donationCents = Number(sale.donation_cents);
+
+      saleItems.forEach((item, idx) => {
+        const isFirst = idx === 0;
+        wsData.push([
+          dateStr,
+          timeStr,
+          item.name,
+          item.quantity,
+          Number((item.salePrice / 100).toFixed(2)),
+          Number(((item.purchasePrice ?? 0) / 100).toFixed(2)),
+          Number((item.salePrice * item.quantity / 100).toFixed(2)),
+          isFirst ? Number((totalCents / 100).toFixed(2)) : '',
+          isFirst ? Number((paidCents / 100).toFixed(2)) : '',
+          isFirst ? Number((changeCents / 100).toFixed(2)) : '',
+          isFirst ? Number((donationCents / 100).toFixed(2)) : '',
+        ]);
+      });
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Verkaufshistorie');
+
+    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    reply.header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    reply.header('Content-Disposition', `attachment; filename="verkaufshistorie-${today}.xlsx"`);
+    return reply.send(buf);
   });
 
   // GET /reports/product/:id/stats?months=3
