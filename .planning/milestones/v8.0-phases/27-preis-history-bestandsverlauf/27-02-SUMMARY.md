@@ -96,6 +96,14 @@ None - no external service configuration required.
 - Phase 27-03 kann auf price_histories und stock_movements READ-Endpoints aufbauen
 - Phase 28 (Inventur-Auswertung) und Phase 29 (Rechnungsexport) haben vollständige Audit-Trail-Grundlage
 
+## Self-Check: PASSED
+
+- server/src/routes/products.ts: FOUND
+- server/src/routes/sales.ts: FOUND
+- .planning/phases/27-preis-history-bestandsverlauf/27-02-SUMMARY.md: FOUND
+- Commit 9824af6: FOUND
+- TypeScript: 0 Fehler
+
 ---
 *Phase: 27-preis-history-bestandsverlauf*
 *Completed: 2026-04-01*
