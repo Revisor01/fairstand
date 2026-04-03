@@ -533,7 +533,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 34-01-PLAN.md — xlsx installieren + Server-Endpoints (inventory-xlsx, sales-xlsx) + Frontend-Buttons
+- [x] 34-01-PLAN.md — xlsx installieren + Server-Endpoints (inventory-xlsx, sales-xlsx) + Frontend-Buttons
 
 ### Phase 35: Lagerdauer-Analyse
 **Goal**: Für jeden Artikel ist sichtbar wann er zuletzt verkauft wurde und Ladenhüter (>3 Monate nicht verkauft) sind auf einen Blick erkennbar
@@ -596,6 +596,6 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 31. Tagesübersicht-UX | v9.0 | 1/1 | Complete    | 2026-04-03 |
 | 32. Auto-Logout | v9.0 | 1/1 | Complete    | 2026-04-03 |
 | 33. Produktbilder im POS-Grid | v10.0 | 0/? | Complete    | 2026-04-03 |
-| 34. XLSX-Export | v10.0 | 0/? | Not started | - |
+| 34. XLSX-Export | v10.0 | 1/1 | Complete   | 2026-04-03 |
 | 35. Lagerdauer-Analyse | v10.0 | 0/? | Not started | - |
 | 36. EK-Preiswarnung beim Import | v10.0 | 0/? | Not started | - |
