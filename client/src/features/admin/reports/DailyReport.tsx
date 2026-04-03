@@ -225,6 +225,8 @@ export function DailyReport() {
                     className={`border-b border-slate-50 last:border-0 cursor-pointer transition-colors ${
                       sale.cancelledAt
                         ? 'bg-red-50 hover:bg-red-100 active:bg-red-100 opacity-60'
+                        : sale.donationCents > 0
+                        ? 'bg-green-50 hover:bg-green-100 active:bg-green-100'
                         : 'hover:bg-sky-50 active:bg-sky-100'
                     }`}
                     onPointerDown={() => setSelectedSale(sale)}
@@ -242,7 +244,13 @@ export function DailyReport() {
                     <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'line-through text-red-400' : 'text-slate-800'}`}>
                       {formatEur(sale.totalCents)}
                     </td>
-                    <td className={`px-4 py-3 text-right font-medium ${sale.cancelledAt ? 'text-red-300' : 'text-green-600'}`}>
+                    <td className={`px-4 py-3 text-right font-medium ${
+                      sale.cancelledAt
+                        ? 'text-red-300'
+                        : sale.donationCents > 0
+                        ? 'text-green-700 font-bold'
+                        : 'text-green-600'
+                    }`}>
                       {sale.donationCents > 0 ? formatEur(sale.donationCents) : '—'}
                     </td>
                     <td className="px-4 py-3 text-slate-300"><ChevronRight size={18} /></td>
