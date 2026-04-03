@@ -17,7 +17,7 @@
 - [x] **ANA-02**: Ladenhüter werden farblich markiert (z.B. >3 Monate nicht verkauft)
 
 ### Import
-- [ ] **IMP-01**: Beim PDF-Import wird eine Warnung angezeigt wenn sich der EK eines Artikels geändert hat
+- [x] **IMP-01**: Beim PDF-Import wird eine Warnung angezeigt wenn sich der EK eines Artikels geändert hat
 
 ## Future Requirements
 
@@ -43,7 +43,7 @@
 | EXP-05 | Phase 34 | Complete |
 | ANA-01 | Phase 35 | Complete |
 | ANA-02 | Phase 35 | Complete |
-| IMP-01 | Phase 36 | Pending |
+| IMP-01 | Phase 36 | Complete |
 
 ---
 *Requirements defined: 2026-04-03*
