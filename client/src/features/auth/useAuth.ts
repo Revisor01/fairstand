@@ -38,6 +38,16 @@ export function useAuth() {
     return () => window.removeEventListener('pointerdown', handler);
   }, [state]);
 
+  // Auto-Logout bei abgelaufenem Token (401 von authFetch)
+  useEffect(() => {
+    const handleAuthLogout = () => {
+      setShopId('');
+      setState('locked');
+    };
+    window.addEventListener('auth:logout', handleAuthLogout);
+    return () => window.removeEventListener('auth:logout', handleAuthLogout);
+  }, []);
+
   const unlock = useCallback(async (pin: string): Promise<boolean> => {
     // Pfad 1: Online — Server-Auth versuchen
     if (navigator.onLine) {
