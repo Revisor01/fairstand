@@ -536,4 +536,4 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
 | 29. Export | v8.0 | 2/2 | Complete    | 2026-04-01 |
 | 30. Admin-Verwaltung | v9.0 | 2/2 | Complete    | 2026-04-02 |
 | 31. Tagesübersicht-UX | v9.0 | 1/1 | Complete    | 2026-04-03 |
-| 32. Auto-Logout | v9.0 | 1/1 | Complete   | 2026-04-03 |
+| 32. Auto-Logout | v9.0 | 1/1 | Complete    | 2026-04-03 |
