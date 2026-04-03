@@ -519,7 +519,10 @@ Plans:
   1. Eine Artikelkachel im POS-Grid zeigt das hinterlegte Produktbild — das Bild füllt die Kachel als Hintergrund oder als eingebettetes Element
   2. Artikel ohne hinterlegtes Bild zeigen die bisherige Darstellung (Name + Preis) unverändert — kein leeres Bild-Platzhalter-Element
   3. Die Kachel bleibt vollständig tippbar — der Plus-Button und der Bestandsindikator sind weiterhin klar sichtbar
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
 **UI hint**: yes
 
 ### Phase 34: XLSX-Export
@@ -543,7 +546,10 @@ Plans:
   1. In der Produktliste oder einem dedizierten Analyse-Bereich zeigt jeder Artikel das Datum des letzten Verkaufs und die Anzahl Tage seit dem letzten Verkauf
   2. Artikel, die seit mehr als 3 Monaten nicht verkauft wurden, sind farblich markiert (z.B. orangefarbener Hinweis oder Label "Ladenhüter")
   3. Artikel ohne jeglichen Verkauf (neu angelegt, noch nie verkauft) werden klar als solche ausgewiesen
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
 **UI hint**: yes
 
 ### Phase 36: EK-Preiswarnung beim Import
@@ -554,7 +560,10 @@ Plans:
   1. In der Import-Prüfansicht wird pro Zeile ein Warnsymbol oder farblicher Hinweis angezeigt wenn der importierte EK vom gespeicherten EK des gematchten Artikels abweicht
   2. Der Hinweis zeigt den alten und neuen EK-Wert — Mitarbeiterin sieht auf einen Blick wie stark sich der Preis verändert hat
   3. Artikel ohne EK-Abweichung erhalten keinen Hinweis — die Warnung erscheint nur wo tatsächlich eine Änderung vorliegt
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
 
 ## Progress
 
