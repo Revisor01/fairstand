@@ -21,6 +21,7 @@ export interface Product {
   active: boolean;
   imageUrl?: string;     // undefined = kein Bild
   updatedAt: number;
+  lastSaleAt?: number | null; // Unix-ms oder null = nie verkauft
 }
 
 export interface SaleItem {

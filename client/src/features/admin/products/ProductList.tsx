@@ -9,6 +9,11 @@ import { ProductStats } from './ProductStats.js';
 
 type ProductListView = 'list' | 'form' | 'stock' | 'stats';
 
+function getDaysSinceLastSale(lastSaleAt: number | null | undefined): number | null {
+  if (lastSaleAt == null) return null;
+  return Math.floor((Date.now() - lastSaleAt) / 86_400_000);
+}
+
 export function ProductList() {
   const [view, setView] = useState<ProductListView>('list');
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
@@ -31,16 +36,35 @@ export function ProductList() {
     return products.filter(p => p.stock <= 0).length;
   }, [products]);
 
+  const ladenhüterCount = useMemo(() => {
+    if (!products) return 0;
+    return products.filter(p => {
+      const days = getDaysSinceLastSale(p.lastSaleAt);
+      return days === null || days > 90;
+    }).length;
+  }, [products]);
+
   const categories = useMemo((): string[] => {
     if (!products) return [];
     const unique = [...new Set(products.map(p => p.category))].sort();
-    return ['Alle', ...(outOfStockCount > 0 ? ['Ausverkauft'] : []), ...unique];
-  }, [products, outOfStockCount]);
+    return [
+      'Alle',
+      ...(outOfStockCount > 0 ? ['Ausverkauft'] : []),
+      ...(ladenhüterCount > 0 ? ['Ladenhüter'] : []),
+      ...unique,
+    ];
+  }, [products, outOfStockCount, ladenhüterCount]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
     if (activeCategory === 'Alle') return products;
     if (activeCategory === 'Ausverkauft') return products.filter(p => p.stock <= 0);
+    if (activeCategory === 'Ladenhüter') {
+      return products.filter(p => {
+        const days = getDaysSinceLastSale(p.lastSaleAt);
+        return days === null || days > 90;
+      });
+    }
     return products.filter(p => p.category === activeCategory);
   }, [products, activeCategory]);
 
@@ -135,9 +159,13 @@ export function ProductList() {
                 ? activeCategory === cat
                   ? 'bg-rose-500 text-white font-semibold'
                   : 'bg-rose-50 text-rose-600 active:bg-rose-100'
-                : activeCategory === cat
-                  ? 'bg-sky-500 text-white'
-                  : 'bg-sky-100 text-sky-700 active:bg-sky-200'
+                : cat === 'Ladenhüter'
+                  ? activeCategory === cat
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-amber-50 text-amber-600 active:bg-amber-100'
+                  : activeCategory === cat
+                    ? 'bg-sky-500 text-white'
+                    : 'bg-sky-100 text-sky-700 active:bg-sky-200'
               }
             `}
           >
@@ -147,6 +175,13 @@ export function ProductList() {
                 activeCategory === cat ? 'bg-white/30 text-white' : 'bg-rose-500 text-white'
               }`}>
                 {outOfStockCount}
+              </span>
+            )}
+            {cat === 'Ladenhüter' && (
+              <span className={`ml-1 inline-flex items-center justify-center min-w-[18px] h-4 px-1 rounded-full text-[10px] font-bold ${
+                activeCategory === cat ? 'bg-white/30 text-white' : 'bg-amber-500 text-white'
+              }`}>
+                {ladenhüterCount}
               </span>
             )}
           </button>
@@ -162,6 +197,7 @@ export function ProductList() {
         <div className="flex flex-col gap-2">
           {filteredProducts.map(product => {
             const isLowStock = product.minStock > 0 && product.stock <= product.minStock;
+            const daysSinceLastSale = getDaysSinceLastSale(product.lastSaleAt);
             return (
               <div
                 key={product.id}
@@ -201,6 +237,19 @@ export function ProductList() {
                         {product.stock}
                       </span>
                     </span>
+                    {daysSinceLastSale === null ? (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                        Nie verkauft
+                      </span>
+                    ) : daysSinceLastSale > 90 ? (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold">
+                        Ladenhüter · {daysSinceLastSale} Tage
+                      </span>
+                    ) : daysSinceLastSale > 30 ? (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700">
+                        {daysSinceLastSale} Tage
+                      </span>
+                    ) : null}
                   </div>
                 </div>
 
