@@ -12,6 +12,7 @@
 - ✅ **v7.0 Multi-Shop & UX** — Phases 24-26 (shipped 2026-03-25)
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
 - ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
+- [ ] **v10.0 Bilder, Export & Analyse** — Phases 33-36 (active)
 
 ## Phases
 
@@ -112,6 +113,16 @@ Full details: `.planning/milestones/v8.0-ROADMAP.md`
 - [x] **Phase 32: Auto-Logout** - Automatischer Redirect auf PIN-Login bei abgelaufenem Token (completed 2026-04-03)
 
 Full details: `.planning/milestones/v9.0-ROADMAP.md`
+
+</details>
+
+<details open>
+<summary>v10.0 Bilder, Export & Analyse (Phases 33-36) — ACTIVE</summary>
+
+- [ ] **Phase 33: Produktbilder im POS-Grid** - Artikelkacheln zeigen Produktbild wenn vorhanden
+- [ ] **Phase 34: XLSX-Export** - Inventur und Verkaufshistorie als Excel-Datei herunterladbar
+- [ ] **Phase 35: Lagerdauer-Analyse** - Letzte Verkaufsdaten und Ladenhüter-Markierung sichtbar
+- [ ] **Phase 36: EK-Preiswarnung beim Import** - Warnung wenn sich EK eines Artikels beim PDF-Import geändert hat
 
 </details>
 
@@ -500,10 +511,52 @@ Plans:
 Plans:
 - [x] 32-01-PLAN.md — authFetch: CustomEvent statt Reload + useAuth: auto-lock bei 401
 
+### Phase 33: Produktbilder im POS-Grid
+**Goal**: Mitarbeiterinnen sehen Produktbilder direkt in den Artikelkacheln der Kasse — ohne in die Verwaltung navigieren zu müssen
+**Depends on**: Phase 32
+**Requirements**: IMG-01
+**Success Criteria** (what must be TRUE):
+  1. Eine Artikelkachel im POS-Grid zeigt das hinterlegte Produktbild — das Bild füllt die Kachel als Hintergrund oder als eingebettetes Element
+  2. Artikel ohne hinterlegtes Bild zeigen die bisherige Darstellung (Name + Preis) unverändert — kein leeres Bild-Platzhalter-Element
+  3. Die Kachel bleibt vollständig tippbar — der Plus-Button und der Bestandsindikator sind weiterhin klar sichtbar
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 34: XLSX-Export
+**Goal**: Inventur und Verkaufshistorie können als Excel-Datei heruntergeladen werden — zusätzlich zu den bestehenden CSV- und PDF-Exporten
+**Depends on**: Phase 33
+**Requirements**: EXP-04, EXP-05
+**Success Criteria** (what must be TRUE):
+  1. Im Admin-Bereich gibt es neben dem CSV-Download-Button für die Inventur einen weiteren Button "Als Excel herunterladen" — die resultierende .xlsx-Datei öffnet sich in Excel und Numbers ohne Fehler
+  2. Ebenso gibt es für die Verkaufshistorie einen Excel-Export-Button — alle Spalten aus der Ansicht sind in der XLSX-Datei enthalten
+  3. Deutsche Sonderzeichen (Umlaute) erscheinen in der Excel-Datei korrekt — kein Zeichensatz-Problem
+**Plans**: TBD
+
+### Phase 35: Lagerdauer-Analyse
+**Goal**: Für jeden Artikel ist sichtbar wann er zuletzt verkauft wurde und Ladenhüter (>3 Monate nicht verkauft) sind auf einen Blick erkennbar
+**Depends on**: Phase 34
+**Requirements**: ANA-01, ANA-02
+**Success Criteria** (what must be TRUE):
+  1. In der Produktliste oder einem dedizierten Analyse-Bereich zeigt jeder Artikel das Datum des letzten Verkaufs und die Anzahl Tage seit dem letzten Verkauf
+  2. Artikel, die seit mehr als 3 Monaten nicht verkauft wurden, sind farblich markiert (z.B. orangefarbener Hinweis oder Label "Ladenhüter")
+  3. Artikel ohne jeglichen Verkauf (neu angelegt, noch nie verkauft) werden klar als solche ausgewiesen
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 36: EK-Preiswarnung beim Import
+**Goal**: Beim PDF-Import vom Süd-Nord-Kontor werden Preisänderungen gegenüber dem gespeicherten EK sofort sichtbar — Mitarbeiterinnen müssen nicht manuell vergleichen
+**Depends on**: Phase 35
+**Requirements**: IMP-01
+**Success Criteria** (what must be TRUE):
+  1. In der Import-Prüfansicht wird pro Zeile ein Warnsymbol oder farblicher Hinweis angezeigt wenn der importierte EK vom gespeicherten EK des gematchten Artikels abweicht
+  2. Der Hinweis zeigt den alten und neuen EK-Wert — Mitarbeiterin sieht auf einen Blick wie stark sich der Preis verändert hat
+  3. Artikel ohne EK-Abweichung erhalten keinen Hinweis — die Warnung erscheint nur wo tatsächlich eine Änderung vorliegt
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
+Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -539,3 +592,7 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
 | 30. Admin-Verwaltung | v9.0 | 2/2 | Complete    | 2026-04-02 |
 | 31. Tagesübersicht-UX | v9.0 | 1/1 | Complete    | 2026-04-03 |
 | 32. Auto-Logout | v9.0 | 1/1 | Complete    | 2026-04-03 |
+| 33. Produktbilder im POS-Grid | v10.0 | 0/? | Not started | - |
+| 34. XLSX-Export | v10.0 | 0/? | Not started | - |
+| 35. Lagerdauer-Analyse | v10.0 | 0/? | Not started | - |
+| 36. EK-Preiswarnung beim Import | v10.0 | 0/? | Not started | - |
