@@ -12,7 +12,7 @@
 - ✅ **v7.0 Multi-Shop & UX** — Phases 24-26 (shipped 2026-03-25)
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
 - ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
-- [ ] **v10.0 Bilder, Export & Analyse** — Phases 33-36 (active)
+- ✅ **v10.0 Bilder, Export & Analyse** — Phases 33-36 (shipped 2026-04-03)
 
 ## Phases
 
