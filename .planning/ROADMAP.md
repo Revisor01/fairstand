@@ -484,7 +484,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 31-01-PLAN.md — DailyReport.tsx: Spendenmarkierung + Datepicker-Aktivzustand (HIST-01, HIST-02)
+- [x] 31-01-PLAN.md — DailyReport.tsx: Spendenmarkierung + Datepicker-Aktivzustand (HIST-01, HIST-02)
 
 ### Phase 32: Auto-Logout
 **Goal**: Ein abgelaufener Session-Token führt zu einem sauberen Redirect auf den PIN-Login — kein verwirrender 401-Fehler
@@ -532,5 +532,5 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32
 | 28. Inventur-Übersicht & Preis-Auswertung | v8.0 | 2/2 | Complete    | 2026-04-01 |
 | 29. Export | v8.0 | 2/2 | Complete    | 2026-04-01 |
 | 30. Admin-Verwaltung | v9.0 | 2/2 | Complete    | 2026-04-02 |
-| 31. Tagesübersicht-UX | v9.0 | 0/? | Not started | - |
+| 31. Tagesübersicht-UX | v9.0 | 1/1 | Complete   | 2026-04-03 |
 | 32. Auto-Logout | v9.0 | 0/? | Not started | - |

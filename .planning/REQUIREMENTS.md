@@ -13,8 +13,8 @@
 
 ### Verkaufshistorie
 
-- [ ] **HIST-01**: Spenden werden in der Tagesübersicht visuell markiert (Betrag hervorgehoben)
-- [ ] **HIST-02**: User kann Zeiträume per Kalender-Datepicker auswählen (statt Preset-Buttons)
+- [x] **HIST-01**: Spenden werden in der Tagesübersicht visuell markiert (Betrag hervorgehoben)
+- [x] **HIST-02**: User kann Zeiträume per Kalender-Datepicker auswählen (statt Preset-Buttons)
 
 ### Auth
 
@@ -44,8 +44,8 @@
 | ADMIN-01 | Phase 30 | Complete |
 | ADMIN-02 | Phase 30 | Complete |
 | ADMIN-03 | Phase 30 | Complete |
-| HIST-01 | Phase 31 | Pending |
-| HIST-02 | Phase 31 | Pending |
+| HIST-01 | Phase 31 | Complete |
+| HIST-02 | Phase 31 | Complete |
 | AUTH-01 | Phase 32 | Pending |
 
 **Coverage:**
