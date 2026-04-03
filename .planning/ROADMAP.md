@@ -522,7 +522,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
+- [x] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
 **UI hint**: yes
 
 ### Phase 34: XLSX-Export
@@ -606,5 +606,5 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 32. Auto-Logout | v9.0 | 1/1 | Complete    | 2026-04-03 |
 | 33. Produktbilder im POS-Grid | v10.0 | 0/? | Complete    | 2026-04-03 |
 | 34. XLSX-Export | v10.0 | 1/1 | Complete    | 2026-04-03 |
-| 35. Lagerdauer-Analyse | v10.0 | 0/? | Not started | - |
+| 35. Lagerdauer-Analyse | v10.0 | 1/1 | Complete   | 2026-04-03 |
 | 36. EK-Preiswarnung beim Import | v10.0 | 0/? | Not started | - |

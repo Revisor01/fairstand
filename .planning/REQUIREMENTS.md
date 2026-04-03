@@ -9,12 +9,12 @@
 - [ ] **IMG-01**: Artikelkacheln im POS-Grid zeigen das Produktbild (wenn vorhanden)
 
 ### Export
-- [ ] **EXP-04**: Inventur kann als XLSX (Excel) heruntergeladen werden
-- [ ] **EXP-05**: Verkaufshistorie kann als XLSX (Excel) heruntergeladen werden
+- [x] **EXP-04**: Inventur kann als XLSX (Excel) heruntergeladen werden
+- [x] **EXP-05**: Verkaufshistorie kann als XLSX (Excel) heruntergeladen werden
 
 ### Analyse
-- [ ] **ANA-01**: Lagerdauer pro Artikel ist sichtbar — zeigt wann zuletzt verkauft und wie lange auf Lager
-- [ ] **ANA-02**: Ladenhüter werden farblich markiert (z.B. >3 Monate nicht verkauft)
+- [x] **ANA-01**: Lagerdauer pro Artikel ist sichtbar — zeigt wann zuletzt verkauft und wie lange auf Lager
+- [x] **ANA-02**: Ladenhüter werden farblich markiert (z.B. >3 Monate nicht verkauft)
 
 ### Import
 - [ ] **IMP-01**: Beim PDF-Import wird eine Warnung angezeigt wenn sich der EK eines Artikels geändert hat
@@ -39,10 +39,10 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | IMG-01 | Phase 33 | Pending |
-| EXP-04 | Phase 34 | Pending |
-| EXP-05 | Phase 34 | Pending |
-| ANA-01 | Phase 35 | Pending |
-| ANA-02 | Phase 35 | Pending |
+| EXP-04 | Phase 34 | Complete |
+| EXP-05 | Phase 34 | Complete |
+| ANA-01 | Phase 35 | Complete |
+| ANA-02 | Phase 35 | Complete |
 | IMP-01 | Phase 36 | Pending |
 
 ---
