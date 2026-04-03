@@ -563,7 +563,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 35-01-PLAN.md — last_sale_at Backend-Query + Lagerdauer-Badge + Ladenhüter-Filter in ProductList
+- [ ] 36-01-PLAN.md — MatchedRow.storedPurchasePriceCents + EK-Warnzeile in ReviewTable
 
 ## Progress
 
