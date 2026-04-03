@@ -493,7 +493,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Wenn eine API-Anfrage mit einem abgelaufenen Token eine 401-Antwort erhält, wird der Benutzer automatisch auf die PIN-Eingabe weitergeleitet — ohne Fehlermeldung oder White Screen
   2. Nach dem automatischen Redirect ist der Warenkorb leer und der Benutzer kann sich erneut einloggen
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 32-01-PLAN.md — authFetch: CustomEvent statt Reload + useAuth: auto-lock bei 401
 
 ## Progress
 
