@@ -32,6 +32,7 @@ interface InventoryResponse {
   year: number;
   items: InventoryItem[];
   total_stock_value_cents: number;
+  total_purchased_cents: number;
 }
 
 interface InventurTabProps {
@@ -259,10 +260,13 @@ export function InventurTab({ year }: InventurTabProps) {
       {!loadingInventory && inventoryData && inventoryData.items.length > 0 && (() => {
         const totalRevenue = inventoryData.items.reduce((s, i) => s + i.revenue_cents, 0);
         const totalWithdrawalCost = inventoryData.items.reduce((s, i) => s + i.withdrawal_cost_cents, 0);
-        const totalCost = inventoryData.items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0);
-        const balance = totalRevenue + totalWithdrawalCost - totalCost;
+        const totalSaleCost = inventoryData.items.reduce((s, i) => s + i.cost_cents, 0);
+        const totalCost = totalSaleCost + totalWithdrawalCost;
+        const margin = totalRevenue + totalWithdrawalCost - totalCost;
+        const totalPurchased = inventoryData.total_purchased_cents;
+        const stockValue = inventoryData.total_stock_value_cents;
         return (
-          <div className="bg-white rounded-xl shadow-sm p-6 space-y-3">
+          <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
             <h3 className="text-base font-semibold text-slate-800">Bilanz {inventoryData.year}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -278,16 +282,40 @@ export function InventurTab({ year }: InventurTabProps) {
                 <span className="font-bold text-slate-800">{formatEur(totalRevenue + totalWithdrawalCost)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600">Gesamt EK-Kosten</span>
+                <span className="text-slate-600">EK-Kosten (verkauft + entnommen)</span>
                 <span className="font-medium text-slate-700">− {formatEur(totalCost)}</span>
               </div>
               <div className="border-t-2 border-slate-300 pt-2 flex justify-between">
-                <span className="text-slate-800 font-bold">Marge</span>
-                <span className={`font-bold text-lg ${balance >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
-                  {formatEur(balance)}
+                <span className="text-slate-800 font-bold">Marge (auf verkaufte Ware)</span>
+                <span className={`font-bold text-lg ${margin >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                  {formatEur(margin)}
                 </span>
               </div>
             </div>
+
+            {(totalPurchased > 0 || stockValue > 0) && (
+              <div className="border-t border-slate-200 pt-4 space-y-2 text-sm">
+                <h4 className="text-sm font-semibold text-slate-700">Gesamtübersicht</h4>
+                {totalPurchased > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Wareneinkauf im Jahr (EK)</span>
+                    <span className="font-medium text-slate-800">{formatEur(totalPurchased)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Aktueller Bestandswert (Lager)</span>
+                  <span className="font-medium text-emerald-700">{formatEur(stockValue)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Davon verkauft/entnommen (EK)</span>
+                  <span className="font-medium text-slate-700">{formatEur(totalCost)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Davon eingenommen</span>
+                  <span className="font-medium text-slate-800">{formatEur(totalRevenue + totalWithdrawalCost)}</span>
+                </div>
+              </div>
+            )}
           </div>
         );
       })()}

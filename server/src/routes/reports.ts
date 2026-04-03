@@ -422,11 +422,51 @@ export async function reportRoutes(fastify: FastifyInstance) {
       };
     });
 
+    // Query 5 — Wareneingänge im Jahr (positive stock_movements = Einkauf/Retoure)
+    // EK wird über Preisperioden zum Zeitpunkt der Bewegung bestimmt
+    const stockInResult = await db.execute(sql`
+      SELECT
+        sm.product_id,
+        sm.quantity,
+        sm.moved_at
+      FROM stock_movements sm
+      WHERE sm.shop_id = ${shopId}
+        AND sm.moved_at >= ${yearStart}
+        AND sm.moved_at < ${yearEnd}
+        AND sm.quantity > 0
+        AND sm.type IN ('adjustment', 'return')
+      ORDER BY sm.product_id, sm.moved_at
+    `);
+
+    // Wareneingänge den Preisperioden zuordnen für korrekten EK
+    let totalPurchasedCents = 0;
+    for (const row of stockInResult.rows as Record<string, unknown>[]) {
+      const pid = String(row.product_id);
+      const qty = Number(row.quantity);
+      const movedAt = Number(row.moved_at);
+      const periods = periodsMap.get(pid);
+      if (periods) {
+        const period = periods.find(p => movedAt >= p.from && movedAt < p.to);
+        if (period) {
+          totalPurchasedCents += qty * period.ek_cents;
+          continue;
+        }
+      }
+      // Fallback: aktueller EK des Produkts
+      const item = items.find(i => i.id === pid);
+      totalPurchasedCents += qty * (item?.current_ek_cents ?? 0);
+    }
+
+    // Auch Produkte die im Jahr angelegt wurden (Erstbestand) berücksichtigen
+    // Die kommen nicht als stock_movement rein, sondern über den PDF-Import
+    // Wir erfassen sie nicht separat — der Bestandswert + verkaufte EK-Kosten ist die Annäherung
+
     const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
     return reply.send({
       year: y,
       items,
       total_stock_value_cents: Number(stockValueRow.total_stock_value_cents ?? 0),
+      total_purchased_cents: totalPurchasedCents,
     });
   });
 
