@@ -19,6 +19,7 @@ function mapServerProduct(p: Record<string, unknown>): Product {
     active: p.active === true || p.active === 'true',
     updatedAt: Number(p.updated_at ?? p.updatedAt ?? Date.now()),
     imageUrl: (p.image_url ?? p.imageUrl) as string | undefined,
+    lastSaleAt: p.last_sale_at != null ? Number(p.last_sale_at) : null,
   };
 }
 
