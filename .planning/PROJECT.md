@@ -85,6 +85,16 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
+## Current Milestone: v12.0 Live-Suche
+
+**Goal:** Echtzeit-Suchfeld im POS-Dashboard zum schnellen Finden von Artikeln
+
+**Target features:**
+- Suchfeld im POS-Dashboard über dem Artikelgrid
+- Live-Filterung während der Eingabe (kein Submit nötig)
+- Suche über: Artikelnummer, Produktname, Kategorie
+- Ergebnisse filtern das bestehende Artikelgrid
+
 ### Out of Scope
 
 - Native App (App Store) — PWA reicht, kein Bedarf aktuell
@@ -168,4 +178,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-04-09 after v11.0 milestone shipped*
+*Last updated: 2026-04-09 after v12.0 milestone started*
