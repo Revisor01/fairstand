@@ -13,7 +13,8 @@
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
 - ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
 - ✅ **v10.0 Bilder, Export & Analyse** — Phases 33-36 (shipped 2026-04-03)
-- **v11.0 EK-Preismanagement & Inventur-Genauigkeit** — Phases 37-39 (active)
+- ✅ **v11.0 EK-Preismanagement & Inventur-Genauigkeit** — Phases 37-39 (shipped 2026-04-09)
+- **v12.0 Live-Suche** — Phase 40 (active)
 
 ## Phases
 
@@ -127,12 +128,19 @@ Full details: `.planning/milestones/v9.0-ROADMAP.md`
 
 </details>
 
-<details open>
-<summary>v11.0 EK-Preismanagement & Inventur-Genauigkeit (Phases 37-39) — ACTIVE</summary>
+<details>
+<summary>✅ v11.0 EK-Preismanagement & Inventur-Genauigkeit (Phases 37-39) — SHIPPED 2026-04-09</summary>
 
-- [ ] **Phase 37: EK-Wareneingänge & Bestandsanpassung** - Bestandserhöhungen speichern EK-Preis, PDF-Import erfasst Wareneingangs-Bewegung, StockAdjustModal mit EK-Toggle
-- [ ] **Phase 38: FIFO-Inventur** - Bestandswert auf Basis historischer EK-Preise per Wareneingang, Inventur-Report zeigt Mengen je EK transparent
-- [ ] **Phase 39: Bestandswarnungen-UX** - Glocken-Icon mit Badge-Zähler im Header, aufgeräumte Warnliste per Klick
+- [x] **Phase 37: EK-Wareneingänge & Bestandsanpassung** - Bestandserhöhungen speichern EK-Preis, PDF-Import erfasst Wareneingangs-Bewegung, StockAdjustModal mit EK-Toggle
+- [x] **Phase 38: FIFO-Inventur** - Bestandswert auf Basis historischer EK-Preise per Wareneingang, Inventur-Report zeigt Mengen je EK transparent
+- [x] **Phase 39: Bestandswarnungen-UX** - Glocken-Icon mit Badge-Zähler im Header, aufgeräumte Warnliste per Klick
+
+</details>
+
+<details open>
+<summary>v12.0 Live-Suche (Phase 40) — ACTIVE</summary>
+
+- [ ] **Phase 40: Live-Suche im POS-Dashboard** - Suchfeld über dem Artikelgrid filtert live nach Artikelnummer, Produktname und Kategorie
 
 </details>
 
@@ -619,10 +627,22 @@ Plans:
 - [x] 39-01-PLAN.md — StockAlertButton (Bell + Badge + Popover) erstellen, LowStockBanner entfernen
 
 
+### Phase 40: Live-Suche im POS-Dashboard
+**Goal**: Mitarbeiterinnen können Artikel im POS-Dashboard per Texteingabe sofort finden — ohne durch das gesamte Grid scrollen zu müssen
+**Depends on**: Phase 39
+**Requirements**: SUCH-01, SUCH-02, SUCH-03, SUCH-04, SUCH-05
+**Success Criteria** (what must be TRUE):
+  1. Über dem Artikelgrid gibt es ein Suchfeld — nach dem ersten Tipp auf das Feld erscheint die Tastatur und die Filterung startet sofort mit jedem eingegebenen Zeichen
+  2. Wenn der Suchbegriff in Artikelnummer, Produktname oder Kategorie vorkommt (Teilmatch), erscheint der Artikel im gefilterten Grid — nicht passende Artikel verschwinden
+  3. Das Leeren des Suchfelds stellt das vollständige Artikelgrid wieder her — als wäre keine Suche aktiv gewesen
+  4. Die Suche funktioniert auf dem iPad mit Touch-Eingabe ohne Verzögerung oder Flackern des Grids
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39
+Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39 → 40
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -662,6 +682,7 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 34. XLSX-Export | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 35. Lagerdauer-Analyse | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 36. EK-Preiswarnung beim Import | v10.0 | 1/1 | Complete    | 2026-04-03 |
-| 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 3/3 | Complete    | 2026-04-09 |
-| 38. FIFO-Inventur | v11.0 | 2/2 | Complete    | 2026-04-09 |
-| 39. Bestandswarnungen-UX | v11.0 | 1/1 | Complete    | 2026-04-09 |
+| 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 3/3 | Complete | 2026-04-09 |
+| 38. FIFO-Inventur | v11.0 | 2/2 | Complete | 2026-04-09 |
+| 39. Bestandswarnungen-UX | v11.0 | 1/1 | Complete | 2026-04-09 |
+| 40. Live-Suche im POS-Dashboard | v12.0 | 0/? | Not started | - |

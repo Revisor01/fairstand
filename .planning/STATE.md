@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v12.0
 milestone_name: Live-Suche
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
 last_updated: "2026-04-09"
 last_activity: 2026-04-09
 progress:
-  total_phases: 0
+  total_phases: 1
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,19 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Defining requirements for v12.0 — Live-Suche
+**Current focus:** Phase 40 — Live-Suche im POS-Dashboard
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 40 (Live-Suche im POS-Dashboard)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-09 — Milestone v12.0 started
+Status: Not started
+Last activity: 2026-04-09 — Roadmap v12.0 created
+
+```
+Progress: Phase 40
+[░░░░░░░░░░░░░░░░░░░░] 0/1 phases complete
+```
 
 ## Performance Metrics
 
@@ -41,7 +46,8 @@ Last activity: 2026-04-09 — Milestone v12.0 started
 
 ### Decisions
 
-None yet
+- Alle 5 SUCH-Anforderungen in einer Phase (Phase 40) — gleiche UI-Komponente, kein sinnvoller Schnitt
+- Client-seitige Filterung: Produktliste bereits via TanStack Query geladen, keine Server-Suche nötig
 
 ### Pending Todos
 
@@ -54,6 +60,6 @@ None
 ## Session Continuity
 
 Last session: 2026-04-09
-Stopped at: Milestone v12.0 initialization
+Stopped at: Roadmap v12.0 created — bereit für Phase-Planning
 Resume file: None
-Next step: Define requirements, then create roadmap
+Next step: `/gsd-plan-phase 40`

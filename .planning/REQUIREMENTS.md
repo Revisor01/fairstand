@@ -31,17 +31,17 @@ None
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SUCH-01 | — | Pending |
-| SUCH-02 | — | Pending |
-| SUCH-03 | — | Pending |
-| SUCH-04 | — | Pending |
-| SUCH-05 | — | Pending |
+| SUCH-01 | Phase 40 | Pending |
+| SUCH-02 | Phase 40 | Pending |
+| SUCH-03 | Phase 40 | Pending |
+| SUCH-04 | Phase 40 | Pending |
+| SUCH-05 | Phase 40 | Pending |
 
 **Coverage:**
 - v12.0 requirements: 5 total
-- Mapped to phases: 0
-- Unmapped: 5
+- Mapped to phases: 5
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after initial definition*
+*Last updated: 2026-04-09 after roadmap v12.0 created*
