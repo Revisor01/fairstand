@@ -83,9 +83,10 @@ export const stockMovements = pgTable('stock_movements', {
   id: serial('id').primaryKey(),
   shopId: text('shop_id').notNull(),
   productId: text('product_id').notNull(),
-  type: text('type').notNull(), // 'sale' | 'adjustment' | 'correction' | 'return' | 'hard_delete'
+  type: text('type').notNull(), // 'sale' | 'adjustment' | 'correction' | 'return' | 'hard_delete' | 'restock'
   quantity: integer('quantity').notNull(), // negativ = Ausgang, positiv = Eingang
   referenceSaleId: text('reference_sale_id'), // FK auf sales.id, nullable
   reason: text('reason'), // für STOCK_ADJUST, hard_delete etc., nullable
+  purchasePriceCents: integer('purchase_price_cents'), // EK-Preis bei Wareneingang (restock), nullable
   movedAt: bigint('moved_at', { mode: 'number' }).notNull(),
 });
