@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v11.0
 milestone_name: EK-Preismanagement & Inventur-Genauigkeit
-status: defining_requirements
+status: roadmap_ready
 stopped_at: null
 last_updated: "2026-04-09"
 last_activity: 2026-04-09
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Defining requirements for v11.0 — EK-Preismanagement & Inventur-Genauigkeit
+**Current focus:** v11.0 — EK-Preismanagement & Inventur-Genauigkeit (3 phases defined)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 37 (next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-09 — Milestone v11.0 started
+Status: Roadmap ready — awaiting first plan
+Last activity: 2026-04-09 — Roadmap created for v11.0
 
 ## Performance Metrics
 
@@ -53,6 +53,10 @@ Last activity: 2026-04-09 — Milestone v11.0 started
 - [Phase 36-ek-preiswarnung-beim-import]: Warnzeile als amber-50-Zeile nach parseWarning-Block, gleiche colSpan=9-Struktur
 - [Phase 36-ek-preiswarnung-beim-import]: storedPurchasePriceCents optional im MatchedRow-Interface — nur bei status='known' befüllt
 - [v11.0 DB-Reset]: DB auf Stand Null gesetzt aus 3 Rechnungen (2552695, 2552709, 2600988) — 106 Produkte, 503 Stück, 11 Preishistorien
+- [v11.0 Roadmap]: 3 Phasen — EK-Wareneingänge (37), FIFO-Inventur (38), Bestandswarnungen-UX (39)
+- [v11.0 Roadmap]: EINGANG+ANPASS in Phase 37 zusammengefasst — beide erweitern stock_movements mit EK-Daten, gleiche DB-Schicht
+- [v11.0 Roadmap]: INVENT in Phase 38 nach Phase 37 — braucht EK-Daten in stock_movements als Voraussetzung
+- [v11.0 Roadmap]: WARN unabhängig in Phase 39 — reine Header-UX, keine Abhängigkeit zu FIFO-Logik
 
 ### Pending Todos
 
@@ -67,4 +71,4 @@ None
 Last session: 2026-04-09
 Stopped at: Milestone v11.0 initialization
 Resume file: None
-Next step: Define requirements, then `/gsd:plan-phase`
+Next step: `/gsd:plan-phase 37`
