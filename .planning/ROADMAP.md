@@ -584,7 +584,12 @@ Plans:
   2. Im StockAdjustModal gibt es einen "Preis anpassen"-Toggle — wird er aktiviert, erscheint ein EK-Preis-Eingabefeld und der neue EK wird beim Speichern in der Bewegung hinterlegt
   3. Bei einer positiven Bestandskorrektur ohne Toggle-Aktivierung wird der aktuelle Produkt-EK automatisch als EK der Bewegung gespeichert
   4. Negative Bestandskorrekturen (Schwund, Korrektur nach unten) erfordern keinen EK-Preis-Eintrag
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 37-01-PLAN.md — DB-Schema: purchase_price_cents in stock_movements
+- [ ] 37-02-PLAN.md — STOCK_ADJUST Handler + StockAdjustModal EK-Toggle
+- [ ] 37-03-PLAN.md — POST /api/stock/adjust Endpoint + ImportScreen purchasePriceCents
 
 ### Phase 38: FIFO-Inventur
 **Goal**: Der Inventur-Report berechnet den Bestandswert auf Basis exakter historischer EK-Preise pro Wareneingang nach FIFO — nicht mehr "aktueller EK × Gesamtbestand"
