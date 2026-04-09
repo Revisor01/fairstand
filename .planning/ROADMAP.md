@@ -613,11 +613,10 @@ Plans:
   1. Im Header der App erscheint ein Glocken-Icon mit einem Badge-Zähler der anzeigt wie viele Artikel unter Mindestbestand liegen — bei keiner Warnung ist der Badge nicht sichtbar
   2. Ein Tipp auf die Glocke öffnet eine Liste mit genau einem Eintrag pro Artikel unter Mindestbestand, der Artikelname, aktueller Bestand und Mindestbestand zeigt
   3. Die bisherige Darstellung der Bestandswarnungen (ausgeklappter Banner o.ä.) wird durch die Glocke ersetzt — keine Dopplung
-**Plans**: 2 plans
+**Plans**: 1 plan
 
 Plans:
-- [x] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
-- [x] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
+- [ ] 39-01-PLAN.md — StockAlertButton (Bell + Badge + Popover) erstellen, LowStockBanner entfernen
 
 
 ## Progress
