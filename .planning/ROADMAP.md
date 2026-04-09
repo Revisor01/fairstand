@@ -616,7 +616,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 39-01-PLAN.md — StockAlertButton (Bell + Badge + Popover) erstellen, LowStockBanner entfernen
+- [x] 39-01-PLAN.md — StockAlertButton (Bell + Badge + Popover) erstellen, LowStockBanner entfernen
 
 
 ## Progress
@@ -664,4 +664,4 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 36. EK-Preiswarnung beim Import | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 3/3 | Complete    | 2026-04-09 |
 | 38. FIFO-Inventur | v11.0 | 2/2 | Complete    | 2026-04-09 |
-| 39. Bestandswarnungen-UX | v11.0 | 0/? | Not started | - |
+| 39. Bestandswarnungen-UX | v11.0 | 1/1 | Complete    | 2026-04-09 |
