@@ -599,8 +599,11 @@ Plans:
   1. Im Inventur-Tab zeigt die Bestandswert-Summe einen Betrag, der aus den historischen Eingangs-EKs nach FIFO berechnet wurde — nicht aus dem aktuellen Produkt-EK multipliziert mit dem Gesamtbestand
   2. Pro Artikel listet der Inventur-Report auf, welche Mengen zu welchem EK-Preis noch im Bestand liegen (z.B. "3 Stück zu 1,20 € + 5 Stück zu 1,35 €")
   3. Wenn Artikel verkauft wurden, sind die ältesten Wareneingänge zuerst verbraucht — ein Verkauf nach einem neueren Eingang reduziert den älteren Bestand zuerst
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [ ] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
+- [ ] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
 
 ### Phase 39: Bestandswarnungen-UX
 **Goal**: Bestandswarnungen sind jederzeit sichtbar aber nicht aufdringlich — ein Glocken-Icon mit Zähler im Header macht den Überblick möglich ohne den Arbeitsfluss zu unterbrechen
@@ -610,8 +613,11 @@ Plans:
   1. Im Header der App erscheint ein Glocken-Icon mit einem Badge-Zähler der anzeigt wie viele Artikel unter Mindestbestand liegen — bei keiner Warnung ist der Badge nicht sichtbar
   2. Ein Tipp auf die Glocke öffnet eine Liste mit genau einem Eintrag pro Artikel unter Mindestbestand, der Artikelname, aktueller Bestand und Mindestbestand zeigt
   3. Die bisherige Darstellung der Bestandswarnungen (ausgeklappter Banner o.ä.) wird durch die Glocke ersetzt — keine Dopplung
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [ ] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
+- [ ] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
 
 
 ## Progress
