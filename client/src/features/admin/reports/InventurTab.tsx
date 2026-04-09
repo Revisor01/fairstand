@@ -14,6 +14,12 @@ interface PricePeriod {
   withdrawal_cost_cents: number;
 }
 
+interface FifoLot {
+  ek_cents: number;
+  quantity: number;
+  moved_at: number;
+}
+
 interface InventoryItem {
   id: string;
   article_number: string;
@@ -25,6 +31,8 @@ interface InventoryItem {
   revenue_cents: number;
   cost_cents: number;
   withdrawal_cost_cents: number;
+  stock_value_cents: number;
+  remaining_lots: FifoLot[];
   price_periods: PricePeriod[];
 }
 
@@ -178,12 +186,14 @@ export function InventurTab({ year }: InventurTabProps) {
               {inventoryData.items.map(item => {
                 const isExpanded = expandedProducts.has(item.id);
                 const hasPeriods = item.price_periods.length > 1;
+                const hasLots = item.remaining_lots.length > 1 || (item.remaining_lots.length === 1 && item.remaining_lots[0].ek_cents !== item.current_ek_cents);
+                const showExpander = hasLots || hasPeriods;
                 return (
                   <React.Fragment key={item.id}>
                     <tr className="border-t border-slate-100 hover:bg-sky-50/50">
                       <td className="px-4 py-3 text-slate-800">
                         <div className="flex items-center gap-1">
-                          {hasPeriods && (
+                          {showExpander && (
                             <button
                               onPointerDown={() => {
                                 setExpandedProducts(prev => {
@@ -200,7 +210,12 @@ export function InventurTab({ year }: InventurTabProps) {
                             </button>
                           )}
                           <span>{item.name}</span>
-                          {hasPeriods && (
+                          {hasLots && (
+                            <span className="text-xs text-slate-400 ml-1">
+                              ({item.remaining_lots.length} Chargen)
+                            </span>
+                          )}
+                          {!hasLots && hasPeriods && (
                             <span className="text-xs text-slate-400 ml-1">
                               ({item.price_periods.length} Preisperioden)
                             </span>
@@ -213,8 +228,20 @@ export function InventurTab({ year }: InventurTabProps) {
                       <td className="px-4 py-3 text-right font-medium text-slate-800">{item.revenue_cents ? formatEur(item.revenue_cents) : '—'}</td>
                       <td className="px-4 py-3 text-right text-amber-700">{item.withdrawal_cost_cents ? formatEur(item.withdrawal_cost_cents) : '—'}</td>
                       <td className="px-4 py-3 text-right text-slate-700">{(item.cost_cents + item.withdrawal_cost_cents) ? formatEur(item.cost_cents + item.withdrawal_cost_cents) : '—'}</td>
-                      <td className="px-4 py-3 text-right text-emerald-700">{formatEur(item.current_stock * item.current_ek_cents)}</td>
+                      <td className="px-4 py-3 text-right text-emerald-700">{formatEur(item.stock_value_cents)}</td>
                     </tr>
+                    {isExpanded && hasLots && [...item.remaining_lots].sort((a, b) => b.moved_at - a.moved_at).map((lot, idx) => (
+                      <tr key={`lot-${idx}`} className="bg-amber-50/30 border-t border-amber-100">
+                        <td className="pl-10 pr-4 py-1.5 text-xs text-slate-600" colSpan={8}>
+                          {lot.quantity}x à {formatEur(lot.ek_cents)}
+                          {lot.moved_at > 0 && (
+                            <span className="text-slate-400 ml-2">
+                              (Eingang: {new Date(lot.moved_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })})
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                     {isExpanded && hasPeriods && item.price_periods.map((period, idx) => {
                       const periodYearEnd = new Date(year + 1, 0, 1).getTime();
                       const fromStr = new Date(period.from).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
@@ -283,7 +310,7 @@ export function InventurTab({ year }: InventurTabProps) {
             </tbody>
           </table>
           <p className="px-4 py-2 text-xs text-slate-400 border-t border-slate-100">
-            * Bestandswert basiert auf aktuellem EK (Annäherung — kein FIFO-Verbrauch)
+            * Bestandswert nach FIFO — verbleibende Wareneingänge zu historischen EK-Preisen
           </p>
         </div>
       )}
