@@ -44,6 +44,7 @@ const StockAdjustSchema = z.object({
   delta: z.number().int(),
   reason: z.string().optional(),
   shopId: z.string(),
+  purchasePriceCents: z.number().int().optional(), // EK-Preis bei Zugang (optional, Fallback auf Produkt-EK)
 });
 
 const SaleCancelSchema = z.object({
@@ -169,6 +170,9 @@ export async function syncRoutes(fastify: FastifyInstance) {
               type: 'adjustment',
               quantity: adj.delta, // positiv oder negativ je nach Korrektur
               reason: adj.reason ?? null,
+              purchasePriceCents: adj.delta > 0
+                ? (adj.purchasePriceCents ?? adjustProd.purchasePrice)
+                : null,
               movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
             });
             await tx.insert(outboxEvents).values({
