@@ -601,74 +601,9 @@ export async function reportRoutes(fastify: FastifyInstance) {
     if (!year) return reply.status(400).send({ error: 'year required' });
 
     const y = Number(year);
-    const yearStart = new Date(y, 0, 1).getTime();
-    const yearEnd = new Date(y + 1, 0, 1).getTime();
+    if (isNaN(y)) return reply.status(400).send({ error: 'year must be a number' });
 
-    const inventoryResult = await db.execute(sql`
-      SELECT
-        p.id,
-        p.article_number,
-        p.name,
-        p.stock as current_stock,
-        p.purchase_price as current_ek_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as sold_qty,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as withdrawn_qty,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
-        ), 0) as revenue_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as cost_cents,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as withdrawal_cost_cents
-      FROM products p
-      LEFT JOIN sales ON sales.shop_id = p.shop_id
-                      AND sales.created_at >= ${yearStart}
-                      AND sales.created_at < ${yearEnd}
-                      AND sales.cancelled_at IS NULL
-      LEFT JOIN jsonb_array_elements(sales.items) as item
-        ON item->>'productId' = p.id
-      WHERE p.shop_id = ${shopId}
-        AND p.active = true
-      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
-      ORDER BY p.name
-    `);
-
-    const stockValueResult = await db.execute(sql`
-      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
-      FROM products
-      WHERE shop_id = ${shopId} AND active = true
-    `);
-
-    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
-      id: String(row.id),
-      article_number: String(row.article_number),
-      name: String(row.name),
-      current_stock: Number(row.current_stock),
-      current_ek_cents: Number(row.current_ek_cents),
-      sold_qty: Number(row.sold_qty),
-      withdrawn_qty: Number(row.withdrawn_qty),
-      revenue_cents: Number(row.revenue_cents),
-      cost_cents: Number(row.cost_cents),
-      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
-    }));
-
-    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
-    const totalStockValueCents = Number(stockValueRow.total_stock_value_cents ?? 0);
+    const { items, total_stock_value_cents: totalStockValueCents } = await computeFifoInventory(shopId, y);
 
     // Bilanz berechnen
     const totalRevenue = items.reduce((s, i) => s + i.revenue_cents, 0);
@@ -701,7 +636,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         'VK-Umsatz (EUR)': (item.revenue_cents / 100).toFixed(2),
         'Entnahme EK (EUR)': (item.withdrawal_cost_cents / 100).toFixed(2),
         'EK-Kosten (EUR)': ((item.cost_cents + item.withdrawal_cost_cents) / 100).toFixed(2),
-        'Bestandswert (EUR)': (item.current_stock * item.current_ek_cents / 100).toFixed(2),
+        'Bestandswert (EUR)': (item.stock_value_cents / 100).toFixed(2),
       });
     }
 
@@ -725,73 +660,10 @@ export async function reportRoutes(fastify: FastifyInstance) {
     if (!year) return reply.status(400).send({ error: 'year required' });
 
     const y = Number(year);
-    const yearStart = new Date(y, 0, 1).getTime();
-    const yearEnd = new Date(y + 1, 0, 1).getTime();
+    if (isNaN(y)) return reply.status(400).send({ error: 'year must be a number' });
 
-    const inventoryResult = await db.execute(sql`
-      SELECT
-        p.id,
-        p.article_number,
-        p.name,
-        p.stock as current_stock,
-        p.purchase_price as current_ek_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as sold_qty,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as withdrawn_qty,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
-        ), 0) as revenue_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as cost_cents,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as withdrawal_cost_cents
-      FROM products p
-      LEFT JOIN sales ON sales.shop_id = p.shop_id
-                      AND sales.created_at >= ${yearStart}
-                      AND sales.created_at < ${yearEnd}
-                      AND sales.cancelled_at IS NULL
-      LEFT JOIN jsonb_array_elements(sales.items) as item
-        ON item->>'productId' = p.id
-      WHERE p.shop_id = ${shopId}
-        AND p.active = true
-      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
-      ORDER BY p.name
-    `);
+    const { items, total_stock_value_cents: totalStockValueCents } = await computeFifoInventory(shopId, y);
 
-    const stockValueResult = await db.execute(sql`
-      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
-      FROM products
-      WHERE shop_id = ${shopId} AND active = true
-    `);
-
-    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
-      name: String(row.name),
-      article_number: String(row.article_number),
-      current_stock: Number(row.current_stock),
-      current_ek_cents: Number(row.current_ek_cents),
-      sold_qty: Number(row.sold_qty),
-      withdrawn_qty: Number(row.withdrawn_qty),
-      revenue_cents: Number(row.revenue_cents),
-      cost_cents: Number(row.cost_cents),
-      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
-    }));
-
-    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
-    const totalStockValueCents = Number(stockValueRow.total_stock_value_cents ?? 0);
     const totalRevenue = items.reduce((s, i) => s + i.revenue_cents, 0);
     const totalWithdrawalCost = items.reduce((s, i) => s + i.withdrawal_cost_cents, 0);
     const totalCost = items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0);
@@ -811,7 +683,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         Number((item.revenue_cents / 100).toFixed(2)),
         Number((item.withdrawal_cost_cents / 100).toFixed(2)),
         Number(((item.cost_cents + item.withdrawal_cost_cents) / 100).toFixed(2)),
-        Number((item.current_stock * item.current_ek_cents / 100).toFixed(2)),
+        Number((item.stock_value_cents / 100).toFixed(2)),
       ]);
     }
 
@@ -976,78 +848,15 @@ export async function reportRoutes(fastify: FastifyInstance) {
     if (!year) return reply.status(400).send({ error: 'year required' });
 
     const yearNum = Number(year);
-    const yearStart = new Date(yearNum, 0, 1).getTime();
-    const yearEnd = new Date(yearNum + 1, 0, 1).getTime();
+    if (isNaN(yearNum)) return reply.status(400).send({ error: 'year must be a number' });
 
-    const inventoryResult = await db.execute(sql`
-      SELECT
-        p.id,
-        p.article_number,
-        p.name,
-        p.stock as current_stock,
-        p.purchase_price as current_ek_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as sold_qty,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as withdrawn_qty,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
-        ), 0) as revenue_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as cost_cents,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as withdrawal_cost_cents
-      FROM products p
-      LEFT JOIN sales ON sales.shop_id = p.shop_id
-                      AND sales.created_at >= ${yearStart}
-                      AND sales.created_at < ${yearEnd}
-                      AND sales.cancelled_at IS NULL
-      LEFT JOIN jsonb_array_elements(sales.items) as item
-        ON item->>'productId' = p.id
-      WHERE p.shop_id = ${shopId}
-        AND p.active = true
-      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
-      ORDER BY p.name
-    `);
-
-    const stockValueResult = await db.execute(sql`
-      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
-      FROM products
-      WHERE shop_id = ${shopId} AND active = true
-    `);
+    const { items, total_stock_value_cents: totalStockValueCents } = await computeFifoInventory(shopId, yearNum);
 
     const shopNameResult = await db.execute(sql`
       SELECT name FROM shops WHERE shop_id = ${shopId} LIMIT 1
     `);
     const shopName = String((shopNameResult.rows[0] as Record<string, unknown>)?.name ?? shopId);
 
-    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => ({
-      name: String(row.name),
-      article_number: String(row.article_number),
-      current_stock: Number(row.current_stock),
-      current_ek_cents: Number(row.current_ek_cents),
-      sold_qty: Number(row.sold_qty),
-      withdrawn_qty: Number(row.withdrawn_qty),
-      revenue_cents: Number(row.revenue_cents),
-      cost_cents: Number(row.cost_cents),
-      withdrawal_cost_cents: Number(row.withdrawal_cost_cents),
-    }));
-
-    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
-    const totalStockValueCents = Number(stockValueRow.total_stock_value_cents ?? 0);
     const totalRevenue = items.reduce((s, i) => s + i.revenue_cents, 0);
     const totalWithdrawalCost = items.reduce((s, i) => s + i.withdrawal_cost_cents, 0);
     const totalCost = items.reduce((s, i) => s + i.cost_cents + i.withdrawal_cost_cents, 0);
@@ -1116,7 +925,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
     doc.text('Marge:', 50, y);
     doc.text(`${(margin / 100).toFixed(2)} EUR`, 400, y, { width: 175, align: 'right' }); y += 20;
     doc.font('Helvetica').fontSize(9);
-    doc.text('Bestandswert (akt. EK):', 50, y);
+    doc.text('Bestandswert (FIFO):', 50, y);
     doc.text(`${(totalStockValueCents / 100).toFixed(2)} EUR`, 400, y, { width: 175, align: 'right' });
 
     // Footer
