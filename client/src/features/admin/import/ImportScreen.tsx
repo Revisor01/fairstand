@@ -162,6 +162,7 @@ export function ImportScreen() {
           body: JSON.stringify({
             productId,
             delta: row.quantity,
+            purchasePriceCents: row.purchasePriceCents, // EK aus PDF-Zeile
             reason: 'Import Rechnung',
             shopId: getShopId(),
           }),
