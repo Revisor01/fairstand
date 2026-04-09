@@ -44,20 +44,20 @@ None — alle identifizierten Features in v11.0 aufgenommen.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EINGANG-01 | — | Pending |
-| EINGANG-02 | — | Pending |
-| ANPASS-01 | — | Pending |
-| ANPASS-02 | — | Pending |
-| INVENT-01 | — | Pending |
-| INVENT-02 | — | Pending |
-| INVENT-03 | — | Pending |
-| WARN-01 | — | Pending |
-| WARN-02 | — | Pending |
+| EINGANG-01 | Phase 37 | Pending |
+| EINGANG-02 | Phase 37 | Pending |
+| ANPASS-01 | Phase 37 | Pending |
+| ANPASS-02 | Phase 37 | Pending |
+| INVENT-01 | Phase 38 | Pending |
+| INVENT-02 | Phase 38 | Pending |
+| INVENT-03 | Phase 38 | Pending |
+| WARN-01 | Phase 39 | Pending |
+| WARN-02 | Phase 39 | Pending |
 
 **Coverage:**
 - v11.0 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9 ⚠️
+- Mapped to phases: 9
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-09*

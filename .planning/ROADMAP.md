@@ -13,6 +13,7 @@
 - ✅ **v8.0 Inventur, Preis-History & Rechnungsexport** — Phases 27-29 (shipped 2026-04-02)
 - ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
 - ✅ **v10.0 Bilder, Export & Analyse** — Phases 33-36 (shipped 2026-04-03)
+- **v11.0 EK-Preismanagement & Inventur-Genauigkeit** — Phases 37-39 (active)
 
 ## Phases
 
@@ -116,13 +117,22 @@ Full details: `.planning/milestones/v9.0-ROADMAP.md`
 
 </details>
 
-<details open>
-<summary>v10.0 Bilder, Export & Analyse (Phases 33-36) — ACTIVE</summary>
+<details>
+<summary>✅ v10.0 Bilder, Export & Analyse (Phases 33-36) — SHIPPED 2026-04-03</summary>
 
-- [ ] **Phase 33: Produktbilder im POS-Grid** - Artikelkacheln zeigen Produktbild wenn vorhanden
-- [ ] **Phase 34: XLSX-Export** - Inventur und Verkaufshistorie als Excel-Datei herunterladbar
-- [ ] **Phase 35: Lagerdauer-Analyse** - Letzte Verkaufsdaten und Ladenhüter-Markierung sichtbar
-- [ ] **Phase 36: EK-Preiswarnung beim Import** - Warnung wenn sich EK eines Artikels beim PDF-Import geändert hat
+- [x] **Phase 33: Produktbilder im POS-Grid** - Artikelkacheln zeigen Produktbild wenn vorhanden (completed 2026-04-03)
+- [x] **Phase 34: XLSX-Export** - Inventur und Verkaufshistorie als Excel-Datei herunterladbar (completed 2026-04-03)
+- [x] **Phase 35: Lagerdauer-Analyse** - Letzte Verkaufsdaten und Ladenhüter-Markierung sichtbar (completed 2026-04-03)
+- [x] **Phase 36: EK-Preiswarnung beim Import** - Warnung wenn sich EK eines Artikels beim PDF-Import geändert hat (completed 2026-04-03)
+
+</details>
+
+<details open>
+<summary>v11.0 EK-Preismanagement & Inventur-Genauigkeit (Phases 37-39) — ACTIVE</summary>
+
+- [ ] **Phase 37: EK-Wareneingänge & Bestandsanpassung** - Bestandserhöhungen speichern EK-Preis, PDF-Import erfasst Wareneingangs-Bewegung, StockAdjustModal mit EK-Toggle
+- [ ] **Phase 38: FIFO-Inventur** - Bestandswert auf Basis historischer EK-Preise per Wareneingang, Inventur-Report zeigt Mengen je EK transparent
+- [ ] **Phase 39: Bestandswarnungen-UX** - Glocken-Icon mit Badge-Zähler im Header, aufgeräumte Warnliste per Klick
 
 </details>
 
@@ -565,10 +575,44 @@ Plans:
 Plans:
 - [x] 36-01-PLAN.md — MatchedRow.storedPurchasePriceCents + EK-Warnzeile in ReviewTable
 
+### Phase 37: EK-Wareneingänge & Bestandsanpassung
+**Goal**: Jede Bestandserhöhung — ob per PDF-Import oder manueller Anpassung — speichert den zugehörigen EK-Preis als eigene Bewegung in stock_movements
+**Depends on**: Phase 36
+**Requirements**: EINGANG-01, EINGANG-02, ANPASS-01, ANPASS-02
+**Success Criteria** (what must be TRUE):
+  1. Nach einem PDF-Import erscheint in der stock_movements-Tabelle eine Bewegung vom Typ 'restock' mit dem aus der Rechnung stammenden EK-Preis und der importierten Menge pro Artikel
+  2. Im StockAdjustModal gibt es einen "Preis anpassen"-Toggle — wird er aktiviert, erscheint ein EK-Preis-Eingabefeld und der neue EK wird beim Speichern in der Bewegung hinterlegt
+  3. Bei einer positiven Bestandskorrektur ohne Toggle-Aktivierung wird der aktuelle Produkt-EK automatisch als EK der Bewegung gespeichert
+  4. Negative Bestandskorrekturen (Schwund, Korrektur nach unten) erfordern keinen EK-Preis-Eintrag
+**Plans**: TBD
+
+### Phase 38: FIFO-Inventur
+**Goal**: Der Inventur-Report berechnet den Bestandswert auf Basis exakter historischer EK-Preise pro Wareneingang nach FIFO — nicht mehr "aktueller EK × Gesamtbestand"
+**Depends on**: Phase 37
+**Requirements**: INVENT-01, INVENT-02, INVENT-03
+**Success Criteria** (what must be TRUE):
+  1. Im Inventur-Tab zeigt die Bestandswert-Summe einen Betrag, der aus den historischen Eingangs-EKs nach FIFO berechnet wurde — nicht aus dem aktuellen Produkt-EK multipliziert mit dem Gesamtbestand
+  2. Pro Artikel listet der Inventur-Report auf, welche Mengen zu welchem EK-Preis noch im Bestand liegen (z.B. "3 Stück zu 1,20 € + 5 Stück zu 1,35 €")
+  3. Wenn Artikel verkauft wurden, sind die ältesten Wareneingänge zuerst verbraucht — ein Verkauf nach einem neueren Eingang reduziert den älteren Bestand zuerst
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 39: Bestandswarnungen-UX
+**Goal**: Bestandswarnungen sind jederzeit sichtbar aber nicht aufdringlich — ein Glocken-Icon mit Zähler im Header macht den Überblick möglich ohne den Arbeitsfluss zu unterbrechen
+**Depends on**: Phase 36
+**Requirements**: WARN-01, WARN-02
+**Success Criteria** (what must be TRUE):
+  1. Im Header der App erscheint ein Glocken-Icon mit einem Badge-Zähler der anzeigt wie viele Artikel unter Mindestbestand liegen — bei keiner Warnung ist der Badge nicht sichtbar
+  2. Ein Tipp auf die Glocke öffnet eine Liste mit genau einem Eintrag pro Artikel unter Mindestbestand, der Artikelname, aktueller Bestand und Mindestbestand zeigt
+  3. Die bisherige Darstellung der Bestandswarnungen (ausgeklappter Banner o.ä.) wird durch die Glocke ersetzt — keine Dopplung
+**Plans**: TBD
+**UI hint**: yes
+
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36
+Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -608,3 +652,6 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 34. XLSX-Export | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 35. Lagerdauer-Analyse | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 36. EK-Preiswarnung beim Import | v10.0 | 1/1 | Complete    | 2026-04-03 |
+| 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 0/? | Not started | - |
+| 38. FIFO-Inventur | v11.0 | 0/? | Not started | - |
+| 39. Bestandswarnungen-UX | v11.0 | 0/? | Not started | - |
