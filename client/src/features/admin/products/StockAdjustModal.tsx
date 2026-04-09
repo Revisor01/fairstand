@@ -13,11 +13,16 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
   const [reason, setReason] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [overridePurchasePrice, setOverridePurchasePrice] = useState(false);
+  const [purchasePriceInput, setPurchasePriceInput] = useState<string>(
+    (product.purchasePrice / 100).toFixed(2)
+  );
 
   const adjustStock = useAdjustStock();
 
   const parsedDelta = parseInt(delta, 10);
   const isValidDelta = !isNaN(parsedDelta) && parsedDelta !== 0;
+  const isPositiveDelta = parsedDelta > 0;
   const newStock = isValidDelta ? product.stock + parsedDelta : product.stock;
 
   async function handleSave() {
@@ -28,12 +33,23 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
       return;
     }
 
+    let purchasePriceCents: number | undefined;
+    if (isPositiveDelta && overridePurchasePrice) {
+      const parsed = parseFloat(purchasePriceInput);
+      if (isNaN(parsed) || parsed <= 0) {
+        setError('Bitte einen gültigen EK-Preis eingeben (größer als 0).');
+        return;
+      }
+      purchasePriceCents = Math.round(parsed * 100);
+    }
+
     setSaving(true);
     try {
       await adjustStock.mutateAsync({
         productId: product.id,
         delta: parsedDelta,
         reason: reason.trim() || undefined,
+        purchasePriceCents,
       });
       onClose();
     } catch (err) {
@@ -95,6 +111,36 @@ export function StockAdjustModal({ product, onClose }: StockAdjustModalProps) {
           }`}>
             Neuer Bestand: {newStock}
             {newStock < 0 && ' (Achtung: negativer Bestand)'}
+          </div>
+        )}
+
+        {isPositiveDelta && (
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={overridePurchasePrice}
+                onChange={e => setOverridePurchasePrice(e.target.checked)}
+                className="h-5 w-5 rounded border-slate-300 text-sky-600"
+              />
+              <span className="text-sm font-medium text-slate-600">Preis anpassen</span>
+            </label>
+            {overridePurchasePrice && (
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-slate-600">
+                  EK-Preis (€)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={purchasePriceInput}
+                  onChange={e => setPurchasePriceInput(e.target.value)}
+                  className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400"
+                  placeholder="z.B. 1.49"
+                />
+              </div>
+            )}
           </div>
         )}
 
