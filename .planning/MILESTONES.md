@@ -1,5 +1,19 @@
 # Milestones
 
+## v11.0 EK-Preismanagement & Inventur-Genauigkeit (Shipped: 2026-04-09)
+
+**Phases completed:** 3 phases, 6 plans, 2 tasks
+
+**Key accomplishments:**
+
+- Nullable Spalte `purchase_price_cents` (integer) zu `stock_movements` hinzugefügt und `restock` als gültiger Bewegungstyp im Schema dokumentiert
+- One-liner:
+- One-liner:
+- One-liner:
+- LowStockBanner-Leiste durch Bell-Icon mit Badge-Zaehler und Klick-Popover im POS-Header ersetzt — Warnliste nach relativem Bestand sortiert
+
+---
+
 ## v10.0 Bilder, Export & Analyse (Shipped: 2026-04-03)
 
 **Phases completed:** 4 phases, 3 plans

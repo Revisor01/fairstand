@@ -77,17 +77,13 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Inventur CSV + PDF Export (Kirchenkreis-Jahresabschluss) — v8.0
 - ✓ PDF-Einzelbeleg pro Verkauf — v8.0
 
+- ✓ Wareneingänge als eigene Bewegungen mit EK-Preis in stock_movements (purchase_price_cents) — v11.0
+- ✓ EK-Preis bei Bestandsanpassung optional änderbar ("Preis anpassen" Toggle im StockAdjustModal) — v11.0
+- ✓ FIFO-basierte Inventur-Berechnung mit exakten historischen EK-Preisen pro Wareneingang — v11.0
+- ✓ Inventur-Report zeigt pro Artikel verbleibende Chargen mit EK-Preis transparent an — v11.0
+- ✓ Bestandswarnungen als Glocken-Icon mit Badge-Zähler im POS-Header (statt ausgeklappter Liste) — v11.0
+
 ### Active
-
-## Current Milestone: v11.0 EK-Preismanagement & Inventur-Genauigkeit
-
-**Goal:** Korrekte Inventur-Berechnung mit exakten historischen EK-Preisen pro Wareneingang, EK-Anpassung bei Bestandskorrekturen
-
-**Target features:**
-- Wareneingänge als eigene Bewegungen mit EK-Preis erfassen — jede Bestandserhöhung speichert den zugehörigen EK und die Menge
-- StockAdjustModal erweitern: beim Bestand-Anpassen optional EK-Preis ändern ("Preis anpassen" Toggle)
-- Inventur-Berechnung auf Basis exakter historischer EK-Preise pro Wareneingang (kein Durchschnitt, kein "aktueller EK × Bestand")
-- Inventur-Report zeigt pro Artikel transparent auf, welche Mengen zu welchem EK im Bestand liegen
 
 ### Out of Scope
 
@@ -110,20 +106,22 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v10.0 shipped)
+### Current State (v11.0 shipped)
 
 - Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer, pdfkit, csv-stringify, SheetJS (xlsx)
-- 36 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0 + 3 v8.0 + 3 v9.0 + 4 v10.0), alle shipped
+- 39 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0 + 3 v8.0 + 3 v9.0 + 4 v10.0 + 3 v11.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD (GitHub Actions → Portainer Webhook)
 - Online-Only: TanStack Query als einzige Datenschicht, WebSocket für Live-Updates, keine lokale DB
 - PostgreSQL in Docker-Compose mit persistentem Volume, alle Routes async/await
 - Session-Auth mit In-Memory Store, shopId-Validierung, Rate-Limiting, CORS fail-closed
 - Multi-Shop: Master-Shop verwaltet andere Shops, jeder Shop hat eigenes Sortiment
 - Responsive UX: Warenkorb als fixe Spalte oder Swipe-In je nach Screenbreite
-- Inventur & Preis-History: Automatisches EK/VK-Tracking, Stock-Movement-Journal, Inventur-Übersicht im Jahresbericht
+- Inventur & Preis-History: Automatisches EK/VK-Tracking, Stock-Movement-Journal, FIFO-basierte Inventur mit Chargen-Anzeige
 - Export: CSV + PDF + XLSX für Inventur (Kirchenkreis), Verkaufshistorie-CSV/XLSX, Einzelbeleg-PDF
 - Lagerdauer-Analyse: Ladenhüter-Markierung, letzte Verkaufsdaten
 - EK-Preiswarnung beim PDF-Import
+- Wareneingänge mit EK-Preis in stock_movements (purchase_price_cents), Bestandsanpassung mit EK-Toggle
+- Bestandswarnungen als Glocken-Icon mit Badge im POS-Header
 
 ## Constraints
 
@@ -161,10 +159,13 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 | Sale-Item-Snapshots für Inventur-Auswertung | EK/VK bereits im JSONB gespeichert, kein neues Logging nötig | ✓ Good — historisch korrekte Auswertung ohne Zusatzaufwand |
 | Server-side PDF/CSV statt Client-side | Unabhängig vom Browser, kein Memory-Limit | ✓ Good — pdfkit + csv-stringify, Streaming via Fastify Reply |
 | Semikolon + UTF-8 BOM für CSV | Excel öffnet Umlaute sonst falsch | ✓ Good — Excel-kompatibel mit deutschen Sonderzeichen |
+| FIFO in TypeScript statt SQL | PostgreSQL hat keine native FIFO-Queue über mehrere Rows | ✓ Good — bei ~500 Bewegungen performant, testbar |
+| purchase_price_cents nullable in stock_movements | Negative Korrekturen (Schwund) brauchen keinen EK | ✓ Good — saubere Trennung Zugang/Abgang |
+| Exakte EK statt Durchschnittspreise | User will transparente Chargen-Anzeige, kein gerundeter Durchschnitt | ✓ Good — Kirchenkreis kann Bestandswert exakt nachvollziehen |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-04-09 after v11.0 milestone started*
+*Last updated: 2026-04-09 after v11.0 milestone shipped*
