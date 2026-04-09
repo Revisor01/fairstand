@@ -602,8 +602,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
-- [ ] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
+- [x] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
+- [x] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
 
 ### Phase 39: Bestandswarnungen-UX
 **Goal**: Bestandswarnungen sind jederzeit sichtbar aber nicht aufdringlich — ein Glocken-Icon mit Zähler im Header macht den Überblick möglich ohne den Arbeitsfluss zu unterbrechen
@@ -616,8 +616,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
-- [ ] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
+- [x] 38-01-PLAN.md — FIFO-Algorithmus in computeFifoInventory + /reports/inventory Endpoint + InventurTab Chargen-Anzeige
+- [x] 38-02-PLAN.md — inventory-csv, inventory-pdf, inventory-xlsx auf computeFifoInventory umstellen
 
 
 ## Progress
@@ -664,5 +664,5 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 35. Lagerdauer-Analyse | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 36. EK-Preiswarnung beim Import | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 3/3 | Complete    | 2026-04-09 |
-| 38. FIFO-Inventur | v11.0 | 0/? | Not started | - |
+| 38. FIFO-Inventur | v11.0 | 2/2 | Complete    | 2026-04-09 |
 | 39. Bestandswarnungen-UX | v11.0 | 0/? | Not started | - |
