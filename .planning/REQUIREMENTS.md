@@ -3,61 +3,44 @@
 **Defined:** 2026-04-09
 **Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
 
-## v11.0 Requirements
+## v12.0 Requirements
 
-Requirements für Milestone v11.0 — EK-Preismanagement & Inventur-Genauigkeit.
+Requirements für Milestone v12.0 — Live-Suche.
 
-### Wareneingänge
+### Live-Suche
 
-- [ ] **EINGANG-01**: Jede Bestandserhöhung speichert den zugehörigen EK-Preis und die Menge als eigene Bewegung in stock_movements
-- [ ] **EINGANG-02**: Beim PDF-Import wird der EK aus der Rechnung als Wareneingangs-Bewegung erfasst
-
-### Bestandsanpassung
-
-- [ ] **ANPASS-01**: Beim Bestand-Anpassen kann optional der EK-Preis geändert werden ("Preis anpassen" Toggle)
-- [ ] **ANPASS-02**: Bei positivem Bestandszugang wird der EK-Preis des Eingangs in der Bewegung gespeichert
-
-### Inventur
-
-- [ ] **INVENT-01**: Bestandswert wird auf Basis exakter EK-Preise pro Wareneingang berechnet (nicht aktueller EK × Bestand)
-- [ ] **INVENT-02**: Inventur-Report zeigt pro Artikel transparent auf, welche Mengen zu welchem EK im Bestand liegen
-- [ ] **INVENT-03**: Verkäufe reduzieren Wareneingänge nach FIFO (älteste zuerst)
-
-### Bestandswarnungen UX
-
-- [ ] **WARN-01**: Bestandswarnungen werden als Glocken-Icon mit Badge-Zähler im Header angezeigt (nicht ausgeklappt)
-- [ ] **WARN-02**: Klick auf die Glocke öffnet eine aufgeräumte Liste mit je einem Eintrag pro Artikel unter Mindestbestand
+- [ ] **SUCH-01**: Im POS-Dashboard gibt es ein Suchfeld über dem Artikelgrid
+- [ ] **SUCH-02**: Das Artikelgrid wird live während der Eingabe gefiltert (kein Submit nötig)
+- [ ] **SUCH-03**: Die Suche findet Artikel über Artikelnummer (auch Teilmatch)
+- [ ] **SUCH-04**: Die Suche findet Artikel über Produktname (auch Teilmatch)
+- [ ] **SUCH-05**: Die Suche findet Artikel über Kategorie
 
 ## Future Requirements
 
-None — alle identifizierten Features in v11.0 aufgenommen.
+None
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Durchschnitts-EK-Berechnung | User will exakte EK-Preise pro Wareneingang, kein Durchschnitt |
-| Automatische Nachbestellung | Manuelle Bestellung beim Süd-Nord-Kontor reicht |
-| Chargen-/Losnummern-Tracking | Overkill für Fairstand-Sortiment, FIFO reicht |
+| Server-seitige Suche | Produktliste bereits client-seitig geladen via TanStack Query |
+| Fuzzy Search / Tippfehler-Toleranz | Overkill für ~106 Produkte, exakter Teilmatch reicht |
+| Suchhistorie | Nicht nötig für POS-Kontext |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EINGANG-01 | Phase 37 | Pending |
-| EINGANG-02 | Phase 37 | Pending |
-| ANPASS-01 | Phase 37 | Pending |
-| ANPASS-02 | Phase 37 | Pending |
-| INVENT-01 | Phase 38 | Pending |
-| INVENT-02 | Phase 38 | Pending |
-| INVENT-03 | Phase 38 | Pending |
-| WARN-01 | Phase 39 | Pending |
-| WARN-02 | Phase 39 | Pending |
+| SUCH-01 | — | Pending |
+| SUCH-02 | — | Pending |
+| SUCH-03 | — | Pending |
+| SUCH-04 | — | Pending |
+| SUCH-05 | — | Pending |
 
 **Coverage:**
-- v11.0 requirements: 9 total
-- Mapped to phases: 9
-- Unmapped: 0 ✓
+- v12.0 requirements: 5 total
+- Mapped to phases: 0
+- Unmapped: 5
 
 ---
 *Requirements defined: 2026-04-09*
