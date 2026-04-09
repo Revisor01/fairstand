@@ -587,9 +587,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 37-01-PLAN.md — DB-Schema: purchase_price_cents in stock_movements
-- [ ] 37-02-PLAN.md — STOCK_ADJUST Handler + StockAdjustModal EK-Toggle
-- [ ] 37-03-PLAN.md — POST /api/stock/adjust Endpoint + ImportScreen purchasePriceCents
+- [x] 37-01-PLAN.md — DB-Schema: purchase_price_cents in stock_movements
+- [x] 37-02-PLAN.md — STOCK_ADJUST Handler + StockAdjustModal EK-Toggle
+- [x] 37-03-PLAN.md — POST /api/stock/adjust Endpoint + ImportScreen purchasePriceCents
 
 ### Phase 38: FIFO-Inventur
 **Goal**: Der Inventur-Report berechnet den Bestandswert auf Basis exakter historischer EK-Preise pro Wareneingang nach FIFO — nicht mehr "aktueller EK × Gesamtbestand"
@@ -657,6 +657,6 @@ Phases execute in numeric order: 27 → 28 → 29 → 30 → 31 → 32 → 33 �
 | 34. XLSX-Export | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 35. Lagerdauer-Analyse | v10.0 | 1/1 | Complete    | 2026-04-03 |
 | 36. EK-Preiswarnung beim Import | v10.0 | 1/1 | Complete    | 2026-04-03 |
-| 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 0/? | Not started | - |
+| 37. EK-Wareneingänge & Bestandsanpassung | v11.0 | 3/3 | Complete    | 2026-04-09 |
 | 38. FIFO-Inventur | v11.0 | 0/? | Not started | - |
 | 39. Bestandswarnungen-UX | v11.0 | 0/? | Not started | - |
