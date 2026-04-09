@@ -115,10 +115,12 @@ export function useAdjustStock() {
       productId,
       delta,
       reason,
+      purchasePriceCents,
     }: {
       productId: string;
       delta: number;
       reason?: string;
+      purchasePriceCents?: number; // EK-Preis bei Zugang (optional, Server nutzt Produkt-EK als Fallback)
     }) => {
       const shopId = getShopId();
       const res = await authFetch('/api/sync', {
@@ -127,7 +129,7 @@ export function useAdjustStock() {
           entries: [
             {
               operation: 'STOCK_ADJUST',
-              payload: { productId, delta, reason, shopId },
+              payload: { productId, delta, reason, shopId, purchasePriceCents },
               shopId,
               createdAt: Date.now(),
               attempts: 0,
