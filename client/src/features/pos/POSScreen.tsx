@@ -6,7 +6,7 @@ import { ArticleGrid } from './ArticleGrid.js';
 import { CartPanel } from './CartPanel.js';
 import { PaymentFlow } from './PaymentFlow.js';
 import { SaleSummary } from './SaleSummary.js';
-import { LowStockBanner } from './LowStockBanner.js';
+import { StockAlertButton } from './StockAlertButton.js';
 import { useCart } from './useCart.js';
 import { completeSale, completeWithdrawal } from './useSaleComplete.js';
 import { getStoredSession } from '../auth/serverAuth.js';
@@ -211,9 +211,6 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
 
   return (
     <div className="h-screen bg-sky-50 flex flex-col overflow-hidden">
-      {/* Mindestbestand-Warnung */}
-      <LowStockBanner />
-
       {/* Header */}
       <header className="bg-sky-400 text-white flex items-center justify-between px-4 py-3 shrink-0 shadow-sm">
         <div className="flex flex-col">
@@ -228,6 +225,9 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Bestandswarnungen Bell-Icon */}
+          <StockAlertButton />
+
           {/* Warenkorb-Button mit Badge — nur wenn kein Sidebar-Modus */}
           {!shouldShowSidebar && (
             <button
