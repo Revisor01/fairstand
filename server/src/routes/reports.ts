@@ -5,6 +5,356 @@ import { stringify } from 'csv-stringify';
 import PDFDocument from 'pdfkit';
 import * as XLSX from 'xlsx';
 
+// ---- FIFO Inventory Helper ----
+
+type FifoLot = { ek_cents: number; quantity: number; moved_at: number };
+type PricePeriod = {
+  ek_cents: number; vk_cents: number;
+  from: number; to: number;
+  sold_qty: number; withdrawn_qty: number;
+  revenue_cents: number; cost_cents: number; withdrawal_cost_cents: number;
+};
+type FifoItem = {
+  id: string;
+  article_number: string;
+  name: string;
+  current_stock: number;
+  current_ek_cents: number;
+  sold_qty: number;
+  withdrawn_qty: number;
+  revenue_cents: number;
+  cost_cents: number;
+  withdrawal_cost_cents: number;
+  stock_value_cents: number;
+  remaining_lots: FifoLot[];
+  price_periods: PricePeriod[];
+};
+type FifoInventoryResult = {
+  items: FifoItem[];
+  total_stock_value_cents: number;
+  total_purchased_cents: number;
+};
+
+async function computeFifoInventory(shopId: string, year: number): Promise<FifoInventoryResult> {
+  const yearStart = new Date(year, 0, 1).getTime();
+  const yearEnd = new Date(year + 1, 0, 1).getTime();
+
+  // Query 1 — Inventur pro Artikel (alle aktiven Produkte, LEFT JOIN auf Verkäufe + Entnahmen)
+  const inventoryResult = await db.execute(sql`
+    SELECT
+      p.id,
+      p.article_number,
+      p.name,
+      p.stock as current_stock,
+      p.purchase_price as current_ek_cents,
+      COALESCE(SUM(
+        CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+        THEN (item->>'quantity')::integer ELSE 0 END
+      ), 0) as sold_qty,
+      COALESCE(SUM(
+        CASE WHEN sales.type = 'withdrawal'
+        THEN (item->>'quantity')::integer ELSE 0 END
+      ), 0) as withdrawn_qty,
+      COALESCE(SUM(
+        CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+        THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
+      ), 0) as revenue_cents,
+      COALESCE(SUM(
+        CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
+        THEN (item->>'quantity')::integer *
+             COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+        ELSE 0 END
+      ), 0) as cost_cents,
+      COALESCE(SUM(
+        CASE WHEN sales.type = 'withdrawal'
+        THEN (item->>'quantity')::integer *
+             COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
+        ELSE 0 END
+      ), 0) as withdrawal_cost_cents
+    FROM products p
+    LEFT JOIN sales ON sales.shop_id = p.shop_id
+                    AND sales.created_at >= ${yearStart}
+                    AND sales.created_at < ${yearEnd}
+                    AND sales.cancelled_at IS NULL
+    LEFT JOIN jsonb_array_elements(sales.items) as item
+      ON item->>'productId' = p.id
+    WHERE p.shop_id = ${shopId}
+      AND p.active = true
+    GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
+    ORDER BY p.name
+  `);
+
+  // Query 2 — Alle stock_movements für FIFO-Berechnung (alle Zeiten, sortiert nach movedAt ASC)
+  const movementsResult = await db.execute(sql`
+    SELECT product_id, type, quantity, purchase_price_cents, moved_at
+    FROM stock_movements
+    WHERE shop_id = ${shopId}
+    ORDER BY product_id, moved_at ASC
+  `);
+
+  // Query 3 — Preisänderungen pro Artikel (aus price_histories)
+  const priceChangesResult = await db.execute(sql`
+    SELECT product_id, field, old_value, new_value, changed_at
+    FROM price_histories
+    WHERE shop_id = ${shopId}
+      AND changed_at >= ${yearStart}
+      AND changed_at < ${yearEnd}
+    ORDER BY product_id, changed_at
+  `);
+
+  // Query 4 — Einzelne Sales mit Items + Zeitstempel (für Perioden-Zuordnung)
+  const salesDetailResult = await db.execute(sql`
+    SELECT
+      item->>'productId' as product_id,
+      (item->>'quantity')::integer as qty,
+      (item->>'salePrice')::integer as vk_cents,
+      COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
+      (item->>'purchasePrice') IS NOT NULL as has_ek_snapshot,
+      sales.created_at,
+      CASE WHEN sales.type = 'withdrawal' THEN 'withdrawal' ELSE 'sale' END as sale_type
+    FROM sales,
+         jsonb_array_elements(sales.items) as item
+    JOIN products p ON p.id = item->>'productId'
+    WHERE sales.shop_id = ${shopId}
+      AND sales.created_at >= ${yearStart}
+      AND sales.created_at < ${yearEnd}
+      AND sales.cancelled_at IS NULL
+    ORDER BY product_id, sales.created_at
+  `);
+
+  // Query 5 — Wareneingänge im Jahr für total_purchased_cents (FIFO-basiert)
+  const purchasedResult = await db.execute(sql`
+    SELECT product_id, quantity, purchase_price_cents, moved_at
+    FROM stock_movements
+    WHERE shop_id = ${shopId}
+      AND moved_at >= ${yearStart}
+      AND moved_at < ${yearEnd}
+      AND purchase_price_cents IS NOT NULL
+      AND quantity > 0
+      AND type IN ('restock', 'adjustment')
+  `);
+
+  // FIFO-Chargen pro Produkt berechnen (in TypeScript, nicht SQL)
+  // Alle movements nach product_id gruppieren
+  const movementsByProduct = new Map<string, Array<{ type: string; quantity: number; purchase_price_cents: number | null; moved_at: number }>>();
+  for (const row of movementsResult.rows as Record<string, unknown>[]) {
+    const pid = String(row.product_id);
+    if (!movementsByProduct.has(pid)) movementsByProduct.set(pid, []);
+    movementsByProduct.get(pid)!.push({
+      type: String(row.type),
+      quantity: Number(row.quantity),
+      purchase_price_cents: row.purchase_price_cents != null ? Number(row.purchase_price_cents) : null,
+      moved_at: Number(row.moved_at),
+    });
+  }
+
+  // Preisperioden-Logik (unverändert aus bisherigem Handler)
+  const productInitialPrices = new Map<string, { ek: number; vk: number }>();
+  for (const row of inventoryResult.rows as Record<string, unknown>[]) {
+    const pid = String(row.id);
+    productInitialPrices.set(pid, {
+      ek: Number(row.current_ek_cents),
+      vk: 0,
+    });
+  }
+
+  const vkResult = await db.execute(sql`
+    SELECT id, sale_price FROM products WHERE shop_id = ${shopId} AND active = true
+  `);
+  for (const row of vkResult.rows as Record<string, unknown>[]) {
+    const existing = productInitialPrices.get(String(row.id));
+    if (existing) existing.vk = Number(row.sale_price);
+  }
+
+  const periodsMap = new Map<string, PricePeriod[]>();
+  const changesByProduct = new Map<string, Array<{ field: string; oldValue: number; newValue: number; changedAt: number }>>();
+  for (const row of priceChangesResult.rows as Record<string, unknown>[]) {
+    const pid = String(row.product_id);
+    if (!changesByProduct.has(pid)) changesByProduct.set(pid, []);
+    changesByProduct.get(pid)!.push({
+      field: String(row.field),
+      oldValue: Number(row.old_value),
+      newValue: Number(row.new_value),
+      changedAt: Number(row.changed_at),
+    });
+  }
+
+  const productsWithActivity = new Set<string>();
+  for (const row of salesDetailResult.rows as Record<string, unknown>[]) {
+    productsWithActivity.add(String(row.product_id));
+  }
+  for (const pid of changesByProduct.keys()) {
+    productsWithActivity.add(pid);
+  }
+
+  for (const pid of productsWithActivity) {
+    const changes = changesByProduct.get(pid) ?? [];
+    const initial = productInitialPrices.get(pid);
+    if (!initial) continue;
+
+    let startEk = initial.ek;
+    let startVk = initial.vk;
+    const sortedChanges = [...changes].sort((a, b) => a.changedAt - b.changedAt);
+    for (const c of sortedChanges) {
+      if (c.field === 'purchase_price') { startEk = c.oldValue; break; }
+    }
+    for (const c of sortedChanges) {
+      if (c.field === 'sale_price') { startVk = c.oldValue; break; }
+    }
+    if (!sortedChanges.some(c => c.field === 'purchase_price')) startEk = initial.ek;
+    if (!sortedChanges.some(c => c.field === 'sale_price')) startVk = initial.vk;
+
+    const changePoints = [...new Set(sortedChanges.map(c => c.changedAt))].sort((a, b) => a - b);
+    const periods: PricePeriod[] = [];
+    let curEk = startEk;
+    let curVk = startVk;
+
+    const boundaries = [yearStart, ...changePoints, yearEnd];
+    for (let i = 0; i < boundaries.length - 1; i++) {
+      const from = boundaries[i];
+      const to = boundaries[i + 1];
+      if (i > 0) {
+        for (const c of sortedChanges) {
+          if (c.changedAt === boundaries[i]) {
+            if (c.field === 'purchase_price') curEk = c.newValue;
+            if (c.field === 'sale_price') curVk = c.newValue;
+          }
+        }
+      }
+      periods.push({
+        ek_cents: curEk, vk_cents: curVk,
+        from, to,
+        sold_qty: 0, withdrawn_qty: 0,
+        revenue_cents: 0, cost_cents: 0, withdrawal_cost_cents: 0,
+      });
+    }
+
+    for (const row of salesDetailResult.rows as Record<string, unknown>[]) {
+      if (String(row.product_id) !== pid) continue;
+      const createdAt = Number(row.created_at);
+      const qty = Number(row.qty);
+      const vk = Number(row.vk_cents);
+      const hasEkSnapshot = row.has_ek_snapshot === true;
+      const snapshotEk = Number(row.ek_cents);
+      const saleType = String(row.sale_type);
+      const period = periods.find(p => createdAt >= p.from && createdAt < p.to);
+      if (!period) continue;
+      const ek = hasEkSnapshot ? snapshotEk : period.ek_cents;
+      if (saleType === 'withdrawal') {
+        period.withdrawn_qty += qty;
+        period.withdrawal_cost_cents += qty * ek;
+      } else {
+        period.sold_qty += qty;
+        period.revenue_cents += qty * vk;
+        period.cost_cents += qty * ek;
+      }
+    }
+
+    const activePeriods = periods.filter(p => p.sold_qty > 0 || p.withdrawn_qty > 0);
+    if (activePeriods.length > 0) {
+      periodsMap.set(pid, activePeriods);
+    }
+  }
+
+  // FIFO-Chargen pro Produkt berechnen
+  const fifoRemainingLots = new Map<string, FifoLot[]>();
+
+  for (const row of inventoryResult.rows as Record<string, unknown>[]) {
+    const pid = String(row.id);
+    const currentEkCents = Number(row.current_ek_cents);
+    const currentStock = Number(row.current_stock);
+    const movements = movementsByProduct.get(pid) ?? [];
+
+    // Lot-Queue aufbauen (FIFO: älteste zuerst)
+    const lotQueue: FifoLot[] = [];
+
+    for (const mv of movements) {
+      if (
+        (mv.type === 'restock' || (mv.type === 'adjustment' && mv.quantity > 0)) &&
+        mv.purchase_price_cents != null
+      ) {
+        // Wareneingang mit EK → neue Charge
+        lotQueue.push({ ek_cents: mv.purchase_price_cents, quantity: mv.quantity, moved_at: mv.moved_at });
+      } else if (mv.type === 'sale' || (mv.type === 'adjustment' && mv.quantity < 0)) {
+        // Ausgang → aus ältesten Chargen verbrauchen
+        let toConsume = Math.abs(mv.quantity);
+        while (toConsume > 0 && lotQueue.length > 0) {
+          const oldest = lotQueue[0];
+          if (oldest.quantity <= toConsume) {
+            toConsume -= oldest.quantity;
+            lotQueue.shift();
+          } else {
+            oldest.quantity -= toConsume;
+            toConsume = 0;
+          }
+        }
+      } else if (mv.type === 'return') {
+        // Rückgabe → zur neuesten Charge addieren oder neue Charge anlegen
+        if (lotQueue.length > 0) {
+          lotQueue[lotQueue.length - 1].quantity += mv.quantity;
+        } else {
+          lotQueue.push({ ek_cents: currentEkCents, quantity: mv.quantity, moved_at: mv.moved_at });
+        }
+      }
+    }
+
+    // Fallback: keine Chargen mit EK-Daten → Fallback auf aktuellen EK × Bestand
+    if (lotQueue.length === 0 && currentStock > 0) {
+      lotQueue.push({ ek_cents: currentEkCents, quantity: currentStock, moved_at: 0 });
+    }
+
+    fifoRemainingLots.set(pid, lotQueue.filter(l => l.quantity > 0));
+  }
+
+  // Items zusammenbauen
+  const items: FifoItem[] = (inventoryResult.rows as Record<string, unknown>[]).map(row => {
+    const pid = String(row.id);
+    const periods = periodsMap.get(pid) ?? [];
+    const hasPeriods = periods.length > 0;
+    const remainingLots = fifoRemainingLots.get(pid) ?? [];
+    const stockValueCents = remainingLots.reduce((s, l) => s + l.ek_cents * l.quantity, 0);
+    return {
+      id: pid,
+      article_number: String(row.article_number),
+      name: String(row.name),
+      current_stock: Number(row.current_stock),
+      current_ek_cents: Number(row.current_ek_cents),
+      sold_qty: Number(row.sold_qty),
+      withdrawn_qty: Number(row.withdrawn_qty),
+      revenue_cents: hasPeriods
+        ? periods.reduce((s, p) => s + p.revenue_cents, 0)
+        : Number(row.revenue_cents),
+      cost_cents: hasPeriods
+        ? periods.reduce((s, p) => s + p.cost_cents, 0)
+        : Number(row.cost_cents),
+      withdrawal_cost_cents: hasPeriods
+        ? periods.reduce((s, p) => s + p.withdrawal_cost_cents, 0)
+        : Number(row.withdrawal_cost_cents),
+      stock_value_cents: stockValueCents,
+      remaining_lots: remainingLots,
+      price_periods: periods,
+    };
+  });
+
+  const totalStockValueCents = items.reduce((s, i) => s + i.stock_value_cents, 0);
+
+  // total_purchased_cents: alle restocks + adjustments mit purchase_price_cents im Jahr
+  let totalPurchasedCents = 0;
+  for (const row of purchasedResult.rows as Record<string, unknown>[]) {
+    const qty = Number(row.quantity);
+    const ekCents = Number(row.purchase_price_cents);
+    totalPurchasedCents += qty * ekCents;
+  }
+
+  return {
+    items,
+    total_stock_value_cents: totalStockValueCents,
+    total_purchased_cents: totalPurchasedCents,
+  };
+}
+
+// ---- End FIFO Helper ----
+
 export async function reportRoutes(fastify: FastifyInstance) {
   // GET /reports/monthly?year=2026&month=3
   fastify.get('/reports/monthly', async (request, reply) => {
@@ -160,314 +510,14 @@ export async function reportRoutes(fastify: FastifyInstance) {
     if (!year) return reply.status(400).send({ error: 'year required' });
 
     const y = Number(year);
-    const yearStart = new Date(y, 0, 1).getTime();
-    const yearEnd = new Date(y + 1, 0, 1).getTime();
+    if (isNaN(y)) return reply.status(400).send({ error: 'year must be a number' });
 
-    // Query 1 — Inventur pro Artikel (alle aktiven Produkte, LEFT JOIN auf Verkäufe + Entnahmen)
-    const inventoryResult = await db.execute(sql`
-      SELECT
-        p.id,
-        p.article_number,
-        p.name,
-        p.stock as current_stock,
-        p.purchase_price as current_ek_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as sold_qty,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer ELSE 0 END
-        ), 0) as withdrawn_qty,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer * (item->>'salePrice')::integer ELSE 0 END
-        ), 0) as revenue_cents,
-        COALESCE(SUM(
-          CASE WHEN (sales.type IS NULL OR sales.type = 'sale')
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as cost_cents,
-        COALESCE(SUM(
-          CASE WHEN sales.type = 'withdrawal'
-          THEN (item->>'quantity')::integer *
-               COALESCE((item->>'purchasePrice')::integer, p.purchase_price)
-          ELSE 0 END
-        ), 0) as withdrawal_cost_cents
-      FROM products p
-      LEFT JOIN sales ON sales.shop_id = p.shop_id
-                      AND sales.created_at >= ${yearStart}
-                      AND sales.created_at < ${yearEnd}
-                      AND sales.cancelled_at IS NULL
-      LEFT JOIN jsonb_array_elements(sales.items) as item
-        ON item->>'productId' = p.id
-      WHERE p.shop_id = ${shopId}
-        AND p.active = true
-      GROUP BY p.id, p.name, p.article_number, p.stock, p.purchase_price
-      ORDER BY p.name
-    `);
-
-    // Query 2 — Bestandswert-Summe
-    const stockValueResult = await db.execute(sql`
-      SELECT COALESCE(SUM(stock * purchase_price), 0) as total_stock_value_cents
-      FROM products
-      WHERE shop_id = ${shopId} AND active = true
-    `);
-
-    // Query 3 — Preisänderungen pro Artikel (aus price_histories)
-    const priceChangesResult = await db.execute(sql`
-      SELECT product_id, field, old_value, new_value, changed_at
-      FROM price_histories
-      WHERE shop_id = ${shopId}
-        AND changed_at >= ${yearStart}
-        AND changed_at < ${yearEnd}
-      ORDER BY product_id, changed_at
-    `);
-
-    // Query 4 — Einzelne Sales mit Items + Zeitstempel (für Perioden-Zuordnung)
-    const salesDetailResult = await db.execute(sql`
-      SELECT
-        item->>'productId' as product_id,
-        (item->>'quantity')::integer as qty,
-        (item->>'salePrice')::integer as vk_cents,
-        COALESCE((item->>'purchasePrice')::integer, p.purchase_price) as ek_cents,
-        (item->>'purchasePrice') IS NOT NULL as has_ek_snapshot,
-        sales.created_at,
-        CASE WHEN sales.type = 'withdrawal' THEN 'withdrawal' ELSE 'sale' END as sale_type
-      FROM sales,
-           jsonb_array_elements(sales.items) as item
-      JOIN products p ON p.id = item->>'productId'
-      WHERE sales.shop_id = ${shopId}
-        AND sales.created_at >= ${yearStart}
-        AND sales.created_at < ${yearEnd}
-        AND sales.cancelled_at IS NULL
-      ORDER BY product_id, sales.created_at
-    `);
-
-    // Preisperioden pro Artikel berechnen
-    // Eine Periode = Zeitfenster mit konstantem EK+VK, abgeleitet aus price_histories
-    type PricePeriod = {
-      ek_cents: number; vk_cents: number;
-      from: number; to: number;
-      sold_qty: number; withdrawn_qty: number;
-      revenue_cents: number; cost_cents: number; withdrawal_cost_cents: number;
-    };
-
-    // Initiale Preise pro Produkt ermitteln (vor dem Jahr oder aktuell als Fallback)
-    const productInitialPrices = new Map<string, { ek: number; vk: number }>();
-    for (const row of inventoryResult.rows as Record<string, unknown>[]) {
-      const pid = String(row.id);
-      productInitialPrices.set(pid, {
-        ek: Number(row.current_ek_cents),
-        vk: 0, // wird unten aus Produkt-Tabelle ergänzt
-      });
-    }
-
-    // Aktuelle VK-Preise laden
-    const vkResult = await db.execute(sql`
-      SELECT id, sale_price FROM products WHERE shop_id = ${shopId} AND active = true
-    `);
-    for (const row of vkResult.rows as Record<string, unknown>[]) {
-      const existing = productInitialPrices.get(String(row.id));
-      if (existing) existing.vk = Number(row.sale_price);
-    }
-
-    // Initiale Preise zurückrechnen aus price_histories (rückwärts von ältester Änderung)
-    for (const row of priceChangesResult.rows as Record<string, unknown>[]) {
-      const pid = String(row.product_id);
-      const initial = productInitialPrices.get(pid);
-      if (!initial) continue;
-      // Die älteste Änderung hat old_value = der Preis VOR dem Jahr
-      // Wir setzen den initial-Preis nur einmal (erste Änderung pro Feld)
-      if (String(row.field) === 'purchase_price' && initial.ek === Number(row.new_value)) {
-        // Aktuelle EK = letzte Änderung; zurückrechnen zum Start
-      }
-    }
-    // Einfacherer Ansatz: Perioden aus Änderungszeitpunkten ableiten
-    const periodsMap = new Map<string, PricePeriod[]>();
-
-    // Für jedes Produkt: Änderungs-Zeitpunkte sammeln, Perioden bilden
-    const changesByProduct = new Map<string, Array<{ field: string; oldValue: number; newValue: number; changedAt: number }>>();
-    for (const row of priceChangesResult.rows as Record<string, unknown>[]) {
-      const pid = String(row.product_id);
-      if (!changesByProduct.has(pid)) changesByProduct.set(pid, []);
-      changesByProduct.get(pid)!.push({
-        field: String(row.field),
-        oldValue: Number(row.old_value),
-        newValue: Number(row.new_value),
-        changedAt: Number(row.changed_at),
-      });
-    }
-
-    // Alle Produkte mit Aktivität verarbeiten
-    const productsWithActivity = new Set<string>();
-    for (const row of salesDetailResult.rows as Record<string, unknown>[]) {
-      productsWithActivity.add(String(row.product_id));
-    }
-    for (const pid of changesByProduct.keys()) {
-      productsWithActivity.add(pid);
-    }
-
-    for (const pid of productsWithActivity) {
-      const changes = changesByProduct.get(pid) ?? [];
-      const initial = productInitialPrices.get(pid);
-      if (!initial) continue;
-
-      // Startpreise rekonstruieren: von den ältesten Änderungen rückwärts
-      let startEk = initial.ek;
-      let startVk = initial.vk;
-      // Sortiert nach changedAt — älteste zuerst
-      const sortedChanges = [...changes].sort((a, b) => a.changedAt - b.changedAt);
-      // Rückwärts rekonstruieren: der oldValue der frühesten Änderung ist der Startpreis
-      for (const c of sortedChanges) {
-        if (c.field === 'purchase_price') { startEk = c.oldValue; break; }
-      }
-      for (const c of sortedChanges) {
-        if (c.field === 'sale_price') { startVk = c.oldValue; break; }
-      }
-      // Wenn keine Änderung für ein Feld: aktueller Preis = Startpreis (unverändert)
-      if (!sortedChanges.some(c => c.field === 'purchase_price')) startEk = initial.ek;
-      if (!sortedChanges.some(c => c.field === 'sale_price')) startVk = initial.vk;
-
-      // Zeitpunkte der Preisänderungen sammeln (unique, sortiert)
-      const changePoints = [...new Set(sortedChanges.map(c => c.changedAt))].sort((a, b) => a - b);
-
-      // Perioden bilden
-      const periods: PricePeriod[] = [];
-      let curEk = startEk;
-      let curVk = startVk;
-
-      const boundaries = [yearStart, ...changePoints, yearEnd];
-      for (let i = 0; i < boundaries.length - 1; i++) {
-        const from = boundaries[i];
-        const to = boundaries[i + 1];
-
-        // Preisänderungen an diesem Zeitpunkt anwenden
-        if (i > 0) {
-          for (const c of sortedChanges) {
-            if (c.changedAt === boundaries[i]) {
-              if (c.field === 'purchase_price') curEk = c.newValue;
-              if (c.field === 'sale_price') curVk = c.newValue;
-            }
-          }
-        }
-
-        periods.push({
-          ek_cents: curEk, vk_cents: curVk,
-          from, to,
-          sold_qty: 0, withdrawn_qty: 0,
-          revenue_cents: 0, cost_cents: 0, withdrawal_cost_cents: 0,
-        });
-      }
-
-      // Verkäufe/Entnahmen den Perioden zuordnen
-      for (const row of salesDetailResult.rows as Record<string, unknown>[]) {
-        if (String(row.product_id) !== pid) continue;
-        const createdAt = Number(row.created_at);
-        const qty = Number(row.qty);
-        const vk = Number(row.vk_cents);
-        const hasEkSnapshot = row.has_ek_snapshot === true;
-        const snapshotEk = Number(row.ek_cents);
-        const saleType = String(row.sale_type);
-
-        // Finde passende Periode
-        const period = periods.find(p => createdAt >= p.from && createdAt < p.to);
-        if (!period) continue;
-
-        // EK: Sale-Snapshot wenn vorhanden, sonst EK der Periode (korrekt für Altdaten vor Phase 27)
-        const ek = hasEkSnapshot ? snapshotEk : period.ek_cents;
-
-        if (saleType === 'withdrawal') {
-          period.withdrawn_qty += qty;
-          period.withdrawal_cost_cents += qty * ek;
-        } else {
-          period.sold_qty += qty;
-          period.revenue_cents += qty * vk;
-          period.cost_cents += qty * ek;
-        }
-      }
-
-      // Nur Perioden mit Aktivität behalten
-      const activePeriods = periods.filter(p => p.sold_qty > 0 || p.withdrawn_qty > 0);
-      if (activePeriods.length > 0) {
-        periodsMap.set(pid, activePeriods);
-      }
-    }
-
-    // Items zusammenbauen — EK-Kosten aus Preisperioden bevorzugen
-    // Preisperioden verwenden den historischen EK (korrekt), die Hauptquery fällt
-    // bei fehlendem purchasePrice auf den aktuellen EK zurück (falsch für Altdaten).
-    const items = (inventoryResult.rows as Record<string, unknown>[]).map(row => {
-      const pid = String(row.id);
-      const periods = periodsMap.get(pid) ?? [];
-      const hasPeriods = periods.length > 0;
-      return {
-        id: pid,
-        article_number: String(row.article_number),
-        name: String(row.name),
-        current_stock: Number(row.current_stock),
-        current_ek_cents: Number(row.current_ek_cents),
-        sold_qty: Number(row.sold_qty),
-        withdrawn_qty: Number(row.withdrawn_qty),
-        revenue_cents: hasPeriods
-          ? periods.reduce((s, p) => s + p.revenue_cents, 0)
-          : Number(row.revenue_cents),
-        cost_cents: hasPeriods
-          ? periods.reduce((s, p) => s + p.cost_cents, 0)
-          : Number(row.cost_cents),
-        withdrawal_cost_cents: hasPeriods
-          ? periods.reduce((s, p) => s + p.withdrawal_cost_cents, 0)
-          : Number(row.withdrawal_cost_cents),
-        price_periods: periods,
-      };
-    });
-
-    // Query 5 — Wareneingänge im Jahr (positive stock_movements = Einkauf/Retoure)
-    // EK wird über Preisperioden zum Zeitpunkt der Bewegung bestimmt
-    const stockInResult = await db.execute(sql`
-      SELECT
-        sm.product_id,
-        sm.quantity,
-        sm.moved_at
-      FROM stock_movements sm
-      WHERE sm.shop_id = ${shopId}
-        AND sm.moved_at >= ${yearStart}
-        AND sm.moved_at < ${yearEnd}
-        AND sm.quantity > 0
-        AND sm.type IN ('adjustment', 'return')
-      ORDER BY sm.product_id, sm.moved_at
-    `);
-
-    // Wareneingänge den Preisperioden zuordnen für korrekten EK
-    let totalPurchasedCents = 0;
-    for (const row of stockInResult.rows as Record<string, unknown>[]) {
-      const pid = String(row.product_id);
-      const qty = Number(row.quantity);
-      const movedAt = Number(row.moved_at);
-      const periods = periodsMap.get(pid);
-      if (periods) {
-        const period = periods.find(p => movedAt >= p.from && movedAt < p.to);
-        if (period) {
-          totalPurchasedCents += qty * period.ek_cents;
-          continue;
-        }
-      }
-      // Fallback: aktueller EK des Produkts
-      const item = items.find(i => i.id === pid);
-      totalPurchasedCents += qty * (item?.current_ek_cents ?? 0);
-    }
-
-    // Auch Produkte die im Jahr angelegt wurden (Erstbestand) berücksichtigen
-    // Die kommen nicht als stock_movement rein, sondern über den PDF-Import
-    // Wir erfassen sie nicht separat — der Bestandswert + verkaufte EK-Kosten ist die Annäherung
-
-    const stockValueRow = (stockValueResult.rows[0] as Record<string, unknown>) ?? {};
+    const result = await computeFifoInventory(shopId, y);
     return reply.send({
       year: y,
-      items,
-      total_stock_value_cents: Number(stockValueRow.total_stock_value_cents ?? 0),
-      total_purchased_cents: totalPurchasedCents,
+      items: result.items,
+      total_stock_value_cents: result.total_stock_value_cents,
+      total_purchased_cents: result.total_purchased_cents,
     });
   });
 
