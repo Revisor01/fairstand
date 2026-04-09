@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: verifying
-stopped_at: Completed 36-ek-preiswarnung-beim-import/36-01-PLAN.md
-last_updated: "2026-04-03T22:16:41.843Z"
-last_activity: 2026-04-03
+milestone: v11.0
+milestone_name: EK-Preismanagement & Inventur-Genauigkeit
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-04-09"
+last_activity: 2026-04-09
 progress:
-  total_phases: 30
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-02)
+See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
-**Current focus:** Phase 36 — EK-Preiswarnung beim Import
+**Current focus:** Defining requirements for v11.0 — EK-Preismanagement & Inventur-Genauigkeit
 
 ## Current Position
 
-Phase: 36
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-03
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-09 — Milestone v11.0 started
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Last activity: 2026-04-03
 - [Phase 35-lagerdauer-analyse]: Ladenhüter-Schwellwert: 90 Tage (>3 Monate ohne Verkauf)
 - [Phase 36-ek-preiswarnung-beim-import]: Warnzeile als amber-50-Zeile nach parseWarning-Block, gleiche colSpan=9-Struktur
 - [Phase 36-ek-preiswarnung-beim-import]: storedPurchasePriceCents optional im MatchedRow-Interface — nur bei status='known' befüllt
+- [v11.0 DB-Reset]: DB auf Stand Null gesetzt aus 3 Rechnungen (2552695, 2552709, 2600988) — 106 Produkte, 503 Stück, 11 Preishistorien
 
 ### Pending Todos
 
@@ -63,7 +64,7 @@ None
 
 ## Session Continuity
 
-Last session: 2026-04-03T22:14:56.371Z
-Stopped at: Completed 36-ek-preiswarnung-beim-import/36-01-PLAN.md
+Last session: 2026-04-09
+Stopped at: Milestone v11.0 initialization
 Resume file: None
-Next step: `/gsd:plan-phase 33`
+Next step: Define requirements, then `/gsd:plan-phase`

@@ -79,15 +79,15 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 
 ### Active
 
-## Current Milestone: v10.0 Bilder, Export & Analyse
+## Current Milestone: v11.0 EK-Preismanagement & Inventur-Genauigkeit
 
-**Goal:** Produktbilder im Kassengrid, Excel-Export, Lagerdauer-Analyse und Preiswarnung beim Import
+**Goal:** Korrekte Inventur-Berechnung mit exakten historischen EK-Preisen pro Wareneingang, EK-Anpassung bei Bestandskorrekturen
 
 **Target features:**
-- Produktbilder in Artikelkacheln im POS-Grid anzeigen
-- XLSX-Export für Inventur und Verkaufshistorie (statt nur CSV)
-- Lagerdauer-Analyse: Ladenhüter identifizieren die lange nicht verkauft wurden
-- Preiswarnung beim PDF-Import wenn sich der EK geändert hat
+- Wareneingänge als eigene Bewegungen mit EK-Preis erfassen — jede Bestandserhöhung speichert den zugehörigen EK und die Menge
+- StockAdjustModal erweitern: beim Bestand-Anpassen optional EK-Preis ändern ("Preis anpassen" Toggle)
+- Inventur-Berechnung auf Basis exakter historischer EK-Preise pro Wareneingang (kein Durchschnitt, kein "aktueller EK × Bestand")
+- Inventur-Report zeigt pro Artikel transparent auf, welche Mengen zu welchem EK im Bestand liegen
 
 ### Out of Scope
 
@@ -110,10 +110,10 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - **Deployment:** Docker auf server.godsapp.de (Hetzner), Apache → Traefik → Container
 - **Domain:** fairstand.godsapp.de
 
-### Current State (v8.0 shipped)
+### Current State (v10.0 shipped)
 
-- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer, pdfkit, csv-stringify
-- 29 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0 + 3 v8.0), alle shipped
+- Tech Stack: React 19, Vite 6, Tailwind 4, TanStack Query 5, Lucide React, Fastify 5 + @fastify/websocket + @fastify/rate-limit, PostgreSQL 16 + Drizzle ORM (node-postgres), pdfjs-dist 5, Recharts, Nodemailer, pdfkit, csv-stringify, SheetJS (xlsx)
+- 36 Phasen (4 v1.0 + 2 v1.1 + 3 v2.0 + 3 v3.0 + 4 v4.0 + 4 v5.0 + 2 v6.0 + 3 v7.0 + 3 v8.0 + 3 v9.0 + 4 v10.0), alle shipped
 - Live auf fairstand.godsapp.de mit CI/CD (GitHub Actions → Portainer Webhook)
 - Online-Only: TanStack Query als einzige Datenschicht, WebSocket für Live-Updates, keine lokale DB
 - PostgreSQL in Docker-Compose mit persistentem Volume, alle Routes async/await
@@ -121,7 +121,9 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - Multi-Shop: Master-Shop verwaltet andere Shops, jeder Shop hat eigenes Sortiment
 - Responsive UX: Warenkorb als fixe Spalte oder Swipe-In je nach Screenbreite
 - Inventur & Preis-History: Automatisches EK/VK-Tracking, Stock-Movement-Journal, Inventur-Übersicht im Jahresbericht
-- Export: CSV + PDF für Inventur (Kirchenkreis), Verkaufshistorie-CSV, Einzelbeleg-PDF
+- Export: CSV + PDF + XLSX für Inventur (Kirchenkreis), Verkaufshistorie-CSV/XLSX, Einzelbeleg-PDF
+- Lagerdauer-Analyse: Ladenhüter-Markierung, letzte Verkaufsdaten
+- EK-Preiswarnung beim PDF-Import
 
 ## Constraints
 
@@ -165,4 +167,4 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 This document evolves at phase transitions and milestone boundaries.
 
 ---
-*Last updated: 2026-04-02 after v9.0 milestone started*
+*Last updated: 2026-04-09 after v11.0 milestone started*
