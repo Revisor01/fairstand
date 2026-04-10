@@ -14,7 +14,8 @@
 - ✅ **v9.0 UX-Polish & Verwaltung** — Phases 30-32 (shipped 2026-04-03)
 - ✅ **v10.0 Bilder, Export & Analyse** — Phases 33-36 (shipped 2026-04-03)
 - ✅ **v11.0 EK-Preismanagement & Inventur-Genauigkeit** — Phases 37-39 (shipped 2026-04-09)
-- **v12.0 Live-Suche** — Phase 40 (active)
+- ✅ **v12.0 Live-Suche** — Phase 40 (shipped 2026-04-10)
+- **v13.0 Multi-Kategorien** — Phase 41 (active)
 
 ## Phases
 
@@ -137,10 +138,17 @@ Full details: `.planning/milestones/v9.0-ROADMAP.md`
 
 </details>
 
-<details open>
-<summary>v12.0 Live-Suche (Phase 40) — ACTIVE</summary>
+<details>
+<summary>✅ v12.0 Live-Suche (Phase 40) — SHIPPED 2026-04-10</summary>
 
-- [ ] **Phase 40: Live-Suche im POS-Dashboard** - Suchfeld über dem Artikelgrid filtert live nach Artikelnummer, Produktname und Kategorie
+- [x] **Phase 40: Live-Suche im POS-Dashboard** - Suchfeld über dem Artikelgrid filtert live nach Artikelnummer, Produktname und Kategorie (completed 2026-04-10)
+
+</details>
+
+<details open>
+<summary>v13.0 Multi-Kategorien (Phase 41) — ACTIVE</summary>
+
+- [ ] **Phase 41: Multi-Kategorien** - Produkte können mehreren Kategorien zugeordnet werden (text[] statt text), ProductForm mit Multi-Select, Filter-Logik angepasst
 
 </details>
 
@@ -636,6 +644,19 @@ Plans:
   2. Wenn der Suchbegriff in Artikelnummer, Produktname oder Kategorie vorkommt (Teilmatch), erscheint der Artikel im gefilterten Grid — nicht passende Artikel verschwinden
   3. Das Leeren des Suchfelds stellt das vollständige Artikelgrid wieder her — als wäre keine Suche aktiv gewesen
   4. Die Suche funktioniert auf dem iPad mit Touch-Eingabe ohne Verzögerung oder Flackern des Grids
+**Plans**: 1
+**UI hint**: yes
+
+### Phase 41: Multi-Kategorien
+**Goal**: Ein Produkt kann mehreren Kategorien zugeordnet werden — z.B. ein Schokoriegel ist gleichzeitig "Schokolade" und "Süßigkeiten" und erscheint in beiden Kategorie-Filtern
+**Depends on**: Phase 40
+**Requirements**: MCAT-01, MCAT-02, MCAT-03, MCAT-04, MCAT-05
+**Success Criteria** (what must be TRUE):
+  1. Die products-Tabelle hat eine `categories`-Spalte vom Typ text[] — bestehende Daten sind als Array mit einer Kategorie migriert
+  2. Im Produktformular kann die Mitarbeiterin mehrere Kategorien per Multi-Select auswählen (Checkboxen oder Chips)
+  3. Im POS-Dashboard zeigt ein Kategorie-Tab alle Produkte an, die diese Kategorie in ihrem Array enthalten — ein Produkt kann in mehreren Tabs erscheinen
+  4. Inventur-Report, CSV-Export und PDF-Export zeigen die Kategorien als Komma-getrennte Liste
+  5. Das alte `category`-Feld existiert nicht mehr (komplette Migration)
 **Plans**: TBD
 **UI hint**: yes
 

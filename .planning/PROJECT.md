@@ -83,17 +83,19 @@ Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den be
 - ✓ Inventur-Report zeigt pro Artikel verbleibende Chargen mit EK-Preis transparent an — v11.0
 - ✓ Bestandswarnungen als Glocken-Icon mit Badge-Zähler im POS-Header (statt ausgeklappter Liste) — v11.0
 
+- ✓ Live-Suche im POS-Dashboard über Artikelnummer, Produktname und Kategorie (Teilmatch) — v12.0
+
 ### Active
 
-## Current Milestone: v12.0 Live-Suche
+## Current Milestone: v13.0 Multi-Kategorien
 
-**Goal:** Echtzeit-Suchfeld im POS-Dashboard zum schnellen Finden von Artikeln
+**Goal:** Ein Produkt kann mehreren Kategorien zugeordnet werden (z.B. Schokoriegel ist "Schokolade" UND "Süßigkeiten")
 
 **Target features:**
-- Suchfeld im POS-Dashboard über dem Artikelgrid
-- Live-Filterung während der Eingabe (kein Submit nötig)
-- Suche über: Artikelnummer, Produktname, Kategorie
-- Ergebnisse filtern das bestehende Artikelgrid
+- Schema-Umbau: products.category (text) → products.categories (text[])
+- Produktformular mit Multi-Select-Kategorien
+- Kategorie-Filter im POS zeigt Produkt an wenn mindestens eine Kategorie matched
+- Bestehende Daten migrieren (einzelne Kategorie → Array mit einer Kategorie)
 
 ### Out of Scope
 

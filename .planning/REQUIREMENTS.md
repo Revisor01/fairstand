@@ -1,47 +1,42 @@
 # Requirements: Fairstand Kassensystem
 
-**Defined:** 2026-04-09
+**Defined:** 2026-04-10
 **Core Value:** Mitarbeiterinnen können vor Ort Artikel antippen, den Gesamtpreis sehen, den bezahlten Betrag eingeben und sofort wissen, wie viel Wechselgeld rausgeht und wie viel als Spende verbucht wird.
 
-## v12.0 Requirements
+## v13.0 Requirements
 
-Requirements für Milestone v12.0 — Live-Suche.
+Requirements für Milestone v13.0 — Multi-Kategorien.
 
-### Live-Suche
+### Multi-Kategorien
 
-- [ ] **SUCH-01**: Im POS-Dashboard gibt es ein Suchfeld über dem Artikelgrid
-- [ ] **SUCH-02**: Das Artikelgrid wird live während der Eingabe gefiltert (kein Submit nötig)
-- [ ] **SUCH-03**: Die Suche findet Artikel über Artikelnummer (auch Teilmatch)
-- [ ] **SUCH-04**: Die Suche findet Artikel über Produktname (auch Teilmatch)
-- [ ] **SUCH-05**: Die Suche findet Artikel über Kategorie
-
-## Future Requirements
-
-None
+- [ ] **MCAT-01**: Ein Produkt kann mehreren Kategorien zugeordnet werden (Schema: products.categories text[])
+- [ ] **MCAT-02**: Bestehende Produkte werden automatisch migriert (single category → array mit einer Kategorie)
+- [ ] **MCAT-03**: ProductForm ermöglicht Multi-Select von Kategorien beim Anlegen/Bearbeiten
+- [ ] **MCAT-04**: Kategorie-Filter im POS zeigt ein Produkt an, wenn mindestens eine seiner Kategorien matched
+- [ ] **MCAT-05**: Inventur-Export und -Report zeigt weiterhin korrekte Kategorie-Information (erste Kategorie oder Komma-Liste)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Server-seitige Suche | Produktliste bereits client-seitig geladen via TanStack Query |
-| Fuzzy Search / Tippfehler-Toleranz | Overkill für ~106 Produkte, exakter Teilmatch reicht |
-| Suchhistorie | Nicht nötig für POS-Kontext |
+| Join-Tabelle product_categories | PostgreSQL text[] reicht, einfacher |
+| Hierarchische Kategorien (Parent/Child) | Nicht nötig für 106 Produkte |
+| Kategorie-Icons | UI-Polish, später |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SUCH-01 | Phase 40 | Pending |
-| SUCH-02 | Phase 40 | Pending |
-| SUCH-03 | Phase 40 | Pending |
-| SUCH-04 | Phase 40 | Pending |
-| SUCH-05 | Phase 40 | Pending |
+| MCAT-01 | Phase 41 | Pending |
+| MCAT-02 | Phase 41 | Pending |
+| MCAT-03 | Phase 41 | Pending |
+| MCAT-04 | Phase 41 | Pending |
+| MCAT-05 | Phase 41 | Pending |
 
 **Coverage:**
-- v12.0 requirements: 5 total
+- v13.0 requirements: 5 total
 - Mapped to phases: 5
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after roadmap v12.0 created*
+*Requirements defined: 2026-04-10*
