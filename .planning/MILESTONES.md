@@ -1,5 +1,15 @@
 # Milestones
 
+## v12.0 Live-Suche (Shipped: 2026-04-10)
+
+**Phases completed:** 1 phases, 1 plans, 0 tasks
+
+**Key accomplishments:**
+
+- (none recorded)
+
+---
+
 ## v11.0 EK-Preismanagement & Inventur-Genauigkeit (Shipped: 2026-04-09)
 
 **Phases completed:** 3 phases, 6 plans, 2 tasks
