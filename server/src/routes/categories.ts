@@ -77,11 +77,13 @@ export async function categoryRoutes(fastify: FastifyInstance) {
     const oldName = cat.name;
     const newName = name.trim();
 
-    // Bulk-Update: alle Produkte mit altem Kategorienamen aktualisieren
-    await db
-      .update(products)
-      .set({ category: newName })
-      .where(and(eq(products.shopId, cat.shopId), eq(products.category, oldName)));
+    // Bulk-Update: alle Produkte mit altem Kategorienamen im Array aktualisieren
+    await db.execute(sql`
+      UPDATE products
+      SET categories = array_replace(categories, ${oldName}, ${newName})
+      WHERE shop_id = ${cat.shopId}
+        AND ${oldName} = ANY(categories)
+    `);
 
     // Kategorie selbst umbenennen
     await db
@@ -114,13 +116,14 @@ export async function categoryRoutes(fastify: FastifyInstance) {
       return reply.status(403).send({ error: 'Zugriff verweigert: falsche shopId' });
     }
 
-    // Prüfen wie viele Produkte diese Kategorie verwenden
-    const [countResult] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(products)
-      .where(and(eq(products.shopId, cat.shopId), eq(products.category, cat.name)));
-
-    const count = Number(countResult?.count ?? 0);
+    // Prüfen wie viele Produkte diese Kategorie im Array haben
+    const countResult = await db.execute(sql`
+      SELECT count(*)::integer as count
+      FROM products
+      WHERE shop_id = ${cat.shopId}
+        AND ${cat.name} = ANY(categories)
+    `);
+    const count = Number((countResult.rows[0] as Record<string, unknown>)?.count ?? 0);
     if (count > 0) {
       return reply.status(409).send({
         error: `Kategorie wird von ${count} Produkt${count !== 1 ? 'en' : ''} verwendet. Bitte zuerst Produkte umkategorisieren.`,
