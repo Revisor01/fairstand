@@ -30,7 +30,7 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
         shopId: (p.shop_id ?? p.shopId) as string,
         articleNumber: (p.article_number ?? p.articleNumber) as string,
         name: p.name as string,
-        category: (p.category ?? '') as string,
+        categories: (Array.isArray(p.categories) ? p.categories : (p.category ? [p.category as string] : [])) as string[],
         purchasePrice: Number(p.purchase_price ?? p.purchasePrice ?? 0),
         salePrice: Number(p.sale_price ?? p.salePrice ?? 0),
         vatRate: Number(p.vat_rate ?? p.vatRate ?? 7),
@@ -47,7 +47,7 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
   // Alphabetisch sortierte unique Kategorien aus den geladenen Produkten
   const categories = useMemo((): string[] => {
     if (!products) return [];
-    const unique = [...new Set(products.map((p: Product) => p.category))].sort();
+    const unique = [...new Set(products.flatMap((p: Product) => p.categories))].sort();
     return ['Alle', ...unique];
   }, [products]);
 
@@ -55,12 +55,12 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
     if (!products) return [];
     const query = searchQuery.trim().toLowerCase();
     return products.filter((p: Product) => {
-      if (activeCategory !== 'Alle' && p.category !== activeCategory) return false;
+      if (activeCategory !== 'Alle' && !p.categories.includes(activeCategory)) return false;
       if (!query) return true;
       return (
         p.articleNumber.toLowerCase().includes(query) ||
         p.name.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query)
+        p.categories.some(c => c.toLowerCase().includes(query))
       );
     });
   }, [products, activeCategory, searchQuery]);
