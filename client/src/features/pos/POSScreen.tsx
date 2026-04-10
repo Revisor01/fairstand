@@ -125,7 +125,7 @@ export function POSScreen({ onLock, onSwitchToAdmin, lowStockCount = 0 }: POSScr
           shopId: '',
           articleNumber: saleItem.articleNumber,
           name: saleItem.name,
-          category: '',
+          categories: [],
           purchasePrice: 0,
           salePrice: saleItem.salePrice,
           vatRate: 0,

@@ -13,7 +13,7 @@ function makeProduct(stock: number, minStock = 0): Product {
     shopId: 'shop-1',
     articleNumber: '001',
     name: 'Test Produkt',
-    category: 'Kategorie',
+    categories: ['Kategorie'],
     purchasePrice: 100,
     salePrice: 150,
     vatRate: 7,
