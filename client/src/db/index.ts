@@ -12,7 +12,7 @@ export interface Product {
   shopId: string;
   articleNumber: string;
   name: string;
-  category: string;
+  categories: string[];
   purchasePrice: number; // Cent-Integer (EK-Preis nach Rabatt)
   salePrice: number;     // Cent-Integer (VK-Preis = EVP)
   vatRate: number;       // 7 oder 19
