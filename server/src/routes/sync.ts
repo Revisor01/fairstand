@@ -244,6 +244,12 @@ export async function syncRoutes(fastify: FastifyInstance) {
               errors.push({ index: i, message: 'Produkt gehört nicht zu diesem Shop' });
               return;
             }
+            // Sale laden und Ownership-Check
+            const [saleRow] = await tx.select().from(sales).where(eq(sales.id, ret.saleId)).limit(1);
+            if (!saleRow || saleRow.shopId !== entry.shopId) {
+              errors.push({ index: i, message: 'Verkauf gehört nicht zu diesem Shop' });
+              return;
+            }
             // Bestand für zurückgegebenen Artikel zurückbuchen
             await tx.update(products)
               .set({ stock: sql`${products.stock} + ${ret.quantity}` })
@@ -257,6 +263,13 @@ export async function syncRoutes(fastify: FastifyInstance) {
               referenceSaleId: ret.saleId,
               movedAt: entry.createdAt, // entry.createdAt, nicht Date.now()
             });
+            // sales.returned_items aktualisieren — productId hinzufuegen wenn noch nicht drin
+            const currentReturned = (saleRow.returnedItems ?? []) as string[];
+            if (!currentReturned.includes(ret.productId)) {
+              await tx.update(sales)
+                .set({ returnedItems: [...currentReturned, ret.productId] })
+                .where(eq(sales.id, ret.saleId));
+            }
 
             // OutboxEvent protokollieren
             await tx.insert(outboxEvents).values({
