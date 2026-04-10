@@ -138,7 +138,7 @@ export function ImportScreen() {
             shopId: getShopId(),
             articleNumber: row.articleNumber.trim(),
             name: row.name.trim(),
-            category: '',
+            categories: [],
             purchasePrice: row.purchasePriceCents,
             salePrice: row.evpCents ?? 0,
             vatRate: row.vatRate,
