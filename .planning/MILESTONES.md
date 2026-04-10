@@ -1,5 +1,15 @@
 # Milestones
 
+## v13.0 Multi-Kategorien (Shipped: 2026-04-10)
+
+**Phases completed:** 1 phases, 1 plans, 0 tasks
+
+**Key accomplishments:**
+
+- One-liner:
+
+---
+
 ## v12.0 Live-Suche (Shipped: 2026-04-10)
 
 **Phases completed:** 1 phases, 1 plans, 0 tasks
