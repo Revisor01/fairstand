@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: Not started
 stopped_at: Roadmap v12.0 created — bereit für Phase-Planning
-last_updated: "2026-04-10T09:40:38.154Z"
+last_updated: "2026-04-10T09:40:46.147Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 34
