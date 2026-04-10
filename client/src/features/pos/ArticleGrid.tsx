@@ -1,5 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Search, X } from 'lucide-react';
 import { getShopId } from '../../db/index.js';
 import type { Product } from '../../db/index.js';
 import { authFetch } from '../auth/serverAuth.js';
@@ -12,6 +13,7 @@ interface ArticleGridProps {
 
 export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // TQ mit networkMode 'offlineFirst' — im Online-Modus lädt vom Server,
   // im Offline-Modus greift TQ auf den gecachten Stand zurück (LIVE-06).
@@ -51,9 +53,17 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (activeCategory === 'Alle') return products;
-    return products.filter((p: Product) => p.category === activeCategory);
-  }, [products, activeCategory]);
+    const query = searchQuery.trim().toLowerCase();
+    return products.filter((p: Product) => {
+      if (activeCategory !== 'Alle' && p.category !== activeCategory) return false;
+      if (!query) return true;
+      return (
+        p.articleNumber.toLowerCase().includes(query) ||
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      );
+    });
+  }, [products, activeCategory, searchQuery]);
 
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const activeTabRef = useRef<HTMLButtonElement>(null);
@@ -76,6 +86,35 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
 
   return (
     <div className="flex flex-col h-full">
+      {/* Suchfeld */}
+      <div className="px-4 pt-3 pb-2 bg-white border-b border-sky-50 shrink-0">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Artikel suchen..."
+            className="
+              w-full h-11 pl-10 pr-10 rounded-full
+              bg-sky-50 border border-sky-100
+              text-base text-slate-800 placeholder-slate-400
+              focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-sky-300
+            "
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onPointerDown={() => setSearchQuery('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-sky-100"
+              aria-label="Suche löschen"
+            >
+              <X className="w-4 h-4 text-slate-500" />
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Kategorie-Tabs */}
       <div
         ref={tabsContainerRef}
@@ -108,7 +147,7 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
       <div className="flex-1 overflow-y-auto p-6">
         {filteredProducts.length === 0 ? (
           <div className="flex items-center justify-center h-32 text-slate-500">
-            Keine Produkte verfügbar
+            {searchQuery ? `Keine Artikel gefunden für "${searchQuery}"` : 'Keine Produkte verfügbar'}
           </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-4">
