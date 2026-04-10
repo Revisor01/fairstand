@@ -78,7 +78,7 @@ export function ProductStats({ product, onClose }: ProductStatsProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-sky-800">{product.name}</h2>
-          <p className="text-sm text-slate-500">Art.-Nr. {product.articleNumber} · {product.category}</p>
+          <p className="text-sm text-slate-500">Art.-Nr. {product.articleNumber} · {product.categories.join(', ')}</p>
         </div>
         <button
           onPointerDown={onClose}

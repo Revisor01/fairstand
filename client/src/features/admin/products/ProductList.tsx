@@ -46,7 +46,7 @@ export function ProductList() {
 
   const categories = useMemo((): string[] => {
     if (!products) return [];
-    const unique = [...new Set(products.map(p => p.category))].sort();
+    const unique = [...new Set(products.flatMap(p => p.categories))].sort();
     return [
       'Alle',
       ...(outOfStockCount > 0 ? ['Ausverkauft'] : []),
@@ -65,7 +65,7 @@ export function ProductList() {
         return days === null || days > 90;
       });
     }
-    return products.filter(p => p.category === activeCategory);
+    return products.filter(p => p.categories.includes(activeCategory));
   }, [products, activeCategory]);
 
   async function handleToggleActive(product: Product) {
@@ -221,7 +221,7 @@ export function ProductList() {
                     )}
                   </div>
                   <div className="text-xs text-slate-500 mt-0.5">
-                    {product.articleNumber} · {product.category}
+                    {product.articleNumber} · {product.categories.join(', ')}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5 text-xs">
                     <span className="text-sky-700 font-semibold">{formatEur(product.salePrice)}</span>
