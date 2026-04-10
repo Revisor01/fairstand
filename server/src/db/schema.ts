@@ -1,11 +1,12 @@
 import { pgTable, text, integer, bigint, boolean, serial, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const products = pgTable('products', {
   id: text('id').primaryKey(),
   shopId: text('shop_id').notNull(),
   articleNumber: text('article_number').notNull(),
   name: text('name').notNull(),
-  category: text('category').notNull().default(''),
+  categories: text('categories').array().notNull().default(sql`ARRAY[]::text[]`),
   purchasePrice: integer('purchase_price').notNull(),
   salePrice: integer('sale_price').notNull(),
   vatRate: integer('vat_rate').notNull(),
