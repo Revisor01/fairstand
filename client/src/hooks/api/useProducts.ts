@@ -10,7 +10,7 @@ function mapServerProduct(p: Record<string, unknown>): Product {
     shopId: (p.shop_id ?? p.shopId) as string,
     articleNumber: (p.article_number ?? p.articleNumber) as string,
     name: p.name as string,
-    category: (p.category ?? '') as string,
+    categories: (Array.isArray(p.categories) ? p.categories : (p.category ? [p.category as string] : [])) as string[],
     purchasePrice: Number(p.purchase_price ?? p.purchasePrice ?? 0),
     salePrice: Number(p.sale_price ?? p.salePrice ?? 0),
     vatRate: Number(p.vat_rate ?? p.vatRate ?? 7),
