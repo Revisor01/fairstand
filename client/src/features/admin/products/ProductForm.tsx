@@ -15,7 +15,7 @@ interface ProductFormProps {
 interface FormValues {
   articleNumber: string;
   name: string;
-  category: string;
+  categories: string[];
   purchasePriceEur: string;
   salePriceEur: string;
   vatRate: string;
@@ -41,7 +41,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
   const [values, setValues] = useState<FormValues>({
     articleNumber: product?.articleNumber ?? '',
     name: product?.name ?? '',
-    category: product?.category ?? '',
+    categories: product?.categories ?? [],
     purchasePriceEur: product ? toEur(product.purchasePrice) : '',
     salePriceEur: product ? toEur(product.salePrice) : '',
     vatRate: product ? String(product.vatRate) : '7',
@@ -91,7 +91,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
           ...product,
           articleNumber: values.articleNumber.trim(),
           name: values.name.trim(),
-          category: values.category.trim(),
+          categories: values.categories,
           purchasePrice,
           salePrice,
           vatRate,
@@ -121,7 +121,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
           shopId: getShopId(),
           articleNumber: values.articleNumber.trim(),
           name: values.name.trim(),
-          category: values.category.trim(),
+          categories: values.categories,
           purchasePrice,
           salePrice,
           vatRate,
@@ -200,20 +200,55 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-slate-600">Kategorie</label>
-          <select
-            value={values.category}
-            onChange={e => handleChange('category', e.target.value)}
-            className="h-12 text-lg border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-sky-400 bg-white"
-          >
-            <option value="">-- keine Kategorie --</option>
-            {values.category && !dbCategories?.some(c => c.name === values.category) && (
-              <option value={values.category}>{values.category} (nicht mehr in Liste)</option>
+          <label className="text-sm font-medium text-slate-600">Kategorien</label>
+          <div className="flex flex-wrap gap-2 pt-1">
+            {/* Bekannte Kategorien aus der Datenbank */}
+            {dbCategories?.map(cat => {
+              const isSelected = values.categories.includes(cat.name);
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onPointerDown={() => {
+                    setValues(prev => ({
+                      ...prev,
+                      categories: isSelected
+                        ? prev.categories.filter(c => c !== cat.name)
+                        : [...prev.categories, cat.name],
+                    }));
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium min-h-[36px] transition-colors ${
+                    isSelected
+                      ? 'bg-sky-500 text-white shadow-sm'
+                      : 'bg-sky-50 text-sky-700 border border-sky-200 active:bg-sky-100'
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              );
+            })}
+            {/* Kategorien die am Produkt hängen, aber nicht mehr in der Liste sind */}
+            {values.categories
+              .filter(c => !dbCategories?.some(d => d.name === c))
+              .map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  onPointerDown={() => {
+                    setValues(prev => ({
+                      ...prev,
+                      categories: prev.categories.filter(x => x !== c),
+                    }));
+                  }}
+                  className="px-3 py-1.5 rounded-full text-sm font-medium min-h-[36px] bg-slate-200 text-slate-600 border border-slate-300 active:bg-slate-300 transition-colors"
+                >
+                  {c} ×
+                </button>
+              ))}
+            {(!dbCategories || dbCategories.length === 0) && values.categories.length === 0 && (
+              <span className="text-sm text-slate-400 italic">Noch keine Kategorien angelegt</span>
             )}
-            {dbCategories?.map(cat => (
-              <option key={cat.id} value={cat.name}>{cat.name}</option>
-            ))}
-          </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
