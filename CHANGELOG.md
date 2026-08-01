@@ -12,6 +12,11 @@ und sind daher gröber gefasst als künftige Einträge.
 
 ### Behoben
 
+- Bildupload für Produkte funktionierte produktiv nicht (HTTP 415).
+  `@fastify/multipart` war nur innerhalb der Import-Routen registriert;
+  Fastify-Plugins gelten aber nur im Scope des registrierenden Plugins. Die
+  Registrierung erfolgt jetzt app-weit. Der Rechnungsimport war nicht
+  betroffen.
 - Fehlende Datenbank-Migration für `products.categories` nachgeliefert. Die
   v13.0-Umstellung von `category` (text) auf `categories` (text[]) war nur
   manuell auf der Produktion gefahren worden — frische Installationen brachen
@@ -43,6 +48,14 @@ und sind daher gröber gefasst als künftige Einträge.
 
 - Dependabot Vulnerability Alerts, Dependabot Security Updates und CodeQL
   Default Setup für das Repository aktiviert.
+- Path-Injection beim Bildupload behoben: Produkt-IDs werden vom Client
+  vergeben und flossen ungeprüft in den Zielpfad, sodass ein
+  authentifizierter Nutzer aus dem Bildverzeichnis ausbrechen konnte.
+- Bild-Upload- und Ausleseroute mit Rate-Limits versehen (30/min bzw.
+  300/min).
+- Bildquellen im Produktformular werden gegen eine Whitelist geprüft, damit
+  ein manipuliertes `imageUrl`-Feld nicht als `javascript:`- oder
+  `data:`-URL im `src` landet.
 
 #### Bekannte offene Punkte
 
