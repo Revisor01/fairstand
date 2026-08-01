@@ -50,6 +50,13 @@
       "when": 1743638400000,
       "tag": "0006_add_article_number_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1775827320000,
+      "tag": "0007_products_categories_array",
+      "breakpoints": true
     }
   ]
 }
