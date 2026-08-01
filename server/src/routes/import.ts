@@ -1,5 +1,4 @@
 import type { FastifyInstance } from 'fastify';
-import multipart from '@fastify/multipart';
 import { z } from 'zod';
 import { eq, sql } from 'drizzle-orm';
 import { parseSuedNordKontorPdf } from '../lib/pdfParser.js';
@@ -28,12 +27,7 @@ function isPdf(buf: Buffer): boolean {
 }
 
 export async function importRoutes(fastify: FastifyInstance) {
-  await fastify.register(multipart, {
-    limits: {
-      fileSize: 10 * 1024 * 1024, // 10 MB max
-      files: 1,
-    },
-  });
+  // multipart wird app-weit in index.ts registriert
 
   fastify.post('/import/parse', async (request, reply) => {
     const data = await request.file();

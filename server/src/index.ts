@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
 import fastifySchedule from '@fastify/schedule';
 import { websocketRoutes } from './routes/websocket.js';
@@ -34,6 +35,16 @@ await fastify.register(cors, {
     } else {
       callback(new Error(`Origin ${origin} ist nicht erlaubt`), false);
     }
+  },
+});
+
+// Multipart app-weit registrieren: Fastify-Plugins gelten sonst nur im Scope
+// des registrierenden Plugins. Zuvor lag die Registrierung in importRoutes,
+// wodurch der Bildupload in products.ts mit 415 fehlschlug.
+await fastify.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB — Rechnungs-PDFs; Bildupload begrenzt zusaetzlich auf 5 MB
+    files: 1,
   },
 });
 
