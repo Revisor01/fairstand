@@ -65,8 +65,12 @@ und sind daher gröber gefasst als künftige Einträge.
   ausschließlich schreibend für Excel-Exporte genutzt (`XLSX.write`), es
   werden keine fremden Dateien eingelesen — der Angriffsvektor greift hier
   nicht.
-- `esbuild` (moderate): nur transitiv über `drizzle-kit` als
-  Dev-Abhängigkeit; betrifft ausschließlich den Entwicklungs-Server.
+- `esbuild` (moderate): das direkte Paket ist auf 0.28.1 angehoben. Verwundbar
+  bleiben zwei ältere Versionen, die transitiv an `drizzle-kit` hängen. Da
+  `drizzle-kit` für die Migration beim Containerstart gebraucht wird, liegt es
+  auch im Produktions-Image. Die Lücke betrifft jedoch ausschließlich den
+  esbuild-Entwicklungs-Server, der dort nie gestartet wird. Auflösbar erst mit
+  einem Major-Bump von `drizzle-kit`.
 
 ## [13.0] — 2026-04-10
 
