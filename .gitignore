@@ -1,6 +1,23 @@
 node_modules/
 dist/
 .env
+.env.*
+!.env.example
 *.db
 data/
 client/dist/
+client/dev-dist/
+
+# Betriebsdaten (echte Lieferantenrechnungen, Kundendaten)
+Süd-Nord-Kontor/
+
+# Tooling / Agenten
+.claude/
+.playwright-mcp/
+
+# Betriebssystem & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

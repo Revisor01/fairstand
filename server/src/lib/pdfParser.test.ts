@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { parseSuedNordKontorPdf } from './pdfParser.js';
 
@@ -8,13 +8,25 @@ import { parseSuedNordKontorPdf } from './pdfParser.js';
  * Beide Rechnungsformate muessen korrekt geparst werden:
  * - Rechnung 2600988: Format A (ohne Rabatt-Spalte)
  * - Rechnung 2552709: Format B (mit Rabatt-Spalte)
+ *
+ * Die Fixtures sind echte Lieferantenrechnungen und liegen daher nicht im Repo.
+ * Fehlen sie lokal, werden die Suites uebersprungen statt fehlzuschlagen.
+ * Zum Ausfuehren: die PDFs nach ../Süd-Nord-Kontor/ legen.
  */
 
 const PDF_DIR = join(process.cwd(), '..', 'Süd-Nord-Kontor');
+const FIXTURE_A = join(PDF_DIR, 'Rechnung 2600988.pdf');
+const FIXTURE_B = join(PDF_DIR, 'Rechnung 2552709.pdf');
 
-describe('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
+const hasFixtureA = existsSync(FIXTURE_A);
+const hasFixtureB = existsSync(FIXTURE_B);
+const describeA = hasFixtureA ? describe : describe.skip;
+const describeB = hasFixtureB ? describe : describe.skip;
+const describeBoth = hasFixtureA && hasFixtureB ? describe : describe.skip;
+
+describeA('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
   it('parst die Rechnung ohne parseWarning', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2600988.pdf'));
+    const buffer = readFileSync(FIXTURE_A);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     expect(rows.length).toBeGreaterThan(0);
@@ -25,7 +37,7 @@ describe('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
   });
 
   it('hat gueltige Mengenwerte > 0 fuer alle Zeilen', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2600988.pdf'));
+    const buffer = readFileSync(FIXTURE_A);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -34,7 +46,7 @@ describe('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
   });
 
   it('hat erkannte Artikelnummern (nicht leer)', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2600988.pdf'));
+    const buffer = readFileSync(FIXTURE_A);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -43,7 +55,7 @@ describe('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
   });
 
   it('hat positive purchasePriceCents', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2600988.pdf'));
+    const buffer = readFileSync(FIXTURE_A);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -52,9 +64,9 @@ describe('parseSuedNordKontorPdf — Format A (2600988, ohne Rabatt)', () => {
   });
 });
 
-describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () => {
+describeB('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () => {
   it('parst die Rechnung ohne parseWarning', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     expect(rows.length).toBeGreaterThan(0);
@@ -65,7 +77,7 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 
   it('hat gueltige Mengenwerte > 0 fuer alle Zeilen', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -74,7 +86,7 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 
   it('hat erkannte Artikelnummern (nicht leer)', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -83,7 +95,7 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 
   it('hat positive purchasePriceCents', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -92,7 +104,7 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 
   it('Bezeichnung enthaelt keine Prozent-Tokens (Rabatt-Spalte darf nicht in name landen)', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -101,7 +113,7 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 
   it('Bezeichnung enthaelt keine Euro-Tokens (Preis darf nicht in name landen)', async () => {
-    const buffer = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer = readFileSync(FIXTURE_B);
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
@@ -112,14 +124,14 @@ describe('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', () 
   });
 });
 
-describe('isInvoiceRow-Erkennungslogik', () => {
+describeBoth('isInvoiceRow-Erkennungslogik', () => {
   it('erkennt "1." als Zeilenbeginn in beiden Formaten', async () => {
     // Indirekt getestet: Beide Rechnungen werden geparst und haben Zeile 1
-    const buffer2600988 = readFileSync(join(PDF_DIR, 'Rechnung 2600988.pdf'));
+    const buffer2600988 = readFileSync(FIXTURE_A);
     const rows2600988 = await parseSuedNordKontorPdf(buffer2600988);
     expect(rows2600988.some((r) => r.lineNumber === 1)).toBe(true);
 
-    const buffer2552709 = readFileSync(join(PDF_DIR, 'Rechnung 2552709.pdf'));
+    const buffer2552709 = readFileSync(FIXTURE_B);
     const rows2552709 = await parseSuedNordKontorPdf(buffer2552709);
     expect(rows2552709.some((r) => r.lineNumber === 1)).toBe(true);
   });
