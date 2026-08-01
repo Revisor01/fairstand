@@ -6,6 +6,7 @@ import { useProducts, useToggleProductActive, useDeleteProduct } from '../../../
 import { ProductForm } from './ProductForm.js';
 import { StockAdjustModal } from './StockAdjustModal.js';
 import { ProductStats } from './ProductStats.js';
+import { safeImageSrc } from '../../../lib/imageSrc.js';
 
 type ProductListView = 'list' | 'form' | 'stock' | 'stats';
 
@@ -206,8 +207,8 @@ export function ProductList() {
                 }`}
               >
                 {/* Vorschaubild */}
-                {product.imageUrl && (
-                  <img src={product.imageUrl} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                {safeImageSrc(product.imageUrl) && (
+                  <img src={safeImageSrc(product.imageUrl)!} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
                 )}
 
                 {/* Produktinfo */}

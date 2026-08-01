@@ -6,6 +6,7 @@ import type { Product } from '../../../db/index.js';
 import { getAuthHeaders } from '../../auth/serverAuth.js';
 import { useCategories } from '../../../hooks/api/useCategories.js';
 import { useCreateProduct, useUpdateProduct } from '../../../hooks/api/useProducts.js';
+import { safeImageSrc } from '../../../lib/imageSrc.js';
 
 interface ProductFormProps {
   product?: Product;
@@ -27,18 +28,6 @@ function toEur(cents: number): string {
   return (cents / 100).toFixed(2).replace('.', ',');
 }
 
-/**
- * Laesst nur Bildquellen durch, die wir selbst erzeugen: den serverseitigen
- * Bildpfad und Blob-URLs aus der lokalen Dateiauswahl. Verhindert, dass ein
- * manipuliertes imageUrl-Feld (wird beim Sync aus dem Client-Payload
- * uebernommen) als javascript:- oder data:-URL im src landet.
- */
-function safeImageSrc(url: string | null | undefined): string | null {
-  if (!url) return null;
-  if (url.startsWith('/api/images/')) return url;
-  if (url.startsWith('blob:')) return url;
-  return null;
-}
 
 function toCents(eurStr: string): number {
   // Komma → Punkt
@@ -331,9 +320,9 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
 
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-slate-600">Produktbild</label>
-          {imagePreview && (
+          {safeImageSrc(imagePreview) && (
             <img
-              src={imagePreview}
+              src={safeImageSrc(imagePreview)!}
               alt=""
               className="w-24 h-24 object-cover rounded-xl border border-slate-200"
             />

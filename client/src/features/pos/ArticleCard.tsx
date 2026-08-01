@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import type { Product } from '../../db/index.js';
 import { formatEur } from './utils.js';
+import { safeImageSrc } from '../../lib/imageSrc.js';
 
 // Reine Funktion für Pointer-Movement-Threshold-Logik.
 // Exportiert für Unit-Tests (analog zu checkStockBeforeAdd-Muster).
@@ -59,10 +60,10 @@ export function ArticleCard({ product, inCart = 0, onAddToCart }: ArticleCardPro
         startPos.current = null;
       }}
     >
-      {product.imageUrl && (
+      {safeImageSrc(product.imageUrl) && (
         <div className="w-full h-20 -mx-4 -mt-4 mb-2 overflow-hidden rounded-t-xl">
           <img
-            src={product.imageUrl}
+            src={safeImageSrc(product.imageUrl)!}
             alt=""
             className="w-full h-full object-cover"
           />
