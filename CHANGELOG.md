@@ -10,6 +10,33 @@ und sind daher gröber gefasst als künftige Einträge.
 
 ## [Unreleased]
 
+## [13.2] — 2026-08-01
+
+### Behoben
+
+- Fehlende Migration für `stock_movements.purchase_price_cents`
+  nachgeliefert. Die Spalte kam mit dem FIFO-Inventurwert (v11.0) ins
+  Schema, wurde aber nie als Migration erzeugt — der Inventur-Export brach
+  auf frischen Installationen mit HTTP 500 ab. Ein Abgleich aller acht
+  Tabellen zwischen Schema und migrierter Datenbank zeigt danach keine
+  weitere Abweichung.
+
+### Geändert
+
+- `xlsx` (SheetJS) von 0.18.5 auf 0.20.3 angehoben und auf die offizielle
+  SheetJS-Quelle umgestellt. Das Paket wird seit 0.18.5 nicht mehr über die
+  npm-Registry ausgeliefert, weshalb die beiden Advisories dort ohne Fix
+  blieben. Damit ist der Server frei von `high`-Schwachstellen. Hinweis zur
+  lokalen Installation ab npm 12 steht im README.
+- GitHub-Actions auf aktuelle Majors angehoben (`checkout` v7,
+  `login-action` v4, `build-push-action` v7) — die alten Versionen liefen
+  nur noch mit Node-20-Deprecation-Warnung.
+
+### Sicherheit
+
+- Die zuvor eingecheckten Lieferantenrechnungen wurden per History-Rewrite
+  vollständig aus der Git-Historie entfernt (Repository von 26 MB auf 2 MB).
+
 ## [13.1] — 2026-08-01
 
 ### Behoben
@@ -61,10 +88,11 @@ und sind daher gröber gefasst als künftige Einträge.
 
 #### Bekannte offene Punkte
 
-- `xlsx` (ReDoS, Prototype Pollution): kein Patch verfügbar. Das Paket wird
-  ausschließlich schreibend für Excel-Exporte genutzt (`XLSX.write`), es
-  werden keine fremden Dateien eingelesen — der Angriffsvektor greift hier
-  nicht.
+- `xlsx` (ReDoS, Prototype Pollution): über die npm-Registry kein Patch
+  verfügbar. Das Paket wird ausschließlich schreibend für Excel-Exporte
+  genutzt (`XLSX.write`), es werden keine fremden Dateien eingelesen — der
+  Angriffsvektor greift hier nicht. *(Mit 13.2 durch Wechsel auf die
+  offizielle SheetJS-Quelle gelöst.)*
 - `esbuild` (moderate): das direkte Paket ist auf 0.28.1 angehoben. Verwundbar
   bleiben zwei ältere Versionen, die transitiv an `drizzle-kit` hängen. Da
   `drizzle-kit` für die Migration beim Containerstart gebraucht wird, liegt es
@@ -212,7 +240,8 @@ und sind daher gröber gefasst als künftige Einträge.
 - E-Mail-Versand der Berichte über Nodemailer mit Cron-Zeitplan.
 - PWA mit Service Worker für die Nutzung auf dem iPad.
 
-[Unreleased]: https://github.com/Revisor01/fairstand/compare/v13.1...HEAD
+[Unreleased]: https://github.com/Revisor01/fairstand/compare/v13.2...HEAD
+[13.2]: https://github.com/Revisor01/fairstand/compare/v13.1...v13.2
 [13.1]: https://github.com/Revisor01/fairstand/compare/v13.0...v13.1
 [13.0]: https://github.com/Revisor01/fairstand/compare/v12.0...v13.0
 [12.0]: https://github.com/Revisor01/fairstand/compare/v11.0...v12.0
