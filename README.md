@@ -62,6 +62,26 @@ npm run dev
 cd client && npm install && npm run dev
 ```
 
+### Hinweis zu `xlsx` (SheetJS)
+
+Die Excel-Exporte nutzen SheetJS. Das Paket wird seit 0.18.5 nicht mehr über
+die npm-Registry ausgeliefert — die dortige Version ist eingefroren und
+erhält keine Sicherheitsupdates. Die Abhängigkeit zeigt daher direkt auf die
+offizielle SheetJS-CDN:
+
+```json
+"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+```
+
+Ab npm 12 sind Remote-Tarballs standardmäßig gesperrt. Lokal daher einmalig:
+
+```bash
+npm install --allow-remote=all
+```
+
+Der Docker-Build ist nicht betroffen (nutzt npm 10). Für ein Versionsupdate
+die URL in `server/package.json` auf die neue Version anpassen.
+
 ### Tests
 
 ```bash
