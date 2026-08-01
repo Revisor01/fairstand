@@ -18,7 +18,7 @@
     "drizzle-kit": "^0.30",
     "drizzle-orm": "^0.40",
     "fastify": "^5.7",
-    "nodemailer": "^8.0.3",
+    "nodemailer": "^9.0.1",
     "pdfjs-dist": "^5.5.207",
     "pdfkit": "^0.18.0",
     "pg": "^8.13",
