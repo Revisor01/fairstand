@@ -4,7 +4,7 @@ import { eq, sql, and } from 'drizzle-orm';
 import { db } from '../db/index.js';
 import { products, priceHistories, sales, stockMovements } from '../db/schema.js';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
-import { extname } from 'node:path';
+import { extname, join, resolve, dirname } from 'node:path';
 import { broadcast } from './websocket.js';
 
 const IMAGES_DIR = process.env.IMAGES_DIR ?? '/app/data/images';
@@ -193,7 +193,10 @@ export async function productRoutes(fastify: FastifyInstance) {
   });
 
   // POST /products/:id/image — Produktbild hochladen
-  fastify.post('/products/:id/image', async (request, reply) => {
+  fastify.post('/products/:id/image', {
+    // Schreibt Dateien auf die Platte (bis 5 MB je Request) — begrenzen.
+    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+  }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const session = (request as any).session as { shopId: string };
 
@@ -221,8 +224,18 @@ export async function productRoutes(fastify: FastifyInstance) {
       return reply.status(415).send({ error: 'Nur JPEG, PNG und WebP erlaubt' });
     }
 
+    // Produkt-IDs werden vom Client vergeben und fliessen hier in einen
+    // Dateipfad — daher gegen Path-Traversal absichern (analog GET /images).
+    if (id.includes('/') || id.includes('\\') || id.includes('..')) {
+      return reply.status(400).send({ error: 'Ungültige Produkt-ID' });
+    }
+
     const filename = `${id}.${ext}`;
-    const filepath = `${IMAGES_DIR}/${filename}`;
+    const filepath = join(IMAGES_DIR, filename);
+    if (dirname(resolve(filepath)) !== resolve(IMAGES_DIR)) {
+      return reply.status(400).send({ error: 'Ungültige Produkt-ID' });
+    }
+
     const buffer = await file.toBuffer();
     await writeFile(filepath, buffer);
 
@@ -275,7 +288,10 @@ export async function productRoutes(fastify: FastifyInstance) {
   });
 
   // GET /api/images/:filename — Produktbild ausliefern
-  fastify.get('/images/:filename', async (request, reply) => {
+  fastify.get('/images/:filename', {
+    // Liest bei jedem Aufruf von der Platte — begrenzen.
+    config: { rateLimit: { max: 300, timeWindow: '1 minute' } },
+  }, async (request, reply) => {
     const { filename } = request.params as { filename: string };
 
     // Sicherheitscheck: keine Path-Traversal

@@ -27,6 +27,19 @@ function toEur(cents: number): string {
   return (cents / 100).toFixed(2).replace('.', ',');
 }
 
+/**
+ * Laesst nur Bildquellen durch, die wir selbst erzeugen: den serverseitigen
+ * Bildpfad und Blob-URLs aus der lokalen Dateiauswahl. Verhindert, dass ein
+ * manipuliertes imageUrl-Feld (wird beim Sync aus dem Client-Payload
+ * uebernommen) als javascript:- oder data:-URL im src landet.
+ */
+function safeImageSrc(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith('/api/images/')) return url;
+  if (url.startsWith('blob:')) return url;
+  return null;
+}
+
 function toCents(eurStr: string): number {
   // Komma → Punkt
   const normalized = eurStr.replace(',', '.');
@@ -52,7 +65,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(
-    product?.imageUrl ?? null
+    safeImageSrc(product?.imageUrl)
   );
   const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
 
