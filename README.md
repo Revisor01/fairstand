@@ -21,7 +21,7 @@ Eine Offline-fähige Progressive Web App (PWA) als Kassensystem für Fairstand-W
 | Frontend | React 19, TypeScript, Vite 6, Tailwind CSS 4 |
 | Offline-DB | Dexie.js 4 (IndexedDB) |
 | Backend | Fastify 5, TypeScript |
-| Datenbank | SQLite + Drizzle ORM |
+| Datenbank | PostgreSQL + Drizzle ORM |
 | PDF-Parsing | pdfjs-dist 5 |
 | Deployment | Docker, GitHub Actions, Portainer |
 
@@ -30,17 +30,49 @@ Eine Offline-fähige Progressive Web App (PWA) als Kassensystem für Fairstand-W
 ### Voraussetzungen
 
 - Node.js 20+
+- PostgreSQL (lokal oder als Container)
 - Docker (für Deployment)
+
+### Konfiguration
+
+Der Server erwartet folgende Umgebungsvariablen:
+
+| Variable | Pflicht | Bedeutung |
+|----------|---------|-----------|
+| `DATABASE_URL` | ja | PostgreSQL-Verbindung, z. B. `postgresql://user:pass@localhost:5432/fairstand` |
+| `CORS_ORIGIN` | ja | Erlaubte Origin(s), kommasepariert |
+| `IMAGES_DIR` | nein | Ablage der Produktbilder (Standard: `/app/data/images`) |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | nein | E-Mail-Versand der Berichte; ohne diese bleibt der Versand deaktiviert |
+| `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM` | nein | Optionale SMTP-Feinheiten |
 
 ### Lokale Entwicklung
 
 ```bash
-# Client
-cd client && npm install && npm run dev
+# Datenbank (Beispiel)
+docker run -d --name fairstand-db -e POSTGRES_PASSWORD=dev \
+  -e POSTGRES_DB=fairstand -p 5432:5432 postgres:16-alpine
 
 # Server
-cd server && npm install && npm run dev
+cd server && npm install
+export DATABASE_URL="postgresql://postgres:dev@localhost:5432/fairstand"
+npx drizzle-kit migrate   # Schema anlegen
+npm run dev
+
+# Client
+cd client && npm install && npm run dev
 ```
+
+### Tests
+
+```bash
+cd server && npm test
+```
+
+Die PDF-Parser-Tests brauchen echte Lieferantenrechnungen als Fixtures. Diese
+liegen aus Datenschutzgründen nicht im Repo — fehlen sie, werden die
+betroffenen Suites übersprungen. Zum vollständigen Durchlauf die Dateien
+`Rechnung 2600988.pdf` und `Rechnung 2552709.pdf` nach `Süd-Nord-Kontor/`
+im Projektwurzelverzeichnis legen.
 
 ### Docker Deployment
 
@@ -49,6 +81,12 @@ docker compose up -d
 ```
 
 Oder via `docker-compose.portainer.yml` für Portainer-Stacks mit GHCR-Images.
+
+Der Weg auf den Server: Push auf `main` → GitHub Actions baut die Images und
+pusht sie nach GHCR → Portainer zieht sie per Webhook. Migrationen laufen
+automatisch beim Containerstart, ein manueller Schritt ist nicht nötig.
+
+Live: [fairstand.godsapp.de](https://fairstand.godsapp.de)
 
 ## Für andere Weltläden
 
