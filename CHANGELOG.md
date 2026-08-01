@@ -10,6 +10,8 @@ und sind daher gröber gefasst als künftige Einträge.
 
 ## [Unreleased]
 
+## [13.1] — 2026-08-01
+
 ### Behoben
 
 - Bildupload für Produkte funktionierte produktiv nicht (HTTP 415).
@@ -206,7 +208,8 @@ und sind daher gröber gefasst als künftige Einträge.
 - E-Mail-Versand der Berichte über Nodemailer mit Cron-Zeitplan.
 - PWA mit Service Worker für die Nutzung auf dem iPad.
 
-[Unreleased]: https://github.com/Revisor01/fairstand/compare/v13.0...HEAD
+[Unreleased]: https://github.com/Revisor01/fairstand/compare/v13.1...HEAD
+[13.1]: https://github.com/Revisor01/fairstand/compare/v13.0...v13.1
 [13.0]: https://github.com/Revisor01/fairstand/compare/v12.0...v13.0
 [12.0]: https://github.com/Revisor01/fairstand/compare/v11.0...v12.0
 [11.0]: https://github.com/Revisor01/fairstand/compare/v10.0...v11.0
