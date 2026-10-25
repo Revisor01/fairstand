@@ -1,0 +1,58 @@
+name: Tests
+
+# Client: Vitest und Typprüfung samt Build. Server: Typprüfung; die Tests des
+# Rechnungsparsers brauchen echte Lieferantenrechnungen, die nicht im Repo
+# liegen, und werden ohne sie übersprungen.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Client installieren
+        working-directory: client
+        run: npm ci
+
+      - name: Client testen
+        working-directory: client
+        run: npx vitest run
+
+      - name: Client typprüfen und bauen
+        working-directory: client
+        run: npm run build
+
+      - name: Server installieren
+        working-directory: server
+        run: npm ci
+
+      - name: Server typprüfen
+        working-directory: server
+        run: npx tsc --noEmit
+
+      - name: Server testen
+        working-directory: server
+        run: npx vitest run
