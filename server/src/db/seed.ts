@@ -2,10 +2,10 @@ import { db } from './index.js';
 import { shops, products } from './schema.js';
 import { eq } from 'drizzle-orm';
 import { hashPin } from '../lib/crypto.js';
+import { resolveSeedPin } from '../lib/seedPin.js';
 
 const SHOP_ID = 'st-secundus-hennstedt';
 const SHOP_NAME = 'St. Secundus Hennstedt';
-const SHOP_PIN = '140381'; // 6-stellig
 
 // Seed-Daten aus Rechnung 2600988 (Süd-Nord-Kontor, 16.03.2026)
 // purchasePrice = EK-Preis nach Rabatt in Cent (Preis/St. aus Rechnung × 100)
@@ -410,7 +410,7 @@ export async function ensureShopSeeded(): Promise<void> {
     return;
   }
 
-  const pinHash = await hashPin(SHOP_PIN);
+  const pinHash = await hashPin(resolveSeedPin(process.env));
   const now = Date.now();
 
   // Shop anlegen

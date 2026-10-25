@@ -95,6 +95,7 @@ npm run dev
 |----------|---------|-----------|
 | `DATABASE_URL` | ja | Verbindung zu PostgreSQL |
 | `CORS_ORIGIN` | ja | erlaubte Adresse(n) der Oberfläche, kommagetrennt |
+| `INITIAL_SHOP_PIN` | beim ersten Start | PIN des Master-Ladens, 4 bis 8 Ziffern; danach ohne Wirkung |
 | `PORT` | nein | Port des Servers, Standard 3000 |
 | `IMAGES_DIR` | nein | Ablage der Produktbilder, Standard `/app/data/images` |
 | `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | nein | Versand der Monatsberichte; ohne sie wird nichts verschickt |
@@ -115,9 +116,10 @@ Oberfläche weitergibt. Der Entwicklungsserver von Vite bringt dafür keine
 Weiterleitung mit.
 
 **4. Der erste Laden.** Beim ersten Start legt der Server einen Master-Laden
-mit Beispielartikeln an. Name und PIN stehen in `server/src/db/seed.ts`; für
-eine eigene Installation beides dort vor dem ersten Start ändern. Der
-Master-Laden kann in der Verwaltung weitere Läden anlegen.
+mit Beispielartikeln an. Seine PIN kommt aus `INITIAL_SHOP_PIN` (4 bis 8
+Ziffern); fehlt sie beim ersten Start, bricht der Server mit einer Meldung ab.
+Den Namen legt `server/src/db/seed.ts` fest. Der Master-Laden kann in der
+Verwaltung weitere Läden anlegen.
 
 **Mit Docker.** `client/Dockerfile` und `server/Dockerfile` bauen die beiden
 Images. `docker-compose.portainer.yml` zeigt den Aufbau mit fertigen Images
