@@ -242,12 +242,9 @@ function parseInvoiceRowFromItems(
 }
 
 /**
- * Interne Parsing-Implementierung ohne Timeout-Schutz.
- * Wird von parseSuedNordKontorPdf (dem oeffentlichen Export) mit Timeout gewrappt.
- *
- * Layout-Erkenntnis: Die Positionsnummer ("1.", "2.", ...) steht in einer eigenen
- * Zeile, direkt gefolgt von der Datenzeile (Menge, Artikelnummer, Bezeichnung, etc.).
- * Beide Rechnungsformate (mit und ohne Rabatt-Spalte) folgen diesem Muster.
+ * Ohne Timeout; parseSuedNordKontorPdf ruft das mit Timeout auf. In beiden
+ * Formaten steht die Positionsnummer ("1.") in einer eigenen Zeile vor der
+ * Datenzeile.
  */
 async function _parsePdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   const uint8Array = new Uint8Array(buffer);
