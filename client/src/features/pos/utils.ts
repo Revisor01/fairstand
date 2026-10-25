@@ -1,7 +1,5 @@
 /**
  * Formatiert einen Cent-Integer als Euro-Betrag nach deutschem Format.
- * Pattern 3 aus RESEARCH.md
- *
  * @example formatEur(789) → "7,89 €"
  */
 export const formatEur = (cents: number): string =>

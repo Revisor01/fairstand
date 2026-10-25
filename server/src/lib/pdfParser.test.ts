@@ -4,14 +4,9 @@ import { join } from 'path';
 import { parseSuedNordKontorPdf } from './pdfParser.js';
 
 /**
- * TDD Tests fuer den PDF-Parser.
- * Beide Rechnungsformate muessen korrekt geparst werden:
- * - Rechnung 2600988: Format A (ohne Rabatt-Spalte)
- * - Rechnung 2552709: Format B (mit Rabatt-Spalte)
- *
- * Die Fixtures sind echte Lieferantenrechnungen und liegen daher nicht im Repo.
- * Fehlen sie lokal, werden die Suites uebersprungen statt fehlzuschlagen.
- * Zum Ausfuehren: die PDFs nach ../Süd-Nord-Kontor/ legen.
+ * Format A (2600988, ohne Rabatt) und B (2552709, mit Rabatt). Die Fixtures
+ * sind echte Lieferantenrechnungen und nicht im Repo; ohne sie in
+ * ../Süd-Nord-Kontor/ werden die Suites uebersprungen.
  */
 
 const PDF_DIR = join(process.cwd(), '..', 'Süd-Nord-Kontor');

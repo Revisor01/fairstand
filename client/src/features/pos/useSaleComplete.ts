@@ -3,9 +3,8 @@ import type { CartItem, Sale, Product } from '../../db/index.js';
 import { authFetch } from '../auth/serverAuth.js';
 
 /**
- * Schreibt einen Verkauf direkt an den Server.
- * Online-Only: kein Dexie, kein Outbox-Fallback.
- * Bei Server-Fehler: throw new Error — Nutzerin sieht Fehlermeldung.
+ * Schreibt einen Verkauf direkt an den Server. Bei einem Serverfehler wird
+ * geworfen, damit die Kasse die Fehlermeldung zeigt.
  */
 export async function completeSale(
   items: CartItem[],
@@ -47,10 +46,8 @@ export async function completeSale(
 }
 
 /**
- * Entnahme durch die Kirchengemeinde zum EK-Preis.
- * EK-Preise kommen aus den übergebenen products (TQ-Cache).
- * Online-Only: kein Dexie, kein Outbox-Fallback.
- * Bei Server-Fehler: throw new Error — Nutzerin sieht Fehlermeldung.
+ * Entnahme durch die Kirchengemeinde zum EK-Preis aus den übergebenen
+ * products. Bei einem Serverfehler wird geworfen, wie bei completeSale.
  */
 export async function completeWithdrawal(
   items: CartItem[],

@@ -1,18 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import type { CartItem, Product } from '../../db/index.js';
 
-// We test the addItem logic in isolation.
-// Since useCart is a React hook (uses useReducer), we test the logic
-// by extracting the core stock-check logic.
-//
-// The plan specifies the behavior:
-// - addItem({ stock: 3 }, cartItems=[]) → returns { added: true }
-// - addItem({ stock: 1 }, cartItems=[{ productId: same, quantity: 1 }]) → returns { added: false, reason: 'out_of_stock' }
-// - addItem({ stock: 0 }, cartItems=[]) → returns { added: false, reason: 'out_of_stock' }
-// - addItem({ stock: 5 }, cartItems=[{ productId: same, quantity: 3 }]) → returns { added: true }
-// - addItem({ stock: 5 }, cartItems=[{ productId: same, quantity: 5 }]) → returns { added: false, reason: 'out_of_stock' }
-//
-// We test this via the exported checkStock helper that mirrors addItem logic.
+// useCart ist ein Hook; geprüft wird deshalb checkStock, das dieselbe
+// Bestandsregel wie addItem anwendet.
 
 import { checkStockBeforeAdd } from './useCart.js';
 
