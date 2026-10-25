@@ -1,120 +1,187 @@
-# Fairstand Kassensystem
+<p align="center">
+  <img src="client/public/icons/icon-512.png" alt="Fairstand" width="128" height="128">
+</p>
 
-Eine Offline-fähige Progressive Web App (PWA) als Kassensystem für Fairstand-Weltläden. Entwickelt für den Fairstand der Ev.-Luth. Kirchengemeinde St. Secundus Hennstedt.
+<h1 align="center">Fairstand</h1>
 
-## Features
+<p align="center">
+  Die Kasse für Weltläden und Fairstände in Kirchengemeinden —<br>
+  läuft im Browser auf Tablet und Handy, mit Bestand und Monatsbericht.
+</p>
 
-- **Kasse** — Artikel antippen, bezahlen, Wechselgeld/Spende automatisch berechnen
-- **Offline-fähig** — Funktioniert ohne Internet, synchronisiert automatisch wenn online
-- **Multi-Laden** — Mehrere Läden mit PIN-Authentifizierung
-- **Warenwirtschaft** — Produkte verwalten, Bestand tracken, Mindestbestand-Warnung
-- **Rechnungsimport** — PDF-Rechnungen vom Süd-Nord-Kontor parsen und importieren
-- **Verkaufshistorie** — Tagesübersicht, Artikel-Statistik, Monats-/Jahresberichte
-- **Storno & Rückgabe** — Verkäufe stornieren, einzelne Artikel zurückgeben
-- **Bestandsprüfung** — Überverkauf wird blockiert, Ampel-Indikator (grün/gelb/rot)
-- **Produktbilder** — Bilder pro Artikel hochladen und in der Kasse anzeigen
+<p align="center">
+  <img src="https://img.shields.io/badge/Plattform-Web%20(PWA)-blue" alt="Plattform">
+  <img src="https://img.shields.io/github/license/Revisor01/fairstand" alt="Lizenz">
+</p>
 
-## Tech Stack
+## Worum es geht
 
-| Komponente | Technologie |
-|------------|------------|
-| Frontend | React 19, TypeScript, Vite 6, Tailwind CSS 4 |
-| Offline-DB | Dexie.js 4 (IndexedDB) |
-| Backend | Fastify 5, TypeScript |
-| Datenbank | PostgreSQL + Drizzle ORM |
-| PDF-Parsing | pdfjs-dist 5 |
-| Deployment | Docker, GitHub Actions, Portainer |
+Ein Fairstand nach dem Gottesdienst hat selten eine richtige Kasse: Preise
+stehen auf Zetteln, das Wechselgeld liegt in einer Dose, und am Monatsende
+fehlt der Überblick, was verkauft wurde und was nachbestellt werden muss.
 
-## Setup
+Fairstand macht daraus eine Kasse zum Antippen. Die App läuft im Browser und
+lässt sich auf Tablet oder Handy installieren. Jeder Verkauf geht sofort an
+den Server; mehrere Geräte im selben Laden sehen Bestand und Verkäufe live.
+Ein Server kann mehrere Läden getrennt führen, jeder mit eigener PIN.
 
-### Voraussetzungen
+Entstanden ist sie für den Fairstand der Ev.-Luth. Kirchengemeinde
+St. Secundus Hennstedt.
 
-- Node.js 20+
-- PostgreSQL (lokal oder als Container)
-- Docker (für Deployment)
+## Funktionen
 
-### Konfiguration
+- **Kasse** — Artikel antippen, Betrag eingeben, Wechselgeld und Spende
+  werden ausgerechnet
+- **Live auf allen Geräten** — Bestand und Verkäufe aktualisieren sich
+  sofort; ohne Verbindung zeigt die Kasse einen Hinweis statt still zu scheitern
+- **Bestand** — Mindestbestand mit Ampel, Überverkauf wird verhindert
+- **Rechnungsimport** — PDF-Rechnungen des Süd-Nord-Kontors einlesen und
+  als Wareneingang übernehmen
+- **Auswertungen** — Tagesübersicht, Artikelstatistik, Monats- und
+  Jahresberichte, Export als Excel; Monatsbericht auf Wunsch per E-Mail
+- **Storno und Rückgabe** — ganze Verkäufe oder einzelne Artikel
+- **Produktbilder** — je Artikel ein Bild, das in der Kasse erscheint
+- **Mehrere Läden** — getrennte Bestände und Berichte, Anmeldung per PIN
 
-Der Server erwartet folgende Umgebungsvariablen:
+## Nutzung
+
+Fairstand läuft unter **[fairstand.godsapp.de](https://fairstand.godsapp.de)**.
+Im Browser öffnen, mit der PIN des Ladens anmelden und über „Zum
+Startbildschirm hinzufügen“ als App installieren.
+
+**Für andere Weltläden:** Die Kasse ist frei nutzbar, evangelisch wie
+katholisch. Wer sie für den eigenen Laden möchte, meldet sich per
+[Issue](https://github.com/Revisor01/fairstand/issues) oder E-Mail; dann
+wird ein eigener Laden auf dem bestehenden Server eingerichtet.
+
+## Versionen
+
+Was sich wann geändert hat, steht in [CHANGELOG.md](CHANGELOG.md) — nach
+[Keep a Changelog](https://keepachangelog.com/de/1.1.0/), aus Sicht der
+Nutzer:innen geschrieben. Die
+[Releases](https://github.com/Revisor01/fairstand/releases) fassen jede
+Version zusammen.
+
+## Selbst betreiben
+
+Nötig sind Node 22, npm und PostgreSQL 16 (oder Docker).
+
+```bash
+git clone https://github.com/Revisor01/fairstand.git
+cd fairstand
+```
+
+**1. Datenbank anlegen.**
+
+```bash
+docker run -d --name fairstand-db -e POSTGRES_PASSWORD=dev \
+  -e POSTGRES_DB=fairstand -p 5432:5432 postgres:16-alpine
+```
+
+**2. Server starten.** Er liest seine Einstellungen aus der Umgebung und
+bricht ohne `CORS_ORIGIN` sofort ab. Das Schema legt `drizzle-kit migrate`
+an; im Container geschieht das bei jedem Start von selbst.
+
+```bash
+cd server && npm install
+export DATABASE_URL="postgresql://postgres:dev@localhost:5432/fairstand"
+export CORS_ORIGIN="http://localhost:5173"
+npx drizzle-kit migrate
+npm run dev
+# hört auf Port 3000
+```
 
 | Variable | Pflicht | Bedeutung |
 |----------|---------|-----------|
-| `DATABASE_URL` | ja | PostgreSQL-Verbindung, z. B. `postgresql://user:pass@localhost:5432/fairstand` |
-| `CORS_ORIGIN` | ja | Erlaubte Origin(s), kommasepariert |
-| `IMAGES_DIR` | nein | Ablage der Produktbilder (Standard: `/app/data/images`) |
-| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | nein | E-Mail-Versand der Berichte; ohne diese bleibt der Versand deaktiviert |
-| `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM` | nein | Optionale SMTP-Feinheiten |
+| `DATABASE_URL` | ja | Verbindung zu PostgreSQL |
+| `CORS_ORIGIN` | ja | erlaubte Adresse(n) der Oberfläche, kommagetrennt |
+| `PORT` | nein | Port des Servers, Standard 3000 |
+| `IMAGES_DIR` | nein | Ablage der Produktbilder, Standard `/app/data/images` |
+| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | nein | Versand der Monatsberichte; ohne sie wird nichts verschickt |
+| `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM` | nein | Feinheiten des Mailversands |
 
-### Lokale Entwicklung
+**3. Oberfläche starten.**
 
 ```bash
-# Datenbank (Beispiel)
-docker run -d --name fairstand-db -e POSTGRES_PASSWORD=dev \
-  -e POSTGRES_DB=fairstand -p 5432:5432 postgres:16-alpine
-
-# Server
-cd server && npm install
-export DATABASE_URL="postgresql://postgres:dev@localhost:5432/fairstand"
-npx drizzle-kit migrate   # Schema anlegen
+cd client && npm install
 npm run dev
-
-# Client
-cd client && npm install && npm run dev
+# öffnet http://localhost:5173
 ```
 
-### Hinweis zu `xlsx` (SheetJS)
+Die Oberfläche ruft den Server immer unter `/api` auf derselben Adresse auf.
+Oberfläche und Server müssen deshalb hinter einem gemeinsamen Reverse Proxy
+liegen, der `/api` an den Server (Port 3000) und alles andere an die
+Oberfläche weitergibt. Der Entwicklungsserver von Vite bringt dafür keine
+Weiterleitung mit.
 
-Die Excel-Exporte nutzen SheetJS. Das Paket wird seit 0.18.5 nicht mehr über
-die npm-Registry ausgeliefert — die dortige Version ist eingefroren und
-erhält keine Sicherheitsupdates. Die Abhängigkeit zeigt daher direkt auf die
-offizielle SheetJS-CDN:
+**4. Der erste Laden.** Beim ersten Start legt der Server einen Master-Laden
+mit Beispielartikeln an. Name und PIN stehen in `server/src/db/seed.ts`; für
+eine eigene Installation beides dort vor dem ersten Start ändern. Der
+Master-Laden kann in der Verwaltung weitere Läden anlegen.
 
-```json
-"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
-```
+**Mit Docker.** `client/Dockerfile` und `server/Dockerfile` bauen die beiden
+Images. `docker-compose.portainer.yml` zeigt den Aufbau mit fertigen Images
+aus der GitHub Container Registry; Datenbank-Passwort und SMTP-Werte kommen
+dort aus der Umgebung.
 
-Ab npm 12 sind Remote-Tarballs standardmäßig gesperrt. Lokal daher einmalig:
+**Excel-Export.** SheetJS wird nicht mehr über die npm-Registry ausgeliefert;
+die Abhängigkeit zeigt auf die offizielle SheetJS-CDN. Ab npm 12 sind solche
+Pakete gesperrt, lokal daher einmalig `npm install --allow-remote=all`.
+
+**Tests.**
 
 ```bash
-npm install --allow-remote=all
+cd client && npx vitest run
+cd server && npx vitest run
 ```
 
-Der Docker-Build ist nicht betroffen (nutzt npm 10). Für ein Versionsupdate
-die URL in `server/package.json` auf die neue Version anpassen.
+Die Tests des Rechnungsimports brauchen echte Lieferantenrechnungen. Die
+liegen aus Datenschutzgründen nicht im Repository; fehlen sie, werden diese
+Tests übersprungen.
 
-### Tests
+## Aufbau
 
-```bash
-cd server && npm test
+```
+fairstand
+├── client/    — Oberfläche: React, TypeScript, Vite, Tailwind;
+│                TanStack Query, installierbar als PWA
+│   └── src/features/
+│       ├── pos/     — Kasse
+│       ├── admin/   — Artikel, Import, Berichte, Einstellungen, Läden
+│       └── auth/    — Anmeldung per PIN
+└── server/    — API: Fastify, TypeScript, PostgreSQL mit Drizzle
+    ├── src/routes/     — Verkäufe, Artikel, Abgleich, Berichte …
+    ├── src/scheduler/  — Monats- und Jahresberichte
+    └── migrations/     — Datenbankschema
 ```
 
-Die PDF-Parser-Tests brauchen echte Lieferantenrechnungen als Fixtures. Diese
-liegen aus Datenschutzgründen nicht im Repo — fehlen sie, werden die
-betroffenen Suites übersprungen. Zum vollständigen Durchlauf die Dateien
-`Rechnung 2600988.pdf` und `Rechnung 2552709.pdf` nach `Süd-Nord-Kontor/`
-im Projektwurzelverzeichnis legen.
+**Worauf es beim Bauen ankommt:**
+- **Der Server ist die Wahrheit.** Ein Verkauf gilt erst, wenn der Server ihn
+  angenommen hat; die Geräte halten keinen eigenen Datenstand.
+- **Jeder Laden sieht nur seine Daten.** Alle Abfragen laufen über die
+  Laden-Kennung der Sitzung.
+- **Beträge in Cent.** Preise und Summen sind ganze Zahlen, nie Kommazahlen.
 
-### Docker Deployment
+## Mitmachen
 
-```bash
-docker compose up -d
-```
+Fehlermeldungen und Vorschläge sind willkommen — gern als
+[Issue](https://github.com/Revisor01/fairstand/issues). Sicherheitslücken
+bitte vertraulich melden, wie in [SECURITY.md](SECURITY.md) beschrieben. Pull
+Requests laufen durch Tests und einen Secret-Scan; die Grundsätze für
+Beiträge stehen in [CLAUDE.md](CLAUDE.md).
 
-Oder via `docker-compose.portainer.yml` für Portainer-Stacks mit GHCR-Images.
+## Datenschutz
 
-Der Weg auf den Server: Push auf `main` → GitHub Actions baut die Images und
-pusht sie nach GHCR → Portainer zieht sie per Webhook. Migrationen laufen
-automatisch beim Containerstart, ein manueller Schritt ist nicht nötig.
-
-Live: [fairstand.godsapp.de](https://fairstand.godsapp.de)
-
-## Für andere Weltläden
-
-Dieses Kassensystem ist **frei nutzbar für alle Weltläden** — evangelisch und katholisch. Wenn du Interesse hast, das System für deinen Weltladen einzusetzen, melde dich gerne:
-
-- Erstelle ein [Issue](https://github.com/Revisor01/fairstand/issues) auf GitHub
-- Wir richten dir einen Laden-Account ein
+Fairstand erfasst keine Kund:innen. Gespeichert werden Artikel, Bestände und
+Verkäufe des jeweiligen Ladens auf dem Server; auf dem Gerät liegen nur
+Einstellungen.
+Keine Analyse, keine Werbung, keine fremden Dienste.
 
 ## Lizenz
 
-MIT License — siehe [LICENSE](LICENSE)
+[MIT](LICENSE) © Simon Luthe
+
+## Kontakt
+
+Pastor Simon Luthe · [mail@simonluthe.de](mailto:mail@simonluthe.de) ·
+[simonluthe.de](https://simonluthe.de)
