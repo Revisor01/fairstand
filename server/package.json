@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^10",
-    "@fastify/multipart": "^9.4.0",
+    "@fastify/multipart": "^10.1.6",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/schedule": "^6.0.0",
     "@fastify/websocket": "^11.3.4",
