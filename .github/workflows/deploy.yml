@@ -13,6 +13,7 @@ jobs:
       contents: read
       packages: write
     env:
+      WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
       REGISTRY: ghcr.io
       IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/fairstand
     steps:
@@ -44,8 +45,8 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_PREFIX }}/server:latest
 
+      # Ohne Webhook (Fork, frische Instanz) endet der Lauf nach dem Push der
+      # Abbilder. Das Step-env ist im if noch nicht sichtbar, daher Job-env.
       - name: Trigger Portainer Webhook
-        env:
-          WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
         if: env.WEBHOOK_URL != ''
-        run: curl -f -X POST "$WEBHOOK_URL"
+        run: curl -fsS -X POST "$WEBHOOK_URL"
