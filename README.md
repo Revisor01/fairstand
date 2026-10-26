@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <b>Deutsch</b> · <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Plattform-Web%20(PWA)-blue" alt="Plattform">
   <img src="https://img.shields.io/github/license/Revisor01/fairstand" alt="Lizenz">
 </p>
@@ -170,7 +174,7 @@ Fehlermeldungen und Vorschläge sind willkommen — gern als
 [Issue](https://github.com/Revisor01/fairstand/issues). Sicherheitslücken
 bitte vertraulich melden, wie in [SECURITY.md](SECURITY.md) beschrieben. Pull
 Requests laufen durch Tests und einen Secret-Scan; die Grundsätze für
-Beiträge stehen in [CLAUDE.md](CLAUDE.md).
+Beiträge stehen in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Datenschutz
 
@@ -181,12 +185,10 @@ Keine Analyse, keine Werbung, keine fremden Dienste.
 
 ## Lizenz
 
-Fairstand steht unter der
-[GNU Affero General Public License v3.0](LICENSE). Wer Fairstand verändert und
-anderen zur Verfügung stellt, auch als Webdienst, legt seinen Quelltext unter
-derselben Lizenz offen. Wer das nicht möchte, bekommt auf Anfrage eine
-kommerzielle Lizenz ([mail@simonluthe.de](mailto:mail@simonluthe.de)). Für
-Beiträge gilt [CONTRIBUTING.md](CONTRIBUTING.md).
+Fairstand steht unter der [GNU Affero General Public License v3.0](LICENSE).
+Wer Fairstand verändert und anderen zur Verfügung stellt, auch als Webdienst,
+legt seinen Quelltext unter derselben Lizenz offen. Für Beiträge gilt
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Kontakt
 
