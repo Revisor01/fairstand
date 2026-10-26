@@ -19,7 +19,7 @@
     "drizzle-orm": "^0.45.4",
     "fastify": "^5.12",
     "nodemailer": "^9.0.3",
-    "pdfjs-dist": "^5.5.207",
+    "pdfjs-dist": "^6.4.299",
     "pdfkit": "^0.20.2",
     "pg": "^8.23",
     "toad-scheduler": "^3.1.0",
