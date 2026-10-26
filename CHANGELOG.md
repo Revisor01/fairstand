@@ -17,6 +17,9 @@ und sind daher gröber gefasst als künftige Einträge.
 
 - Die Start-PIN des ersten Ladens steht nicht mehr im Quelltext. Wer Fairstand selbst betreibt, legt sie beim ersten Start über eine Einstellung fest.
 
+### Sonstiges
+- Englische Fassung der README und der Vorlagen für Fehlermeldungen.
+
 ## [13.2] — 2026-08-01
 
 ### Behoben
