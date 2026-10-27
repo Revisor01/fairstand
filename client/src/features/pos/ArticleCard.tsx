@@ -3,9 +3,7 @@ import type { Product } from '../../db/index.js';
 import { formatEur } from './utils.js';
 import { safeImageSrc } from '../../lib/imageSrc.js';
 
-// Reine Funktion für Pointer-Movement-Threshold-Logik.
-// Exportiert für Unit-Tests (analog zu checkStockBeforeAdd-Muster).
-// Threshold: strict < 8px in beide Richtungen.
+// Tap nur bei Bewegung unter 8 px in beide Richtungen; exportiert für Unit-Tests.
 export function shouldTriggerTap(
   start: { x: number; y: number },
   end: { x: number; y: number },

@@ -1,7 +1,6 @@
 import type { FastifyCorsOptions } from '@fastify/cors';
 
-// Ab @fastify/cors 11 erlaubt der Standard nur GET, HEAD und POST; die Kasse
-// braucht für Produkte und Shops auch PUT, PATCH und DELETE.
+// @fastify/cors erlaubt ab 11 nur GET, HEAD und POST; die Kasse braucht auch PUT, PATCH und DELETE.
 export const CORS_METHODS = ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'];
 
 export function buildCorsOptions(allowedOrigins: string[]): FastifyCorsOptions {

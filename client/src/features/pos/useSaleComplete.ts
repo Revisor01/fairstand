@@ -2,10 +2,7 @@ import { getShopId } from '../../db/index.js';
 import type { CartItem, Sale, Product } from '../../db/index.js';
 import { authFetch } from '../auth/serverAuth.js';
 
-/**
- * Schreibt einen Verkauf direkt an den Server. Bei einem Serverfehler wird
- * geworfen, damit die Kasse die Fehlermeldung zeigt.
- */
+/** Schreibt einen Verkauf an den Server und wirft bei Fehler, damit die Kasse ihn zeigt. */
 export async function completeSale(
   items: CartItem[],
   paidCents: number,
@@ -45,10 +42,7 @@ export async function completeSale(
   return sale;
 }
 
-/**
- * Entnahme durch die Kirchengemeinde zum EK-Preis aus den übergebenen
- * products. Bei einem Serverfehler wird geworfen, wie bei completeSale.
- */
+/** Entnahme durch die Kirchengemeinde zum EK-Preis; wirft bei Serverfehler wie completeSale. */
 export async function completeWithdrawal(
   items: CartItem[],
   products: Product[],

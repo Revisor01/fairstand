@@ -14,10 +14,7 @@ const StockAdjustImportSchema = z.object({
   shopId: z.string(),
 });
 
-/**
- * Prueft ob ein Buffer ein gueltiges PDF ist anhand der Magic Bytes.
- * PDF-Dateien beginnen immer mit "%PDF" (0x25 0x50 0x44 0x46).
- */
+/** PDF erkennen an den Magic Bytes "%PDF". */
 function isPdf(buf: Buffer): boolean {
   return buf.length >= 4 &&
     buf[0] === 0x25 && // %

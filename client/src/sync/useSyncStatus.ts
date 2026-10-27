@@ -1,5 +1,4 @@
-// Online-Only: kein Outbox-Pattern mehr — alle Operationen gehen direkt an den Server.
-// Sync-Status ist immer 'synced' (Fehler werden als Fehlermeldungen im UI angezeigt).
+// Immer 'synced': alle Operationen gehen direkt an den Server, Fehler zeigt die UI.
 
 export type SyncStatus = 'synced' | 'pending' | 'failed';
 

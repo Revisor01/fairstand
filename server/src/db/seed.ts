@@ -7,10 +7,7 @@ import { resolveSeedPin } from '../lib/seedPin.js';
 const SHOP_ID = 'st-secundus-hennstedt';
 const SHOP_NAME = 'St. Secundus Hennstedt';
 
-// Seed-Daten aus Rechnung 2600988 (Süd-Nord-Kontor, 16.03.2026)
-// purchasePrice = EK-Preis nach Rabatt in Cent (Preis/St. aus Rechnung × 100)
-// salePrice = EVP in Cent (Empfohlener Verkaufspreis × 100)
-// Alle Preise als Cent-Integer — kein Floating Point!
+// Seed aus Rechnung 2600988; alle Preise als Cent-Integer, EK nach Rabatt, VK = EVP.
 const SEED_PRODUCTS: Array<{
   articleNumber: string;
   name: string;

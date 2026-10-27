@@ -134,8 +134,7 @@ async function computeFifoInventory(shopId: string, year: number): Promise<FifoI
       AND type IN ('restock', 'adjustment')
   `);
 
-  // FIFO-Chargen pro Produkt berechnen (in TypeScript, nicht SQL)
-  // Alle movements nach product_id gruppieren
+  // FIFO-Chargen je Produkt in TypeScript statt SQL.
   const movementsByProduct = new Map<string, Array<{ type: string; quantity: number; purchase_price_cents: number | null; moved_at: number }>>();
   for (const row of movementsResult.rows as Record<string, unknown>[]) {
     const pid = String(row.product_id);

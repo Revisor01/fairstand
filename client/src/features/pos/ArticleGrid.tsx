@@ -15,9 +15,7 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // TQ mit networkMode 'offlineFirst' — im Online-Modus lädt vom Server,
-  // im Offline-Modus greift TQ auf den gecachten Stand zurück (LIVE-06).
-  // Gleicher queryKey ['products', shopId] wie Admin → gemeinsamer Cache.
+  // offlineFirst greift offline auf den Cache zurück; gleicher queryKey wie Admin, damit der Cache geteilt wird.
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products', getShopId()],
     queryFn: async () => {

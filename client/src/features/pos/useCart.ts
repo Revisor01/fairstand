@@ -5,10 +5,7 @@ import type { CartItem, Product } from '../../db/index.js';
 
 export type AddItemResult = { added: true } | { added: false; reason: 'out_of_stock' };
 
-/**
- * Prüft ob ein Produkt in den Warenkorb gelegt werden kann.
- * Exportiert für Unit-Tests.
- */
+/** Prüft, ob ein Produkt in den Warenkorb darf. */
 export function checkStockBeforeAdd(product: Product, cartItems: CartItem[]): AddItemResult {
   const existing = cartItems.find(i => i.productId === product.id);
   const inCart = existing ? existing.quantity : 0;

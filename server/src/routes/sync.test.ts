@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SaleSchema, StockAdjustSchema, SyncBatchSchema } from './sync.js';
 
-// Ausgelieferte Kassen schicken ihre Warteschlange in genau dieser Form;
-// die Validierung darf sie nach einem Update der Bibliothek nicht anders bewerten.
+// Ausgelieferte Kassen schicken genau diese Form; ein Bibliotheks-Update darf sie nicht anders bewerten.
 const sale = {
   id: 'sale-1',
   shopId: 'st-clemens',

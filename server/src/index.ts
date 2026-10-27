@@ -30,9 +30,7 @@ if (!corsOrigin) {
 const allowedOrigins = corsOrigin.split(',').map(o => o.trim());
 await fastify.register(cors, buildCorsOptions(allowedOrigins));
 
-// Multipart app-weit registrieren: Fastify-Plugins gelten sonst nur im Scope
-// des registrierenden Plugins. Zuvor lag die Registrierung in importRoutes,
-// wodurch der Bildupload in products.ts mit 415 fehlschlug.
+// Multipart app-weit, sonst gilt das Plugin nur im eigenen Scope und der Bildupload scheitert mit 415.
 await fastify.register(multipart, {
   limits: {
     fileSize: 10 * 1024 * 1024, // 10 MB — Rechnungs-PDFs; Bildupload begrenzt zusaetzlich auf 5 MB

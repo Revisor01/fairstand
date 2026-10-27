@@ -106,8 +106,7 @@ export function useDeleteProduct() {
   });
 }
 
-// STOCK_ADJUST: direkt via POST /api/sync mit STOCK_ADJUST OutboxEntry
-// (Server-Route sync.ts verarbeitet STOCK_ADJUST per Delta)
+// Bestandskorrektur als STOCK_ADJUST-Delta über POST /api/sync.
 export function useAdjustStock() {
   const queryClient = useQueryClient();
   return useMutation({

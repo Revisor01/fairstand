@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { CartItem, Product } from '../../db/index.js';
 
-// useCart ist ein Hook; geprüft wird deshalb checkStock, das dieselbe
-// Bestandsregel wie addItem anwendet.
+// Geprüft wird checkStock, weil useCart ein Hook ist und dieselbe Bestandsregel anwendet.
 
 import { checkStockBeforeAdd } from './useCart.js';
 
