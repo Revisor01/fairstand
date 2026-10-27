@@ -10,10 +10,6 @@
 </p>
 
 <p align="center">
-  <b>Deutsch</b> · <a href="README.en.md">English</a>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Plattform-Web%20(PWA)-blue" alt="Plattform">
   <img src="https://img.shields.io/github/license/Revisor01/fairstand" alt="Lizenz">
 </p>
