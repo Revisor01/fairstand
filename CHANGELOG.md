@@ -20,6 +20,7 @@ und sind daher gröber gefasst als künftige Einträge.
 
 ### Sonstiges
 - README, Vorlagen und Hinweise gibt es nur noch auf Deutsch.
+- Alle Abhängigkeiten von Server und Kasse auf die neuesten Fassungen gebracht, auch über Hauptversionen; die übrigen bekannten Sicherheitslücken sind damit geschlossen. Server und Kasse laufen auf der aktuellen Node-LTS.
 
 ## [13.2] — 2026-08-01
 
