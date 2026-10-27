@@ -1,12 +1,12 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { type Transporter } from 'nodemailer';
 
-let transport: nodemailer.Transporter | null = null;
+let transport: Transporter | null = null;
 
 export function isMailConfigured(): boolean {
   return !!(process.env.SMTP_HOST && process.env.SMTP_USER);
 }
 
-function getTransport(): nodemailer.Transporter {
+function getTransport(): Transporter {
   if (!transport) {
     transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
