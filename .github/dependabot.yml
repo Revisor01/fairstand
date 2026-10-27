@@ -16,6 +16,7 @@ updates:
   - package-ecosystem: npm
     directory: /client
     schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Berlin }
+    versioning-strategy: increase
     groups:
       minor-und-patch:
         update-types: [minor, patch]
@@ -24,6 +25,7 @@ updates:
   - package-ecosystem: npm
     directory: /server
     schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Berlin }
+    versioning-strategy: increase
     groups:
       minor-und-patch:
         update-types: [minor, patch]

@@ -18,6 +18,7 @@ import { shopsRoutes } from './routes/shops.js';
 import { priceHistoryRoutes } from './routes/priceHistory.js';
 import { ensureShopSeeded } from './db/seed.js';
 import { validateSession } from './lib/sessions.js';
+import { buildCorsOptions } from './lib/corsOptions.js';
 import { pool } from './db/index.js';
 
 const fastify = Fastify({ logger: true });
@@ -27,16 +28,7 @@ if (!corsOrigin) {
   throw new Error('CORS_ORIGIN env var ist nicht gesetzt. Setze CORS_ORIGIN=https://fairstand.godsapp.de (oder mehrere Origins kommasepariert).');
 }
 const allowedOrigins = corsOrigin.split(',').map(o => o.trim());
-await fastify.register(cors, {
-  origin: (origin, callback) => {
-    // Erlaubt Requests ohne Origin-Header (z.B. direkte Server-zu-Server-Calls, curl)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Origin ${origin} ist nicht erlaubt`), false);
-    }
-  },
-});
+await fastify.register(cors, buildCorsOptions(allowedOrigins));
 
 // Multipart app-weit registrieren: Fastify-Plugins gelten sonst nur im Scope
 // des registrierenden Plugins. Zuvor lag die Registrierung in importRoutes,
