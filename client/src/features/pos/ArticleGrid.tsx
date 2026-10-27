@@ -15,7 +15,7 @@ export function ArticleGrid({ onAddToCart, cartQuantities = {} }: ArticleGridPro
   const [activeCategory, setActiveCategory] = useState<string>('Alle');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // offlineFirst greift offline auf den Cache zurück; gleicher queryKey wie Admin, damit der Cache geteilt wird.
+  // Gleicher queryKey wie in der Verwaltung, damit beide denselben Cache nutzen.
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products', getShopId()],
     queryFn: async () => {
