@@ -3,11 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { parseSuedNordKontorPdf } from './pdfParser.js';
 
-/**
- * Format A (2600988, ohne Rabatt) und B (2552709, mit Rabatt). Die Fixtures
- * sind echte Lieferantenrechnungen und nicht im Repo; ohne sie in
- * ../Süd-Nord-Kontor/ werden die Suites uebersprungen.
- */
+/** Format A (2600988, ohne Rabatt) und B (2552709, mit Rabatt); ohne Fixtures in ../Süd-Nord-Kontor/ übersprungen. */
 
 const PDF_DIR = join(process.cwd(), '..', 'Süd-Nord-Kontor');
 const FIXTURE_A = join(PDF_DIR, 'Rechnung 2600988.pdf');
@@ -112,8 +108,7 @@ describeB('parseSuedNordKontorPdf — Format B (2552709, mit Rabatt-Spalte)', ()
     const rows = await parseSuedNordKontorPdf(buffer);
 
     for (const row of rows) {
-      // Erlaubt: EVP im Namen als Teil von "(Hersteller, EVP € 4,00)" ist ok — aber standalone "€ 2,35" nicht
-      // Nach extractEvp sollte name sauber sein
+      // EVP in der Hersteller-Klammer ist erlaubt, ein freistehender Euro-Betrag nicht.
       expect(row.name, `Zeile ${row.lineNumber}: Bezeichnung enthaelt "€ [0-9]"`).not.toMatch(/€\s*\d/);
     }
   });

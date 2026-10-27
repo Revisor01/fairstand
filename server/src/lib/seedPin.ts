@@ -1,5 +1,4 @@
-// Die Start-PIN des ersten Ladens kommt aus der Umgebung, damit sie nie im
-// öffentlichen Quelltext steht.
+// Start-PIN aus der Umgebung, damit sie nie im öffentlichen Quelltext steht.
 export function resolveSeedPin(env: NodeJS.ProcessEnv): string {
   const pin = env.INITIAL_SHOP_PIN?.trim() ?? '';
   if (!/^\d{4,8}$/.test(pin)) {

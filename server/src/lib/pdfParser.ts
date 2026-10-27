@@ -20,11 +20,7 @@ interface PdfTextItem {
   width: number;
 }
 
-/**
- * Gruppiert Text-Items nach Y-Koordinate (mit Toleranz).
- * Y absteigend sortieren (PDF: oben = grosse Werte).
- * Innerhalb jeder Zeile nach X aufsteigend sortieren.
- */
+/** Gruppiert Text-Items zu Zeilen: Y absteigend (PDF zählt von unten), X aufsteigend. */
 function groupByRows(items: PdfTextItem[], tolerance = 2): PdfTextItem[][] {
   const rowMap = new Map<number, PdfTextItem[]>();
 
@@ -40,30 +36,19 @@ function groupByRows(items: PdfTextItem[], tolerance = 2): PdfTextItem[][] {
     .map(([, rowItems]) => rowItems.sort((a, b) => a.transform[4] - b.transform[4]));
 }
 
-/**
- * Zeile ist eine Positionsnummer-Zeile wenn das erste und einzige Item
- * eine laufende Nummer ist (z.B. "1.", "12.").
- * Beide Rechnungsformate trennen die Positionsnummer in eine eigene Zeile.
- */
+/** Beide Rechnungsformate setzen die Positionsnummer ("1.") in eine eigene Zeile. */
 function isInvoiceRow(row: PdfTextItem[]): boolean {
   if (row.length === 0) return false;
   return /^\d+\.$/.test(row[0].str.trim());
 }
 
-/**
- * Tabellenkopf-Zeilen erkennen und ueberspringen.
- */
 function isHeaderRow(row: PdfTextItem[]): boolean {
   return row.some(
     (item) => item.str.includes('Artikelnummer') || item.str.includes('Bezeichnung')
   );
 }
 
-/**
- * Euro-String zu Cent-Integer konvertieren.
- * "€ 2,35" -> 235
- * Gibt null zurueck bei ungueltigem Format.
- */
+/** "€ 2,35" → 235, sonst null. */
 function parseEuroCents(str: string): number | null {
   const normalized = str.replace('€', '').replace(/\s/g, '').replace(',', '.');
   const val = parseFloat(normalized);
@@ -71,10 +56,7 @@ function parseEuroCents(str: string): number | null {
   return Math.round(val * 100);
 }
 
-/**
- * MwSt-Satz aus "19 %" oder "7 %" extrahieren.
- * Gibt nur 7 oder 19 zurueck, alles andere ist null.
- */
+/** Nur 7 oder 19, alles andere null. */
 function parseMwSt(str: string): 7 | 19 | null {
   const match = str.match(/(\d+)\s*%/);
   if (!match) return null;
@@ -82,11 +64,7 @@ function parseMwSt(str: string): 7 | 19 | null {
   return rate === 7 || rate === 19 ? rate : null;
 }
 
-/**
- * EVP aus der Bezeichnungsspalte extrahieren.
- * Erwartet Format: "Produktname (Hersteller, EVP € 4,00)"
- * Gibt cleanName (ohne EVP-Klammer) und evpCents zurueck.
- */
+/** Trennt "Produktname (Hersteller, EVP € 4,00)" in Name und EVP in Cent. */
 function extractEvp(designation: string): { cleanName: string; evpCents: number | null } {
   const evpMatch = designation.match(/EVP\s*€\s*([\d]+[,.][\d]{2})/i);
   if (!evpMatch) {
@@ -102,27 +80,12 @@ function extractEvp(designation: string): { cleanName: string; evpCents: number 
   return { cleanName, evpCents };
 }
 
-/**
- * Prüft ob ein Text-Item im X-Bereich der Bezeichnungsspalte liegt.
- */
 function isInDesignationXRange(item: PdfTextItem, minX: number, maxX: number): boolean {
   const x = item.transform[4];
   return x >= minX && x <= maxX;
 }
 
-/**
- * Parsed eine einzelne Rechnungszeile.
- *
- * Layout (beide Formate):
- *   dataRow = [Menge, Artikelnummer, Bezeichnung..., (Rabatt%), Preis/St., MwSt%, Gesamt]
- *
- * Strategie "von hinten zählen":
- *   - letztes €-Item = Gesamt (verwerfen)
- *   - vorletztes €-Item = Preis/St.
- *   - letztes %-Item = MwSt (7 oder 19)
- *   - %-Item vor Preis/St. = Rabatt (ignorieren, kein parseWarning)
- *   - Bezeichnung = Items zwischen Index 2 und dem frühesten Preis/Prozent-Item
- */
+/** Von hinten zählen: letzter €-Wert Gesamt, vorletzter Preis/St., letztes % MwSt, % davor Rabatt. */
 function parseInvoiceRowFromItems(
   lineNumber: number,
   dataRow: PdfTextItem[],
@@ -195,8 +158,7 @@ function parseInvoiceRowFromItems(
     warnings.push('Preis/St. nicht gefunden');
   }
 
-  // Bezeichnung: alle Items zwischen Index 2 und dem frühesten €/%-Item
-  // Das früheste solcher Items bestimmt die rechte Grenze der Bezeichnung
+  // Das früheste €/%-Item ab Index 2 begrenzt die Bezeichnung rechts.
   const allPriceIndices = [...euroIndices, ...percentIndices].filter((i) => i >= 2);
   const firstPriceIdx = allPriceIndices.length > 0 ? Math.min(...allPriceIndices) : dataRow.length;
 
@@ -241,11 +203,7 @@ function parseInvoiceRowFromItems(
   return row;
 }
 
-/**
- * Ohne Timeout; parseSuedNordKontorPdf ruft das mit Timeout auf. In beiden
- * Formaten steht die Positionsnummer ("1.") in einer eigenen Zeile vor der
- * Datenzeile.
- */
+/** Ohne Timeout; parseSuedNordKontorPdf ruft das mit Timeout auf. */
 async function _parsePdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   const uint8Array = new Uint8Array(buffer);
   const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
@@ -282,8 +240,6 @@ async function _parsePdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
         continue;
       }
 
-      // Nächste Zeile: Datenzeile mit Menge, Artikelnummer, Bezeichnung, Preis usw.
-      // Diese Zeile darf keine Positionsnummer sein (ist sie nie in den Rechnungen)
       let dataRow: PdfTextItem[] | null = null;
       const continuationRows: PdfTextItem[][] = [];
       let j = i + 1;
@@ -317,11 +273,7 @@ async function _parsePdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   return allRows;
 }
 
-/**
- * Parsed eine Sued-Nord-Kontor-Rechnung mit 30s Timeout-Schutz.
- * Wirft einen Fehler wenn der Parse-Vorgang laenger als PDF_PARSE_TIMEOUT_MS dauert —
- * schuetzt den Server vor indefinitem Blockieren durch beschaedigte oder adversarielle PDFs.
- */
+/** Parst eine Süd-Nord-Kontor-Rechnung mit Timeout, damit ein kaputtes PDF den Server nicht blockiert. */
 export async function parseSuedNordKontorPdf(buffer: Buffer): Promise<ParsedInvoiceRow[]> {
   const PDF_PARSE_TIMEOUT_MS = 30_000;
 

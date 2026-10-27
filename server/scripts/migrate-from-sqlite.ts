@@ -1,13 +1,5 @@
 #!/usr/bin/env tsx
-/**
- * Standalone-Migrationsskript: SQLite → PostgreSQL
- *
- * Ausführung (vor Deployment, auf der Maschine wo SQLite-Datei liegt):
- *   SQLITE_PATH=/pfad/zur/fairstand.db DATABASE_URL=postgresql://... npx tsx server/scripts/migrate-from-sqlite.ts
- *
- * Das Skript ist idempotent: Wenn PostgreSQL bereits Daten enthält, wird abgebrochen.
- * Es importiert NICHTS aus server/src/ — vollständig eigenständig.
- */
+/** Einmalige Migration SQLite → PostgreSQL. Aufruf: SQLITE_PATH=… DATABASE_URL=… npx tsx server/scripts/migrate-from-sqlite.ts */
 
 import { Pool } from 'pg';
 
@@ -58,8 +50,7 @@ async function migrateFromSQLite(): Promise<void> {
     }
 
     try {
-      // Reihenfolge: shops → categories → products → sales → settings
-      // (shops zuerst, weil andere Tabellen shop_id referenzieren)
+      // shops zuerst, weil die anderen Tabellen shop_id referenzieren.
 
       // Shops migrieren
       const sqliteShops = sqlite.prepare('SELECT * FROM shops').all() as any[];

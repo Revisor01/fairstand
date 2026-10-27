@@ -11,10 +11,7 @@ export type BroadcastMessage =
   | { type: 'categories_changed'; shopId: string }
   | { type: 'stock_changed'; shopId: string };
 
-/**
- * Sendet ein Invalidierungs-Signal an alle verbundenen Clients desselben Shops.
- * Wird von products.ts, categories.ts und sync.ts nach Mutationen aufgerufen.
- */
+/** Sendet ein Invalidierungs-Signal an alle Clients desselben Shops. */
 export function broadcast(msg: BroadcastMessage): void {
   const conns = clients.get(msg.shopId);
   if (!conns) return;

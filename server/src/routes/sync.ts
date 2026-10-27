@@ -108,9 +108,7 @@ export async function syncRoutes(fastify: FastifyInstance) {
               syncedAt: Date.now(),
             }).onConflictDoNothing();
 
-            // 2. Nur Bestand verrechnen, kein Upsert: Sale-Items sind Snapshots ohne
-            // category, purchasePrice usw. und würden diese Felder mit Defaults
-            // überschreiben. Produkte pflegt POST /api/products.
+            // Nur Bestand verrechnen, kein Upsert: Sale-Items sind Snapshots und würden Felder mit Defaults überschreiben.
             for (const item of sale.items) {
               const [prod] = await tx.select().from(products).where(eq(products.id, item.productId)).limit(1);
               if (!prod || prod.shopId !== entry.shopId) {

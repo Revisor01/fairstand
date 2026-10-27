@@ -2,8 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    // Nur die Quelltests laufen lassen — dist/ enthaelt kompilierte Kopien,
-    // die sonst zusaetzlich (und veraltet) mitgetestet werden.
+    // Nur Quelltests, dist/ enthält veraltete kompilierte Kopien.
     include: ['src/**/*.test.ts'],
   },
 });

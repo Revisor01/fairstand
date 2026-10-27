@@ -7,8 +7,7 @@ export function StockAlertButton() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Sortierung: niedrigster relativer Bestand zuerst
-  // (stock / minStock aufsteigend; 0 ganz oben)
+  // Niedrigster relativer Bestand (stock / minStock) zuerst.
   const sorted = [...products].sort((a, b) => {
     const ratioA = a.minStock > 0 ? a.stock / a.minStock : Infinity;
     const ratioB = b.minStock > 0 ? b.stock / b.minStock : Infinity;

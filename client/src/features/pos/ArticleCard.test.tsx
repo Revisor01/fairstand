@@ -2,10 +2,6 @@ import { describe, it, expect } from 'vitest';
 import type { Product } from '../../db/index.js';
 import { shouldTriggerTap } from './ArticleCard.js';
 
-// Wir testen die Tap-Logik als reine Funktion (analog zum checkStockBeforeAdd-Muster).
-// Die Funktion shouldTriggerTap(start, end, stock) kapselt:
-// - Threshold-Prüfung: dx < 8 && dy < 8
-// - Bestand-Prüfung: stock > 0
 
 function makeProduct(stock: number, minStock = 0): Product {
   return {

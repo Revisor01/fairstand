@@ -52,8 +52,7 @@ export function useAuth() {
     // Pfad 1: Online — Server-Auth versuchen
     if (navigator.onLine) {
       try {
-        // serverLogin gibt null zurück bei falschem PIN (HTTP 401)
-        // serverLogin gibt null zurück bei Netzwerkfehler (catch im serverLogin)
+        // serverLogin gibt null bei falscher PIN (401) und bei Netzwerkfehler.
         const session = await serverLogin(pin);
         if (session) {
           // Erfolg: shopId setzen und entsperren
@@ -69,10 +68,7 @@ export function useAuth() {
       }
     }
 
-    // Pfad 2: Offline — gespeicherte Session prüfen
-    // Wir können den PIN offline NICHT verifizieren (kein Zugriff auf Server-Hashes).
-    // Offline-Fallback gilt nur wenn die Session noch nicht abgelaufen war
-    // (= Nutzer war zuletzt vor <2h eingeloggt).
+    // Offline lässt sich die PIN nicht prüfen, daher nur eine noch gültige gespeicherte Session.
     const stored = await getStoredSession();
     if (!stored) return false; // Noch nie eingeloggt offline — kein Fallback möglich
 

@@ -1,6 +1,4 @@
-// In-Memory Session Store
-// Token → { shopId, createdAt }
-// Kein DB-Overhead; Sessions überleben keinen Server-Neustart (akzeptabel — Client logged automatisch re-ein)
+// Sessions im Speicher: ein Neustart meldet ab, der Client meldet sich selbst neu an.
 
 interface Session {
   shopId: string;
@@ -9,8 +7,6 @@ interface Session {
 
 const sessions = new Map<string, Session>();
 
-// Session lifetime: 30 Tage (wie idb-keyval auf Client, kein expliziter Ablauf)
-// Für jetzt: Sessions bleiben bis Server-Neustart
 
 export function createSession(token: string, shopId: string): void {
   sessions.set(token, { shopId, createdAt: Date.now() });

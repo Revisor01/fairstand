@@ -224,8 +224,7 @@ export async function productRoutes(fastify: FastifyInstance) {
       return reply.status(415).send({ error: 'Nur JPEG, PNG und WebP erlaubt' });
     }
 
-    // Produkt-IDs werden vom Client vergeben und fliessen hier in einen
-    // Dateipfad — daher gegen Path-Traversal absichern (analog GET /images).
+    // IDs vergibt der Client und sie landen in einem Dateipfad, daher Schutz gegen Path-Traversal.
     if (id.includes('/') || id.includes('\\') || id.includes('..')) {
       return reply.status(400).send({ error: 'Ungültige Produkt-ID' });
     }
@@ -257,8 +256,7 @@ export async function productRoutes(fastify: FastifyInstance) {
       return reply.status(403).send({ error: 'Zugriff verweigert' });
     }
 
-    // Verkaufshistorie-Check: Artikel darf keine Verkäufe haben (items ist jsonb Array)
-    // Prüfung: sales mit shopId des Shops, die diesen Artikel in items enthalten
+    // Löschen nur ohne Verkäufe dieses Artikels im Shop.
     const salesWithProduct = await db
       .select({ id: sales.id })
       .from(sales)

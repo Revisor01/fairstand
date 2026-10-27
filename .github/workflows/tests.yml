@@ -1,8 +1,6 @@
 name: Tests
 
-# Client: Vitest und Typprüfung samt Build. Server: Typprüfung; die Tests des
-# Rechnungsparsers brauchen echte Lieferantenrechnungen, die nicht im Repo
-# liegen, und werden ohne sie übersprungen.
+# Die Parser-Tests brauchen echte Lieferantenrechnungen, die nicht im Repo liegen, und laufen ohne sie nicht.
 
 on:
   pull_request:
