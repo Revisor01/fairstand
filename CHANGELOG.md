@@ -16,6 +16,7 @@ und sind daher gröber gefasst als künftige Einträge.
 ### Sicherheit
 
 - Die Start-PIN des ersten Ladens steht nicht mehr im Quelltext. Wer Fairstand selbst betreibt, legt sie beim ersten Start über eine Einstellung fest.
+- Abhängigkeiten von Server und Kasse auf Fassungen ohne bekannte Sicherheitslücken angehoben, soweit das ohne neue Hauptversion geht, darunter der Mailversand.
 
 ### Sonstiges
 - README, Vorlagen und Hinweise gibt es nur noch auf Deutsch.
