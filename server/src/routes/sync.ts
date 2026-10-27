@@ -5,7 +5,7 @@ import { db } from '../db/index.js';
 import { sales, products, outboxEvents, stockMovements } from '../db/schema.js';
 import { broadcast } from './websocket.js';
 
-const SaleItemSchema = z.object({
+export const SaleItemSchema = z.object({
   productId: z.string(),
   articleNumber: z.string(),
   name: z.string(),
@@ -14,7 +14,7 @@ const SaleItemSchema = z.object({
   quantity: z.number().int().positive(),
 });
 
-const SaleSchema = z.object({
+export const SaleSchema = z.object({
   id: z.string(),
   shopId: z.string(),
   items: z.array(SaleItemSchema),
@@ -28,18 +28,18 @@ const SaleSchema = z.object({
   syncedAt: z.number().int().optional(),
 });
 
-const OutboxEntrySchema = z.object({
+export const OutboxEntrySchema = z.object({
   operation: z.enum(['SALE_COMPLETE', 'STOCK_ADJUST', 'SALE_CANCEL', 'ITEM_RETURN']),
   payload: z.unknown(),
   shopId: z.string(),
   createdAt: z.number().int(),
 });
 
-const SyncBatchSchema = z.object({
+export const SyncBatchSchema = z.object({
   entries: z.array(OutboxEntrySchema),
 });
 
-const StockAdjustSchema = z.object({
+export const StockAdjustSchema = z.object({
   productId: z.string(),
   delta: z.number().int(),
   reason: z.string().optional(),
@@ -47,14 +47,14 @@ const StockAdjustSchema = z.object({
   purchasePriceCents: z.number().int().optional(), // EK-Preis bei Zugang (optional, Fallback auf Produkt-EK)
 });
 
-const SaleCancelSchema = z.object({
+export const SaleCancelSchema = z.object({
   saleId: z.string(),
   shopId: z.string(),
   items: z.array(SaleItemSchema),
   cancelledAt: z.number().int(),
 });
 
-const ItemReturnSchema = z.object({
+export const ItemReturnSchema = z.object({
   saleId: z.string(),
   shopId: z.string(),
   productId: z.string(),
