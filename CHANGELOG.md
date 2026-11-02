@@ -19,6 +19,7 @@ und sind daher gröber gefasst als künftige Einträge.
 - Abhängigkeiten von Server und Kasse auf Fassungen ohne bekannte Sicherheitslücken angehoben, soweit das ohne neue Hauptversion geht, darunter der Mailversand.
 
 ### Sonstiges
+- Nach einem Update meldet der Server seinen Stand, damit das Ausrollen erst als fertig gilt, wenn die neue Fassung läuft.
 - README, Vorlagen und Hinweise gibt es nur noch auf Deutsch.
 - Alle Abhängigkeiten von Server und Kasse auf die neuesten Fassungen gebracht, auch über Hauptversionen; die übrigen bekannten Sicherheitslücken sind damit geschlossen. Server und Kasse laufen auf der aktuellen Node-LTS.
 

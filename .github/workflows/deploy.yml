@@ -25,6 +25,8 @@ jobs:
     with:
       image: ghcr.io/${{ github.repository }}/${{ matrix.teil }}
       kontext: ./${{ matrix.teil }}
+      build-args: |
+        GIT_SHA=${{ github.sha }}
 
   # Forks bauen ihre Images, ausgerollt wird nur die eigene Instanz.
   deploy:
@@ -33,5 +35,6 @@ jobs:
     uses: Revisor01/workflows/.github/workflows/portainer-deploy.yml@3ec878449b89e1a69714b87381cb8effd7075fef # 1.5.1
     with:
       pruef-url: https://fairstand.godsapp.de/api/health
+      revision-feld: .commit
     secrets:
       webhook: ${{ secrets.PORTAINER_WEBHOOK_URL }}
