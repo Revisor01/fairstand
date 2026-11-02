@@ -7,6 +7,8 @@ RUN npm run build
 
 FROM node:26-alpine AS production
 WORKDIR /app
+ARG GIT_SHA=""
+ENV GIT_SHA=$GIT_SHA
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY --from=build /app/dist ./dist
