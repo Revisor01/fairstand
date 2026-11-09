@@ -9,17 +9,17 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@fastify/cors": "^11.3.1",
-    "@fastify/multipart": "^10.1.6",
-    "@fastify/rate-limit": "^11.2.1",
+    "@fastify/cors": "^11.4.1",
+    "@fastify/multipart": "^10.1.7",
+    "@fastify/rate-limit": "^11.2.2",
     "@fastify/schedule": "^7.0.2",
-    "@fastify/websocket": "^11.3.4",
+    "@fastify/websocket": "^11.3.7",
     "csv-stringify": "^6.9.0",
     "drizzle-kit": "^0.31.11",
     "drizzle-orm": "^0.45.4",
-    "fastify": "^5.12.7",
+    "fastify": "^5.12.8",
     "nodemailer": "^10.3.1",
-    "pdfjs-dist": "^6.4.299",
+    "pdfjs-dist": "^6.5.438",
     "pdfkit": "^0.20.2",
     "pg": "^8.23.1",
     "toad-scheduler": "^4.2.0",
@@ -34,7 +34,7 @@
     "esbuild": "^0.28.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.0"
   },
   "overrides": {
     "@esbuild-kit/core-utils": {
