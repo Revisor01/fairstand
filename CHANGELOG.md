@@ -17,6 +17,7 @@ und sind daher gröber gefasst als künftige Einträge.
 - Nach zu vielen PIN-Versuchen meldete der Server einen internen Fehler statt der Wartezeit.
 
 ### Sicherheit
+- Die Sperre nach zu vielen PIN-Versuchen gilt jetzt je Gerät bzw. Anschluss. Bisher sperrten fünf falsche Versuche von irgendwem die Anmeldung aller Kassen für eine Minute.
 
 - Die Start-PIN des ersten Ladens steht nicht mehr im Quelltext. Wer Fairstand selbst betreibt, legt sie beim ersten Start über eine Einstellung fest.
 - Abhängigkeiten von Server und Kasse auf Fassungen ohne bekannte Sicherheitslücken angehoben, soweit das ohne neue Hauptversion geht, darunter der Mailversand.

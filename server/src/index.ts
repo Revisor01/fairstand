@@ -19,6 +19,7 @@ import { priceHistoryRoutes } from './routes/priceHistory.js';
 import { ensureShopSeeded } from './db/seed.js';
 import { validateSession } from './lib/sessions.js';
 import { buildCorsOptions } from './lib/corsOptions.js';
+import { rateLimitOptions } from './lib/clientIp.js';
 import { pool } from './db/index.js';
 
 const fastify = Fastify({ logger: true });
@@ -38,9 +39,7 @@ await fastify.register(multipart, {
   },
 });
 
-await fastify.register(rateLimit, {
-  global: false, // Nur auf explizit markierten Routen aktiv
-});
+await fastify.register(rateLimit, rateLimitOptions);
 
 // Auth-Middleware: alle /api/* Routen außer /api/auth/* und /api/health
 fastify.addHook('preHandler', async (request, reply) => {
