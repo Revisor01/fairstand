@@ -16,7 +16,9 @@ export async function authRoutes(fastify: FastifyInstance) {
       rateLimit: {
         max: 5,
         timeWindow: '1 minute',
+        // Ohne statusCode wirft das Plugin die Antwort als Fehler 500.
         errorResponseBuilder: () => ({
+          statusCode: 429,
           error: 'Zu viele Versuche. Bitte 1 Minute warten.',
         }),
       },

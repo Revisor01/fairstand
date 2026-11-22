@@ -13,6 +13,9 @@ und sind daher gröber gefasst als künftige Einträge.
 ### Geändert
 - Neue Lizenz: GNU AGPL v3.0 statt MIT: Wer die Software verändert und anderen bereitstellt, auch als Webdienst, legt seine Änderungen offen. Eine kommerzielle Lizenz gibt es auf Anfrage.
 
+### Behoben
+- Nach zu vielen PIN-Versuchen meldete der Server einen internen Fehler statt der Wartezeit.
+
 ### Sicherheit
 
 - Die Start-PIN des ersten Ladens steht nicht mehr im Quelltext. Wer Fairstand selbst betreibt, legt sie beim ersten Start über eine Einstellung fest.
